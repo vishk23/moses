@@ -13,7 +13,7 @@ from datetime import datetime
 
 import pandas as pd # type: ignore
 
-import src.fetch_data # type: ignore
+import cdutils.acct_lookup_any_date.lookup_loop.src.fetch_data # type: ignore
 import src.core_transform # type: ignore
 import cdutils.pkey_sqlite # type: ignore
 import cdutils.hhnbr # type: ignore
@@ -23,7 +23,7 @@ import cdutils.hhnbr # type: ignore
 
 
 # Specific date
-specified_date = datetime(2020, 12, 31)
+# specified_date = datetime(2020, 12, 31)
 
 def query_df_on_date(specified_date):
 
