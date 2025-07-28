@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=75","wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="cdutils"
+version="1.0.0"
+description="Custom library meant to handle async database connections, working with portfolio key, and other useful & reusable features"
+readme = "README.md"
+authors = [
+    { name = "Chad Doorley", email="chad.doorley@bcsbmail.com"}
+]
+requires-python = ">=3.11.9"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cdutils", "cdutils.*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"cdutils.database" = ["env_admin"]
+
+
+
