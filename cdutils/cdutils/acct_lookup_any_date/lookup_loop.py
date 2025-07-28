@@ -13,11 +13,15 @@ from datetime import datetime
 
 import pandas as pd # type: ignore
 
-import cdutils.acct_lookup_any_date.lookup_loop.src.fetch_data # type: ignore
-import src.core_transform # type: ignore
+import cdutils.acct_lookup_any_date.src.fetch_data # type: ignore
+import cdutils.acct_lookup_any_date.src.core_transform # type: ignore
 import cdutils.pkey_sqlite # type: ignore
 import cdutils.hhnbr # type: ignore
 
+import cdutils.acct_lookup_any_date.src.additional_fields
+import cdutils.inactive_date
+import cdutils.loans.calculations
+import cdutils.input_cleansing
 # Current (doesn't really work without)
 # data = src.fetch_data.fetch_data()
 
@@ -27,10 +31,10 @@ import cdutils.hhnbr # type: ignore
 
 def query_df_on_date(specified_date):
 
-    data = src.fetch_data.fetch_data(specified_date)
+    data = cdutils.acct_lookup_any_date.src.fetch_data.fetch_data(specified_date)
 
     # # # Core transformation pipeline
-    raw_data = src.core_transform.main_pipeline(data)
+    raw_data = cdutils.acct_lookup_any_date.src.core_transform.main_pipeline(data)
 
     # Raw data with pkey appended
     raw_data = cdutils.pkey_sqlite.add_pkey(raw_data)
@@ -45,7 +49,6 @@ def query_df_on_date(specified_date):
     raw_data
 
     # %%
-    import cdutils.loans.calculations
 
     # %%
     loan_category_df = cdutils.loans.calculations.categorize_loans(raw_data)
@@ -60,7 +63,6 @@ def query_df_on_date(specified_date):
     df
 
     # %%
-    import cdutils.inactive_date
 
     df = cdutils.inactive_date.append_inactive_date(df)
 
@@ -74,15 +76,13 @@ def query_df_on_date(specified_date):
     df.info()
 
     # %%
-    import src.additional_fields
 
-    additional_fields = src.additional_fields.fetch_data(specified_date)
+    additional_fields = cdutils.acct_lookup_any_date.src.additional_fields.fetch_data(specified_date)
 
     # %%
     additional_fields_to_append = additional_fields['wh_acctcommon'].copy()
 
     # %%
-    import cdutils.input_cleansing
 
     additional_fields_to_append_schema = {
         'acctnbr':'str'
