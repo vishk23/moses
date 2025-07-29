@@ -16,3 +16,18 @@ File ~\Documents\gh\bcsb-prod\cdutils\cdutils\acct_lookup_any_date\lookup_loop.p
      18 import cdutils.pkey_sqlite # type: ignore
 
 ModuleNotFoundError: No module named 'cdutils.acct_lookup_any_date.lookup_loop.src'; 'cdutils.acct_lookup_any_date.lookup_loop' is not a package
+
+
+Muni minors:
+
+['CK36',
+ 'CK42',
+ 'CK18',
+ 'CK27',
+ 'CD30',
+ 'CD15',
+ 'CK21',
+ 'CD06',
+ 'CD39',
+ 'CK26',
+ 'CD49']

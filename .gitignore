@@ -8,7 +8,8 @@ cdutils/**/*.xls
 
 cdutils/*.xlsx
 cdutils/**/*.xlsx
-
+**/*.xls
+**/*.xlsx
 # Report outputs
 output/
 **/output/

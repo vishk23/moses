@@ -15,8 +15,8 @@ import pandas as pd # type: ignore
 
 import cdutils.inactive_date
 import cdutils.loans.calculations
-import cdutils.acct_lookup.src.fetch_data # type: ignore
-import cdutils.acct_lookup.src.core_transform # type: ignore
+import cdutils.acct_lookup_daily.src.fetch_data # type: ignore
+import cdutils.acct_lookup_daily.src.core_transform # type: ignore
 import cdutils.pkey_sqlite # type: ignore
 import cdutils.hhnbr # type: ignore
 

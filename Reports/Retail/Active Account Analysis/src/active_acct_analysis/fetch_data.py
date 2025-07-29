@@ -9,28 +9,21 @@ You need to set your own date that you want to see in effective date embedded in
 
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
-def fetch_data(specified_date: Optional[datetime] = None):
+def fetch_data():
     """
     Main data query
     """
-    wh_acctcommon = text(f"""
-    SELECT
-        a.ACCTNBR,
-        a.BRANCHNAME,
-        a.PRIMARYOWNERCITY,
-        a.PRIMARYOWNERSTATE
-    FROM
-        COCCDM.WH_ACCTCOMMON a
-    WHERE
-        (a.CURRACCTSTATCD IN ('ACT','NPFM','DORM')) AND
-        (a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS'))
-    """)
+    wh_agreement = text("""SELECT * FROM OSIBANK.WH_AGREEMENT a""")
+    wh_org = text("""SELECT * FROM OSIBANK.WH_ORG""")
+    wh_pers = text("""SELECT * FROM OSIBANK.WH_PERS""")
 
     queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
+        {'key':'wh_agreement', 'sql':wh_agreement, 'engine':1},
+        {'key':'wh_org', 'sql':wh_org, 'engine':1},
+        {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
 
 
