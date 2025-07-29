@@ -420,79 +420,97 @@ def run_reports_by_filter(reports: List[Dict], filter_type: str, filter_value: s
 
 def main():
     """Main entry point."""
-    # Change to parent directory so relative paths work
-    os.chdir(Path(__file__).parent.parent)
-    
-    # Setup logging first
-    logger = setup_logging()
-    
-    args = sys.argv[1:]
-    
-    if not args or args[0] == "--help":
-        print(__doc__)
-        print("\nUsage:")
-        print("  python testing/run_reports.py --stats                    # Show statistics only")
-        print("  python testing/run_reports.py --all                     # Run all reports")
-        print("  python testing/run_reports.py --daily                   # Run daily reports")
-        print("  python testing/run_reports.py --weekly                  # Run weekly reports") 
-        print("  python testing/run_reports.py --monthly                 # Run monthly reports")
-        print("  python testing/run_reports.py --as-needed               # Run as-needed reports")
-        print("  python testing/run_reports.py --business-line \"Commercial Lending\"  # Run by business line")
-        print("  python testing/run_reports.py --name \"Rate Scraping\"    # Run specific report")
-        print("  python testing/run_reports.py --help                    # Show this help")
+    # Prevent multiple executions
+    if hasattr(main, '_running'):
         return
+    main._running = True
     
-    # Discover all reports
-    print("Discovering reports...")
-    reports = discover_reports()
-    
-    if not reports:
-        print("No reports found!")
-        logger.warning("NO REPORTS DISCOVERED | No reports with src/config.py found")
-        return
-    
-    # Log discovery results
-    env = os.getenv('REPORT_ENV', 'dev')
-    logger.info(f"DISCOVERY COMPLETE | Found {len(reports)} reports | Environment: {env.upper()}")
-    
-    # Show statistics
-    print_statistics(reports)
-    
-    # Handle commands
-    command = args[0].lower()
-    
-    if command == "--stats":
-        logger.info("STATS ONLY | No reports executed")
-        return
-    elif command == "--all":
-        run_reports_by_filter(reports, "all", "", logger)
-    elif command == "--daily":
-        run_reports_by_filter(reports, "schedule", "daily", logger)
-    elif command == "--weekly":
-        run_reports_by_filter(reports, "schedule", "weekly", logger)
-    elif command == "--monthly":
-        run_reports_by_filter(reports, "schedule", "monthly", logger)
-    elif command == "--as-needed":
-        run_reports_by_filter(reports, "schedule", "as-needed", logger)
-    elif command == "--business-line":
-        if len(args) < 2:
-            print("Please specify business line name")
-            logger.error("INVALID COMMAND | Missing business line name")
+    try:
+        # Change to parent directory so relative paths work
+        os.chdir(Path(__file__).parent.parent)
+        
+        # Setup logging first
+        logger = setup_logging()
+        
+        # Log session start
+        env = os.getenv('REPORT_ENV', 'dev')
+        logger.info(f"=== REPORT RUNNER SESSION START [{env.upper()} MODE] ===")
+        
+        args = sys.argv[1:]
+        
+        if not args:
+            print(__doc__)
+            print("\nUsage:")
+            print("  python testing/run_reports.py --stats                    # Show statistics only")
+            print("  python testing/run_reports.py --all                     # Run all reports")
+            print("  python testing/run_reports.py --daily                   # Run daily reports")
+            print("  python testing/run_reports.py --weekly                  # Run weekly reports") 
+            print("  python testing/run_reports.py --monthly                 # Run monthly reports")
+            print("  python testing/run_reports.py --as-needed               # Run as-needed reports")
+            print("  python testing/run_reports.py --business-line \"Commercial Lending\"  # Run by business line")
+            print("  python testing/run_reports.py --name \"Rate Scraping\"    # Run specific report")
+            print("  python testing/run_reports.py --help                    # Show this help")
             return
-        run_reports_by_filter(reports, "business_line", args[1], logger)
-    elif command == "--name":
-        if len(args) < 2:
-            print("Please specify report name")
-            logger.error("INVALID COMMAND | Missing report name")
+        
+        if args[0] == "--help":
+            print(__doc__)
             return
-        run_reports_by_filter(reports, "name", args[1], logger)
-    else:
-        print(f"Unknown command: {command}")
-        print("Use --help for usage information")
-        logger.error(f"INVALID COMMAND | Unknown command: {command}")
+        
+        # Discover all reports
+        print("Discovering reports...")
+        reports = discover_reports()
+        
+        if not reports:
+            print("No reports found!")
+            logger.warning("NO REPORTS DISCOVERED | No reports with src/config.py found")
+            return
+        
+        # Log discovery results
+        logger.info(f"DISCOVERY COMPLETE | Found {len(reports)} reports | Environment: {env.upper()}")
+        
+        # Show statistics
+        print_statistics(reports)
+        
+        # Handle commands
+        command = args[0].lower()
+        
+        if command == "--stats":
+            logger.info("STATS ONLY | No reports executed")
+            return
+        elif command == "--all":
+            run_reports_by_filter(reports, "all", "", logger)
+        elif command == "--daily":
+            run_reports_by_filter(reports, "schedule", "daily", logger)
+        elif command == "--weekly":
+            run_reports_by_filter(reports, "schedule", "weekly", logger)
+        elif command == "--monthly":
+            run_reports_by_filter(reports, "schedule", "monthly", logger)
+        elif command == "--as-needed":
+            run_reports_by_filter(reports, "schedule", "as-needed", logger)
+        elif command == "--business-line":
+            if len(args) < 2:
+                print("Please specify business line name")
+                logger.error("INVALID COMMAND | Missing business line name")
+                return
+            run_reports_by_filter(reports, "business_line", args[1], logger)
+        elif command == "--name":
+            if len(args) < 2:
+                print("Please specify report name")
+                logger.error("INVALID COMMAND | Missing report name")
+                return
+            run_reports_by_filter(reports, "name", args[1], logger)
+        else:
+            print(f"Unknown command: {command}")
+            print("Use --help for usage information")
+            logger.error(f"INVALID COMMAND | Unknown command: {command}")
+        
+        # Log session end
+        logger.info("=== REPORT RUNNER SESSION END ===\n")
     
-    # Log session end
-    logger.info("=== REPORT RUNNER SESSION END ===\n")
+    finally:
+        # Clean up the running flag
+        if hasattr(main, '_running'):
+            delattr(main, '_running')
 
 
 if __name__ == "__main__":
