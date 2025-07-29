@@ -31,3 +31,13 @@ Muni minors:
  'CD39',
  'CK26',
  'CD49']
+
+
+ ----
+
+
+ Looking into this:
+24066503 has 91 agreements (some active)
+Employee
+
+
