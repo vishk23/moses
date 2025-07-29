@@ -29,15 +29,24 @@ This project creates centralized customer relationship keys to provide a 360-deg
 
 ## Project Status
 ### Completed ✅
-- [x] Create portfolio key with persistence across runs
-- [x] Create storage for portfolio key (SQLite)
-- [x] Fix address grouping issues (29 Broadway exclusion)
-- [x] Fix IOLTA shared ownership issues (RI BAR & MA IOLTA Committee)
-- [x] Develop ability to modify key if certain shared attributes should not group relationships
-- [x] Disable current.db and update references to use cdutils
-- [x] Update cdutils from src.cdutils to shared library
-- [x] Create ownership-only key that is persistent (for Concentration of Credit reporting)
 - [x] Create address-only persistent key (for household analysis)
+  - Sep 2024
+- [x] Create ownership-only key that is persistent (for Concentration of Credit reporting)
+  - Sep 2024
+- [x] Update cdutils from src.cdutils to shared library
+  - Oct 2024
+- [x] Create workflow specific storage for portfolio key (SQLite)
+  - Nov 2025
+- [x] Develop ability to modify key if certain shared attributes should not group relationships
+  - Dec 2024
+- [x] Fix IOLTA shared ownership issues (RI BAR & MA IOLTA Committee)
+  - Jan 2025
+- [x] Fix address grouping issues (29 Broadway exclusion)
+  - Jan 2025
+- [x] Create portfolio key with persistence across runs
+  - May 2025
+- [x] Upload keys into HHNU userfield in COCC
+  - Jun 2025
 
 ### Future Enhancements
 - [ ] Create GUI or Excel-based way to manage relationship exceptions, give end users or admins ability to make modifications to relationship
@@ -45,7 +54,7 @@ This project creates centralized customer relationship keys to provide a 360-deg
 
 
 ## File Paths
-- **Production Home:** `\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\R360`
+- **Production Home:** Reports/Data Analytics/R360
 - **Development:** Local project structure with src/, docs/, notebooks/ directories
 
 ## Documentation
