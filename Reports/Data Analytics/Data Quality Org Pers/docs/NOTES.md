@@ -15,3 +15,8 @@ We should be able to drop a file in there (excel). It should assert there is onl
 ---
 
 I added a few placeholder functions that aren't handled in here into the main.py. This will work
+
+
+## 2025-07-19
+This needs to write to path:
+\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Data Quality\Data Quality\Automated Refresh
