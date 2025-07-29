@@ -1,0 +1,20 @@
+# Sample Person Input File
+
+This is an example of the expected format for person input files.
+
+## Instructions:
+1. Delete this file
+2. Place your actual Excel file (.xlsx or .xls) in this folder
+3. Run the pipeline: `python -m src.main`
+
+## Required Format:
+- PERSNBR column (must match your processed person data)
+- All column headers in UPPERCASE
+- Additional columns will be merged (COMMENTS, PRIORITY, etc.)
+
+## Example Data Structure:
+```
+PERSNBR | LASTNAME | FIRSTNAME | COMMENTS        | PRIORITY
+2001    | Smith    | John      | VIP customer    | High
+2002    | Johnson  | Mary      | Regular buyer   | Medium
+```
