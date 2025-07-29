@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        input[type="email"],
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input[type="email"]:focus,
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background-color: #e9ecef;
+            border-radius: 16px;
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag button {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #0056b3, #003d80);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Automated Status Page</h2>
+        <form method="post" action="/status_page/" id="myForm">
+            <!-- Include CSRF token if using Django -->
+            {% csrf_token %}
+
+            <div>
+                <label for="id_email">Email:</label>
+                <input type="email" name="email" id="id_email" required>
+                <span id="email-error" class="error-message" style="display: none;">Please enter a valid email ending with the required domain.</span>
+            </div>
+
+            <div>
+                <label for="id_key">Key:</label>
+                <input type="text" name="key" id="id_key" required pattern="\d{1,12}">
+                <span id="key-error" class="error-message" style="display: none;">Key must be an integer with up to 12 digits.</span>
+            </div>
+
+            <div>
+                <label for="additions-input">Additions (type number and press Enter):</label>
+                <input type="text" id="additions-input" placeholder="Type account number and press Enter">
+                <div id="additions-tags" class="tag-container"></div>
+                <input type="hidden" name="additions" id="additions-hidden">
+                <span id="additions-error" class="error-message" style="display: none;">Please enter a valid integer with up to 20 digits.</span>
+            </div>
+
+            <div>
+                <label for="deletes-input">Deletes (type number and press Enter):</label>
+                <input type="text" id="deletes-input" placeholder="Type account number and press Enter">
+                <div id="deletes-tags" class="tag-container"></div>
+                <input type="hidden" name="deletes" id="deletes-hidden">
+                <span id="deletes-error" class="error-message" style="display: none;">Please enter a valid integer with up to 20 digits.</span>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Configuration constants - update these as needed
+        const requiredDomain = '@bcsbmail.com'; // Change this to enforce a different domain
+        const maxKeyDigits = 12;              // Maximum digits for the key
+        const maxAccountDigits = 20;          // Maximum digits for account numbers in additions and deletes
+
+        // Email validation
+        const emailInput = document.getElementById('id_email');
+        const emailError = document.getElementById('email-error');
+        emailInput.addEventListener('input', function() {
+            const value = emailInput.value.trim();
+            if (!value.endsWith(requiredDomain)) {
+                emailError.style.display = 'block';
+                emailInput.setCustomValidity(`Email must end with ${requiredDomain}.`);
+            } else {
+                emailError.style.display = 'none';
+                emailInput.setCustomValidity('');
+            }
+        });
+
+        // Key validation
+        const keyInput = document.getElementById('id_key');
+        const keyError = document.getElementById('key-error');
+        keyInput.addEventListener('input', function() {
+            const value = keyInput.value.trim();
+            const keyRegex = new RegExp(`^\\d{1,${maxKeyDigits}}$`);
+            if (!keyRegex.test(value)) {
+                keyError.style.display = 'block';
+                keyInput.setCustomValidity(`Key must be an integer with up to ${maxKeyDigits} digits.`);
+            } else {
+                keyError.style.display = 'none';
+                keyInput.setCustomValidity('');
+            }
+        });
+
+        // Additions
+        const additionsInput = document.getElementById('additions-input');
+        const additionsTags = document.getElementById('additions-tags');
+        const additionsHidden = document.getElementById('additions-hidden');
+        const additionsError = document.getElementById('additions-error');
+
+        additionsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag(additionsTags, additionsInput, additionsHidden, additionsError, maxAccountDigits);
+            }
+        });
+
+        additionsInput.addEventListener('focus', function() {
+            additionsError.style.display = 'none';
+        });
+
+        // Deletes
+        const deletesInput = document.getElementById('deletes-input');
+        const deletesTags = document.getElementById('deletes-tags');
+        const deletesHidden = document.getElementById('deletes-hidden');
+        const deletesError = document.getElementById('deletes-error');
+
+        deletesInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag(deletesTags, deletesInput, deletesHidden, deletesError, maxAccountDigits);
+            }
+        });
+
+        deletesInput.addEventListener('focus', function() {
+            deletesError.style.display = 'none';
+        });
+
+        // Add tag function
+        function addTag(container, input, hidden, errorElement, maxDigits) {
+            const value = input.value.trim();
+            const regex = new RegExp(`^\\d{1,${maxDigits}}$`);
+            if (regex.test(value)) {
+                const tag = document.createElement('span');
+                tag.textContent = value;
+                tag.className = 'tag';
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'x';
+                deleteBtn.onclick = () => {
+                    container.removeChild(tag);
+                    updateHidden(hidden, container);
+                };
+                tag.appendChild(deleteBtn);
+                container.appendChild(tag);
+                input.value = '';
+                updateHidden(hidden, container);
+            } else {
+                errorElement.style.display = 'block';
+            }
+        }
+
+        // Update hidden input
+        function updateHidden(hidden, container) {
+            const tags = Array.from(container.children).map(tag => tag.textContent.slice(0, -1));
+            hidden.value = tags.join(',');
+        }
+
+        // Additional form submission check (optional, as setCustomValidity handles email and key)
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            const emailValid = emailInput.value.endsWith(requiredDomain);
+            const keyValid = new RegExp(`^\\d{1,${maxKeyDigits}}$`).test(keyInput.value);
+            if (!emailValid || !keyValid) {
+                e.preventDefault();
+                if (!emailValid) emailError.style.display = 'block';
+                if (!keyValid) keyError.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

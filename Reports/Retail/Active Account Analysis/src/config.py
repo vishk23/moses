@@ -12,13 +12,13 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "CLO Active Portfolio Officer Report"
-BUSINESS_LINE = "Commercial Lending"
-SCHEDULE = "Manual"
-OWNER = "Commercial Lending Team"
+REPORT_NAME = "Active Account Analysis"
+BUSINESS_LINE = "Retail Banking"
+SCHEDULE = "Monthly"
+OWNER = "Stephanie Nordberg"
 
 # Status
-PROD_READY = True
+PROD_READY = False 
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
