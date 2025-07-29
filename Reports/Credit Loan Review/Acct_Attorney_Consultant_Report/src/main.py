@@ -127,10 +127,10 @@ def main():
     # src.output_to_excel.format_excel_file(OUTPUT_PATH)
 
     # Distribution
-    # subject = f"Monthly Attorney-Consultant-Engineer Report" 
-    # body = "Hi, \n\nAttached is the Attorney-Consultant-Engineer Report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
-    # attachment_paths = [output_file_path]
-    # cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, subject, body, attachment_paths)
+    subject = f"Monthly Attorney-Consultant-Engineer Report" 
+    body = "Hi, \n\nAttached is the Attorney-Consultant-Engineer Report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
+    attachment_paths = [output_file_path]
+    cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, subject, body, attachment_paths)
 
 
 if __name__ == '__main__':
