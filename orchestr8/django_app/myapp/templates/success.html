@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Successful</title>
+    <style>
+        /* Body styles for overall page layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa; /* Light gray-blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+        }
+
+        /* Container for the success content */
+        .success-container {
+            background-color: white;
+            border-radius: 8px; /* Rounded edges */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            padding: 2rem;
+            max-width: 500px; /* Fixed width for consistency */
+            margin: auto;
+            text-align: center; /* Center all content */
+        }
+
+        /* Messages list styling */
+        .messages {
+            list-style: none; /* Remove default bullets */
+            padding: 0;
+            margin-bottom: 1.5rem; /* Space below messages */
+            animation: fadeIn 0.5s ease-in; /* Fade-in animation */
+        }
+
+        /* Individual message items */
+        .messages li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem; /* Space between messages */
+            border-radius: 4px; /* Rounded edges */
+        }
+
+        /* Success message styling */
+        .messages .success {
+            background-color: #d4edda; /* Light green background */
+            color: #155724; /* Dark green text */
+        }
+
+        /* Checkmark icon for success messages */
+        .messages .success::before {
+            content: '✔'; /* Unicode checkmark */
+            margin-right: 0.5rem; /* Space before text */
+            color: #28a745; /* Green icon */
+        }
+
+        /* Submit another task link styled as a button */
+        .submit-another {
+            display: inline-block;
+            padding: 0.75rem 1.5rem; /* Comfortable padding */
+            background-color: #007bff; /* Blue background */
+            color: white;
+            text-decoration: none; /* Remove underline */
+            border-radius: 4px; /* Rounded edges */
+            transition: background-color 0.3s ease; /* Smooth hover transition */
+        }
+
+        /* Hover effect for the button */
+        .submit-another:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Fade-in animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <a href="/status_page/" class="submit-another">Submit another task</a>
+    </div>
+</body>
+</html>
