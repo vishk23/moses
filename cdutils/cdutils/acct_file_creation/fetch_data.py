@@ -12,45 +12,12 @@ from sqlalchemy import text # type: ignore
 from typing import Optional
 from datetime import datetime, timedelta
 import pandas as pd
-from pandas.tseries.holiday import USFederalHolidayCalendar
-
-def get_last_business_day():
-    """Get the last business day (excluding weekends and US federal holidays)"""
-    today = datetime.now().date()
-    
-    # Create US federal holiday calendar
-    cal = USFederalHolidayCalendar()
-    
-    # Start from yesterday and work backwards
-    candidate_date = today - timedelta(days=1)
-    
-    while True:
-        # Check if it's a weekend (Saturday=5, Sunday=6)
-        if candidate_date.weekday() >= 5:
-            candidate_date -= timedelta(days=1)
-            continue
-            
-        # Check if it's a US federal holiday
-        holidays = cal.holidays(start=candidate_date, end=candidate_date)
-        if len(holidays) > 0:
-            candidate_date -= timedelta(days=1)
-            continue
-            
-        # Found a business day
-        break
-    
-    return candidate_date.strftime('%Y-%m-%d %H:%M:%S')
 
 def fetch_data(specified_date: Optional[datetime] = None):
     """
     Main data query
     """
-    if specified_date is None:
-        specified_date = get_last_business_day()
-    else:
-        assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
-        specified_date = specified_date.strftime('%Y-%m-%d %H:%M:%S')
-
+    
     wh_acctcommon = text(f"""
     SELECT
         a.EFFDATE,
