@@ -9,6 +9,7 @@ The goal of this repository is to ensure that all data-related code is reliable,
 - **`/Reports`**: Source code for all production reports, organized by business line.
 - **`/cdutils`**: A shared library of common utilities and functions used across multiple projects.
 - **`/testing`**: Scripts for running automated tests and executing reports.
+- **`/orchestr8`**: Web-based graphical interface for on-demand job execution & scheduling through admin panel.
 - **`/Documentation`**: In-depth guides, architectural diagrams, and development standards.
 
 ## Getting Started
