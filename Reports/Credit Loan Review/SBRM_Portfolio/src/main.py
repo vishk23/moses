@@ -200,11 +200,11 @@ def main() -> None:
                     max_len = max(df[col].astype(str).map(len).max(), len(col)) + 2
                     worksheet.set_column(i, i, max_len)
 
-    # # Distribution
-    # subject = f"SBRM Portfolio Report" 
-    # body = "Hi, \n\nAttached is the Monthly SBRM Portfolio Report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
-    # attachment_paths = [output_file_path]
-    # cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, subject, body, attachment_paths)
+    # Distribution
+    subject = f"SBRM Portfolio Report" 
+    body = "Hi, \n\nAttached is the Monthly SBRM Portfolio Report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
+    attachment_paths = [output_file_path]
+    cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, subject, body, attachment_paths)
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")

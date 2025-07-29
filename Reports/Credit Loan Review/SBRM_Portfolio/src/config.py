@@ -14,7 +14,7 @@ from pathlib import Path
 REPORT_NAME = "SBRM_Portfolio"
 BUSINESS_LINE = "Credit Loan Review"
 SCHEDULE = "Manual"
-OWNER = "Francine Ferguson"
+OWNER = "Nancy Cabral"
 
 # Status
 PROD_READY = True
