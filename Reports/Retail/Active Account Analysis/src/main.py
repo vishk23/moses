@@ -41,6 +41,7 @@ import pandas as pd # type: ignore
 import src.config
 import src.fetch_data # type: ignore
 from cdutils import input_cleansing # type: ignore
+from cdutils import deduplication # type: ignore
 from cdutils.acct_lookup_daily import daily_acct_table # type: ignore
 
 
@@ -58,9 +59,12 @@ def main():
     active_accounts = daily_acct_table.get_daily_acct_table()
     print(f"Loaded {len(active_accounts)} active accounts")
     
-    # Step 2: Load and prepare WH_ORG with deduplication and schema enforcement
-    print("Loading WH_ORG...")
+    # Step 2: Load base data
+    print("Loading base data...")
     data = src.fetch_data.fetch_data()
+    
+    # Step 3: Load and prepare WH_ORG with deduplication
+    print("Loading WH_ORG...")
     wh_org = data['wh_org'].copy()
     
     # Enforce schema for WH_ORG - ensure orgnbr is string
@@ -70,11 +74,12 @@ def main():
     }
     wh_org = input_cleansing.enforce_schema(wh_org, schema_wh_org)
     
-    # Deduplicate WH_ORG on primary key
-    wh_org = wh_org.drop_duplicates(subset=['orgnbr'], keep='first')
+    # Deduplicate WH_ORG using cdutils.deduplication
+    dedupe_list = [{'df': wh_org, 'field': 'orgnbr'}]
+    wh_org = deduplication.dedupe(dedupe_list)
     print(f"Loaded {len(wh_org)} unique organizations")
     
-    # Step 3: Load and prepare WH_PERS with deduplication and schema enforcement
+    # Step 4: Load and prepare WH_PERS with deduplication
     print("Loading WH_PERS...")
     wh_pers = data['wh_pers'].copy()
     
@@ -86,125 +91,81 @@ def main():
     }
     wh_pers = input_cleansing.enforce_schema(wh_pers, schema_wh_pers)
     
-    # Deduplicate WH_PERS on primary key
-    wh_pers = wh_pers.drop_duplicates(subset=['persnbr'], keep='first')
+    # Deduplicate WH_PERS using cdutils.deduplication
+    dedupe_list = [{'df': wh_pers, 'field': 'persnbr'}]
+    wh_pers = deduplication.dedupe(dedupe_list)
     print(f"Loaded {len(wh_pers)} unique persons")
     
-    # Step 4: Load WH_AGREEMENTS
+    # Step 5: Load WH_AGREEMENTS and filter for active agreements
     print("Loading WH_AGREEMENTS...")
     wh_agreements = data['wh_agreements'].copy()
     
     # Enforce schema for WH_AGREEMENTS
     schema_wh_agreements = {
+        'acctnbr': str,
+        'agreenbr': str,
+        'persnbr': str,
         'agrmntnbr': str,
-        'ownerorgnbr': str,
+        'agrmntstatcd': str,
         'ownerpersnbr': str,
-        'agrmntstatcd': str
+        'ownerorgnbr': str
     }
     wh_agreements = input_cleansing.enforce_schema(wh_agreements, schema_wh_agreements)
     
-    # Filter for active agreements only
-    active_agreements = wh_agreements[wh_agreements['agrmntstatcd'] == 'A'].copy()
-    print(f"Found {len(active_agreements)} active agreements")
+    # Filter for active agreements using inactivedate vs rundate logic
+    # If inactivedate is null OR inactivedate > rundate, then agreement is active
+    active_agreements = wh_agreements[
+        (wh_agreements['inactivedate'].isnull()) | 
+        (wh_agreements['inactivedate'] > wh_agreements['rundate'])
+    ].copy()
     
-    # Step 5: Load WH_ALLROLES to link agreements to accounts
-    print("Loading WH_ALLROLES...")
-    wh_allroles = data['wh_allroles'].copy()
+    print(f"Found {len(active_agreements)} active agreements out of {len(wh_agreements)} total")
     
-    # Enforce schema for WH_ALLROLES
-    schema_wh_allroles = {
-        'acctnbr': str,
-        'orgnbr': str,
-        'persnbr': str
-    }
-    wh_allroles = input_cleansing.enforce_schema(wh_allroles, schema_wh_allroles)
-    
-    # Step 6: Link agreements to active accounts via WH_ALLROLES
-    print("Linking agreements to active accounts...")
-    
-    # Convert account numbers to string for joining
-    active_accounts['acctnbr'] = active_accounts['acctnbr'].astype(str)
-    
-    # Join active accounts with roles
-    account_roles = pd.merge(
-        active_accounts,
-        wh_allroles,
-        on='acctnbr',
-        how='inner'
-    )
-    print(f"Found {len(account_roles)} account-role relationships")
-    
-    # Join with agreements via organization numbers
-    agreements_with_accounts_org = pd.merge(
-        account_roles,
-        active_agreements,
-        left_on='orgnbr',
-        right_on='ownerorgnbr',
-        how='inner'
-    )
-    
-    # Join with agreements via person numbers
-    agreements_with_accounts_pers = pd.merge(
-        account_roles,
-        active_agreements,
-        left_on='persnbr',
-        right_on='ownerpersnbr',
-        how='inner'
-    )
-    
-    # Combine both types of agreement linkages
-    agreements_with_accounts = pd.concat([
-        agreements_with_accounts_org,
-        agreements_with_accounts_pers
-    ], ignore_index=True)
-    
-    # Remove duplicates
-    agreements_with_accounts = agreements_with_accounts.drop_duplicates()
-    print(f"Found {len(agreements_with_accounts)} account-agreement relationships")
-    
-    # Step 7: Add organization and person names
+    # Step 6: Add organization and person names to agreements
     print("Adding organization and person names...")
     
-    # Add organization names
-    agreements_with_accounts = pd.merge(
-        agreements_with_accounts,
+    # Add organization names for agreements with ownerorgnbr
+    active_agreements = pd.merge(
+        active_agreements,
         wh_org[['orgnbr', 'orgname']],
         left_on='ownerorgnbr',
         right_on='orgnbr',
         how='left',
-        suffixes=('', '_owner')
+        suffixes=('', '_org')
     )
     
-    # Add person names
-    agreements_with_accounts = pd.merge(
-        agreements_with_accounts,
+    # Add person names for agreements with ownerpersnbr  
+    active_agreements = pd.merge(
+        active_agreements,
         wh_pers[['persnbr', 'firstname', 'lastname']],
         left_on='ownerpersnbr',
         right_on='persnbr',
         how='left',
-        suffixes=('', '_owner')
+        suffixes=('', '_pers')
     )
     
     # Create a combined owner name field
-    agreements_with_accounts['owner_name'] = agreements_with_accounts.apply(
+    active_agreements['owner_name'] = active_agreements.apply(
         lambda row: row['orgname'] if pd.notna(row['orgname']) 
         else f"{row['firstname']} {row['lastname']}" if pd.notna(row['firstname']) and pd.notna(row['lastname'])
         else 'Unknown Owner',
         axis=1
     )
     
-    # Step 8: Prepare final datasets
+    # Step 7: Prepare final datasets
     print("Preparing final datasets...")
     
-    # Active Accounts Dataset
+    # Active Accounts Dataset - keep as is
     active_accounts_final = active_accounts.copy()
     
-    # Active Agreements Dataset
-    active_agreements_final = agreements_with_accounts[[
-        'acctnbr', 'agrmntnbr', 'owner_name', 'ownerorgnbr', 'ownerpersnbr', 'agrmntstatcd'
+    # Active Agreements Dataset - select relevant columns
+    active_agreements_final = active_agreements[[
+        'acctnbr', 'agreenbr', 'persnbr', 'agrmntnbr', 'agrmntstatcd',
+        'ownerpersnbr', 'ownerorgnbr', 'owner_name', 'rundate', 'effdate', 'inactivedate',
+        'agreetypcd', 'cardnbr', 'datelastmaint'
     ]].copy()
     
-    # Step 9: Output to Excel files
+    # Step 8: Output to Excel files
     print("Generating output files...")
     
     # Generate filename with current date
@@ -228,7 +189,8 @@ def main():
     print(f"- Active Accounts: {len(active_accounts_final)}")
     print(f"- Active Agreements: {len(active_agreements_final)}")
     print(f"- Unique Agreement Numbers: {active_agreements_final['agrmntnbr'].nunique()}")
-    print(f"- Unique Account Numbers with Agreements: {active_agreements_final['acctnbr'].nunique()}")
+    print(f"- Unique Account Numbers in Agreements: {active_agreements_final['acctnbr'].nunique()}")
+    print(f"- Agreement Types: {active_agreements_final['agreetypcd'].value_counts().to_dict()}")
     
     # Distribution (currently disabled - enable when recipients are determined)
     if src.config.EMAIL_TO:  # Only send emails if recipients are configured
@@ -242,7 +204,7 @@ Attached are the Active Account and Agreement datasets for cross-sell analysis.
 
 The files include:
 1. Active Accounts - Current active account portfolio
-2. Active Agreements - Active agreements linked to accounts with owner information
+2. Active Agreements - Active agreements with owner information (filtered by inactivedate vs rundate)
 
 If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com
 

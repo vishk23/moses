@@ -78,7 +78,7 @@ def update_beat_heartbeat():
 def run_on_demand_task(email, key, additions, deletes):
     """Run the on-demand Python script with the provided parameters."""
     module = "src.main"  # Adjust to your script's module
-    cwd = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\Status Page\Production")  # Adjust to your script's directory
+    cwd = Path(__file__).parent.parent.parent.parent / "Reports" / "Commercial Lending" / "Status Page"  # Local Reports directory
     logger.info(f"Starting task at {cwd}: {module} with at {timezone.localtime()}")
 
     # Convert cwd to Path object and validate
