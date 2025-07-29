@@ -28,6 +28,7 @@ dependencies = [
     "lxml>=6.0.0",
     "pytest>=8.4.1",
     "pip>=25.1.1",
+    "reportlab>=4.4.3"
 ]
 
 [tool.uv.sources]
