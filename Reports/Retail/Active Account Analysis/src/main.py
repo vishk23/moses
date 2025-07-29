@@ -27,7 +27,7 @@ Data Processing Flow:
 7. Monthly delivery to Retail Department for cross-sell analysis
 
 Business Intelligence Value:
-- Cross-sell opportunity analysis for retail interns
+- Cross-sell opportunity analysis for retail
 - Active account and agreement relationship mapping
 - Customer engagement and product penetration insights
 - Monthly reporting for retail department initiatives
