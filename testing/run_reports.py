@@ -4,6 +4,7 @@ Report Runner - Run BCSB reports by schedule or business line
 
 USAGE:
     python testing/run_reports.py --stats                    # Show statistics only
+    python testing/run_reports.py --list                     # List all available reports
     python testing/run_reports.py --all                     # Run all reports
     python testing/run_reports.py --daily                   # Run daily reports
     python testing/run_reports.py --weekly                  # Run weekly reports
@@ -86,8 +87,9 @@ def setup_logging() -> logging.Logger:
     # Choose log file based on environment
     log_file = logs_dir / f"{env}_execution.log"
     
-    # Setup logger
-    logger = logging.getLogger('report_runner')
+    # Setup logger with a unique name to avoid conflicts
+    logger_name = f'report_runner_{id(setup_logging)}'
+    logger = logging.getLogger(logger_name)
     logger.setLevel(logging.INFO)
     
     # Remove existing handlers to avoid duplicates
@@ -103,14 +105,8 @@ def setup_logging() -> logging.Logger:
     file_handler.setFormatter(file_formatter)
     logger.addHandler(file_handler)
     
-    # Console handler (optional - can be disabled if too verbose)
-    console_handler = logging.StreamHandler()
-    console_formatter = logging.Formatter('%(message)s')
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-    
-    # Log session start
-    logger.info(f"=== REPORT RUNNER SESSION START [{env.upper()} MODE] ===")
+    # Don't add console handler - we'll handle console output manually
+    # This prevents duplicate output
     
     return logger
 
@@ -229,6 +225,44 @@ def get_venv_python() -> str:
     # Fallback to current executable if no venv found
     print("Warning: No virtual environment found, using current Python")
     return sys.executable
+
+
+def print_report_list(reports: List[Dict]):
+    """Print a clean list of all available reports for --name usage."""
+    print("Available Reports (use with --name):")
+    print("=" * 50)
+    
+    # Group by business line for better organization
+    by_business_line = defaultdict(list)
+    for report in reports:
+        by_business_line[report['business_line']].append(report)
+    
+    for business_line in sorted(by_business_line.keys()):
+        print(f"\n{business_line}:")
+        business_reports = by_business_line[business_line]
+        
+        for report in sorted(business_reports, key=lambda x: x['name']):
+            # Status indicators
+            status_indicators = []
+            if report['has_main']:
+                status_indicators.append("✓ Runnable")
+            else:
+                status_indicators.append("✗ No main.py")
+            
+            if report['prod_ready']:
+                status_indicators.append("PROD")
+            else:
+                status_indicators.append("DEV")
+            
+            # Schedule info
+            schedule = categorize_by_schedule(report['schedule']).title()
+            
+            print(f"  • {report['name']}")
+            print(f"    Title: {report['title']}")
+            print(f"    Schedule: {schedule}")
+            print(f"    Status: {' | '.join(status_indicators)}")
+            print(f"    Usage: python testing/run_reports.py --name \"{report['name']}\"")
+            print()
 
 
 def print_statistics(reports: List[Dict]):
@@ -418,12 +452,17 @@ def run_reports_by_filter(reports: List[Dict], filter_type: str, filter_value: s
     return results
 
 
+# Global flag to prevent multiple executions
+_script_running = False
+
 def main():
     """Main entry point."""
+    global _script_running
+    
     # Prevent multiple executions
-    if hasattr(main, '_running'):
+    if _script_running:
         return
-    main._running = True
+    _script_running = True
     
     try:
         # Change to parent directory so relative paths work
@@ -432,8 +471,9 @@ def main():
         # Setup logging first
         logger = setup_logging()
         
-        # Log session start
+        # Log session start (only print, don't log to avoid duplicate in console)
         env = os.getenv('REPORT_ENV', 'dev')
+        print(f"=== REPORT RUNNER SESSION START [{env.upper()} MODE] ===")
         logger.info(f"=== REPORT RUNNER SESSION START [{env.upper()} MODE] ===")
         
         args = sys.argv[1:]
@@ -442,6 +482,7 @@ def main():
             print(__doc__)
             print("\nUsage:")
             print("  python testing/run_reports.py --stats                    # Show statistics only")
+            print("  python testing/run_reports.py --list                     # List all available reports")
             print("  python testing/run_reports.py --all                     # Run all reports")
             print("  python testing/run_reports.py --daily                   # Run daily reports")
             print("  python testing/run_reports.py --weekly                  # Run weekly reports") 
@@ -477,6 +518,10 @@ def main():
         if command == "--stats":
             logger.info("STATS ONLY | No reports executed")
             return
+        elif command == "--list":
+            print_report_list(reports)
+            logger.info("LIST ONLY | No reports executed")
+            return
         elif command == "--all":
             run_reports_by_filter(reports, "all", "", logger)
         elif command == "--daily":
@@ -509,8 +554,7 @@ def main():
     
     finally:
         # Clean up the running flag
-        if hasattr(main, '_running'):
-            delattr(main, '_running')
+        _script_running = False
 
 
 if __name__ == "__main__":
