@@ -33,7 +33,6 @@ Muni minors:
  'CD49']
 
 
-
  ---
 
  # 2025-07-29 (Chad Doorley)
@@ -52,3 +51,9 @@ I have 2 data contracts:
 - supply them with active accounts monthly basis and active agreements from WH_AGREEMENTS.
 
 Need to filter down my df to only applicable fields (I'll do this manually) and I need to find active agreements
+
+ ---
+
+Looking into this:
+24066503 has 91 agreements (some active)
+Employee
