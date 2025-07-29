@@ -31,3 +31,30 @@ Muni minors:
  'CD39',
  'CK26',
  'CD49']
+
+
+ ---
+
+ # 2025-07-29 (Chad Doorley)
+
+I need agreements tied to active accounts.
+WH_AGREEMENTS has OWNERORGNBR and OWNERPERSNBR which can be tied via WH_ALLROLES to active accounts, which are a result of my daily_acct_file df that is already available. I need this script in main.
+
+
+Context on this project:
+Active Account & Agreement Analysis
+For Stephanie Nordberg in Retail Department
+
+This will run monthly.
+
+I have 2 data contracts:
+- supply them with active accounts monthly basis and active agreements from WH_AGREEMENTS.
+
+Need to filter down my df to only applicable fields (I'll do this manually) and I need to find active agreements
+
+ ---
+
+Looking into this:
+Employee has 91 agreements (some active)
+----
+

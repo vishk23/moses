@@ -14,6 +14,7 @@ import os
 import src.data_quality.core
 import src.data_quality.fetch_data # type: ignore
 import cdutils.acct_file_creation.core # type: ignore
+import src.config as config
 
 def create_acct_df():
     """
@@ -119,9 +120,25 @@ def main():
     """
     Main entry point for the data quality ETL pipeline.
     """
+    # Ensure all necessary directories exist (moved from config.py)
+    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    config.INPUT_DIR.mkdir(parents=True, exist_ok=True)
+    config.ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+    (config.INPUT_DIR / "org").mkdir(parents=True, exist_ok=True)
+    (config.INPUT_DIR / "pers").mkdir(parents=True, exist_ok=True)
+    
     print("=" * 60)
     print("Data Quality ETL Pipeline - Customer Data Consolidation")
     print("=" * 60)
+    
+    # Environment information
+    env_msg = "PRODUCTION" if config.ENV == 'prod' else "DEVELOPMENT"
+    print(f"🌐 Environment: {env_msg}")
+    print(f"📁 Output Directory: {config.OUTPUT_DIR}")
+    print(f"📥 Input Directory: {config.INPUT_DIR}")
+    if config.ENV == 'prod':
+        print(f"📋 Production Path: {config.PROD_OUTPUT_PATH}")
+    print()
     
     try:
         # Load required data once upfront
@@ -139,27 +156,42 @@ def main():
         print("\n" + "-" * 40)
         print("CHECKING FOR INPUT FILES")
         print("-" * 40)
-        input_status = src.data_quality.core.process_input_files()
+        
+        # Use config paths for input files
+        org_input_dir = config.INPUT_DIR / "org"
+        pers_input_dir = config.INPUT_DIR / "pers"
+        
+        # Note: process_input_files() may need to be updated to accept these paths
+        # For now, temporarily change to the input directory
+        original_cwd = Path.cwd()
+        try:
+            # Change to the input directory's parent if it exists
+            if config.INPUT_DIR.exists():
+                os.chdir(config.INPUT_DIR.parent)
+            
+            input_status = src.data_quality.core.process_input_files()
+        finally:
+            os.chdir(original_cwd)
         
         # Merge with org input file if it exists
         if input_status['has_org_input']:
             print("\nMerging org data with input file...")
             org_final = src.data_quality.core.merge_with_input_file(
-                org_final, Path("data/inputs/org"), "org"
+                org_final, org_input_dir, "org"
             )
             # Archive the processed file
             print("Archiving org input file...")
-            src.data_quality.core.archive_input_file(Path("data/inputs/org"), "org")
+            src.data_quality.core.archive_input_file(org_input_dir, "org")
         
         # Merge with pers input file if it exists
         if input_status['has_pers_input']:
             print("\nMerging pers data with input file...")
             pers_final = src.data_quality.core.merge_with_input_file(
-                pers_final, Path("data/inputs/pers"), "pers"
+                pers_final, pers_input_dir, "pers"
             )
             # Archive the processed file
             print("Archiving pers input file...")
-            src.data_quality.core.archive_input_file(Path("data/inputs/pers"), "pers")
+            src.data_quality.core.archive_input_file(pers_input_dir, "pers")
         
         # Summary statistics
         print("\n" + "=" * 40)
@@ -173,16 +205,26 @@ def main():
         print(f"\nOrganization columns: {len(org_final.columns)} fields")
         print(f"Person columns: {len(pers_final.columns)} fields")
         
-        # Save to outputs directory (optional)
-        outputs_dir = Path("outputs")
-        outputs_dir.mkdir(exist_ok=True)
+        # Save to outputs directory using config
+        print(f"\nSaving results to {config.OUTPUT_DIR}/...")
+        config.OUTPUT_DIR.mkdir(exist_ok=True)
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        print(f"\nSaving results to {outputs_dir}/...")
-        org_final.to_excel(outputs_dir / f"org_final_{timestamp}.xlsx", index=False)
-        pers_final.to_excel(outputs_dir / f"pers_final_{timestamp}.xlsx", index=False)
+        org_final.to_excel(config.OUTPUT_DIR / f"org_final_{timestamp}.xlsx", index=False)
+        pers_final.to_excel(config.OUTPUT_DIR / f"pers_final_{timestamp}.xlsx", index=False)
+        
+        # In production mode, also save without timestamp for automated access
+        if config.ENV == 'prod':
+            org_final.to_excel(config.OUTPUT_DIR / "org_final_latest.xlsx", index=False)
+            pers_final.to_excel(config.OUTPUT_DIR / "pers_final_latest.xlsx", index=False)
+            print("Also saved latest versions without timestamp for automated access.")
         
         print("✅ Pipeline completed successfully!")
+        
+        # Environment status
+        env_msg = "PRODUCTION" if config.ENV == 'prod' else "DEVELOPMENT"
+        print(f"📍 Running in {env_msg} mode")
+        print(f"📁 Output location: {config.OUTPUT_DIR}")
         
         return org_final, pers_final
         
