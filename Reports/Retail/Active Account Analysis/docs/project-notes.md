@@ -55,5 +55,6 @@ Need to filter down my df to only applicable fields (I'll do this manually) and 
  ---
 
 Looking into this:
-24066503 has 91 agreements (some active)
-Employee
+Employee has 91 agreements (some active)
+----
+
