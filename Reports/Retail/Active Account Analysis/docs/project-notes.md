@@ -58,3 +58,33 @@ Looking into this:
 Employee has 91 agreements (some active)
 ----
 
+wh_agreement
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 401864 entries, 0 to 401863
+Data columns (total 22 columns):
+ #   Column                Non-Null Count   Dtype         
+---  ------                --------------   -----         
+ 0   acctnbr               401864 non-null  int64         
+ 1   agreenbr              401864 non-null  int64         
+ 2   persnbr               401864 non-null  int64         
+ 3   rundate               401864 non-null  datetime64[ns]
+ 4   effdate               401864 non-null  datetime64[ns]
+ 5   inactivedate          214233 non-null  datetime64[ns]
+ 6   cyclewthdllimitamt    336763 non-null  object        
+ 7   cycledepositlimitamt  336865 non-null  object        
+ 8   prefix                401864 non-null  int64         
+ 9   cardnbr               401864 non-null  object        
+ 10  agreetypcd            401864 non-null  object        
+ 11  ownerpersnbr          349268 non-null  object        
+ 12  ownerorgnbr           52596 non-null   object        
+ 13  nextmembernbr         401864 non-null  int64         
+ 14  servchgacctnbr        66418 non-null   float64       
+ 15  nextservchgdate       52014 non-null   datetime64[ns]
+ 16  servchgwaiveyn        401864 non-null  object        
+ 17  maintchgwaiveyn       401864 non-null  object        
+ 18  extcardnbr            401855 non-null  object        
+ 19  datelastmaint         401864 non-null  datetime64[ns]
+ 20  agrmntnbr             401864 non-null  object        
+ 21  agrmntstatcd          401864 non-null  object        
+dtypes: datetime64[ns](5), float64(1), int64(5), object(11)
+memory usage: 67.5+ MB
