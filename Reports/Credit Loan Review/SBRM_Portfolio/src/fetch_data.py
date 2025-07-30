@@ -1,0 +1,112 @@
+"""
+Fetching data module. Aim is import all necessary fields up front.
+
+"""
+
+import cdutils.database.connect # type: ignore
+from sqlalchemy import text # type: ignore
+
+def fetch_data():
+    """
+    Main data query
+    """
+    wh_acctcommon = text(f"""
+    SELECT 
+        OSIBANK.WH_ACCTCOMMON.ACCTNBR,
+        OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,
+        OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,
+        OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,
+        OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,
+        OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,
+        OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,
+        OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,
+        OSIBANK.WH_ACCTCOMMON.NOTEBAL,
+        OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,
+        OSIBANK.WH_ACCTCOMMON.NOTEINTCALCSCHEDNBR,
+        OSIBANK.WH_ACCTCOMMON.CALCBALTYPCD,
+        OSIBANK.WH_ACCTCOMMON.INTMETHCD,
+        OSIBANK.WH_ACCTCOMMON.RATETYPCD,
+        OSIBANK.WH_ACCTCOMMON.INTBASE,
+        OSIBANK.WH_ACCTCOMMON.DATEMAT,
+        OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,
+        OSIBANK.WH_ACCTCOMMON.OWNERNAME,
+        OSIBANK.WH_ACCTCOMMON.LOANOFFICER,
+        OSIBANK.WH_ACCTCOMMON.ACCTOFFICER 
+    FROM OSIBANK.WH_ACCTCOMMON
+    """)
+
+    wh_acctloan = text(f"""
+    SELECT
+        OSIBANK.WH_ACCTLOAN.ESCBAL,
+        OSIBANK.WH_ACCTLOAN.ACCTNBR,
+        OSIBANK.WH_ACCTLOAN.PURPCD,
+        OSIBANK.WH_ACCTLOAN.COBAL,
+        OSIBANK.WH_ACCTLOAN.FDICCATCD,
+        OSIBANK.WH_ACCTLOAN.DATE1STPMTDUE,
+        OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,
+        OSIBANK.WH_ACCTLOAN.MINRATECHANGEDOWN,
+        OSIBANK.WH_ACCTLOAN.MAXRATECHANGEDOWN,
+        OSIBANK.WH_ACCTLOAN.PREPAYCHARGE,
+        OSIBANK.WH_ACCTLOAN.LASTPAYMENTDATE,
+        OSIBANK.WH_ACCTLOAN.NOTEACCRUEDINT 
+    FROM OSIBANK.WH_ACCTLOAN
+    """)
+
+    wh_prop = text(f"""
+    SELECT
+        OSIBANK.WH_PROP.ACCTNBR,
+        OSIBANK.WH_PROP.PROPNBR,
+        OSIBANK.WH_PROP.APRSVALUEAMT,
+        OSIBANK.WH_PROP.APRSDATE,
+        OSIBANK.WH_PROP.PROPADDR1,
+        OSIBANK.WH_PROP.PROPADDR2,
+        OSIBANK.WH_PROP.PROPADDR3,
+        OSIBANK.WH_PROP.PROPCITY,
+        OSIBANK.WH_PROP.PROPSTATE,
+        OSIBANK.WH_PROP.PROPZIP 
+    FROM OSIBANK.WH_PROP
+    """)
+
+    wh_prop2 = text("""
+    SELECT
+        OSIBANK.WH_PROP2.PROPTYPDESC,
+        OSIBANK.WH_PROP2.PROPNBR,
+        OSIBANK.WH_PROP2.PROPVALUE,
+        OSIBANK.WH_PROP2.PROPTYPCD,
+        OSIBANK.WH_PROP2.PROPDESC 
+    FROM OSIBANK.WH_PROP2
+    """)
+
+    wh_loans = text("""
+    SELECT 
+        OSIBANK.WH_LOANS.ACCTNBR,
+        OSIBANK.WH_LOANS.INTPAIDTODATE,
+        OSIBANK.WH_LOANS.FDICCATDESC,
+        OSIBANK.WH_LOANS.AVAILBALAMT 
+    FROM OSIBANK.WH_LOANS
+    """)    
+
+    persnbr = text("""
+    SELECT 
+        OSIBANK.WH_ACCTROLE.ACCTNBR,
+        OSIBANK.WH_ACCTROLE.ACCTROLECD,
+        OSIBANK.WH_ACCTROLE.ACCTROLEDESC,
+        OSIBANK.WH_ACCTROLE.PERSNBR,
+        OSIBANK.WH_PERS.PERSNAME 
+    FROM OSIBANK.WH_ACCTROLE 
+	INNER JOIN 
+        OSIBANK.WH_PERS on OSIBANK.WH_ACCTROLE.PERSNBR = OSIBANK.WH_PERS.PERSNBR
+    """)  
+
+    queries = [
+        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':1},
+        {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':1},
+        {'key':'wh_prop', 'sql':wh_prop, 'engine':1},
+        {'key':'wh_prop2', 'sql':wh_prop2, 'engine':1},
+        {'key':'wh_loans', 'sql':wh_loans, 'engine':1},
+        {'key':'persnbr', 'sql':persnbr, 'engine':1}
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
