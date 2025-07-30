@@ -88,3 +88,132 @@ Data columns (total 22 columns):
  21  agrmntstatcd          401864 non-null  object        
 dtypes: datetime64[ns](5), float64(1), int64(5), object(11)
 memory usage: 67.5+ MB
+
+wh_org
+<class 'pandas.core.frame.DataFrame'>
+Index: 16911 entries, 0 to 17131
+Data columns (total 23 columns):
+ #   Column         Non-Null Count  Dtype         
+---  ------         --------------  -----         
+ 0   orgnbr         16911 non-null  object        
+ 1   orgname        16911 non-null  object        
+ 2   orgtypcd       16737 non-null  object        
+ 3   orgtypcddesc   16737 non-null  object        
+ 4   taxid          13163 non-null  object        
+ 5   taxidtypcd     13315 non-null  object        
+ 6   rpt1099intyn   16911 non-null  object        
+ 7   privacyyn      16911 non-null  object        
+ 8   taxexemptyn    16911 non-null  object        
+ 9   cipratingcd    67 non-null     object        
+ 10  creditscore    1424 non-null   float64       
+ 11  siccd          331 non-null    object        
+ 12  siccddesc      331 non-null    object        
+ 13  sicsubcd       310 non-null    object        
+ 14  sicsubcddesc   307 non-null    object        
+ 15  naicscd        11217 non-null  object        
+ 16  naicscddesc    11217 non-null  object        
+ 17  adddate        16911 non-null  datetime64[ns]
+ 18  datelastmaint  16911 non-null  datetime64[ns]
+ 19  rundate        16911 non-null  datetime64[ns]
+ 20  allowpromoyn   16911 non-null  object        
+ 21  homeemail      2369 non-null   object        
+ 22  busemail       5016 non-null   object        
+dtypes: datetime64[ns](3), float64(1), object(19)
+memory usage: 3.1+ MB
+
+wh_pers
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 167591 entries, 0 to 167590
+Data columns (total 28 columns):
+ #   Column              Non-Null Count   Dtype         
+---  ------              --------------   -----         
+ 0   persnbr             167591 non-null  object        
+ 1   persname            167591 non-null  object        
+ 2   perssortname        167591 non-null  object        
+ 3   taxid               161923 non-null  object        
+ 4   adddate             167591 non-null  datetime64[ns]
+ 5   datebirth           164060 non-null  datetime64[ns]
+ 6   datedeath           3368 non-null    datetime64[ns]
+ 7   age                 164060 non-null  float64       
+ 8   employeeyn          167591 non-null  object        
+ 9   privacyyn           167591 non-null  object        
+ 10  cipratingcd         8 non-null       object        
+ 11  naicscd             191 non-null     object        
+ 12  naicsdesc           191 non-null     object        
+ 13  siccd               41 non-null      object        
+ 14  sicdesc             41 non-null      object        
+ 15  sicsubcd            20 non-null      object        
+ 16  sicsubdesc          20 non-null      object        
+ 17  creditscore         42653 non-null   object        
+ 18  spousepersnbr       496 non-null     float64       
+ 19  spousepersname      496 non-null     object        
+ 20  spouseperssortname  496 non-null     object        
+ 21  datelastmaint       167591 non-null  datetime64[ns]
+ 22  rundate             167591 non-null  datetime64[ns]
+ 23  allowpromoyn        167591 non-null  object        
+ 24  homeemail           86373 non-null   object        
+ 25  busemail            12334 non-null   object        
+ 26  firstname           167591 non-null  object        
+ 27  lastname            167591 non-null  object        
+dtypes: datetime64[ns](5), float64(2), object(21)
+memory usage: 35.8+ MB
+
+
+acct_daily_file (active_accounts)
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 89601 entries, 0 to 89600
+Data columns (total 50 columns):
+ #   Column                  Non-Null Count  Dtype         
+---  ------                  --------------  -----         
+ 0   effdate                 89601 non-null  datetime64[ns]
+ 1   acctnbr                 89601 non-null  object        
+ 2   ownersortname           89601 non-null  object        
+ 3   product                 89601 non-null  object        
+ 4   noteopenamt             89601 non-null  float64       
+ 5   ratetypcd               71559 non-null  object        
+ 6   mjaccttypcd             89601 non-null  object        
+ 7   currmiaccttypcd         89601 non-null  object        
+ 8   curracctstatcd          89601 non-null  object        
+ 9   noteintrate             89601 non-null  float64       
+ 10  bookbalance             89601 non-null  float64       
+ 11  notebal                 89601 non-null  float64       
+ 12  contractdate            89600 non-null  datetime64[ns]
+ 13  datemat                 32936 non-null  datetime64[ns]
+ 14  taxrptfororgnbr         12437 non-null  float64       
+ 15  taxrptforpersnbr        77164 non-null  float64       
+ 16  loanofficer             23477 non-null  object        
+ 17  acctofficer             62632 non-null  object        
+ 18  creditlimitamt          89601 non-null  float64       
+ 19  origintrate             22765 non-null  object        
+ 20  marginfixed             23477 non-null  object        
+ 21  fdiccatcd               22829 non-null  object        
+ 22  amortterm               23477 non-null  float64       
+ 23  totalpctsold            89601 non-null  float64       
+ 24  cobal                   89601 non-null  float64       
+ 25  credlimitclatresamt     89601 non-null  float64       
+ 26  riskratingcd            2746 non-null   object        
+ 27  origdate                23293 non-null  datetime64[ns]
+ 28  currterm                23477 non-null  float64       
+ 29  loanidx                 23466 non-null  object        
+ 30  rcf                     3023 non-null   object        
+ 31  availbalamt             89601 non-null  float64       
+ 32  fdiccatdesc             22829 non-null  object        
+ 33  origbal                 22600 non-null  float64       
+ 34  loanlimityn             23477 non-null  object        
+ 35  Net Balance             89601 non-null  float64       
+ 36  Net Available           89601 non-null  float64       
+ 37  Net Collateral Reserve  89601 non-null  float64       
+ 38  Total Exposure          89601 non-null  float64       
+ 39  orig_ttl_loan_amt       89601 non-null  float64       
+ 40  portfolio_key           89601 non-null  int64         
+ 41  ownership_key           87104 non-null  float64       
+ 42  address_key             87104 non-null  float64       
+ 43  householdnbr            80059 non-null  float64       
+ 44  datelastmaint           80059 non-null  datetime64[ns]
+ 45  Category                23477 non-null  object        
+ 46  inactivedate            2557 non-null   datetime64[ns]
+ 47  branchname              89601 non-null  object        
+ 48  primaryownercity        89578 non-null  object        
+ 49  primaryownerstate       89554 non-null  object        
+dtypes: datetime64[ns](6), float64(22), int64(1), object(21)
+memory usage: 34.2+ MB

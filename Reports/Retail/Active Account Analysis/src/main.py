@@ -27,7 +27,7 @@ Data Processing Flow:
 7. Monthly delivery to Retail Department for cross-sell analysis
 
 Business Intelligence Value:
-- Cross-sell opportunity analysis for retail interns
+- Cross-sell opportunity analysis for retail
 - Active account and agreement relationship mapping
 - Customer engagement and product penetration insights
 - Monthly reporting for retail department initiatives
@@ -39,191 +39,150 @@ from datetime import datetime
 import pandas as pd # type: ignore
 
 import src.config
-import src.fetch_data # type: ignore
+import src.active_acct_analysis.fetch_data # type: ignore
 from cdutils import input_cleansing # type: ignore
 from cdutils import deduplication # type: ignore
-from cdutils.acct_lookup_daily import daily_acct_table # type: ignore
+import cdutils.acct_file_creation.core # type: ignore
+from src.active_acct_analysis.excel_formatting import format_excel
 
 
 def main():
-    """Main report execution function for Active Account & Agreement Analysis"""
-    
     # Ensure output directory exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
-    
+
     # Step 1: Load active accounts from daily_acct_file
     print("Loading active accounts...")
-    active_accounts = daily_acct_table.get_daily_acct_table()
+    specified_date = datetime(2025,7,28)
+    active_accounts = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
     print(f"Loaded {len(active_accounts)} active accounts")
-    
+
+    # Filter active_accounts by mjaccttypcd before any processing
+    mjaccttypcd_keep = ['CK','SAV','TD','CML','MLN','MTG','CNS']
+    active_accounts = active_accounts[active_accounts['mjaccttypcd'].isin(mjaccttypcd_keep)].copy()
+
     # Step 2: Load base data
     print("Loading base data...")
-    data = src.fetch_data.fetch_data()
-    
+    data = src.active_acct_analysis.fetch_data.fetch_data()
+
     # Step 3: Load and prepare WH_ORG with deduplication
     print("Loading WH_ORG...")
     wh_org = data['wh_org'].copy()
-    
-    # Enforce schema for WH_ORG - ensure orgnbr is string
-    schema_wh_org = {
-        'orgnbr': str,
-        'orgname': str
-    }
+    schema_wh_org = {'orgnbr': str, 'orgname': str}
     wh_org = input_cleansing.enforce_schema(wh_org, schema_wh_org)
-    
-    # Deduplicate WH_ORG using cdutils.deduplication
-    dedupe_list = [{'df': wh_org, 'field': 'orgnbr'}]
-    wh_org = deduplication.dedupe(dedupe_list)
+    wh_org = deduplication.dedupe([{'df': wh_org, 'field': 'orgnbr'}])
     print(f"Loaded {len(wh_org)} unique organizations")
-    
+
     # Step 4: Load and prepare WH_PERS with deduplication
     print("Loading WH_PERS...")
     wh_pers = data['wh_pers'].copy()
-    
-    # Enforce schema for WH_PERS - ensure persnbr is string
-    schema_wh_pers = {
-        'persnbr': str,
-        'firstname': str,
-        'lastname': str
-    }
+    schema_wh_pers = {'persnbr': str, 'persname': str}
     wh_pers = input_cleansing.enforce_schema(wh_pers, schema_wh_pers)
-    
-    # Deduplicate WH_PERS using cdutils.deduplication
-    dedupe_list = [{'df': wh_pers, 'field': 'persnbr'}]
-    wh_pers = deduplication.dedupe(dedupe_list)
+    wh_pers = deduplication.dedupe([{'df': wh_pers, 'field': 'persnbr'}])
     print(f"Loaded {len(wh_pers)} unique persons")
-    
+
     # Step 5: Load WH_AGREEMENTS and filter for active agreements
     print("Loading WH_AGREEMENTS...")
-    wh_agreements = data['wh_agreements'].copy()
-    
-    # Enforce schema for WH_AGREEMENTS
+    wh_agreements = data['wh_agreement'].copy()
     schema_wh_agreements = {
-        'acctnbr': str,
-        'agreenbr': str,
-        'persnbr': str,
-        'agrmntnbr': str,
-        'agrmntstatcd': str,
-        'ownerpersnbr': str,
-        'ownerorgnbr': str
+        'acctnbr': str, 'agreenbr': str, 'persnbr': str, 'ownerpersnbr': str, 'ownerorgnbr': str,
+        'agrmntnbr': str, 'agrmntstatcd': str, 'agreetypcd': str
     }
     wh_agreements = input_cleansing.enforce_schema(wh_agreements, schema_wh_agreements)
-    
-    # Filter for active agreements using inactivedate vs rundate logic
-    # If inactivedate is null OR inactivedate > rundate, then agreement is active
     active_agreements = wh_agreements[
-        (wh_agreements['inactivedate'].isnull()) | 
+        (wh_agreements['inactivedate'].isnull()) |
         (wh_agreements['inactivedate'] > wh_agreements['rundate'])
     ].copy()
-    
     print(f"Found {len(active_agreements)} active agreements out of {len(wh_agreements)} total")
-    
-    # Step 6: Add organization and person names to agreements
-    print("Adding organization and person names...")
-    
-    # Add organization names for agreements with ownerorgnbr
+
+    # Step 6: Merge in agreement type descriptions
+    print("Merging in agreement type descriptions...")
+    cardagreementtyp = data['cardagreementtyp'].copy()
+    cardagreementtyp = cardagreementtyp.rename(columns={"AGREETYPCD": "agreetypcd", "AGREETYPDESC": "agreetypdesc"})
+    active_agreements = pd.merge(
+        active_agreements,
+        cardagreementtyp[['agreetypcd', 'agreetypdesc']],
+        on='agreetypcd', how='left'
+    )
+
+    # Step 7: Add owner name (org or pers)
+    print("Adding owner names...")
     active_agreements = pd.merge(
         active_agreements,
         wh_org[['orgnbr', 'orgname']],
-        left_on='ownerorgnbr',
-        right_on='orgnbr',
-        how='left',
-        suffixes=('', '_org')
+        left_on='ownerorgnbr', right_on='orgnbr', how='left', suffixes=('', '_org')
     )
-    
-    # Add person names for agreements with ownerpersnbr  
     active_agreements = pd.merge(
         active_agreements,
-        wh_pers[['persnbr', 'firstname', 'lastname']],
-        left_on='ownerpersnbr',
-        right_on='persnbr',
-        how='left',
-        suffixes=('', '_pers')
+        wh_pers[['persnbr', 'persname']],
+        left_on='ownerpersnbr', right_on='persnbr', how='left', suffixes=('', '_pers')
     )
-    
-    # Create a combined owner name field
     active_agreements['owner_name'] = active_agreements.apply(
-        lambda row: row['orgname'] if pd.notna(row['orgname']) 
-        else f"{row['firstname']} {row['lastname']}" if pd.notna(row['firstname']) and pd.notna(row['lastname'])
-        else 'Unknown Owner',
-        axis=1
+        lambda row: row['orgname'] if pd.notna(row['orgname'])
+        else row['persname'] if pd.notna(row['persname'])
+        else 'Unknown Owner', axis=1
     )
-    
-    # Step 7: Prepare final datasets
-    print("Preparing final datasets...")
-    
-    # Active Accounts Dataset - keep as is
-    active_accounts_final = active_accounts.copy()
-    
-    # Active Agreements Dataset - select relevant columns
-    active_agreements_final = active_agreements[[
-        'acctnbr', 'agreenbr', 'persnbr', 'agrmntnbr', 'agrmntstatcd',
-        'ownerpersnbr', 'ownerorgnbr', 'owner_name', 'rundate', 'effdate', 'inactivedate',
-        'agreetypcd', 'cardnbr', 'datelastmaint'
-    ]].copy()
-    
-    # Step 8: Output to Excel files
-    print("Generating output files...")
-    
-    # Generate filename with current date
+    active_agreements['owner_id'] = active_agreements.apply(
+        lambda row: f"O{row['ownerorgnbr']}" if pd.notna(row['ownerorgnbr']) and row['ownerorgnbr'] != ''
+        else f"P{row['ownerpersnbr']}" if pd.notna(row['ownerpersnbr']) and row['ownerpersnbr'] != ''
+        else 'Unknown', axis=1
+    )
+
+    # Step 8: One-hot encode agreement types by owner
+    print("Building owner-agreement type matrix...")
+    owner_agreement = active_agreements[['owner_id', 'owner_name', 'agreetypdesc']].drop_duplicates()
+    owner_agreement['has_agreement'] = 'Y'
+    summary = owner_agreement.pivot_table(
+        index=['owner_id', 'owner_name'],
+        columns='agreetypdesc',
+        values='has_agreement',
+        aggfunc='first',
+        fill_value='N'
+    ).reset_index()
+    summary = summary.sort_values('owner_name').reset_index(drop=True)
+
+    # Step 9: Output to Excel
     today = datetime.today()
     date_str = f"{today.strftime('%B')} {today.day} {today.year}"
-    
-    # Output Active Accounts
+    summary_filename = f'Agreement Owner Matrix {date_str}.xlsx'
+    summary_output_path = src.config.OUTPUT_DIR / summary_filename
+    summary.to_excel(summary_output_path, sheet_name='OwnerAgreementMatrix', index=False)
+    print(f"Agreement owner matrix saved to: {summary_output_path}")
+
+    # Output filtered active accounts with only the specified columns
+    acct_cols = [
+        'effdate', 'acctnbr', 'ownersortname', 'product', 'mjaccttypcd', 'currmiaccttypcd',
+        'curracctstatcd', 'noteintrate', 'notebal', 'bookbalance', 'contractdate',
+        'datemat', 'branchname', 'acctofficer', 'loanofficer', 'taxrptforpersnbr', 'taxrptfororgnbr', 'portfolio_key'
+    ]
+    active_accounts_out = active_accounts[acct_cols].copy()
     accounts_filename = f'Active Accounts {date_str}.xlsx'
     accounts_output_path = src.config.OUTPUT_DIR / accounts_filename
-    active_accounts_final.to_excel(accounts_output_path, sheet_name='Active Accounts', index=False)
-    print(f"Active accounts saved to: {accounts_output_path}")
-    
-    # Output Active Agreements
-    agreements_filename = f'Active Agreements {date_str}.xlsx'
-    agreements_output_path = src.config.OUTPUT_DIR / agreements_filename
-    active_agreements_final.to_excel(agreements_output_path, sheet_name='Active Agreements', index=False)
-    print(f"Active agreements saved to: {agreements_output_path}")
-    
-    # Summary statistics
-    print(f"\nSummary:")
-    print(f"- Active Accounts: {len(active_accounts_final)}")
-    print(f"- Active Agreements: {len(active_agreements_final)}")
-    print(f"- Unique Agreement Numbers: {active_agreements_final['agrmntnbr'].nunique()}")
-    print(f"- Unique Account Numbers in Agreements: {active_agreements_final['acctnbr'].nunique()}")
-    print(f"- Agreement Types: {active_agreements_final['agreetypcd'].value_counts().to_dict()}")
-    
-    # Distribution (currently disabled - enable when recipients are determined)
-    if src.config.EMAIL_TO:  # Only send emails if recipients are configured
-        from cdutils import distribution # type: ignore
-        
-        email_subject = f"Active Account & Agreement Analysis - {date_str}"
-        
-        email_body = """Hi,
+    active_accounts_out.to_excel(accounts_output_path, sheet_name='Active Accounts', index=False)
+    print(f"Filtered active accounts saved to: {accounts_output_path}")
 
-Attached are the Active Account and Agreement datasets for cross-sell analysis. 
+    # Apply Excel formatting to outputs
+    format_excel(
+        summary_output_path,
+        # No currency/percent/date columns for owner-agreement matrix by default
+    )
+    format_excel(
+        accounts_output_path,
+        currency_cols=['notebal', 'bookbalance'],
+        percent_cols=None,
+        date_cols=['effdate', 'contractdate', 'origdate', 'datemat'],
+    )
 
-The files include:
-1. Active Accounts - Current active account portfolio
-2. Active Agreements - Active agreements with owner information (filtered by inactivedate vs rundate)
-
-If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com
-
-Thanks!"""
-        
-        distribution.email_out(
-            recipients=src.config.EMAIL_TO, 
-            bcc_recipients=src.config.EMAIL_CC, 
-            subject=email_subject, 
-            body=email_body, 
-            attachment_paths=[accounts_output_path, agreements_output_path]
-        )
-        print(f"Email sent to {len(src.config.EMAIL_TO)} recipients with {len(src.config.EMAIL_CC)} CC")
-    else:
-        print(f"Development mode or no recipients configured - email not sent.")
-        print(f"Output files: {accounts_output_path}, {agreements_output_path}")
-
+    print("\nSummary:")
+    print(f"- Unique Owners: {len(summary)}")
+    print(f"- Agreement Types: {list(summary.columns[2:])}")
 
 if __name__ == '__main__':
     print("Starting Active Account & Agreement Analysis")
     main()
     print("Complete!")
+
+
+

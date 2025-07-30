@@ -19,11 +19,19 @@ def fetch_data():
     wh_agreement = text("""SELECT * FROM OSIBANK.WH_AGREEMENT a""")
     wh_org = text("""SELECT * FROM OSIBANK.WH_ORG""")
     wh_pers = text("""SELECT * FROM OSIBANK.WH_PERS""")
+    cardagreementtyp = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.CARDAGREEMENTTYP
+    """)
+
 
     queries = [
         {'key':'wh_agreement', 'sql':wh_agreement, 'engine':1},
         {'key':'wh_org', 'sql':wh_org, 'engine':1},
         {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
+        {'key':'cardagreementtyp', 'sql':cardagreementtyp, 'engine':1},
     ]
 
 

@@ -18,11 +18,11 @@ SCHEDULE = "Monthly"
 OWNER = "Stephanie Nordberg"
 
 # Status
-PROD_READY = False 
+PROD_READY = True 
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-PROD_OUTPUT_PATH = Path(r"\\00-DA1\Home\Share\Data & Analytics Initiatives\Project Management\Retail\Active_Account_Agreement_Analysis")
+PROD_OUTPUT_PATH = Path(r"\\00-da1\Home\Share\Line of Business_Shared Services\Retail Banking\Active_Account_Agreement_Analysis")
 BASE_PATH = PROD_OUTPUT_PATH if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
