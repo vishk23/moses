@@ -43,6 +43,7 @@ import src.active_acct_analysis.fetch_data # type: ignore
 from cdutils import input_cleansing # type: ignore
 from cdutils import deduplication # type: ignore
 import cdutils.acct_file_creation.core # type: ignore
+from src.active_acct_analysis.excel_formatting import format_excel
 
 
 def main():
@@ -123,8 +124,9 @@ def main():
         else 'Unknown Owner', axis=1
     )
     active_agreements['owner_id'] = active_agreements.apply(
-        lambda row: row['ownerorgnbr'] if pd.notna(row['ownerorgnbr']) and row['ownerorgnbr'] != ''
-        else row['ownerpersnbr'], axis=1
+        lambda row: f"O{row['ownerorgnbr']}" if pd.notna(row['ownerorgnbr']) and row['ownerorgnbr'] != ''
+        else f"P{row['ownerpersnbr']}" if pd.notna(row['ownerpersnbr']) and row['ownerpersnbr'] != ''
+        else 'Unknown', axis=1
     )
 
     # Step 8: One-hot encode agreement types by owner
@@ -159,6 +161,18 @@ def main():
     accounts_output_path = src.config.OUTPUT_DIR / accounts_filename
     active_accounts_out.to_excel(accounts_output_path, sheet_name='Active Accounts', index=False)
     print(f"Filtered active accounts saved to: {accounts_output_path}")
+
+    # Apply Excel formatting to outputs
+    format_excel(
+        summary_output_path,
+        # No currency/percent/date columns for owner-agreement matrix by default
+    )
+    format_excel(
+        accounts_output_path,
+        currency_cols=['notebal', 'bookbalance'],
+        percent_cols=None,
+        date_cols=['effdate', 'contractdate', 'origdate', 'datemat'],
+    )
 
     print("\nSummary:")
     print(f"- Unique Owners: {len(summary)}")
