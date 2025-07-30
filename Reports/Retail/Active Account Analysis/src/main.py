@@ -57,6 +57,10 @@ def main():
     active_accounts = cdutils.acct_file_creation.core.query_df_on_date()
     print(f"Loaded {len(active_accounts)} active accounts")
 
+    # Filter active_accounts by mjaccttypcd before any processing
+    mjaccttypcd_keep = ['CK','SAV','TD','CML','MLN','MTG','CNS']
+    active_accounts = active_accounts[active_accounts['mjaccttypcd'].isin(mjaccttypcd_keep)].copy()
+
     # Step 2: Load base data
     print("Loading base data...")
     data = src.active_acct_analysis.fetch_data.fetch_data()
@@ -144,8 +148,17 @@ def main():
     summary.to_excel(summary_output_path, sheet_name='OwnerAgreementMatrix', index=False)
     print(f"Agreement owner matrix saved to: {summary_output_path}")
 
-    # TODO: Output active_accounts df after filtering down to certain columns
-    # Use similar format to above output to excel
+    # Output filtered active accounts with only the specified columns
+    acct_cols = [
+        'effdate', 'acctnbr', 'ownersortname', 'product', 'mjaccttypcd', 'currmiaccttypcd',
+        'curracctstatcd', 'noteintrate', 'notebal', 'bookbalance', 'contractdate', 'origdate',
+        'datemat', 'branchname', 'acctofficer', 'loanofficer', 'taxrptforpersnbr', 'taxrptfororgnbr', 'portfolio_key'
+    ]
+    active_accounts_out = active_accounts[acct_cols].copy()
+    accounts_filename = f'Active Accounts {date_str}.xlsx'
+    accounts_output_path = src.config.OUTPUT_DIR / accounts_filename
+    active_accounts_out.to_excel(accounts_output_path, sheet_name='Active Accounts', index=False)
+    print(f"Filtered active accounts saved to: {accounts_output_path}")
 
     print("\nSummary:")
     print(f"- Unique Owners: {len(summary)}")
