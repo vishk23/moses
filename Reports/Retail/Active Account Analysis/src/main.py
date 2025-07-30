@@ -55,7 +55,8 @@ def main():
 
     # Step 1: Load active accounts from daily_acct_file
     print("Loading active accounts...")
-    active_accounts = cdutils.acct_file_creation.core.query_df_on_date()
+    specified_date = datetime(2025,7,28)
+    active_accounts = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
     print(f"Loaded {len(active_accounts)} active accounts")
 
     # Filter active_accounts by mjaccttypcd before any processing
