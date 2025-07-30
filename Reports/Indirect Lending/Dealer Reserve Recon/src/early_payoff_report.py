@@ -1,5 +1,5 @@
 """
-Early Payoff Report
+Early Payoff Report Component of Indirect Dealer Reserve Recon Process
 """
 from typing import Dict
 from pathlib import Path
@@ -12,6 +12,8 @@ import src.cdutils.database.fdic_recon
 import src.transformations.joining
 import src.transformations.calculations
 from src._version import __version__
+import src.config
+
 
 def format_excel_file(file_path):
     # Formatting
@@ -51,12 +53,9 @@ def format_excel_file(file_path):
         sheet.Application.ActiveWindow.SplitRow = 1
         sheet.Application.ActiveWindow.FreezePanes = True
 
-
         workbook.Save()
         workbook.Close()
         excel.Quit()
-
-        # print(f"Excel file saved with autofit at {file_path}")
     except Exception as e:
         print(f"Error: {str(e)}")
     finally:
@@ -152,32 +151,21 @@ def main_pipeline_early_payoff(data: Dict) -> pd.DataFrame:
     return filtered_df
 
 
-def main(production_flag: bool=False):
-    if production_flag:
-        BASE_PATH = Path(r'\\00-DA1\Home\Share\Line of Business_Shared Services\Indirect Lending\Dealer Reserve Recon\Production')
-        assert "prod" in __version__, (f"Cannot run in production mode without 'prod' in the __version__")
-    else:
-        BASE_PATH = Path('.')
-
-    OUTPUT_PATH = BASE_PATH / Path('./output/early_payoff_trailing90days.xlsx')
-        
+def run_early_payoff():
+    """Run the early payoff report using config-driven paths/settings."""
+    OUTPUT_PATH = src.config.OUTPUT_DIR / "early_payoff_trailing90days.xlsx"
     data = src.cdutils.database.fdic_recon.fetch_data()
-
-    # Create early payoff report
     early_payoffs = main_pipeline_early_payoff(data)
-
-    # Output to excel (raw data)
     early_payoffs.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
-
-    # Format excel
     format_excel_file(OUTPUT_PATH)
+    print(f"Running Early Payoff Report for {src.config.REPORT_NAME}")
+    print(f"Output: {OUTPUT_PATH}")
 
 if __name__ == '__main__':
     print(f"Starting early payoff [{__version__}]")
-    main(production_flag=True)
-    # main()
+    run_early_payoff()
     print("Complete!")
 
-    
+
 
 

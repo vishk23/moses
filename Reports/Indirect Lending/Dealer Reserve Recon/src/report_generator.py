@@ -13,6 +13,7 @@ import numpy as np # type: ignore
 import win32com.client as win32 # type: ignore
 
 from src._version import __version__
+import src.config
 
 def format_excel_file(file_path):
     # Formatting
@@ -53,12 +54,9 @@ def format_excel_file(file_path):
         sheet.Application.ActiveWindow.SplitRow = 1
         sheet.Application.ActiveWindow.FreezePanes = True
 
-
         workbook.Save()
         workbook.Close()
         excel.Quit()
-
-        # print(f"Excel file saved with autofit at {file_path}")
     except Exception as e:
         print(f"Error: {str(e)}")
     finally:
@@ -67,20 +65,11 @@ def format_excel_file(file_path):
         excel = None
 
 
-def generate_report(production_flag: bool=False) -> None:
-    """Generate formatted cumulative report from staging data.
-    
-    Creates an Excel report with dealer subtitles (with or without account numbers),
-    individual records, subtotals, and proper formatting.
-    """
-    if production_flag:
-        BASE_PATH = Path(r'\\00-DA1\Home\Share\Line of Business_Shared Services\Indirect Lending\Dealer Reserve Recon\Production')
-    else:
-        BASE_PATH = Path('.') 
-
-    STAGING_FILE: Path = BASE_PATH / Path('./assets/staging_data/current_month.csv')
-    MAPPING_FILE: Path = BASE_PATH / Path('./assets/mapping_dealer_accounts.xlsx')
-    REPORT_PATH: Path = BASE_PATH / Path('./output/current_month_report.xlsx')
+def generate_report() -> None:
+    """Generate formatted cumulative report from staging data using config-driven paths."""
+    STAGING_FILE: Path = src.config.ASSETS_DIR / "staging_data" / "current_month.csv"
+    MAPPING_FILE: Path = src.config.ASSETS_DIR / "mapping_dealer_accounts.xlsx"
+    REPORT_PATH: Path = src.config.OUTPUT_DIR / "current_month_report.xlsx"
 
     # Load data with validation
     if not STAGING_FILE.exists():
@@ -113,10 +102,8 @@ def generate_report(production_flag: bool=False) -> None:
     for col in numeric_cols:
         merged_df[col] = pd.to_numeric(merged_df[col], errors='coerce').fillna(0)
 
-
     # Create calculated column for total
     merged_df['Total'] = merged_df['Dealer Split'] + merged_df['Dealer Flat'] - merged_df['Charge-back Amt.']
-
 
     try:
         amt_idx = merged_df.columns.get_loc('Amt. Financed')
@@ -190,8 +177,12 @@ def generate_report(production_flag: bool=False) -> None:
     # Format Excel file
     format_excel_file(REPORT_PATH)
 
+    # Log the report generation
+    print(f"Report generated: {REPORT_PATH}")
+    print(f"Report details: {df_with_total.describe()}")
+    print(f"Missing values in report: {df_with_total.isnull().sum()}")
+
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")
-    generate_report(production_flag=True)
-    # generate_report()
+    generate_report()
     print("Complete!")
