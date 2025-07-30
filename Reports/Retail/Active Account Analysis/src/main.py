@@ -39,10 +39,10 @@ from datetime import datetime
 import pandas as pd # type: ignore
 
 import src.config
-import src.fetch_data # type: ignore
+import src.active_acct_analysis.fetch_data # type: ignore
 from cdutils import input_cleansing # type: ignore
 from cdutils import deduplication # type: ignore
-from cdutils.acct_lookup_daily import daily_acct_table # type: ignore
+import cdutils.acct_file_creation.core # type: ignore
 
 
 def main():
@@ -56,12 +56,12 @@ def main():
     
     # Step 1: Load active accounts from daily_acct_file
     print("Loading active accounts...")
-    active_accounts = daily_acct_table.get_daily_acct_table()
+    active_accounts = cdutils.acct_file_creation.core.query_df_on_date()
     print(f"Loaded {len(active_accounts)} active accounts")
     
     # Step 2: Load base data
     print("Loading base data...")
-    data = src.fetch_data.fetch_data()
+    data = src.active_acct_analysis.fetch_data.fetch_data()
     
     # Step 3: Load and prepare WH_ORG with deduplication
     print("Loading WH_ORG...")

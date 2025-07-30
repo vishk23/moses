@@ -88,3 +88,72 @@ Data columns (total 22 columns):
  21  agrmntstatcd          401864 non-null  object        
 dtypes: datetime64[ns](5), float64(1), int64(5), object(11)
 memory usage: 67.5+ MB
+
+wh_org
+<class 'pandas.core.frame.DataFrame'>
+Index: 16911 entries, 0 to 17131
+Data columns (total 23 columns):
+ #   Column         Non-Null Count  Dtype         
+---  ------         --------------  -----         
+ 0   orgnbr         16911 non-null  object        
+ 1   orgname        16911 non-null  object        
+ 2   orgtypcd       16737 non-null  object        
+ 3   orgtypcddesc   16737 non-null  object        
+ 4   taxid          13163 non-null  object        
+ 5   taxidtypcd     13315 non-null  object        
+ 6   rpt1099intyn   16911 non-null  object        
+ 7   privacyyn      16911 non-null  object        
+ 8   taxexemptyn    16911 non-null  object        
+ 9   cipratingcd    67 non-null     object        
+ 10  creditscore    1424 non-null   float64       
+ 11  siccd          331 non-null    object        
+ 12  siccddesc      331 non-null    object        
+ 13  sicsubcd       310 non-null    object        
+ 14  sicsubcddesc   307 non-null    object        
+ 15  naicscd        11217 non-null  object        
+ 16  naicscddesc    11217 non-null  object        
+ 17  adddate        16911 non-null  datetime64[ns]
+ 18  datelastmaint  16911 non-null  datetime64[ns]
+ 19  rundate        16911 non-null  datetime64[ns]
+ 20  allowpromoyn   16911 non-null  object        
+ 21  homeemail      2369 non-null   object        
+ 22  busemail       5016 non-null   object        
+dtypes: datetime64[ns](3), float64(1), object(19)
+memory usage: 3.1+ MB
+
+wh_pers
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 167591 entries, 0 to 167590
+Data columns (total 28 columns):
+ #   Column              Non-Null Count   Dtype         
+---  ------              --------------   -----         
+ 0   persnbr             167591 non-null  object        
+ 1   persname            167591 non-null  object        
+ 2   perssortname        167591 non-null  object        
+ 3   taxid               161923 non-null  object        
+ 4   adddate             167591 non-null  datetime64[ns]
+ 5   datebirth           164060 non-null  datetime64[ns]
+ 6   datedeath           3368 non-null    datetime64[ns]
+ 7   age                 164060 non-null  float64       
+ 8   employeeyn          167591 non-null  object        
+ 9   privacyyn           167591 non-null  object        
+ 10  cipratingcd         8 non-null       object        
+ 11  naicscd             191 non-null     object        
+ 12  naicsdesc           191 non-null     object        
+ 13  siccd               41 non-null      object        
+ 14  sicdesc             41 non-null      object        
+ 15  sicsubcd            20 non-null      object        
+ 16  sicsubdesc          20 non-null      object        
+ 17  creditscore         42653 non-null   object        
+ 18  spousepersnbr       496 non-null     float64       
+ 19  spousepersname      496 non-null     object        
+ 20  spouseperssortname  496 non-null     object        
+ 21  datelastmaint       167591 non-null  datetime64[ns]
+ 22  rundate             167591 non-null  datetime64[ns]
+ 23  allowpromoyn        167591 non-null  object        
+ 24  homeemail           86373 non-null   object        
+ 25  busemail            12334 non-null   object        
+ 26  firstname           167591 non-null  object        
+ 27  lastname            167591 non-null  object        
+dtypes: datetime64[ns](5), float64(2), object(21)
+memory usage: 35.8+ MB
