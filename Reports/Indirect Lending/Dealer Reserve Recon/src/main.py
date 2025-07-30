@@ -20,7 +20,7 @@ def main():
 
     # 1. Early Payoff Report
     print("Step 1: Running Early Payoff Report...")
-    src.early_payoff_report.main()
+    src.early_payoff_report.run_early_payoff()
 
     # 2. Daily Processing
     print("Step 2: Processing daily files...")
