@@ -14,7 +14,7 @@ from pathlib import Path
 REPORT_NAME = "Daily Mismatched Debit Card Txns"
 BUSINESS_LINE = "Risk Management"
 SCHEDULE = "Daily"
-OWNER = "Risk Management Team"
+OWNER = "Patrick Quinn"
 
 # Status
 PROD_READY = True
