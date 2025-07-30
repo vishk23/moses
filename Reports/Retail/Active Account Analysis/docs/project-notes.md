@@ -157,3 +157,63 @@ Data columns (total 28 columns):
  27  lastname            167591 non-null  object        
 dtypes: datetime64[ns](5), float64(2), object(21)
 memory usage: 35.8+ MB
+
+
+acct_daily_file (active_accounts)
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 89601 entries, 0 to 89600
+Data columns (total 50 columns):
+ #   Column                  Non-Null Count  Dtype         
+---  ------                  --------------  -----         
+ 0   effdate                 89601 non-null  datetime64[ns]
+ 1   acctnbr                 89601 non-null  object        
+ 2   ownersortname           89601 non-null  object        
+ 3   product                 89601 non-null  object        
+ 4   noteopenamt             89601 non-null  float64       
+ 5   ratetypcd               71559 non-null  object        
+ 6   mjaccttypcd             89601 non-null  object        
+ 7   currmiaccttypcd         89601 non-null  object        
+ 8   curracctstatcd          89601 non-null  object        
+ 9   noteintrate             89601 non-null  float64       
+ 10  bookbalance             89601 non-null  float64       
+ 11  notebal                 89601 non-null  float64       
+ 12  contractdate            89600 non-null  datetime64[ns]
+ 13  datemat                 32936 non-null  datetime64[ns]
+ 14  taxrptfororgnbr         12437 non-null  float64       
+ 15  taxrptforpersnbr        77164 non-null  float64       
+ 16  loanofficer             23477 non-null  object        
+ 17  acctofficer             62632 non-null  object        
+ 18  creditlimitamt          89601 non-null  float64       
+ 19  origintrate             22765 non-null  object        
+ 20  marginfixed             23477 non-null  object        
+ 21  fdiccatcd               22829 non-null  object        
+ 22  amortterm               23477 non-null  float64       
+ 23  totalpctsold            89601 non-null  float64       
+ 24  cobal                   89601 non-null  float64       
+ 25  credlimitclatresamt     89601 non-null  float64       
+ 26  riskratingcd            2746 non-null   object        
+ 27  origdate                23293 non-null  datetime64[ns]
+ 28  currterm                23477 non-null  float64       
+ 29  loanidx                 23466 non-null  object        
+ 30  rcf                     3023 non-null   object        
+ 31  availbalamt             89601 non-null  float64       
+ 32  fdiccatdesc             22829 non-null  object        
+ 33  origbal                 22600 non-null  float64       
+ 34  loanlimityn             23477 non-null  object        
+ 35  Net Balance             89601 non-null  float64       
+ 36  Net Available           89601 non-null  float64       
+ 37  Net Collateral Reserve  89601 non-null  float64       
+ 38  Total Exposure          89601 non-null  float64       
+ 39  orig_ttl_loan_amt       89601 non-null  float64       
+ 40  portfolio_key           89601 non-null  int64         
+ 41  ownership_key           87104 non-null  float64       
+ 42  address_key             87104 non-null  float64       
+ 43  householdnbr            80059 non-null  float64       
+ 44  datelastmaint           80059 non-null  datetime64[ns]
+ 45  Category                23477 non-null  object        
+ 46  inactivedate            2557 non-null   datetime64[ns]
+ 47  branchname              89601 non-null  object        
+ 48  primaryownercity        89578 non-null  object        
+ 49  primaryownerstate       89554 non-null  object        
+dtypes: datetime64[ns](6), float64(22), int64(1), object(21)
+memory usage: 34.2+ MB
