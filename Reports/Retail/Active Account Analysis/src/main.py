@@ -151,7 +151,7 @@ def main():
     # Output filtered active accounts with only the specified columns
     acct_cols = [
         'effdate', 'acctnbr', 'ownersortname', 'product', 'mjaccttypcd', 'currmiaccttypcd',
-        'curracctstatcd', 'noteintrate', 'notebal', 'bookbalance', 'contractdate', 'origdate',
+        'curracctstatcd', 'noteintrate', 'notebal', 'bookbalance', 'contractdate',
         'datemat', 'branchname', 'acctofficer', 'loanofficer', 'taxrptforpersnbr', 'taxrptfororgnbr', 'portfolio_key'
     ]
     active_accounts_out = active_accounts[acct_cols].copy()
