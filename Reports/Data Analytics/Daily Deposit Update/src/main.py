@@ -1,44 +1,46 @@
 """
-Main Entry Point
+Main entry point for Daily Deposit Update project.
+
+This script loads configuration from config.py and runs the main pipeline.
 """
-from pathlib import Path
 
-import pandas as pd # type: ignore
-
-
+import src.config
 import src.deposit_file
 import src.output_to_excel
 from src._version import __version__
 
-def main(production_flag: bool=False):
-    if production_flag:
-        BASE_PATH = Path(r'\\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit')
-        assert "prod" in __version__, (f"Cannot run in production mode without 'prod' in the __version__")
-    else:
-        BASE_PATH = Path('.')
+def main():
+    print(f"Running {src.config.REPORT_NAME} for {src.config.BUSINESS_LINE}")
+    print(f"Schedule: {src.config.SCHEDULE}")
+    print(f"Owner: {src.config.OWNER}")
+    print(f"Environment: {src.config.ENV}")
+    print(f"Output directory: {src.config.OUTPUT_DIR}")
+    print(f"Version: {__version__}")
+
     # Core transformation pipeline
     raw_data, daily_deposit_drop_in = src.deposit_file.deposit_dataset_execution()
 
     # Output to excel (raw_data -> Staging)
-    OUTPUT_PATH = BASE_PATH / Path('./output/DailyDeposit_staging.xlsx')
-    raw_data.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
-
-    # Output to excel (for the drop-in file to Commercial Credit drive)
-    OUTPUT_PATH = BASE_PATH / Path('./output/DailyDeposit.xlsx')
-    daily_deposit_drop_in.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
+    staging_path = src.config.STAGING_OUTPUT_DIR / "DailyDeposit_staging.xlsx"
+    raw_data.to_excel(staging_path, sheet_name='Sheet1', index=False)
+    # Output to excel (for the drop-in file)
+    dropin_path = src.config.OUTPUT_DIR / "DailyDeposit.xlsx"
+    daily_deposit_drop_in.to_excel(dropin_path, sheet_name='Sheet1', index=False)
 
     # Format excel
-    src.output_to_excel.format_excel_file(OUTPUT_PATH)
+    src.output_to_excel.format_excel_file(dropin_path)
 
-    # Write to drop-in location
-    try:
-        OUTPUT_PATH.replace(Path(r'\\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit\DailyDeposit.xlsx'))
-    except:
-        print("Error replacing to drop-in location")
-        
+    # Optionally, copy to production drop-in location if in prod
+    if src.config.ENV == 'prod':
+        try:
+            prod_dropin = src.config.BASE_PATH / "DailyDeposit.xlsx"
+            dropin_path.replace(prod_dropin)
+            print(f"Wrote drop-in file to {prod_dropin}")
+        except Exception as e:
+            print(f"Error replacing to drop-in location: {e}")
+
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")
-    # main(production_flag=True)
     main()
     print("Complete!")
 

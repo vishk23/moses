@@ -1,33 +1,34 @@
 """
-Provides Commercial Lending Officer (CLO) active portfolio analysis organized 
-by responsibility officer with subtotals and detailed loan information.
-Includes risk ratings, SBA guarantees, and comprehensive Excel formatting.
+Project Configuration Template
 
-Input Files: None (database query)
-Output Files: CLO Active Portfolio [Month Day Year].xlsx
-Tables: Active commercial loan portfolio, household accounts, user fields
+This file provides a template for configuring a new report or data pipeline project.
+Fill in the placeholders below with your project's specific details.
+
+Input Files: <describe input files or data sources>
+Output Files: <describe output files or datasets>
+Tables: <list relevant database tables or data sources>
 """
 
 import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "CLO Active Portfolio Officer Report"
-BUSINESS_LINE = "Commercial Lending"
-SCHEDULE = "Manual"
-OWNER = "Commercial Lending Team"
+REPORT_NAME = "<Project Name>"
+BUSINESS_LINE = "<Business Line or Department>"
+SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
+OWNER = "<Project Owner or Team>"
 
 # Status
-PROD_READY = True
+PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-DA1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\CLO_ActivePortfolio_Officer_Report\Production") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
 # Email Recipients
-EMAIL_TO = [] if ENV == 'prod' else []
-EMAIL_CC = ["chad.doorley@bcsbmail.com", "businessintelligence@bcsbmail.com"] if ENV == 'prod' else []
+EMAIL_TO = []  # List of primary recipients for production
+EMAIL_CC = []  # List of CC recipients for production
 
-# Creates directories
+# Add any additional configuration variables below as needed
