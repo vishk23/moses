@@ -49,6 +49,9 @@ from src.active_acct_analysis.excel_formatting import format_excel
 def main():
     # Ensure output directory exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    # Ensure subdirectories for Accounts and Agreements exist
+    (src.config.OUTPUT_DIR / 'Accounts').mkdir(parents=True, exist_ok=True)
+    (src.config.OUTPUT_DIR / 'Agreements').mkdir(parents=True, exist_ok=True)
 
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
@@ -147,7 +150,8 @@ def main():
     today = datetime.today()
     date_str = f"{today.strftime('%B')} {today.day} {today.year}"
     summary_filename = f'Agreement Owner Matrix {date_str}.xlsx'
-    summary_output_path = src.config.OUTPUT_DIR / summary_filename
+    # Save agreements in outputs/Agreements
+    summary_output_path = src.config.OUTPUT_DIR / 'Agreements' / summary_filename
     summary.to_excel(summary_output_path, sheet_name='OwnerAgreementMatrix', index=False)
     print(f"Agreement owner matrix saved to: {summary_output_path}")
 
@@ -158,8 +162,15 @@ def main():
         'datemat', 'branchname', 'acctofficer', 'loanofficer', 'taxrptforpersnbr', 'taxrptfororgnbr', 'portfolio_key'
     ]
     active_accounts_out = active_accounts[acct_cols].copy()
+    # Add owner_id column for joining with agreements
+    active_accounts_out['owner_id'] = active_accounts_out.apply(
+        lambda row: f"O{row['taxrptfororgnbr']}" if pd.notna(row['taxrptfororgnbr']) and str(row['taxrptfororgnbr']).strip() != ''
+        else f"P{row['taxrptforpersnbr']}" if pd.notna(row['taxrptforpersnbr']) and str(row['taxrptforpersnbr']).strip() != ''
+        else 'Unknown', axis=1
+    )
     accounts_filename = f'Active Accounts {date_str}.xlsx'
-    accounts_output_path = src.config.OUTPUT_DIR / accounts_filename
+    # Save accounts in outputs/Accounts
+    accounts_output_path = src.config.OUTPUT_DIR / 'Accounts' / accounts_filename
     active_accounts_out.to_excel(accounts_output_path, sheet_name='Active Accounts', index=False)
     print(f"Filtered active accounts saved to: {accounts_output_path}")
 
