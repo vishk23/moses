@@ -121,3 +121,9 @@ The sync utility properly handles different scenarios:
 - ⚠️ **Network inaccessible**: Gracefully skips with warning message
 - 🔒 **Environment safety**: Always resets `REPORT_ENV=dev` after import
 - 🔗 **Windows clickable paths**: Network paths are shown in clickable format for easy navigation
+
+
+#### Note for Windows Powershell, you set environment variable via the below syntax:
+```Powershell
+$env:REPORT_ENV="prod"
+```

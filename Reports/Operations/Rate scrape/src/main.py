@@ -453,6 +453,9 @@ def export_rate_table_to_excel(fred_data, cme_data, fhlb_data):
     }
     for col_idx, width in column_widths.items():
         ws.column_dimensions[chr(64 + col_idx)].width = width
+
+    # Create dir if not there already
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     
     # Save Excel file
     output_path = src.config.OUTPUT_DIR / filename_str
