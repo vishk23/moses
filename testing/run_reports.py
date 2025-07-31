@@ -263,6 +263,15 @@ def print_report_list(reports: List[Dict]):
             print(f"    Status: {' | '.join(status_indicators)}")
             print(f"    Usage: python testing/run_reports.py --name \"{report['name']}\"")
             print()
+    
+    # Add prod mode instructions at the bottom
+    print("=" * 50)
+    print("To run in production mode:")
+    print("  # Bash/Linux/macOS:")
+    print("  REPORT_ENV=prod python testing/run_reports.py --name \"<ReportName>\"")
+    print("\n  # Windows PowerShell:")
+    print("  $env:REPORT_ENV='prod'; python testing/run_reports.py --name \"<ReportName>\"")
+    print("\nReplace <ReportName> with the desired report name.")
 
 
 def print_statistics(reports: List[Dict]):
