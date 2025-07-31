@@ -153,6 +153,8 @@ def main_pipeline_early_payoff(data: Dict) -> pd.DataFrame:
 
 def run_early_payoff():
     """Run the early payoff report using config-driven paths/settings."""
+    # Add a mkdir for the output directory if it doesn't exist
+    src.config.OUTPUT_DIR.mkdir(exist_ok=True)
     OUTPUT_PATH = src.config.OUTPUT_DIR / "early_payoff_trailing90days.xlsx"
     data = src.cdutils.database.fdic_recon.fetch_data()
     early_payoffs = main_pipeline_early_payoff(data)
