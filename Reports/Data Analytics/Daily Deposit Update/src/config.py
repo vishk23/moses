@@ -16,18 +16,14 @@ OWNER = "Chad Doorley"
 # Status
 PROD_READY = True
 
-# Staging Dir
-# \\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily_Deposit_Update\Production\output
+# Staging Output Directory (for intermediate/staging files)
+STAGING_OUTPUT_DIR = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily_Deposit_Update\Production\output") if os.getenv('REPORT_ENV', 'dev') == 'prod' else Path(__file__).parent.parent / "output"
 
-# Drop in Dir 
-# \\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit
+# Drop-in/Final Output Directory (for drop-in file to business)
+OUTPUT_DIR = Path(r"\\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit") if os.getenv('REPORT_ENV', 'dev') == 'prod' else Path(__file__).parent.parent / "output"
 
-# Environment & Paths
-ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit") if ENV == 'prod' else Path(__file__).parent.parent
-STAGING_OUTPUT_DIR = BASE_PATH / "output"  # Staging output directory (can be changed)
-OUTPUT_DIR = BASE_PATH / "output"           # Final output directory (can be changed)
-INPUT_DIR = BASE_PATH / "input"
+# Input Directory (if needed)
+INPUT_DIR = Path(__file__).parent.parent / "input"
 
 # Email Recipients
 EMAIL_TO = []  # List of primary recipients for production

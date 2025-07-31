@@ -33,7 +33,7 @@ def main():
     # Optionally, copy to production drop-in location if in prod
     if src.config.ENV == 'prod':
         try:
-            prod_dropin = src.config.BASE_PATH / "DailyDeposit.xlsx"
+            prod_dropin = src.config.OUTPUT_DIR / "DailyDeposit.xlsx"
             dropin_path.replace(prod_dropin)
             print(f"Wrote drop-in file to {prod_dropin}")
         except Exception as e:
