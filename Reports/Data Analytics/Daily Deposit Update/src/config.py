@@ -11,10 +11,16 @@ from pathlib import Path
 REPORT_NAME = "Daily Deposit Update"
 BUSINESS_LINE = "Data Analytics"
 SCHEDULE = "Daily"
-OWNER = "<Project Owner or Team>"
+OWNER = "Chad Doorley"
 
 # Status
 PROD_READY = True
+
+# Staging Dir
+# \\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily_Deposit_Update\Production\output
+
+# Drop in Dir 
+# \\00-DA1\Home\Share\Line of Business_Shared Services\Commercial Lending\Deposits\DailyDeposit
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')

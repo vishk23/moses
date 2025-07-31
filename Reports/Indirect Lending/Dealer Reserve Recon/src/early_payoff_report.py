@@ -8,7 +8,7 @@ import pandas as pd # type: ignore
 import numpy as np # type: ignore
 import win32com.client as win32 # type: ignore
 
-import cdutils.database.fdic_recon
+import src.dealer_reserve_recon.fetch_data 
 import src.transformations.joining
 import src.transformations.calculations
 from src._version import __version__
@@ -156,7 +156,7 @@ def run_early_payoff():
     # Add a mkdir for the output directory if it doesn't exist
     src.config.OUTPUT_DIR.mkdir(exist_ok=True)
     OUTPUT_PATH = src.config.OUTPUT_DIR / "early_payoff_trailing90days.xlsx"
-    data = cdutils.database.fdic_recon.fetch_data()
+    data = src.dealer_reserve_recon.fetch_data.fetch_data()
     early_payoffs = main_pipeline_early_payoff(data)
     early_payoffs.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
     format_excel_file(OUTPUT_PATH)
