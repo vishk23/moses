@@ -11,7 +11,7 @@ from typing import Dict
 
 from sqlalchemy import text # type: ignore
 
-import src.cdutils.database.connect
+import cdutils.database.connect
 
 def fetch_data() -> Dict:
     """
@@ -31,7 +31,7 @@ def fetch_data() -> Dict:
         {'key':'effdates', 'sql':effdates, 'engine':2},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
 
     effdates = data['effdates'].copy()
 
@@ -113,11 +113,11 @@ def fetch_data() -> Dict:
             {'key':'wh_acct', 'sql':wh_acct, 'engine':2},
         ]
 
-        data = src.cdutils.database.connect.retrieve_data(queries)
+        data = cdutils.database.connect.retrieve_data(queries)
         return data
 
     prior_data = main_query(prior_me)
     current_data = main_query(recent_me)
 
-    return prior_data, current_data 
+    return prior_data, current_data
 

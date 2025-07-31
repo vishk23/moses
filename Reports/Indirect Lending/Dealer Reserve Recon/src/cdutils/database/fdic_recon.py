@@ -7,7 +7,7 @@ Usage:
 You need to set your own date that you want to see in effective date embedded in the SQL Query
 """
 
-import src.cdutils.database.connect
+import cdutils.database.connect
 from sqlalchemy import text # type: ignore
 
 def fetch_data():
@@ -88,7 +88,7 @@ def fetch_data():
         {'key':'acctsubacct', 'sql':acctsubacct, 'engine':1},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
     return data
 
 
@@ -164,5 +164,5 @@ def fetch_data_jan25():
         {'key':'wh_acct', 'sql':wh_acct, 'engine':2},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
     return data

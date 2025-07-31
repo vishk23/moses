@@ -10,8 +10,7 @@ from typing import Tuple
 from sqlalchemy import text # type: ignore
 import pandas as pd # type: ignore 
 
-import src.cdutils.database.connect
-import src.cdutils.caching
+import cdutils.database.connect
 import src.deposit_file
 
 def fetch_data():
@@ -90,7 +89,7 @@ def fetch_data():
         {'key':'househldacct', 'sql':househldacct, 'engine':1},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
     return data
 
 def filter_on_trailing_months(historical_accounts: pd.DataFrame, trailing_months: int) -> pd.DataFrame:
@@ -259,4 +258,4 @@ def add_householdnbr(df, househldacct):
     return merged_df
 
 
-    
+

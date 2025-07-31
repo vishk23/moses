@@ -1,5 +1,5 @@
-import src.cdutils.database.connect
-import src.cdutils.caching
+import cdutils.database.connect
+import cdutils.caching
 from sqlalchemy import text # type: ignore
 
 def fetch_data():
@@ -123,5 +123,5 @@ def fetch_data():
         # {'key':'acctloanlimithist', 'sql':acctloanlimithist, 'engine':1},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
     return data

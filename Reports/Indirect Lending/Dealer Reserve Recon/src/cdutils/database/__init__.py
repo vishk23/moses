@@ -2,10 +2,10 @@
 Fetching data module. Aim is import all necessary fields up front, but if needed, you can define another function to be called here.
 
 Usage:
-    import src.cdutils.database
+    import cdutils.database
 """
 
-import src.cdutils.database.connect
+import cdutils.database.connect
 from sqlalchemy import text # type: ignore
 
 def fetch_data():
@@ -80,7 +80,7 @@ def fetch_data():
         {'key':'wh_acct', 'sql':wh_acct, 'engine':2},
     ]
 
-    data = src.cdutils.database.connect.retrieve_data(queries)
+    data = cdutils.database.connect.retrieve_data(queries)
     return data
 
 

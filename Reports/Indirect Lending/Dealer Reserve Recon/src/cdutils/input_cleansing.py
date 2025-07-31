@@ -2,7 +2,7 @@
 Easy way to clean data types from different sources
 
 Usage:
-    import src.cdutils.input_cleansing.enforce_schema
+    import cdutils.input_cleansing.enforce_schema
 
 You need to define the schema as a dict:
 schema = {
