@@ -29,16 +29,17 @@ def format_excel_file(file_path):
         bottom_border.Weight = 2
 
         def format_columns():
-            sheet.Columns("G:G").NumberFormat = "mm/dd/yyyy"
-            sheet.Columns("J:J").NumberFormat = "mm/dd/yyyy"
+            sheet.Columns("D:D").NumberFormat = "mm/dd/yyyy"
+            sheet.Columns("H:H").NumberFormat = "mm/dd/yyyy"
             sheet.Columns("K:K").NumberFormat = "mm/dd/yyyy"
+            sheet.Columns("L:L").NumberFormat = "mm/dd/yyyy"
 
-            sheet.Columns("F:F").NumberFormat = "0.00%"
+            sheet.Columns("G:G").NumberFormat = "0.00%"
             
-            sheet.Columns("D:D").NumberFormat = "$#,##0.00"
             sheet.Columns("E:E").NumberFormat = "$#,##0.00"
-            sheet.Columns("L:L").NumberFormat = "$#,##0.00"
-            sheet.Columns("N:N").NumberFormat = "$#,##0.00"
+            sheet.Columns("F:F").NumberFormat = "$#,##0.00"
+            sheet.Columns("M:M").NumberFormat = "$#,##0.00"
+            sheet.Columns("O:O").NumberFormat = "$#,##0.00"
 
         format_columns()
 

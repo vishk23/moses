@@ -14,9 +14,9 @@ from pathlib import Path
 REPORT_NAME = "SWAP PNC Report"
 BUSINESS_LINE = "Credit Loan Review"
 SCHEDULE = "Monthly"
-OWNER = "Business Intelligence"
+OWNER = "Paul Kocak"
 
-PROD_READY = True
+PROD_READY = False
 
 # Environment & Paths
 BASE_PATH = Path(__file__).parent.parent

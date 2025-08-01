@@ -5,19 +5,17 @@ Main Entry Point
 from pathlib import Path
 import pandas as pd # type: ignore
 import shutil
-import src.fetch_data # type: ignore
-import src.core_transform # type: ignore
+import src.swap_pnc.fetch_data # type: ignore
+import src.swap_pnc.core # type: ignore
 import cdutils.pkey_sqlite # type: ignore
 import cdutils.hhnbr # type: ignore
 import cdutils.loans.calculations # type: ignore
 import cdutils.inactive_date # type: ignore
-import src.output_to_excel
-import swap_pnc.output_to_excel
+import src.swap_pnc.output_to_excel
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
 import cdutils.input_cleansing # type: ignore
 import cdutils.distribution # type: ignore
-from src._version import __version__
 import src.config as config
 
 def process_assets_excel():
@@ -55,8 +53,8 @@ def process_assets_excel():
 
 def main():
     process_assets_excel()
-    data = src.fetch_data.fetch_data()
-    raw_data = src.core_transform.main_pipeline(data)
+    data = src.swap_pnc.fetch_data.fetch_data()
+    raw_data = src.swap_pnc.core.main_pipeline(data)
     raw_data = cdutils.pkey_sqlite.add_pkey(raw_data)
     raw_data = cdutils.pkey_sqlite.add_ownership_key(raw_data)
     raw_data = cdutils.pkey_sqlite.add_address_key(raw_data)
@@ -158,7 +156,7 @@ def main():
     result_cleaned = result_cleaned.sort_values(by='Customer Name').copy()
     OUTPUT_PATH = config.OUTPUT_PATH
     result_cleaned.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
-    swap_pnc.output_to_excel.format_excel_file(OUTPUT_PATH)
+    src.swap_pnc.output_to_excel.format_excel_file(OUTPUT_PATH)
     recipients = config.EMAIL_TO
     bcc_recipients = config.EMAIL_BCC
     subject = f"SWAP Report" 
@@ -167,6 +165,4 @@ def main():
     cdutils.distribution.email_out(recipients, bcc_recipients, subject, body, attachment_paths)
 
 if __name__ == "__main__":
-    print(f"Starting [{__version__}]")
     main()
-    print("Complete!")

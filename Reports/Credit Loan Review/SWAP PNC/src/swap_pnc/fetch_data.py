@@ -9,19 +9,11 @@ You need to set your own date that you want to see in effective date embedded in
 
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
-from datetime import datetime
-from typing import Optional
 
-def fetch_data(specified_date: Optional[datetime] = None):
+def fetch_data():
     """
     Main data query
     """
-    if specified_date is None:
-        specified_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    else:
-        assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
-        specified_date = specified_date.strftime('%Y-%m-%d %H:%M:%S')
-
     wh_acctcommon = text(f"""
     SELECT
         a.EFFDATE,
@@ -43,10 +35,9 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.LOANOFFICER,
         a.ACCTOFFICER
     FROM
-        COCCDM.WH_ACCTCOMMON a
+        OSIBANK.WH_ACCTCOMMON a
     WHERE
-        (a.CURRACCTSTATCD IN ('ACT','NPFM','DORM')) AND
-        (a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS'))
+        (a.CURRACCTSTATCD IN ('ACT','NPFM','DORM','CO'))
     """)
 
     wh_loans = text(f"""
@@ -61,9 +52,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.ORIGBAL,
         a.LOANLIMITYN
     FROM
-        COCCDM.WH_LOANS a
-    WHERE
-        a.RUNDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS')
+        OSIBANK.WH_LOANS a
     """)
 
     wh_acctloan = text(f"""
@@ -79,9 +68,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.CREDLIMITCLATRESAMT,
         a.RISKRATINGCD
     FROM
-        COCCDM.WH_ACCTLOAN a
-    WHERE
-        a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS')
+        OSIBANK.WH_ACCTLOAN a
     """)
 
     househldacct = text("""
@@ -101,9 +88,9 @@ def fetch_data(specified_date: Optional[datetime] = None):
     """)    
 
     queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
-        {'key':'wh_loans', 'sql':wh_loans, 'engine':2},
-        {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':2},
+        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':1},
+        {'key':'wh_loans', 'sql':wh_loans, 'engine':1},
+        {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':1},
         {'key':'househldacct', 'sql':househldacct, 'engine':1},
         {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
