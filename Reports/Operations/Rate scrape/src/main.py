@@ -485,7 +485,7 @@ Thanks!"""
         
         cdutils.distribution.email_out(
             recipients=src.config.EMAIL_TO, 
-            cc_recipients=src.config.EMAIL_CC, 
+            bcc_recipients=src.config.EMAIL_CC, 
             subject=subject, 
             body=EMAIL_BODY, 
             attachment_paths=[PDF_ATTACHMENT]
