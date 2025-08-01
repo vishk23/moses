@@ -25,3 +25,6 @@ Excel table written to C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Operation
 Excel table written to PDF C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Operations\Rate Scrape\output\Rate_Report_Aug_01_25_1108.pdf
 2025-08-01 11:08:06 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 0.26 minutes
 2025-08-01 11:08:06 | INFO | === REPORT RUNNER SESSION END ===
+
+
+I fixed this issue. Just had to switch cc to bcc.
