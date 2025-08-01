@@ -10,6 +10,7 @@ cdutils/*.xlsx
 cdutils/**/*.xlsx
 **/*.xls
 **/*.xlsx
+**/*.csv
 # Report outputs
 output/
 **/output/
