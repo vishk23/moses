@@ -1,4 +1,3 @@
-# 2025-07-28 (Chad Doorley)
+# 2025-08-01 (Chad Doorley)
 
-Dave Medieros & Stephanie N have requested a dataset for the retail interns to start looking at cross sell analysis.
-These would be active accounts + open agreements. 
+Adding new field and refactoring this.

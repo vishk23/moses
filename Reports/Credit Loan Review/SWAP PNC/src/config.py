@@ -1,34 +1,32 @@
 """
-Project Configuration Template
+SWAP PNC Report Configuration
 
-This file provides a template for configuring a new report or data pipeline project.
-Fill in the placeholders below with your project's specific details.
+This file contains the configuration for the SWAP PNC Report,
+a monthly report for the Credit Loan Review business line.
 
-Input Files: <describe input files or data sources>
-Output Files: <describe output files or datasets>
-Tables: <list relevant database tables or data sources>
+Report Owner: Business Intelligence
 """
 
 import os
 from pathlib import Path
 
-# Report Info
-REPORT_NAME = "<Project Name>"
-BUSINESS_LINE = "<Business Line or Department>"
-SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
-OWNER = "<Project Owner or Team>"
+# Hardcoded paths and report info for SWAP PNC workflow
+REPORT_NAME = "SWAP PNC Report"
+BUSINESS_LINE = "Credit Loan Review"
+SCHEDULE = "Monthly"
+OWNER = "Business Intelligence"
 
-# Status
-PROD_READY = False
+PROD_READY = True
 
 # Environment & Paths
-ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
-OUTPUT_DIR = BASE_PATH / "output"
-INPUT_DIR = BASE_PATH / "input"
+BASE_PATH = Path(__file__).parent.parent
+ASSETS_FOLDER = BASE_PATH / "assets"
+ARCHIVE_FOLDER = ASSETS_FOLDER / "archive"
+STAGED_DATA_PATH = ASSETS_FOLDER / "staged_data" / "staged_data.csv"
+OUTPUT_PATH = BASE_PATH / "output" / "swap_pnc_report.xlsx"
 
 # Email Recipients
-EMAIL_TO = []  # List of primary recipients for production
-EMAIL_CC = []  # List of CC recipients for production
+EMAIL_TO = ["Paul.Kocak@bcsbmail.com"]
+EMAIL_BCC = ["chad.doorley@bcsbmail.com", "businessintelligence@bcsbmail.com"]
 
-# Add any additional configuration variables below as needed
+# Additional config variables as needed

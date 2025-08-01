@@ -1,81 +1,101 @@
-# Project Title
+# SWAP PNC Report
 
 ## Project Overview
+This report generates the monthly SWAP Exposure Loans analysis for Credit Loan Review, combining BCSB and PNC data sources. It stages, processes, and distributes a detailed Excel report to stakeholders.
 
 ## Authors & Stakeholders
-- **Project Lead:** 
-- **Executive Sponsor:** 
-- **Key Stakeholders:**
+- **Project Lead:** Business Intelligence Team
+- **Executive Sponsor:** Credit Loan Review Management
+- **Key Stakeholders:** Paul Kocak, Chad Doorley, Business Intelligence
 
 ## Project Goals
+- Consolidate SWAP Exposure Loans data from BCSB and PNC
+- Automate monthly report generation and distribution
+- Provide actionable insights for loan officers and management
 
 ## Technology Stack
+- Python 3.x
+- pandas
+- SQLAlchemy
+- Custom modules: cdutils, src
+- Excel for output
 
 ## Project Status
 ### Completed ✅
+- Automated monthly execution
+- Email distribution to stakeholders
 
 ### Future Enhancements
+- Add more validation and error handling
+- Expand reporting to additional loan categories
+- Integrate with dashboard systems
 
-## File Paths
+## File Paths & Workflow
+- **Input:** `assets/` folder (expects a single .xlsx file each run)
+- **Staging:** Processed data saved to `assets/staged_data/staged_data.csv`
+- **Archive:** Input .xlsx files moved to `assets/archive/`
+- **Output:** Final report at `output/swap_pnc_report.xlsx`
+- **Config:** All paths and recipients set in `src/config.py`
 
 ## Documentation
+- See `Documentation/REPORTS_SYSTEM_DOCUMENTATION.md` for system-level details
+- See `src/config.py` for all project settings
 
 ---
 
-# Template Project Structure & Usage Guide
+# SWAP PNC Project Structure & Usage Guide
 
-This folder provides a starter template for new report or data pipeline projects. Copy this folder and use it as a base for new work.
+This folder contains the source code and documentation for the SWAP PNC monthly report.
 
 ### Structure
 ```
-template_project/
+SWAP PNC/
 ├── docs/                # Documentation, notes, and guides for the project
-├── notebooks/           # Jupyter notebooks for exploration or prototyping
-├── src/                 # Source code for the project
-│   ├── config.py        # Project configuration (edit this first!)
-│   └── main.py          # Main entry point for the project (python -m src.main)
+├── src/                 # Source code for the report
+│   ├── config.py        # Project configuration (paths, recipients, etc.)
+│   └── main.py          # Main entry point for the report workflow
+├── assets/              # Input files and staging area
+│   ├── archive/         # Archived input files
+│   └── staged_data/     # Staged CSV data
+├── output/              # Final Excel report
 └── README.md            # This file (project structure and instructions)
 ```
 
 ### How to Use
 
-1. **Copy the entire `template_project` folder** to your new project location and rename as needed.
-2. **Edit `src/config.py`** to fill in your project-specific details (name, business line, schedule, owner, paths, etc).
-3. **Write your main logic in `src/main.py`**. This file should be executable as a module:  
-   `python -m src.main`
-4. **Add any supporting modules** to the `src/` folder as needed.
-5. **Document your project** in the `docs/` folder and keep notes up to date.
-6. **Use the `notebooks/` folder** for prototyping, data exploration, or sharing examples.
+1. Place the monthly PNC .xlsx file in the `assets/` folder.
+2. Run the main process:
+   ```bash
+   python -m src.main
+   ```
+3. The workflow will:
+   - Stage and archive the input file
+   - Fetch and process data
+   - Generate and format the Excel report
+   - Email the report to recipients
 
-### Execution
-
-- The runner will change directory into the project root and execute:
-  ```
-  python -m src.main
-  ```
-- Make sure all imports are relative to the `src/` folder and configuration is handled via `config.py`.
+### Execution & Scheduling
+- Scheduled for monthly automated execution
+- Can be run manually as needed
 
 ### Best Practices
-
-- Keep all project-specific settings in `config.py`.
-- Avoid hardcoding paths or credentials in code files.
-- Use the `OUTPUT_DIR` and `INPUT_DIR` variables for file operations.
-- Keep documentation and notebooks organized for future reference.
+- Keep all settings in `src/config.py`
+- Ensure only one .xlsx file is present in `assets/` per run
+- Archive and output folders are managed automatically
+- Document changes and enhancements in `docs/`
 
 ---
 
-## Usage
+## Usage Example
 ```bash
-# Navigate to project directory
-cd Reports/
+# Navigate to SWAP PNC directory
+cd Reports/Credit Loan Review/SWAP PNC
 
-# Run the main process
+# Run the report
 python -m src.main
 ```
 
-**Schedule:** Daily automated execution
-
 ---
 
-This template is designed to be a clean, reusable starting point for any new analytics, reporting, or ETL project.
+For questions, contact BusinessIntelligence@bcsbmail.com.
 
