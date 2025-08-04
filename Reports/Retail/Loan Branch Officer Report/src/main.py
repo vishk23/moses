@@ -43,7 +43,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import calendar
 import src.config
-import src.fetch_data
+import src.loan_branch_officer.fetch_data
 import src.loan_branch_officer.core
 import cdutils.pkey_sqlite
 import cdutils.hhnbr
@@ -58,7 +58,7 @@ def main():
         
         # Fetch data from database
         print("Fetching data from database...")
-        data = src.fetch_data.fetch_data()
+        data = src.loan_branch_officer.fetch_data.fetch_data()
 
         # Core transformation pipeline
         print("Processing core transformations...")
