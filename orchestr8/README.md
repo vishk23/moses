@@ -105,3 +105,12 @@ Instead of hardcoding the secret key in `settings.py`, store it in an environmen
      ```env
      DJANGO_SECRET_KEY=your_generated_secret_key_here
      ```
+
+
+---
+
+Before starting the scheduler, run migration from orchestr8/django_app:
+```bash
+python manage.py migrate
+python manage.py loaddata periodic_tasks.json
+```
