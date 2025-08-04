@@ -64,9 +64,9 @@ def process_patch_data(df):
     thirty_days_ago = current_date - pd.Timedelta(days=30)
     
     df['Compliance Flag'] = np.where(
-        df['Release Date'] < thirty_days_ago,
-        1,  # Fail - release date is more than 30 days old
-        0   # Pass - release date is within 30 days
+        (df['Release Date'] < thirty_days_ago) & (df['Patch Status'] == 'Missing'),
+        1,  # Fail - release date is more than 30 days old AND patch is missing
+        0   # Pass - otherwise
     )
     
     print(f"Added Device Type and Compliance Flag fields. Data shape: {df.shape}")
