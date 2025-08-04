@@ -26,18 +26,21 @@ memory usage: 1.8+ MB
 
 If Remote Office in ('Domain Controllers, Member Servers), then 'Server' else 'Workstation'
 
-
-Calculated column for pie chart:
-OutOfComplianceStatus = 
-IF(
-    CALCULATE(
-        COUNTROWS('patch_data'),
-        FILTER(
-            ALL('patch_data'),
-            'patch_data'[Computer Name] = 'patch_data'[Computer Name] && 
+New table
+ComputerCompliance =
+ADDCOLUMNS (
+    SUMMARIZE (
+        'patch_data',
+        'patch_data'[Computer Name]
+    ),
+    "OutOfComplianceStatus",
+    IF (
+        CALCULATE (
+            COUNTROWS ( 'patch_data' ),
+            'patch_data'[Computer Name] = EARLIER ( 'patch_data'[Computer Name] ),
             'patch_data'[Compliance Flag] = 1
-        )
-    ) > 0,
-    "Out of Compliance",
-    "Compliant"
+        ) > 0,
+        "Out of Compliance",
+        "Compliant"
+    )
 )
