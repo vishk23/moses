@@ -26,3 +26,14 @@ memory usage: 1.8+ MB
 
 If Remote Office in ('Domain Controllers, Member Servers), then 'Server' else 'Workstation'
 
+
+Measure for pie chart:
+OutOfComplianceStatus = 
+IF(
+    CALCULATE(
+        COUNTROWS('patch_data'),
+        FILTER('patch_data', 'patch_data'[Computer Name] = EARLIER('patch_data'[Computer Name]) && 'patch_data'[Compliance Flag] = 1)
+    ) > 0,
+    "Out of Compliance",
+    "Compliant"
+)
