@@ -1,0 +1,8 @@
+{
+  "description": "Test Loan Branch Officer Report",
+  "skip": false,
+  "expected_outputs": [
+    "loan_report_branch_officer_*.xlsx"
+  ],
+  "notes": "Report processes loan data from OSIBANK tables and generates Excel output organized by branch and officer. Output filename includes report period (previous month and year)."
+}

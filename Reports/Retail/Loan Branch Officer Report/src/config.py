@@ -1,34 +1,35 @@
 """
-Project Configuration Template
+Loan Branch Officer Report - Configuration
 
-This file provides a template for configuring a new report or data pipeline project.
-Fill in the placeholders below with your project's specific details.
+This report provides loan portfolio information organized by branch and loan officer.
 
-Input Files: <describe input files or data sources>
-Output Files: <describe output files or datasets>
-Tables: <list relevant database tables or data sources>
+Input Files: None (database queries)
+Output Files: loan_report_branch_officer.xlsx
+Tables: OSIBANK.WH_ACCTCOMMON, OSIBANK.WH_LOANS, OSIBANK.WH_ACCTLOAN, OSIEXTN.HOUSEHLDACCT
 """
 
 import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "<Project Name>"
-BUSINESS_LINE = "<Business Line or Department>"
-SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
-OWNER = "<Project Owner or Team>"
+REPORT_NAME = "Loan Branch Officer Report"
+BUSINESS_LINE = "Retail"
+SCHEDULE = "Monthly"
+OWNER = "Stephanie Nordberg"
 
 # Status
-PROD_READY = False
+PROD_READY = True
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"\\00-DA1\Home\Share\Line of Business_Shared Services") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
 # Email Recipients
 EMAIL_TO = []  # List of primary recipients for production
-EMAIL_CC = []  # List of CC recipients for production
+EMAIL_CC = ["businessintelligence@bcsbmail.com"]  # List of CC recipients for production
 
-# Add any additional configuration variables below as needed
+# Creates directories
+OUTPUT_DIR.mkdir(exist_ok=True)
+INPUT_DIR.mkdir(exist_ok=True)
