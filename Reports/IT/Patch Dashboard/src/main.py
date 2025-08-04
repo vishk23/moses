@@ -59,8 +59,19 @@ def process_patch_data(df):
             df[col] = pd.to_datetime(df[col], errors='coerce')
             print(f"Converted {col} to datetime")
     
-    print(f"Added Device Type field. Data shape: {df.shape}")
+    # Create Compliance Flag calculated field
+    current_date = pd.Timestamp.now()
+    thirty_days_ago = current_date - pd.Timedelta(days=30)
+    
+    df['Compliance Flag'] = np.where(
+        df['Release Date'] < thirty_days_ago,
+        1,  # Fail - release date is more than 30 days old
+        0   # Pass - release date is within 30 days
+    )
+    
+    print(f"Added Device Type and Compliance Flag fields. Data shape: {df.shape}")
     print(f"Device Type distribution:\n{df['Device Type'].value_counts()}")
+    print(f"Compliance Flag distribution:\n{df['Compliance Flag'].value_counts()}")
     
     return df
 
