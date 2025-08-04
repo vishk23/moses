@@ -2,7 +2,7 @@
 import pandas as pd
 from pandas.tseries.offsets import MonthEnd
 import time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Border, Side, Alignment, NamedStyle
 from openpyxl.styles.numbers import NumberFormat
@@ -54,9 +54,9 @@ def export_and_format(current_report, current_report_raw, new_additions, removed
     #################################
     output_dir = r'\\00-DA1\Home\Share\\Data & Analytics Initiatives\\Project Management\\Credit_Loan_Review\\Resolution Committee Automation\\Non Accruals\\Production\\Output'
     os.makedirs(output_dir, exist_ok=True)
-    today = datetime.today()
-    date = f"{today.strftime('%B')} {today.year}"
-    filename = "NonAccruals " + date + ".xlsx"
+    last_month = date.today().replace(day=1) - timedelta(1)  
+    date_str = last_month.strftime("%B %Y")
+    filename = "NonAccruals " + date_str + ".xlsx"
     output_file = os.path.join(output_dir,filename)
 
     print(output_file)
