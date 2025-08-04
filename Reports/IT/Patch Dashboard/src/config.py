@@ -10,6 +10,7 @@ Patch Dashboard Project Configuration
 Edit paths and settings as needed for your environment.
 """
 from pathlib import Path
+import os
 
 # Project metadata
 REPORT_NAME = "Patch Dashboard"
@@ -18,10 +19,13 @@ SCHEDULE = "Monthly"
 OWNER = "IT Department"
 PROD_READY = False
 
-# Input/output directories
-PROJECT_ROOT = Path(__file__).parent.parent
-INPUT_DIR = PROJECT_ROOT / "data"  # Place raw ManageEngine exports here
-OUTPUT_DIR = PROJECT_ROOT / "outputs"
+# Environment & Paths
+ENV = os.getenv('REPORT_ENV', 'dev')
+BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\IT\Patch Management") if ENV == 'prod' else Path(__file__).parent.parent
+OUTPUT_DIR = BASE_PATH / "output"
+INPUT_DIR = BASE_PATH / "input"
 
-# Example: Add any other config variables needed for your ETL/cleaning
-# e.g. COLUMN_MAP = {...}
+# Email Recipients
+EMAIL_TO = []  # List of primary recipients for production
+EMAIL_CC = []  # List of CC recipients for production
+
