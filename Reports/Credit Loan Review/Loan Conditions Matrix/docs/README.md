@@ -68,12 +68,12 @@ This system replaces the manual process of looking up loan conditions in policy 
    - abundance of caution
 - [x] Remove extra text on CRE secured answer option 1
    - 'is less than $500M'
-- [ ] Get bullet output for summary (flood)
 - [x] Adjust appraisal language
 - [x] Add other options to Financial Statements section
    - Did this in free form box
+- [x] Add a not real estate secured option to skip environmental (first question)
+- [ ] Get bullet output for summary (flood)
 - [ ] Corporate guarantor output should have line breaks for bullets
-- [ ] Add a not real estate secured option to skip environmental (first question)
 
 
 ## File Paths

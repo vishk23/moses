@@ -748,66 +748,86 @@
     "title": "Environmental",
     "questions": [
       {
-        "id": "question_1748093328491_0fyzyf3h5",
-        "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance of caution?",
+        "id": "question_1748999001000_realestatesecured",
+        "text": "Is the loan secured by real estate?",
         "type": "radio",
         "options": [
           {
-            "id": "option_1748093328491_z5gp84cwk",
+            "id": "option_1748999001000_yes_realsecured",
             "text": "Yes",
             "summaryLabel": "",
             "childQuestions": [
               {
-                "id": "question_1748093384001_z4rwggvn5",
-                "text": "Please select one of the following:",
+                "id": "question_1748093328491_0fyzyf3h5",
+                "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance of caution?",
                 "type": "radio",
                 "options": [
                   {
-                    "id": "option_1748093384001_mh41q0vn4",
-                    "text": "The loan is less than $500M and low risk category.",
-                    "summaryLabel": "An environmental database search and documented officer site visit is required"
+                    "id": "option_1748093328491_z5gp84cwk",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748093384001_z4rwggvn5",
+                        "text": "Please select one of the following:",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748093384001_mh41q0vn4",
+                            "text": "The loan is less than $500M and low risk category.",
+                            "summaryLabel": "An environmental database search and documented officer site visit is required"
+                          },
+                          {
+                            "id": "option_1748093384001_66pjlnysw",
+                            "text": "The loan is less than $500M and in high risk or elevated risk category",
+                            "summaryLabel": "A transaction screen and documented officer site visit is required"
+                          },
+                          {
+                            "id": "option_1748093489205_1xjkqaw27",
+                            "text": "The loan is between $500M and up to $3MM.",
+                            "summaryLabel": "A transaction screen is required."
+                          },
+                          {
+                            "id": "option_1748093495649_65hzqtdnz",
+                            "text": "A loan of $3MM or more",
+                            "summaryLabel": "A Phase 1 assessment is required."
+                          },
+                          {
+                            "id": "option_1748093497130_vf9j72m0d",
+                            "text": "The property is located in a high risk category. High risk category properties include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt plants, Plating operations, Printing plants, Electronics Manufacturers, Handling, distribution, or manufacture of chemicals Automotive manufacture, repair or service, Dry cleaning plants, Foundries and metal smelting, Hospital and biomedicine manufacturers, Waste handling, distribution and disposal",
+                            "summaryLabel": "A Phase 1 assessment is required."
+                          },
+                          {
+                            "id": "option_1748093706160_to3uifnk6",
+                            "text": "This is an SBA financed property",
+                            "summaryLabel": "Please refer to the SBA Environmental SOP"
+                          }
+                        ],
+                        "required": true
+                      },
+                      {
+                        "id": "question_1748093396349_uxyn6whxm",
+                        "text": "If applicable: What further action is required? Is further investigation warranted? Does the investigation result in the need for further actions (ex- remediation, monitoring, encapsulation. Has the action been taken? Has the issue been resolved? If not resolved, is the risk being accepted? Please describe:",
+                        "type": "freeform",
+                        "required": false,
+                        "placeholder": "(Optional) Enter your answer here...."
+                      }
+                    ]
                   },
                   {
-                    "id": "option_1748093384001_66pjlnysw",
-                    "text": "The loan is less than $500M and in high risk or elevated risk category",
-                    "summaryLabel": "A transaction screen and documented officer site visit is required"
-                  },
-                  {
-                    "id": "option_1748093489205_1xjkqaw27",
-                    "text": "The loan is between $500M and up to $3MM.",
-                    "summaryLabel": "A transaction screen is required."
-                  },
-                  {
-                    "id": "option_1748093495649_65hzqtdnz",
-                    "text": "A loan of $3MM or more",
-                    "summaryLabel": "A Phase 1 assessment is required."
-                  },
-                  {
-                    "id": "option_1748093497130_vf9j72m0d",
-                    "text": "The property is located in a high risk category. High risk category properties include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt plants, Plating operations, Printing plants, Electronics Manufacturers, Handling, distribution, or manufacture of chemicals Automotive manufacture, repair or service, Dry cleaning plants, Foundries and metal smelting, Hospital and biomedicine manufacturers, Waste handling, distribution and disposal",
-                    "summaryLabel": "A Phase 1 assessment is required."
-                  },
-                  {
-                    "id": "option_1748093706160_to3uifnk6",
-                    "text": "This is an SBA financed property",
-                    "summaryLabel": "Please refer to the SBA Environmental SOP"
+                    "id": "option_1748093328491_hzs2dqwtz",
+                    "text": "No",
+                    "summaryLabel": "An environmental site assessment in not required."
                   }
                 ],
                 "required": true
-              },
-              {
-                "id": "question_1748093396349_uxyn6whxm",
-                "text": "If applicable: What further action is required? Is further investigation warranted? Does the investigation result in the need for further actions (ex- remediation, monitoring, encapsulation. Has the action been taken? Has the issue been resolved? If not resolved, is the risk being accepted? Please describe:",
-                "type": "freeform",
-                "required": false,
-                "placeholder": "(Optional) Enter your answer here...."
               }
             ]
           },
           {
-            "id": "option_1748093328491_hzs2dqwtz",
+            "id": "option_1748999001000_no_realsecured",
             "text": "No",
-            "summaryLabel": "An environmental site assessment in not required."
+            "summaryLabel": "No environmental assessment required for non-real estate secured loans."
           }
         ],
         "required": true
