@@ -45,7 +45,7 @@ import calendar
 import src.config
 import src.loan_branch_officer.fetch_data
 import src.loan_branch_officer.core
-import cdutils.pkey_sqlite
+import cdutils.pkey_sqlite 
 import cdutils.hhnbr
 import cdutils.selo
 import cdutils.loans.calculations
@@ -170,6 +170,4 @@ def main():
         return False
 
 if __name__ == "__main__":
-    success = main()
-    if not success:
-        exit(1)
+    main()
