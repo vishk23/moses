@@ -72,8 +72,8 @@ This system replaces the manual process of looking up loan conditions in policy 
 - [x] Add other options to Financial Statements section
    - Did this in free form box
 - [x] Add a not real estate secured option to skip environmental (first question)
-- [ ] Get bullet output for summary (flood)
-- [ ] Corporate guarantor output should have line breaks for bullets
+- [ ] Create bullets for questions/answers/summary output
+   - Not really working with the system I've built.
 
 
 ## File Paths

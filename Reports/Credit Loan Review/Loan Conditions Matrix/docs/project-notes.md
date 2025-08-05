@@ -227,9 +227,9 @@ For an obligation secured by CRE <$500M or a residential loan <$400M, a recent (
 
 Flood selection & output:
 The following conditions are required: 
-* Customer was informed 10 days prior to closing 
-* The flood insurance has been reviewed by Compliance 
-* Sufficient flood insurance has been obtained 
+- Customer was informed 10 days prior to closing 
+- The flood insurance has been reviewed by Compliance 
+- Sufficient flood insurance has been obtained 
 
 
 Corporate guarantor requirements: FYE Statements within 120 days or 30 days of filing.
@@ -239,10 +239,15 @@ Corporate guarantor requirements: FYE Statements within 120 days or 30 days of f
 - A free form field for input
 
 Environmental Selection only:
-The property is located in a high risk category. High risk category properties
-include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt
-plants, Plating operations, Printing plants, Electronics Manufacturers, Handling,
-distribution, or manufacture of chemicals Automotive manufacture, repair or
-service, Dry cleaning plants, Foundries and metal smelting, Hospital and
-biomedicine manufacturers, Waste handling, distribution and disposal
-- this needs to be broken up into bullets like the above items
+The property is located in a high risk category. High risk category properties include: 
+- Gasoline & fuel oil handling, distribution, or refining, 
+- Concrete and asphalt plants, 
+- Plating operations, 
+- Printing plants, 
+- Electronics Manufacturers, 
+- Handling, distribution, or manufacture of chemicals, 
+- Automotive manufacture, repair or service, 
+- Dry cleaning plants, 
+- Foundries and metal smelting, 
+- Hospital and biomedicine manufacturers, 
+- Waste handling, distribution and disposal
