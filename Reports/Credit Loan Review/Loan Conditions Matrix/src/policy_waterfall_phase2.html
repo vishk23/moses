@@ -130,8 +130,10 @@
         .answer-option input[type="radio"],
         .answer-option input[type="checkbox"] {
             margin-right: 12px;
+            margin-top: 4px;
             transform: scale(1.2);
             accent-color: #4a90e2;
+            flex-shrink: 0;
         }
 
         .answer-option label {
@@ -139,8 +141,9 @@
             font-size: 1rem;
             color: #34495e;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             transition: color 0.3s ease;
+            line-height: 1.5;
         }
 
         .answer-option label:hover {
@@ -697,13 +700,13 @@
                   },
                   {
                     "id": "option_1748093045068_h85i1flm1",
-                    "text": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%",
-                    "summaryLabel": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%"
+                    "text": "An appraisal is optional - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%.",
+                    "summaryLabel": "An appraisal is optional - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%."
                   },
                   {
                     "id": "option_1748093072341_ddhqyoo45",
-                    "text": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%",
-                    "summaryLabel": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%"
+                    "text": "An appraisal is optional - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized' value with a maximum loan to value to exceed XX%.",
+                    "summaryLabel": "An appraisal is optional - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized' value with a maximum loan to value to exceed XX%."
                   },
                   {
                     "id": "option_1748093072863_kw12023v0",
@@ -746,7 +749,7 @@
     "questions": [
       {
         "id": "question_1748093328491_0fyzyf3h5",
-        "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance if caution?",
+        "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance of caution?",
         "type": "radio",
         "options": [
           {
@@ -761,7 +764,7 @@
                 "options": [
                   {
                     "id": "option_1748093384001_mh41q0vn4",
-                    "text": "The loan is less than $500M and low risk category  is less than $500M",
+                    "text": "The loan is less than $500M and low risk category.",
                     "summaryLabel": "An environmental database search and documented officer site visit is required"
                   },
                   {
@@ -1132,10 +1135,10 @@
             "childQuestions": [
               {
                 "id": "question_1748099360515_bxr0rbuu0",
-                "text": "Please list the loan type:",
+                "text": "Please fill in other requirements below",
                 "type": "freeform",
                 "required": false,
-                "placeholder": "Enter your answer..."
+                "placeholder": "Interim management statements, AR/AP agings, Projections..."
               }
             ]
           }

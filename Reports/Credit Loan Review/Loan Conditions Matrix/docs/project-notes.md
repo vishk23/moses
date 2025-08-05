@@ -2,11 +2,27 @@
 
 ## Development History & Running Notes
 
-### 2025-08-05 - Project Restructure & Documentation Update
-- **Action**: Moved project from `Reports/Loan Conditions Matrix/` to `Reports/Credit Loan Review/Loan Conditions Matrix/`
-- **Reason**: Better organization within Credit Loan Review department structure
-- **Updated**: Documentation structure, README.md enhanced with historical context
-- **Status**: Documentation consolidated from old project versions
+### 2025-02-11 - Project Initiation Meeting
+- **Stakeholders**: Eldora & Paul Kocak
+- **Decision**: Web-based approach instead of Excel due to complex conditional logic needs
+- **Tech Stack Decided**: Vanilla HTML/CSS/JS for maximum compatibility
+- **Deployment Strategy**: Browser-based, shared location or bookmark access
+- **Modular Approach**: Sections split by complexity (Appraisal → Environmental → Financial Statements)
+
+### 2025-02-25 [v1.0.0-dev] - First Working Demo  
+- **Milestone**: Completed initial demo version
+- **Sections Implemented**: 3 core sections (Appraisal, Environmental, Financial Statements)
+- **File**: `condition_matrix.html` 
+- **Feedback**: From Paul & Eldora based on Excel form requirements
+- **Status**: Demo ready for stakeholder review
+
+### 2025-05-22 - Conditional Logic Implementation
+- **Feature**: Advanced conditional question branching
+- **CRE Secured Loan Logic**:
+  - "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as abundance of caution?"
+  - 6 checkbox options with follow-up questions
+  - "Is further action required?" with open-ended detail box
+- **Status**: Base conditional framework completed
 
 ### 2025-05-24 - Survey Output Refinement  
 - **Milestone**: Example output generation and formatting improvements
@@ -28,27 +44,11 @@
   • Sufficient flood insurance has been obtained
   ```
 
-### 2025-05-22 - Conditional Logic Implementation
-- **Feature**: Advanced conditional question branching
-- **CRE Secured Loan Logic**:
-  - "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as abundance of caution?"
-  - 6 checkbox options with follow-up questions
-  - "Is further action required?" with open-ended detail box
-- **Status**: Base conditional framework completed
-
-### 2025-02-25 [v1.0.0-dev] - First Working Demo  
-- **Milestone**: Completed initial demo version
-- **Sections Implemented**: 3 core sections (Appraisal, Environmental, Financial Statements)
-- **File**: `condition_matrix.html` 
-- **Feedback**: From Paul & Eldora based on Excel form requirements
-- **Status**: Demo ready for stakeholder review
-
-### 2025-02-11 - Project Initiation Meeting
-- **Stakeholders**: Eldora & Paul Kocak
-- **Decision**: Web-based approach instead of Excel due to complex conditional logic needs
-- **Tech Stack Decided**: Vanilla HTML/CSS/JS for maximum compatibility
-- **Deployment Strategy**: Browser-based, shared location or bookmark access
-- **Modular Approach**: Sections split by complexity (Appraisal → Environmental → Financial Statements)
+### 2025-08-05 - Project Restructure & Documentation Update
+- **Action**: Moved project from `Reports/Loan Conditions Matrix/` to `Reports/Credit Loan Review/Loan Conditions Matrix/`
+- **Reason**: Better organization within Credit Loan Review department structure
+- **Updated**: Documentation structure, README.md enhanced with historical context
+- **Status**: Documentation consolidated from old project versions
 
 ---
 
@@ -216,3 +216,11 @@
 
 *Last Updated: August 5, 2025*
 *Next Review: Pending stakeholder feedback on current implementation*
+
+# 2025-08-05
+Making fixes based on feedback:
+
+An appraisal is optional - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized' value with a maximum loan to value to exceed XX%.
+
+
+For an obligation secured by CRE <$500M or a residential loan <$400M, a recent (under 12 months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%.

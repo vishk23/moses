@@ -61,19 +61,19 @@ This system replaces the manual process of looking up loan conditions in policy 
 - Copy-to-clipboard functionality for generated summaries
 - Progress tracking and validation
 - Multi-question type support (radio, checkbox, text input)
+- [x] Adjust bullets to be in line with top line, not centered
+- [ ] Figure out what to do with the XX%
+- [x] Correct typo on environmental
+   - abundance of caution
+- [x] Remove extra text on CRE secured answer option 1
+   - 'is less than $500M'
+- [ ] Get bullet output for summary (flood)
+- [x] Adjust appraisal language
+- [x] Add other options to Financial Statements section
+   - Did this in free form box
+- [ ] Corporate guarantor output should have line breaks for bullets
+- [ ] Add a not real estate secured option to skip environmental (first question)
 
-### Current Focus Areas
-- **Policy Integration**: Mapping specific BCSB loan policies to survey logic
-- **Question Refinement**: Based on subject matter expert feedback from Eldora & Paul
-- **Condition Categories**: Appraisal, Environmental, Financial Statements, Flood, SWAP loans
-- **Conditional Logic Enhancement**: Complex branching based on loan characteristics
-
-### Future Enhancements
-- Integration with loan origination systems
-- User authentication and session management
-- Analytics and usage tracking  
-- Mobile optimization
-- Automated policy updates from source documents
 
 ## File Paths
 
