@@ -62,7 +62,8 @@ This system replaces the manual process of looking up loan conditions in policy 
 - Progress tracking and validation
 - Multi-question type support (radio, checkbox, text input)
 - [x] Adjust bullets to be in line with top line, not centered
-- [ ] Figure out what to do with the XX%
+- [x] Figure out what to do with the XX%
+   - We will just put __%
 - [x] Correct typo on environmental
    - abundance of caution
 - [x] Remove extra text on CRE secured answer option 1
