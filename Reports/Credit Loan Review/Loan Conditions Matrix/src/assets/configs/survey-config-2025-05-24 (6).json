@@ -1,0 +1,587 @@
+[
+  {
+    "id": "section_1748092757854_dzyudmyxf",
+    "title": "Appraisal",
+    "questions": [
+      {
+        "id": "question_1748092801143_knemh2939",
+        "text": "Is this a CRE secured transaction > than $500M, a residential loan > $400M, or a R/E secured business loan >$1,000M?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748092801143_yoqn4i2ph",
+            "text": "Yes",
+            "summaryLabel": "An appraisal is required and should not be dated more than 12 months prior to loan closing. Appraisal dated in excess of 12 months are considered Policy Exceptions. Note, per policy loan to value is calculated based on the lesser of the properties purchase price or appraised value.",
+            "childQuestions": [
+              {
+                "id": "question_1748092831323_smztsah9s",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748092831323_0nsat4b3l",
+                    "text": "Secured property is subject to a bank ordered appraisal showing a maximum loan to value not to exceed XX%",
+                    "summaryLabel": "Secured property is subject to a bank ordered appraisal showing a maximum loan to value not to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748092831323_g6a6hi4cy",
+                    "text": "Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stabilized value' with a maximum loan to value not to exceed XX%",
+                    "summaryLabel": "Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stabilized value' with a maximum loan to value not to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748092875136_5j3jw38jf",
+                    "text": "Bank ordered appraisal already in hand.",
+                    "summaryLabel": "Bank ordered appraisal already in hand."
+                  },
+                  {
+                    "id": "option_1748092876208_400rkqxzk",
+                    "text": "For complex or special purpose property may warrant an  appraisal even if the loan amount is $500,000 or less.",
+                    "summaryLabel": "For complex or special purpose property may warrant an  appraisal even if the loan amount is $500,000 or less."
+                  },
+                  {
+                    "id": "option_1748092877243_gqsiksy2a",
+                    "text": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution.",
+                    "summaryLabel": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution."
+                  },
+                  {
+                    "id": "option_1748092878245_yuee43yx1",
+                    "text": "Construction Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum loan to value not to exceed XX%. Actual construction hard costs of a $1 million or greater or which are complex in nature require a feasibility analysis, either contained within the appraisal or in a separate study provided by a qualified third party. A highest and best use analysis contained within the real estate appraisal can also satisfy this requirement.",
+                    "summaryLabel": "Construction Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum loan to value not to exceed XX%. Actual construction hard costs of a $1 million or greater or which are complex in nature require a feasibility analysis, either contained within the appraisal or in a separate study provided by a qualified third party. A highest and best use analysis contained within the real estate appraisal can also satisfy this requirement."
+                  },
+                  {
+                    "id": "option_1748092880294_hmqg0a2iq",
+                    "text": "Hotel/Motel Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum real estate loan to value not to exceed XX% . The subject appraisal must break out values of real estate only as well as FF&E and other values.",
+                    "summaryLabel": "Hotel/Motel Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum real estate loan to value not to exceed XX% . The subject appraisal must break out values of real estate only as well as FF&E and other values."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748092801143_zglydj60v",
+            "text": "No",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748093045068_5klsrkpoc",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748093045068_w5wcvrliw",
+                    "text": "An independently prepared evaluation is required.",
+                    "summaryLabel": "An independently prepared evaluation is required."
+                  },
+                  {
+                    "id": "option_1748093045068_h85i1flm1",
+                    "text": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%",
+                    "summaryLabel": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748093072341_ddhqyoo45",
+                    "text": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%",
+                    "summaryLabel": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748093072863_kw12023v0",
+                    "text": "For obligation secured by CRE < $500M or residential loan <$400M, A recent (under 12months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%.",
+                    "summaryLabel": "For obligation secured by CRE < $500M or residential loan <$400M, A recent (under 12months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%."
+                  },
+                  {
+                    "id": "option_1748093073427_qzd1cwmz5",
+                    "text": "Not required - real estate is taken solely as an abundance of caution, with no reliance placed on the property value for underwriting or analysis purposes",
+                    "summaryLabel": "Not required - real estate is taken solely as an abundance of caution, with no reliance placed on the property value for underwriting or analysis purposes"
+                  },
+                  {
+                    "id": "option_1748093074072_24mpfwkkr",
+                    "text": "Not required - The lien on the real estate has been taken for purposes other than the real estate’s value. The Bank, for instance, may take a lien on real property in order to protect its interest or control over other collateral.",
+                    "summaryLabel": "Not required - The lien on the real estate has been taken for purposes other than the real estate’s value. The Bank, for instance, may take a lien on real property in order to protect its interest or control over other collateral."
+                  },
+                  {
+                    "id": "option_1748093074662_bnrv67a9s",
+                    "text": "Not required - A lease is entered into, unless the lease is the economic equivalent of a purchase or sale of the leased real estate.",
+                    "summaryLabel": "Not required - A lease is entered into, unless the lease is the economic equivalent of a purchase or sale of the leased real estate."
+                  },
+                  {
+                    "id": "option_1748093075335_qi1ax1xpj",
+                    "text": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution.",
+                    "summaryLabel": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748093315942_pg4ulzlng",
+    "title": "Environmental",
+    "questions": [
+      {
+        "id": "question_1748093328491_0fyzyf3h5",
+        "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance if caution?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748093328491_z5gp84cwk",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748093384001_z4rwggvn5",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748093384001_mh41q0vn4",
+                    "text": "The loan is less than $500M and low risk category  is less than $500M",
+                    "summaryLabel": "An environmental database search and documented officer site visit is required"
+                  },
+                  {
+                    "id": "option_1748093384001_66pjlnysw",
+                    "text": "The loan is less than $500M and in high risk or elevated risk category",
+                    "summaryLabel": "A transaction screen and documented officer site visit is required"
+                  },
+                  {
+                    "id": "option_1748093489205_1xjkqaw27",
+                    "text": "The loan is between $500M and up to $3MM.",
+                    "summaryLabel": "A transaction screen is required."
+                  },
+                  {
+                    "id": "option_1748093495649_65hzqtdnz",
+                    "text": "A loan of $3MM or more",
+                    "summaryLabel": "A Phase 1 assessment is required."
+                  },
+                  {
+                    "id": "option_1748093497130_vf9j72m0d",
+                    "text": "The property is located in a high risk category. High risk category properties include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt plants, Plating operations, Printing plants, Electronics Manufacturers, Handling, distribution, or manufacture of chemicals Automotive manufacture, repair or service, Dry cleaning plants, Foundries and metal smelting, Hospital and biomedicine manufacturers, Waste handling, distribution and disposal",
+                    "summaryLabel": "A Phase 1 assessment is required."
+                  },
+                  {
+                    "id": "option_1748093706160_to3uifnk6",
+                    "text": "This is an SBA financed property",
+                    "summaryLabel": "Please refer to the SBA Environmental SOP"
+                  }
+                ],
+                "required": true
+              },
+              {
+                "id": "question_1748093396349_uxyn6whxm",
+                "text": "If applicable: What further action is required? Is further investigation warranted? Does the investigation result in the need for further actions (ex- remediation, monitoring, encapsulation. Has the action been taken? Has the issue been resolved? If not resolved, is the risk being accepted? Please describe:",
+                "type": "freeform",
+                "required": false,
+                "placeholder": "(Optional) Enter your answer here...."
+              }
+            ]
+          },
+          {
+            "id": "option_1748093328491_hzs2dqwtz",
+            "text": "No",
+            "summaryLabel": "An environmental site assessment in not required."
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748094682768_5hd9bzblr",
+    "title": "Flood",
+    "questions": [
+      {
+        "id": "question_1748095716827_a5yuajagg",
+        "text": "Is the loan secured by real estate?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748095716827_35qwynfb0",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748095774361_jjpz5ymai",
+                "text": "Has flood certificate been generated?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748095774362_lyh9afqic",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748095873482_a34mjav1s",
+                        "text": "Did the certificate indicate that the property is in a flood zone (AE/V)?",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748095873482_z1tv7rauv",
+                            "text": "Yes",
+                            "summaryLabel": "The following conditions are required: Customer was informed 10 days prior to closing, The flood insurance been reviewed by compliance, Sufficient flood insurance has been obtained"
+                          },
+                          {
+                            "id": "option_1748095873482_bbaabsfqb",
+                            "text": "No",
+                            "summaryLabel": ""
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748095774362_fqz2nn8bc",
+                    "text": "No",
+                    "summaryLabel": "Flood Cert must be generated."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748095716827_1aw2lypqw",
+            "text": "No",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748096165847_khnrpicux",
+                "text": "Is the loan a guaranteed SBA loan secured by building contents?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748096165847_g4lwpqk9m",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748096609969_66szwonre",
+                        "text": "Did the certificate indicate that the property is in a flood zone (AE/V)?",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748096609969_bq8keed23",
+                            "text": "Yes",
+                            "summaryLabel": "The following conditions are required: Customer was informed 10 days prior to closing, The flood insurance been reviewed by compliance, Sufficient flood insurance has been obtained"
+                          },
+                          {
+                            "id": "option_1748096609969_k5lpmeijo",
+                            "text": "No",
+                            "summaryLabel": ""
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748096165847_hk72mhabk",
+                    "text": "No",
+                    "summaryLabel": ""
+                  }
+                ],
+                "required": true
+              }
+            ]
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748096094455_zrco86nbv",
+    "title": "Financial Statements",
+    "questions": [
+      {
+        "id": "question_1748097321180_yfc2dcdi1",
+        "text": "Please select the type of loan below:",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748097321180_1xfwlq3c9",
+            "text": "C&I Loan(including Owner Occupied CRE)",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097392603_zr5jskkad",
+                "text": "Please select from the options below:",
+                "type": "checkbox",
+                "options": [
+                  {
+                    "id": "option_1748097392603_24hkxdnza",
+                    "text": "Is the dollar amount of the relationship $10MM or more?",
+                    "summaryLabel": "C&I requirements: Audited financial statements are required."
+                  },
+                  {
+                    "id": "option_1748097392603_h6okgd7g1",
+                    "text": "Is the dollar amount of the relationship between $2.5MM to $10MM?",
+                    "summaryLabel": "C&I requirements: Review quality statements or better are required."
+                  },
+                  {
+                    "id": "option_1748097482948_rq0srwbbj",
+                    "text": "Is the dollar amount of the relationship less that $2.5MM?",
+                    "summaryLabel": "C&I requirements: Tax returns or compiled statements, with supporting schedules including K-1s if applicable, are required"
+                  },
+                  {
+                    "id": "option_1748097716826_gjn1ka627",
+                    "text": "Is Owner-occupied real estate, held in a separate entity?",
+                    "summaryLabel": "Yes-requires tax returns, with supporting schedules including K-1’s if applicable"
+                  },
+                  {
+                    "id": "option_1748097718772_hmi9fl85x",
+                    "text": "Is the loan for a fishing vessel & up to $5.0MM?",
+                    "summaryLabel": "Yes-requires tax returns, with supporting schedules including K-1’s if applicable"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097321180_febgdm9kx",
+            "text": "Non Owner Occupied CRE",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097767977_tkgkx8f1l",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748097767977_i7k5rlm4m",
+                    "text": "$1MM or more",
+                    "summaryLabel": "$1 million or more require management-prepared financial statements and tax returns with supporting schedules, including K-1s if applicable and Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained any major tenants. FYE statements within 120 days of FYE or 30 days of filing"
+                  },
+                  {
+                    "id": "option_1748097767977_t2ioa2x2f",
+                    "text": "Less than $1MM",
+                    "summaryLabel": "Less than $1MM require management-prepared financial statements or tax returns. Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants. FYE statements within 120 days of FYE or 30 days of filing"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097859212_mvop6vdbd",
+            "text": "Hotel/Motel",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097924322_fjihy944g",
+                "text": "Please select any of the following:",
+                "type": "checkbox",
+                "options": [
+                  {
+                    "id": "option_1748097924322_s5vlzfk4o",
+                    "text": "$3MM or greater",
+                    "summaryLabel": "Relationships of $3,000,000 or greater require CPA review level statements"
+                  },
+                  {
+                    "id": "option_1748097924322_fwlkjwv6j",
+                    "text": "$1MM to $3MM",
+                    "summaryLabel": "Relationships of $1,000,000 up to $3,000,000 require CPA Compilation level statements"
+                  },
+                  {
+                    "id": "option_1748098032833_kfnsrnbfl",
+                    "text": "Less than $1MM",
+                    "summaryLabel": "Relationships under $1,000,000 require tax returns and complete debt schedules."
+                  },
+                  {
+                    "id": "option_1748098274614_46ozo709n",
+                    "text": "Optional- Quarterly or Monthly interim statements",
+                    "summaryLabel": "Optional- Quarterly or Monthly interim statements"
+                  },
+                  {
+                    "id": "option_1748098275228_d9q5vddr6",
+                    "text": "Optional- For Flagged national brand hotels, financial reports provided to the franchisor may be required on a monthly or quarterly basis",
+                    "summaryLabel": "Optional- For Flagged national brand hotels, financial reports provided to the franchisor may be required on a monthly or quarterly basis"
+                  },
+                  {
+                    "id": "option_1748098275839_5kaqgjsaz",
+                    "text": "Optional- STAR reports may be required on a quarterly or annual basis",
+                    "summaryLabel": "Optional- STAR reports may be required on a quarterly or annual basis"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097867734_evbtwqqb8",
+            "text": "Construction Loan (no permanent financing)",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098405253_xbnmos5c1",
+                "text": "Is this going to be an Owner Occupied construction project?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098405253_3f3o3u64n",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748098552567_9tujdizxf",
+                        "text": "Please select one of the following:",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748098552567_hw99i2vda",
+                            "text": "$1MM or greater",
+                            "summaryLabel": "$1 million or more require management-prepared financial statements and tax returns with supporting schedules, including K-1s if applicable and Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants"
+                          },
+                          {
+                            "id": "option_1748098552567_34aul786m",
+                            "text": "Less than $1MM",
+                            "summaryLabel": "Less than $1MM require management-prepared financial statements or tax returns. Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants."
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748098405253_wlim6f9ip",
+                    "text": "No",
+                    "summaryLabel": "Standard construction requirements: A detailed construction budget , sources & used of funds & detailed outline of project is required, and other applicable to the borrower's experience, project risk, etc."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097868592_hyawuzjf0",
+            "text": "Loan to Individual/Sole Proprietor/Single Member LLC",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098749434_bofhlm5ye",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098749434_0293qwgwh",
+                    "text": "Personal Tax Returns with supporting schedules, including K-1s if applicable",
+                    "summaryLabel": "Personal Tax Returns with supporting schedules, including K-1s if applicable. Personal financial statements should be on the Bank’s form and dated within 12 months of any financing request."
+                  },
+                  {
+                    "id": "option_1748098749434_opuai53o3",
+                    "text": "Annual submission of Personal Federal Tax Returns for the Personal Guarantors, within 120 days of each year end, or upon filing with the IRS if an extension is provided.",
+                    "summaryLabel": "Annual submission of Personal Federal Tax Returns for the Personal Guarantors, within 120 days of each year end, or upon filing with the IRS if an extension is provided. Submission of a Personal Financial Statement for the Personal Guarantors, within 12 months of previous submission."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748098817873_gios8s5jj",
+            "text": "SBLC Loan",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098827952_5as6gzjiz",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098827952_7i4kbxfdj",
+                    "text": "Standard Requirements",
+                    "summaryLabel": "SBLC Loan requirements: 2 years business tax returns, 2 months of Bank statements if Borrower is an operating company and is a new Borrower to the Bank, 2 years affiliate tax returns if applicable, 2 years personal tax returns, Copies of any mortgage loan statements, Current accounts payable aging, if applicable, Current accounts receivable aging, if applicable, Current personal financial statement (less than six months old), Current rent roll, if applicable, Interims if tax returns are more than six months old",
+                    "childQuestions": []
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748099340433_et3x1z06o",
+            "text": "Other",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748099360515_bxr0rbuu0",
+                "text": "Please list the loan type:",
+                "type": "freeform",
+                "required": false,
+                "placeholder": "Enter your answer..."
+              }
+            ]
+          }
+        ],
+        "required": true
+      },
+      {
+        "id": "question_1748098976128_m04mwgpo3",
+        "text": "Guarantor Selection",
+        "type": "checkbox",
+        "options": [
+          {
+            "id": "option_1748098976128_mqjbdshos",
+            "text": "Corporate Guarantors",
+            "summaryLabel": "Corporate guarantor requirements: FYE Statements within 120 days of FYE or 30 days of filing, Interims, if required, Any supporting statements/reports, if required, Projections if applicable or required"
+          },
+          {
+            "id": "option_1748098976128_ws2zbrjny",
+            "text": "Personal Guarantors",
+            "summaryLabel": "Personal guarantor requirements: Personal tax returns, with all schedules within 120 days of FYE or 30 days of filing, and Personal financial statement (within 12 months of prior statement)"
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748097138043_in6t5yiz0",
+    "title": "SWAPS & ARC Loans",
+    "questions": [
+      {
+        "id": "question_1748099191131_xcjs08e6u",
+        "text": "Is this a SWAP Loan?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748099191131_gp1u9gtex",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748099210812_bf0u4scv9",
+                "text": "Has the Swap Checklist been completed and all required pre-closing documents been received?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748099210812_ajrwuj16l",
+                    "text": "Yes",
+                    "summaryLabel": ""
+                  },
+                  {
+                    "id": "option_1748099210812_uquj9fez0",
+                    "text": "No",
+                    "summaryLabel": "See the Swap checklist for incomplete items."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748099191131_ig3lr49ri",
+            "text": "No",
+            "summaryLabel": ""
+          }
+        ],
+        "required": true
+      }
+    ]
+  }
+]
