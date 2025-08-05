@@ -12,6 +12,7 @@ cdutils/**/*.xlsx
 **/*.xlsx
 **/*.csv
 # Report outputs
+**/*.pptx
 output/
 **/output/
 
@@ -121,7 +122,6 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
-
 # Environments
 .env
 .venv
