@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Conditions Survey</title>
+    <style>
+        /* All your existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: #f8f9fc;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e1e5e9;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .section-content {
+            padding: 25px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e8ecf0;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .question-required {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+
+        .answer-option {
+            margin-bottom: 12px;
+            padding: 10px 0;
+        }
+
+        .answer-option input[type="radio"],
+        .answer-option input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #4a90e2;
+        }
+
+        .answer-option label {
+            cursor: pointer;
+            font-size: 1rem;
+            color: #34495e;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .answer-option label:hover {
+            color: #2c3e50;
+        }
+
+        .freeform-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .freeform-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            background: white;
+        }
+
+        .child-questions {
+            margin-left: 30px;
+            border-left: 3px solid #4a90e2;
+            padding-left: 20px;
+            margin-top: 15px;
+            background: #f8f9fc;
+            border-radius: 0 8px 8px 0;
+            padding: 15px 20px;
+        }
+
+        .child-questions .question {
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e1e5e9;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            margin: 0 10px 10px 0;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            margin: 0 10px 10px 0;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .copy-btn.success {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .copy-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8ecf0 100%);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid #d1d7db;
+        }
+
+        .summary-title {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-section {
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #d1d7db;
+        }
+
+        .summary-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-section-title {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .summary-section-content {
+            padding: 15px 20px;
+        }
+
+        .summary-item {
+            background: #f8f9fc;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4a90e2;
+            font-size: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Enhanced error message styles */
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #fcc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
+            line-height: 1.6;
+        }
+
+        .error-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #c33;
+        }
+
+        .error-details {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+
+        .error-context {
+            background: #f8f8f8;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .error-highlight {
+            background: #ffeb3b;
+            color: #d32f2f;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .error-suggestions {
+            background: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #2e7d32;
+        }
+
+        .error-suggestions h4 {
+            margin: 0 0 10px 0;
+            color: #1b5e20;
+        }
+
+        .error-suggestions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .error-suggestions li {
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .question.error .validation-error {
+            display: block;
+        }
+
+        .question.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .child-questions {
+                margin-left: 15px;
+                padding-left: 15px;
+            }
+
+            .submit-btn, .copy-btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .copy-notification {
+                right: 10px;
+                left: 10px;
+                top: 10px;
+            }
+
+            .error-context, .error-details {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Loan Conditions Survey</h1>
+            <p>Please answer all questions to generate your requirements summary</p>
+        </div>
+        
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div id="app-root">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading survey configuration...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="copyNotification" class="copy-notification">
+        Requirements copied to clipboard!
+    </div>
+
+    <script>
+        class SurveyApp {
+            constructor() {
+                this.config = null;
+                this.currentAnswers = {};
+                this.visibleQuestions = [];
+                this.showSummary = false;
+                this.debounceTimer = null;
+                
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadConfig();
+                    this.render();
+                } catch (error) {
+                    this.showError(error.message);
+                    console.error('Error loading config:', error);
+                }
+            }
+
+            // Enhanced JSON parsing with detailed error information
+            parseJsonWithDetailedErrors(jsonString) {
+                try {
+                    return JSON.parse(jsonString);
+                } catch (error) {
+                    // Extract position information from error message
+                    const positionMatch = error.message.match(/position\s+(\d+)/i);
+                    const position = positionMatch ? parseInt(positionMatch[1]) : null;
+                    
+                    let detailedError = {
+                        originalError: error.message,
+                        position: position,
+                        context: null,
+                        lineNumber: null,
+                        columnNumber: null,
+                        suggestions: []
+                    };
+
+                    if (position !== null && position < jsonString.length) {
+                        // Calculate line and column numbers
+                        const beforeError = jsonString.substring(0, position);
+                        const lines = beforeError.split('\n');
+                        detailedError.lineNumber = lines.length;
+                        detailedError.columnNumber = lines[lines.length - 1].length + 1;
+
+                        // Get context around the error
+                        const contextStart = Math.max(0, position - 50);
+                        const contextEnd = Math.min(jsonString.length, position + 50);
+                        const contextBefore = jsonString.substring(contextStart, position);
+                        const errorChar = jsonString.charAt(position);
+                        const contextAfter = jsonString.substring(position + 1, contextEnd);
+                        
+                        detailedError.context = {
+                            before: contextBefore,
+                            errorChar: errorChar,
+                            after: contextAfter,
+                            fullContext: contextBefore + errorChar + contextAfter
+                        };
+
+                        // Analyze the error and provide suggestions
+                        detailedError.suggestions = this.generateJsonSuggestions(jsonString, position, error.message);
+                    }
+
+                    throw detailedError;
+                }
+            }
+
+            // Generate helpful suggestions based on common JSON errors
+            generateJsonSuggestions(jsonString, position, originalError) {
+                const suggestions = [];
+                const charAtPosition = jsonString.charAt(position);
+                const contextBefore = jsonString.substring(Math.max(0, position - 20), position);
+                const contextAfter = jsonString.substring(position, Math.min(jsonString.length, position + 20));
+
+                // Common error patterns and suggestions
+                if (originalError.toLowerCase().includes('unexpected token')) {
+                    if (charAtPosition === ',') {
+                        suggestions.push("Remove the trailing comma - JSON doesn't allow trailing commas");
+                    } else if (charAtPosition === '}' || charAtPosition === ']') {
+                        suggestions.push("Check if there's a missing comma before this closing bracket");
+                    } else if (charAtPosition === '{' || charAtPosition === '[') {
+                        suggestions.push("Check if there's a missing comma or colon before this opening bracket");
+                    } else if (charAtPosition === '"') {
+                        suggestions.push("Check for unescaped quotes or missing commas");
+                    }
+                }
+
+                if (originalError.toLowerCase().includes('expected') && originalError.toLowerCase().includes('property name')) {
+                    suggestions.push("Property names must be enclosed in double quotes");
+                    suggestions.push("Make sure there's no trailing comma before the closing brace");
+                }
+
+                if (originalError.toLowerCase().includes('unexpected end')) {
+                    suggestions.push("Missing closing bracket ] or brace }");
+                    suggestions.push("Count your opening and closing brackets/braces to ensure they match");
+                }
+
+                // Check for common formatting issues
+                if (contextBefore.includes("'") || contextAfter.includes("'")) {
+                    suggestions.push("Use double quotes (\") instead of single quotes (') for strings");
+                }
+
+                // Check for potential Unicode/encoding issues
+                const hasUnicodeChars = /[^\x00-\x7F]/.test(contextBefore + contextAfter);
+                if (hasUnicodeChars) {
+                    suggestions.push("Check for invisible Unicode characters that might be causing parsing issues");
+                }
+
+                if (suggestions.length === 0) {
+                    suggestions.push("Check the JSON syntax around this position");
+                    suggestions.push("Use a JSON validator tool to identify the specific issue");
+                    suggestions.push("Common issues: trailing commas, unmatched brackets, or incorrect quotes");
+                }
+
+                return suggestions;
+            }
+
+            async loadConfig() {
+                const embeddedConfigJsonString = `
+[
+  {
+    "id": "section_1748092757854_dzyudmyxf",
+    "title": "Appraisal",
+    "questions": [
+      {
+        "id": "question_1748092801143_knemh2939",
+        "text": "Is this a CRE secured transaction > than $500M, a residential loan > $400M, or a R/E secured business loan >$1,000M?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748092801143_yoqn4i2ph",
+            "text": "Yes",
+            "summaryLabel": "An appraisal is required and should not be dated more than 12 months prior to loan closing. Appraisal dated in excess of 12 months are considered Policy Exceptions. Note, per policy loan to value is calculated based on the lesser of the properties purchase price or appraised value.",
+            "childQuestions": [
+              {
+                "id": "question_1748092831323_smztsah9s",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748092831323_0nsat4b3l",
+                    "text": "Secured property is subject to a bank ordered appraisal showing a maximum loan to value not to exceed XX%",
+                    "summaryLabel": "Secured property is subject to a bank ordered appraisal showing a maximum loan to value not to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748092831323_g6a6hi4cy",
+                    "text": "Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stabilized value' with a maximum loan to value not to exceed XX%",
+                    "summaryLabel": "Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stabilized value' with a maximum loan to value not to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748092875136_5j3jw38jf",
+                    "text": "Bank ordered appraisal already in hand.",
+                    "summaryLabel": "Bank ordered appraisal already in hand."
+                  },
+                  {
+                    "id": "option_1748092876208_400rkqxzk",
+                    "text": "For complex or special purpose property may warrant an  appraisal even if the loan amount is $500,000 or less.",
+                    "summaryLabel": "For complex or special purpose property may warrant an  appraisal even if the loan amount is $500,000 or less."
+                  },
+                  {
+                    "id": "option_1748092877243_gqsiksy2a",
+                    "text": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution.",
+                    "summaryLabel": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution."
+                  },
+                  {
+                    "id": "option_1748092878245_yuee43yx1",
+                    "text": "Construction Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum loan to value not to exceed XX%. Actual construction hard costs of a $1 million or greater or which are complex in nature require a feasibility analysis, either contained within the appraisal or in a separate study provided by a qualified third party. A highest and best use analysis contained within the real estate appraisal can also satisfy this requirement.",
+                    "summaryLabel": "Construction Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum loan to value not to exceed XX%. Actual construction hard costs of a $1 million or greater or which are complex in nature require a feasibility analysis, either contained within the appraisal or in a separate study provided by a qualified third party. A highest and best use analysis contained within the real estate appraisal can also satisfy this requirement."
+                  },
+                  {
+                    "id": "option_1748092880294_hmqg0a2iq",
+                    "text": "Hotel/Motel Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum real estate loan to value not to exceed XX% . The subject appraisal must break out values of real estate only as well as FF&E and other values.",
+                    "summaryLabel": "Hotel/Motel Loan - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as complete/as stablilized value' with a maximum real estate loan to value not to exceed XX% . The subject appraisal must break out values of real estate only as well as FF&E and other values."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748092801143_zglydj60v",
+            "text": "No",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748093045068_5klsrkpoc",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748093045068_w5wcvrliw",
+                    "text": "An independently prepared evaluation is required.",
+                    "summaryLabel": "An independently prepared evaluation is required."
+                  },
+                  {
+                    "id": "option_1748093045068_h85i1flm1",
+                    "text": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%",
+                    "summaryLabel": "An appraisal is required - Secured property is subject to a bank ordered appraisal showing a maximum loan to value to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748093072341_ddhqyoo45",
+                    "text": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%",
+                    "summaryLabel": "An appraisal is required - Secured property is subject to a MAI bank ordered appraisal showing an 'as is' value and 'as stablilized value' with a a maximum loan to value to exceed XX%"
+                  },
+                  {
+                    "id": "option_1748093072863_kw12023v0",
+                    "text": "For obligation secured by CRE < $500M or residential loan <$400M, A recent (under 12months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%.",
+                    "summaryLabel": "For obligation secured by CRE < $500M or residential loan <$400M, A recent (under 12months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%."
+                  },
+                  {
+                    "id": "option_1748093073427_qzd1cwmz5",
+                    "text": "Not required - real estate is taken solely as an abundance of caution, with no reliance placed on the property value for underwriting or analysis purposes",
+                    "summaryLabel": "Not required - real estate is taken solely as an abundance of caution, with no reliance placed on the property value for underwriting or analysis purposes"
+                  },
+                  {
+                    "id": "option_1748093074072_24mpfwkkr",
+                    "text": "Not required - The lien on the real estate has been taken for purposes other than the real estate’s value. The Bank, for instance, may take a lien on real property in order to protect its interest or control over other collateral.",
+                    "summaryLabel": "Not required - The lien on the real estate has been taken for purposes other than the real estate’s value. The Bank, for instance, may take a lien on real property in order to protect its interest or control over other collateral."
+                  },
+                  {
+                    "id": "option_1748093074662_bnrv67a9s",
+                    "text": "Not required - A lease is entered into, unless the lease is the economic equivalent of a purchase or sale of the leased real estate.",
+                    "summaryLabel": "Not required - A lease is entered into, unless the lease is the economic equivalent of a purchase or sale of the leased real estate."
+                  },
+                  {
+                    "id": "option_1748093075335_qi1ax1xpj",
+                    "text": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution.",
+                    "summaryLabel": "The Bank is accepting an appraisal prepared by an appraiser engaged directly by another federally regulated financial institution."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748093315942_pg4ulzlng",
+    "title": "Environmental",
+    "questions": [
+      {
+        "id": "question_1748093328491_0fyzyf3h5",
+        "text": "Is this a CRE Secured loan, other than 1-4 family residential property or real estate taken as an abundance if caution?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748093328491_z5gp84cwk",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748093384001_z4rwggvn5",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748093384001_mh41q0vn4",
+                    "text": "The loan is less than $500M and low risk category  is less than $500M",
+                    "summaryLabel": "An environmental database search and documented officer site visit is required"
+                  },
+                  {
+                    "id": "option_1748093384001_66pjlnysw",
+                    "text": "The loan is less than $500M and in high risk or elevated risk category",
+                    "summaryLabel": "A transaction screen and documented officer site visit is required"
+                  },
+                  {
+                    "id": "option_1748093489205_1xjkqaw27",
+                    "text": "The loan is between $500M and up to $3MM.",
+                    "summaryLabel": "A transaction screen is required."
+                  },
+                  {
+                    "id": "option_1748093495649_65hzqtdnz",
+                    "text": "A loan of $3MM or more",
+                    "summaryLabel": "A Phase 1 assessment is required."
+                  },
+                  {
+                    "id": "option_1748093497130_vf9j72m0d",
+                    "text": "The property is located in a high risk category. High risk category properties include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt plants, Plating operations, Printing plants, Electronics Manufacturers, Handling, distribution, or manufacture of chemicals Automotive manufacture, repair or service, Dry cleaning plants, Foundries and metal smelting, Hospital and biomedicine manufacturers, Waste handling, distribution and disposal",
+                    "summaryLabel": "A Phase 1 assessment is required."
+                  },
+                  {
+                    "id": "option_1748093706160_to3uifnk6",
+                    "text": "This is an SBA financed property",
+                    "summaryLabel": "Please refer to the SBA Environmental SOP"
+                  }
+                ],
+                "required": true
+              },
+              {
+                "id": "question_1748093396349_uxyn6whxm",
+                "text": "If applicable: What further action is required? Is further investigation warranted? Does the investigation result in the need for further actions (ex- remediation, monitoring, encapsulation. Has the action been taken? Has the issue been resolved? If not resolved, is the risk being accepted? Please describe:",
+                "type": "freeform",
+                "required": false,
+                "placeholder": "(Optional) Enter your answer here...."
+              }
+            ]
+          },
+          {
+            "id": "option_1748093328491_hzs2dqwtz",
+            "text": "No",
+            "summaryLabel": "An environmental site assessment in not required."
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748094682768_5hd9bzblr",
+    "title": "Flood",
+    "questions": [
+      {
+        "id": "question_1748095716827_a5yuajagg",
+        "text": "Is the loan secured by real estate?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748095716827_35qwynfb0",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748095774361_jjpz5ymai",
+                "text": "Has flood certificate been generated?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748095774362_lyh9afqic",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748095873482_a34mjav1s",
+                        "text": "Did the certificate indicate that the property is in a flood zone (AE/V)?",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748095873482_z1tv7rauv",
+                            "text": "Yes",
+                            "summaryLabel": "The following conditions are required: Customer was informed 10 days prior to closing, The flood insurance been reviewed by compliance, Sufficient flood insurance has been obtained"
+                          },
+                          {
+                            "id": "option_1748095873482_bbaabsfqb",
+                            "text": "No",
+                            "summaryLabel": ""
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748095774362_fqz2nn8bc",
+                    "text": "No",
+                    "summaryLabel": "Flood Cert must be generated."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748095716827_1aw2lypqw",
+            "text": "No",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748096165847_khnrpicux",
+                "text": "Is the loan a guaranteed SBA loan secured by building contents?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748096165847_g4lwpqk9m",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748096609969_66szwonre",
+                        "text": "Did the certificate indicate that the property is in a flood zone (AE/V)?",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748096609969_bq8keed23",
+                            "text": "Yes",
+                            "summaryLabel": "The following conditions are required: Customer was informed 10 days prior to closing, The flood insurance been reviewed by compliance, Sufficient flood insurance has been obtained"
+                          },
+                          {
+                            "id": "option_1748096609969_k5lpmeijo",
+                            "text": "No",
+                            "summaryLabel": ""
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748096165847_hk72mhabk",
+                    "text": "No",
+                    "summaryLabel": ""
+                  }
+                ],
+                "required": true
+              }
+            ]
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748096094455_zrco86nbv",
+    "title": "Financial Statements",
+    "questions": [
+      {
+        "id": "question_1748097321180_yfc2dcdi1",
+        "text": "Please select the type of loan below:",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748097321180_1xfwlq3c9",
+            "text": "C&I Loan(including Owner Occupied CRE)",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097392603_zr5jskkad",
+                "text": "Please select from the options below:",
+                "type": "checkbox",
+                "options": [
+                  {
+                    "id": "option_1748097392603_24hkxdnza",
+                    "text": "Is the dollar amount of the relationship $10MM or more?",
+                    "summaryLabel": "C&I requirements: Audited financial statements are required."
+                  },
+                  {
+                    "id": "option_1748097392603_h6okgd7g1",
+                    "text": "Is the dollar amount of the relationship between $2.5MM to $10MM?",
+                    "summaryLabel": "C&I requirements: Review quality statements or better are required."
+                  },
+                  {
+                    "id": "option_1748097482948_rq0srwbbj",
+                    "text": "Is the dollar amount of the relationship less that $2.5MM?",
+                    "summaryLabel": "C&I requirements: Tax returns or compiled statements, with supporting schedules including K-1s if applicable, are required"
+                  },
+                  {
+                    "id": "option_1748097716826_gjn1ka627",
+                    "text": "Is Owner-occupied real estate, held in a separate entity?",
+                    "summaryLabel": "Yes-requires tax returns, with supporting schedules including K-1’s if applicable"
+                  },
+                  {
+                    "id": "option_1748097718772_hmi9fl85x",
+                    "text": "Is the loan for a fishing vessel & up to $5.0MM?",
+                    "summaryLabel": "Yes-requires tax returns, with supporting schedules including K-1’s if applicable"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097321180_febgdm9kx",
+            "text": "Non Owner Occupied CRE",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097767977_tkgkx8f1l",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748097767977_i7k5rlm4m",
+                    "text": "$1MM or more",
+                    "summaryLabel": "$1 million or more require management-prepared financial statements and tax returns with supporting schedules, including K-1s if applicable and Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained any major tenants. FYE statements within 120 days of FYE or 30 days of filing"
+                  },
+                  {
+                    "id": "option_1748097767977_t2ioa2x2f",
+                    "text": "Less than $1MM",
+                    "summaryLabel": "Less than $1MM require management-prepared financial statements or tax returns. Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants. FYE statements within 120 days of FYE or 30 days of filing"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097859212_mvop6vdbd",
+            "text": "Hotel/Motel",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748097924322_fjihy944g",
+                "text": "Please select any of the following:",
+                "type": "checkbox",
+                "options": [
+                  {
+                    "id": "option_1748097924322_s5vlzfk4o",
+                    "text": "$3MM or greater",
+                    "summaryLabel": "Relationships of $3,000,000 or greater require CPA review level statements"
+                  },
+                  {
+                    "id": "option_1748097924322_fwlkjwv6j",
+                    "text": "$1MM to $3MM",
+                    "summaryLabel": "Relationships of $1,000,000 up to $3,000,000 require CPA Compilation level statements"
+                  },
+                  {
+                    "id": "option_1748098032833_kfnsrnbfl",
+                    "text": "Less than $1MM",
+                    "summaryLabel": "Relationships under $1,000,000 require tax returns and complete debt schedules."
+                  },
+                  {
+                    "id": "option_1748098274614_46ozo709n",
+                    "text": "Optional- Quarterly or Monthly interim statements",
+                    "summaryLabel": "Optional- Quarterly or Monthly interim statements"
+                  },
+                  {
+                    "id": "option_1748098275228_d9q5vddr6",
+                    "text": "Optional- For Flagged national brand hotels, financial reports provided to the franchisor may be required on a monthly or quarterly basis",
+                    "summaryLabel": "Optional- For Flagged national brand hotels, financial reports provided to the franchisor may be required on a monthly or quarterly basis"
+                  },
+                  {
+                    "id": "option_1748098275839_5kaqgjsaz",
+                    "text": "Optional- STAR reports may be required on a quarterly or annual basis",
+                    "summaryLabel": "Optional- STAR reports may be required on a quarterly or annual basis"
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097867734_evbtwqqb8",
+            "text": "Construction Loan (no permanent financing)",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098405253_xbnmos5c1",
+                "text": "Is this going to be an Owner Occupied construction project?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098405253_3f3o3u64n",
+                    "text": "Yes",
+                    "summaryLabel": "",
+                    "childQuestions": [
+                      {
+                        "id": "question_1748098552567_9tujdizxf",
+                        "text": "Please select one of the following:",
+                        "type": "radio",
+                        "options": [
+                          {
+                            "id": "option_1748098552567_hw99i2vda",
+                            "text": "$1MM or greater",
+                            "summaryLabel": "$1 million or more require management-prepared financial statements and tax returns with supporting schedules, including K-1s if applicable and Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants"
+                          },
+                          {
+                            "id": "option_1748098552567_34aul786m",
+                            "text": "Less than $1MM",
+                            "summaryLabel": "Less than $1MM require management-prepared financial statements or tax returns. Rent rolls and/or copies of leases should be obtained if applicable. Leases should be obtained for any major tenants."
+                          }
+                        ],
+                        "required": true
+                      }
+                    ]
+                  },
+                  {
+                    "id": "option_1748098405253_wlim6f9ip",
+                    "text": "No",
+                    "summaryLabel": "Standard construction requirements: A detailed construction budget , sources & used of funds & detailed outline of project is required, and other applicable to the borrower's experience, project risk, etc."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748097868592_hyawuzjf0",
+            "text": "Loan to Individual/Sole Proprietor/Single Member LLC",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098749434_bofhlm5ye",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098749434_0293qwgwh",
+                    "text": "Personal Tax Returns with supporting schedules, including K-1s if applicable",
+                    "summaryLabel": "Personal Tax Returns with supporting schedules, including K-1s if applicable. Personal financial statements should be on the Bank’s form and dated within 12 months of any financing request."
+                  },
+                  {
+                    "id": "option_1748098749434_opuai53o3",
+                    "text": "Annual submission of Personal Federal Tax Returns for the Personal Guarantors, within 120 days of each year end, or upon filing with the IRS if an extension is provided.",
+                    "summaryLabel": "Annual submission of Personal Federal Tax Returns for the Personal Guarantors, within 120 days of each year end, or upon filing with the IRS if an extension is provided. Submission of a Personal Financial Statement for the Personal Guarantors, within 12 months of previous submission."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748098817873_gios8s5jj",
+            "text": "SBLC Loan",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748098827952_5as6gzjiz",
+                "text": "Please select one of the following:",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748098827952_7i4kbxfdj",
+                    "text": "Standard Requirements",
+                    "summaryLabel": "SBLC Loan requirements: 2 years business tax returns, 2 months of Bank statements if Borrower is an operating company and is a new Borrower to the Bank, 2 years affiliate tax returns if applicable, 2 years personal tax returns, Copies of any mortgage loan statements, Current accounts payable aging, if applicable, Current accounts receivable aging, if applicable, Current personal financial statement (less than six months old), Current rent roll, if applicable, Interims if tax returns are more than six months old",
+                    "childQuestions": []
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748099340433_et3x1z06o",
+            "text": "Other",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748099360515_bxr0rbuu0",
+                "text": "Please list the loan type:",
+                "type": "freeform",
+                "required": false,
+                "placeholder": "Enter your answer..."
+              }
+            ]
+          }
+        ],
+        "required": true
+      },
+      {
+        "id": "question_1748098976128_m04mwgpo3",
+        "text": "Guarantor Selection",
+        "type": "checkbox",
+        "options": [
+          {
+            "id": "option_1748098976128_mqjbdshos",
+            "text": "Corporate Guarantors",
+            "summaryLabel": "Corporate guarantor requirements: FYE Statements within 120 days of FYE or 30 days of filing, Interims, if required, Any supporting statements/reports, if required, Projections if applicable or required"
+          },
+          {
+            "id": "option_1748098976128_ws2zbrjny",
+            "text": "Personal Guarantors",
+            "summaryLabel": "Personal guarantor requirements: Personal tax returns, with all schedules within 120 days of FYE or 30 days of filing, and Personal financial statement (within 12 months of prior statement)"
+          }
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "section_1748097138043_in6t5yiz0",
+    "title": "SWAPS & ARC Loans",
+    "questions": [
+      {
+        "id": "question_1748099191131_xcjs08e6u",
+        "text": "Is this a SWAP Loan?",
+        "type": "radio",
+        "options": [
+          {
+            "id": "option_1748099191131_gp1u9gtex",
+            "text": "Yes",
+            "summaryLabel": "",
+            "childQuestions": [
+              {
+                "id": "question_1748099210812_bf0u4scv9",
+                "text": "Has the Swap Checklist been completed and all required pre-closing documents been received?",
+                "type": "radio",
+                "options": [
+                  {
+                    "id": "option_1748099210812_ajrwuj16l",
+                    "text": "Yes",
+                    "summaryLabel": ""
+                  },
+                  {
+                    "id": "option_1748099210812_uquj9fez0",
+                    "text": "No",
+                    "summaryLabel": "See the Swap checklist for incomplete items."
+                  }
+                ],
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "option_1748099191131_ig3lr49ri",
+            "text": "No",
+            "summaryLabel": ""
+          }
+        ],
+        "required": true
+      }
+    ]
+  }
+]
+                `;
+
+                try {
+                    this.config = this.parseJsonWithDetailedErrors(embeddedConfigJsonString.trim());
+                    
+                    if (!Array.isArray(this.config)) {
+                        throw new Error('Invalid configuration format: Expected an array of sections. Check brackets.');
+                    }
+
+                    for (const section of this.config) {
+                        if (!section.id || !section.title || !Array.isArray(section.questions)) {
+                            throw new Error(`Invalid section structure: A section is missing 'id', 'title', or 'questions' array. Found: ${JSON.stringify(section).substring(0, 100)}...`);
+                        }
+                    }
+
+                } catch (error) {
+                    if (error.originalError) {
+                        // This is our detailed error object
+                        throw new Error(this.formatDetailedJsonError(error));
+                    } else {
+                        // Regular error
+                        throw new Error(`Failed to parse embedded configuration: ${error.message}`);
+                    }
+                }
+            }
+
+            // Format detailed JSON error for display
+            formatDetailedJsonError(detailedError) {
+                let message = `JSON Parsing Error
+
+📍 Error Location:`;
+                
+                if (detailedError.lineNumber && detailedError.columnNumber) {
+                    message += `
+   Line: ${detailedError.lineNumber}
+   Column: ${detailedError.columnNumber}`;
+                }
+                
+                if (detailedError.position !== null) {
+                    message += `
+   Character Position: ${detailedError.position}`;
+                }
+
+                message += `
+
+🔍 Original Error: ${detailedError.originalError}`;
+
+                if (detailedError.context) {
+                    message += `
+
+📝 Context Around Error:
+   "${detailedError.context.before}►${detailedError.context.errorChar}◄${detailedError.context.after}"
+   
+   Where ► marks the error position`;
+                }
+
+                if (detailedError.suggestions && detailedError.suggestions.length > 0) {
+                    message += `
+
+💡 Suggestions:`;
+                    detailedError.suggestions.forEach((suggestion, index) => {
+                        message += `
+   ${index + 1}. ${suggestion}`;
+                    });
+                }
+
+                message += `
+
+🛠️ How to fix:
+   1. Copy the JSON content to a text editor with line numbers
+   2. Go to line ${detailedError.lineNumber || 'N/A'}, column ${detailedError.columnNumber || 'N/A'}
+   3. Look for the issue described in the suggestions above
+   4. Common fixes: remove trailing commas, add missing quotes, match brackets`;
+
+                return message;
+            }
+
+            // All your other existing methods remain the same...
+            updateVisibleQuestions() {
+                this.visibleQuestions = [];
+                this.traverseQuestions(this.config);
+                this.updateProgress();
+            }
+
+            traverseQuestions(sections) {
+                for (const section of sections) {
+                    if (!section.questions) continue;
+                    
+                    for (const question of section.questions) {
+                        this.visibleQuestions.push({
+                            ...question,
+                            sectionId: section.id,
+                            sectionTitle: section.title
+                        });
+                        this.traverseChildQuestions(question, section.id);
+                    }
+                }
+            }
+
+            traverseChildQuestions(question, sectionId) {
+                if (!question.options) return;
+                
+                if (question.type === 'radio') {
+                    const selectedAnswerId = this.currentAnswers[question.id];
+                    const selectedOption = question.options.find(opt => opt.id === selectedAnswerId);
+                    
+                    if (selectedOption && selectedOption.childQuestions) {
+                        for (const childQuestion of selectedOption.childQuestions) {
+                            this.visibleQuestions.push({
+                                ...childQuestion,
+                                isChild: true,
+                                parentQuestionId: question.id,
+                                sectionId: sectionId
+                            });
+                            this.traverseChildQuestions(childQuestion, sectionId);
+                        }
+                    }
+                } 
+                else if (question.type === 'checkbox') {
+                    const selectedAnswerIds = this.currentAnswers[question.id] || [];
+                    
+                    for (const option of question.options) {
+                        if (selectedAnswerIds.includes(option.id) && option.childQuestions) {
+                            for (const childQuestion of option.childQuestions) {
+                                this.visibleQuestions.push({
+                                    ...childQuestion,
+                                    isChild: true,
+                                    parentQuestionId: question.id,
+                                    sectionId: sectionId
+                                });
+                                this.traverseChildQuestions(childQuestion, sectionId);
+                            }
+                        }
+                    }
+                }
+            }
+
+            updateProgress() {
+                if (this.visibleQuestions.length === 0) return;
+                
+                const answeredQuestions = this.visibleQuestions.filter(q => {
+                    const answer = this.currentAnswers[q.id];
+                    if (q.type === 'checkbox') {
+                        return Array.isArray(answer) && answer.length > 0;
+                    }
+                    return answer !== undefined && answer !== '' && answer !== null;
+                }).length;
+                
+                const totalVisibleQuestions = this.visibleQuestions.length;
+                const progress = totalVisibleQuestions > 0 ? Math.round((answeredQuestions / totalVisibleQuestions) * 100) : 0;
+                
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) {
+                    progressFill.style.width = `${progress}%`;
+                }
+            }
+
+            handleAnswerChange(questionId, value, isCheckbox = false, isFreeform = false) {
+                if (isCheckbox) {
+                    if (!this.currentAnswers[questionId]) {
+                        this.currentAnswers[questionId] = [];
+                    }
+                    
+                    const currentValues = this.currentAnswers[questionId];
+                    const valueIndex = currentValues.indexOf(value);
+                    
+                    if (valueIndex > -1) {
+                        currentValues.splice(valueIndex, 1);
+                    } else {
+                        currentValues.push(value);
+                    }
+                } else {
+                    this.currentAnswers[questionId] = value;
+                }
+                
+                this.clearValidationErrors();
+
+                if (isFreeform) {
+                    clearTimeout(this.debounceTimer);
+                    this.debounceTimer = setTimeout(() => {
+                        this.updateProgress();
+                        this.updateVisibility();
+                    }, 300);
+                } else {
+                    this.updateVisibility();
+                    this.render();
+                }
+            }
+
+            updateVisibility() {
+                this.updateVisibleQuestions();
+                
+                const allSections = document.querySelectorAll('.section');
+                allSections.forEach(section => {
+                    const sectionId = section.getAttribute('data-section-id');
+                    const hasVisibleQuestions = this.visibleQuestions.some(q => 
+                        q.sectionId === sectionId && !q.isChild
+                    );
+                    
+                    if (hasVisibleQuestions) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+
+                const allQuestions = document.querySelectorAll('.question');
+                allQuestions.forEach(questionEl => {
+                    const questionId = questionEl.getAttribute('data-question-id');
+                    const isVisible = this.visibleQuestions.some(q => q.id === questionId);
+                    
+                    if (isVisible) {
+                        questionEl.classList.remove('hidden');
+                    } else {
+                        questionEl.classList.add('hidden');
+                    }
+                });
+
+                const allChildContainers = document.querySelectorAll('.child-questions');
+                allChildContainers.forEach(container => {
+                    const parentQuestionId = container.getAttribute('data-parent-id');
+                    const hasVisibleChildren = this.visibleQuestions.some(q => 
+                        q.isChild && q.parentQuestionId === parentQuestionId
+                    );
+                    
+                    if (hasVisibleChildren) {
+                        container.classList.remove('hidden');
+                    } else {
+                        container.classList.add('hidden');
+                    }
+                });
+            }
+
+            validateAnswers() {
+                let isValid = true;
+                const requiredQuestions = this.visibleQuestions.filter(q => q.required);
+                
+                for (const question of requiredQuestions) {
+                    const answer = this.currentAnswers[question.id];
+                    let hasAnswer = false;
+                    
+                    if (question.type === 'checkbox') {
+                        hasAnswer = Array.isArray(answer) && answer.length > 0;
+                    } else if (question.type === 'freeform') {
+                        hasAnswer = answer !== undefined && answer !== null && typeof answer === 'string' && answer.trim() !== '';
+                    }
+                    else {
+                        hasAnswer = answer !== undefined && answer !== '' && answer !== null;
+                    }
+                    
+                    if (!hasAnswer) {
+                        this.showValidationError(question.id, 'This question is required');
+                        isValid = false;
+                    }
+                }
+                
+                return isValid;
+            }
+
+            showValidationError(questionId, message) {
+                const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
+                if (questionElement) {
+                    questionElement.classList.add('error');
+                    const errorElement = questionElement.querySelector('.validation-error');
+                    if (errorElement) {
+                        errorElement.textContent = message;
+                    }
+                }
+            }
+
+            clearValidationErrors() {
+                const errorElements = document.querySelectorAll('.question.error');
+                errorElements.forEach(el => {
+                    el.classList.remove('error');
+                    const errorMsg = el.querySelector('.validation-error');
+                    if (errorMsg) errorMsg.textContent = '';
+                });
+            }
+
+            generateSummaryBySection() {
+                const summaryBySection = {};
+                
+                for (const section of this.config) {
+                    summaryBySection[section.id] = {
+                        title: section.title,
+                        items: []
+                    };
+                }
+                
+                for (const question of this.visibleQuestions) {
+                    if (question.sectionId) {
+                        const sectionSummary = summaryBySection[question.sectionId];
+                        if (sectionSummary) {
+                            this.collectQuestionSummary(question, sectionSummary.items);
+                        }
+                    }
+                }
+                
+                Object.keys(summaryBySection).forEach(sectionId => {
+                    if (summaryBySection[sectionId].items.length === 0) {
+                        delete summaryBySection[sectionId];
+                    }
+                });
+                
+                return summaryBySection;
+            }
+
+            collectQuestionSummary(question, summaryItems) {
+                const answer = this.currentAnswers[question.id];
+                
+                if (question.type === 'radio' && answer && question.options) {
+                    const selectedOption = question.options.find(opt => opt.id === answer);
+                    if (selectedOption) {
+                        if (selectedOption.summaryLabel && selectedOption.summaryLabel.trim() !== '') {
+                            summaryItems.push(selectedOption.summaryLabel);
+                        }
+                    }
+                } else if (question.type === 'checkbox' && answer && Array.isArray(answer) && question.options) {
+                    for (const answerId of answer) {
+                        const selectedOption = question.options.find(opt => opt.id === answerId);
+                        if (selectedOption) {
+                            if (selectedOption.summaryLabel && selectedOption.summaryLabel.trim() !== '') {
+                                summaryItems.push(selectedOption.summaryLabel);
+                            }
+                        }
+                    }
+                } else if (question.type === 'freeform' && answer && typeof answer === 'string' && answer.trim() !== '') {
+                    summaryItems.push(`${question.text}: ${answer.trim()}`);
+                }
+            }
+
+            generateSummary() {
+                const summaryItems = [];
+                this.collectSummaryItems(this.visibleQuestions, summaryItems);
+                return summaryItems.filter(item => item && item.trim() !== '');
+            }
+
+            collectSummaryItems(questions, summaryItems) {
+                for (const question of questions) {
+                    const answer = this.currentAnswers[question.id];
+                    
+                    if (question.type === 'radio' && answer && question.options) {
+                        const selectedOption = question.options.find(opt => opt.id === answer);
+                        if (selectedOption) {
+                            if (selectedOption.summaryLabel && selectedOption.summaryLabel.trim() !== '') {
+                                summaryItems.push(selectedOption.summaryLabel);
+                            }
+                        }
+                    } else if (question.type === 'checkbox' && answer && Array.isArray(answer) && question.options) {
+                        for (const answerId of answer) {
+                            const selectedOption = question.options.find(opt => opt.id === answerId);
+                            if (selectedOption) {
+                                if (selectedOption.summaryLabel && selectedOption.summaryLabel.trim() !== '') {
+                                    summaryItems.push(selectedOption.summaryLabel);
+                                }
+                            }
+                        }
+                    } else if (question.type === 'freeform' && answer && typeof answer === 'string' && answer.trim() !== '') {
+                        summaryItems.push(`${question.text}: ${answer.trim()}`);
+                    }
+                }
+            }
+
+            generateWordFormattedSummary() {
+                const summaryBySection = this.generateSummaryBySection();
+                
+                if (Object.keys(summaryBySection).length === 0) {
+                    return 'Requirements Summary\n\nNo specific requirements based on your answers where summary labels were defined.';
+                }
+
+                let formattedText = 'Requirements Summary\n\n';
+
+                Object.values(summaryBySection).forEach(section => {
+                    formattedText += `${section.title}\n`;
+                    formattedText += '─'.repeat(section.title.length) + '\n';
+                    
+                    section.items.forEach(item => {
+                        formattedText += `• ${item}\n`;
+                    });
+                    
+                    formattedText += '\n';
+                });
+
+                return formattedText.trim();
+            }
+
+            async copyRequirementsToClipboard() {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.textContent;
+                
+                try {
+                    const formattedText = this.generateWordFormattedSummary();
+                    
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(formattedText);
+                    } else {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = formattedText;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-99999px';
+                        textArea.style.top = '0';
+                        textArea.setAttribute('readonly', '');
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+                    
+                    copyBtn.textContent = '✓ Copied!';
+                    copyBtn.classList.add('success');
+                    this.showCopyNotification();
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.classList.remove('success');
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Failed to copy to clipboard:', error);
+                    
+                    copyBtn.textContent = '✗ Copy Failed';
+                    copyBtn.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.style.background = '';
+                        copyBtn.classList.remove('success');
+                    }, 2000);
+                }
+            }
+
+            showCopyNotification() {
+                const notification = document.getElementById('copyNotification');
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            escapeHtml(text) {
+                if (text === null || text === undefined) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            renderQuestion(question) {
+                const isRequired = question.required ? '<span class="question-required">*</span>' : '';
+                const childClass = question.isChild ? ' child-question' : '';
+                
+                let optionsHtml = '';
+                
+                if (question.type === 'radio' && question.options) {
+                    optionsHtml = question.options.map(option => {
+                        const checked = this.currentAnswers[question.id] === option.id ? 'checked' : '';
+                        return `
+                            <div class="answer-option">
+                                <label>
+                                    <input type="radio" 
+                                           name="${question.id}" 
+                                           value="${this.escapeHtml(option.id)}" 
+                                           ${checked}
+                                           onchange="app.handleAnswerChange('${question.id}', '${option.id}')">
+                                    ${this.escapeHtml(option.text)}
+                                </label>
+                            </div>
+                        `;
+                    }).join('');
+                } else if (question.type === 'checkbox' && question.options) {
+                    const selectedValues = this.currentAnswers[question.id] || [];
+                    optionsHtml = question.options.map(option => {
+                        const checked = selectedValues.includes(option.id) ? 'checked' : '';
+                        return `
+                            <div class="answer-option">
+                                <label>
+                                    <input type="checkbox" 
+                                           value="${this.escapeHtml(option.id)}" 
+                                           ${checked}
+                                           onchange="app.handleAnswerChange('${question.id}', '${option.id}', true)">
+                                    ${this.escapeHtml(option.text)}
+                                </label>
+                            </div>
+                        `;
+                    }).join('');
+                } else if (question.type === 'freeform') {
+                    const value = this.currentAnswers[question.id] || '';
+                    const placeholder = question.placeholder || 'Enter your answer...';
+                    optionsHtml = `
+                        <input type="text" 
+                               class="freeform-input" 
+                               value="${this.escapeHtml(value)}"
+                               placeholder="${this.escapeHtml(placeholder)}"
+                               oninput="app.handleAnswerChange('${question.id}', this.value, false, true)">
+                    `;
+                }
+
+                return `
+                    <div class="question${childClass} fade-in" data-question-id="${question.id}">
+                        <div class="question-text">
+                            ${this.escapeHtml(question.text)}${isRequired}
+                        </div>
+                        ${optionsHtml}
+                        <div class="validation-error"></div>
+                    </div>
+                `;
+            }
+
+            renderSections() {
+                if (!this.config || this.config.length === 0) {
+                    return '<div class="error-message">No survey configuration found.</div>';
+                }
+
+                this.updateVisibleQuestions();
+                
+                let html = '';
+                
+                this.config.forEach(section => {
+                    const sectionQuestions = section.questions || [];
+                    
+                    html += `
+                        <div class="section fade-in" data-section-id="${section.id}">
+                            <h2 class="section-title">${this.escapeHtml(section.title)}</h2>
+                            <div class="section-content">
+                    `;
+                    
+                    sectionQuestions.forEach(question => {
+                        let questionHtml = this.renderQuestion(question);
+                        
+                        const renderChildren = (q, parentHtml) => {
+                            if (q.options) {
+                                for (const option of q.options) {
+                                    if (option.childQuestions && option.childQuestions.length > 0) {
+                                        parentHtml += `<div class="child-questions" data-parent-id="${q.id}">`;
+                                        option.childQuestions.forEach(child => {
+                                            const childWithParent = { ...child, isChild: true, parentQuestionId: q.id };
+                                            parentHtml += this.renderQuestion(childWithParent);
+                                            parentHtml = renderChildren(child, parentHtml);
+                                        });
+                                        parentHtml += `</div>`;
+                                    }
+                                }
+                            }
+                            return parentHtml;
+                        };
+
+                        html += renderChildren(question, questionHtml);
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+
+                return html;
+            }
+
+            renderSummary() {
+                const summaryBySection = this.generateSummaryBySection();
+                
+                if (Object.keys(summaryBySection).length === 0) {
+                    return `
+                        <div class="summary fade-in">
+                            <h3 class="summary-title">Requirements Summary</h3>
+                            <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                                No specific requirements based on your answers where summary labels were defined.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                let summaryHtml = `
+                    <div class="summary fade-in">
+                        <h3 class="summary-title">Requirements Summary</h3>
+                `;
+
+                Object.values(summaryBySection).forEach(section => {
+                    summaryHtml += `
+                        <div class="summary-section">
+                            <h4 class="summary-section-title">${this.escapeHtml(section.title)}</h4>
+                            <div class="summary-section-content">
+                                ${section.items.map(item => `
+                                    <div class="summary-item">${this.escapeHtml(item)}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                summaryHtml += `</div>`;
+                
+                return summaryHtml;
+            }
+
+            render() {
+                const appRoot = document.getElementById('app-root');
+                
+                if (!this.config) {
+                    appRoot.innerHTML = `
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading survey configuration...</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (this.showSummary) {
+                    appRoot.innerHTML = `
+                        ${this.renderSummary()}
+                        <div class="submit-container">
+                            <button class="copy-btn" onclick="app.copyRequirementsToClipboard()">
+                                📋 Copy to Clipboard
+                            </button>
+                            <button class="submit-btn" onclick="app.restart()">
+                                Start New Survey
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    appRoot.innerHTML = `
+                        ${this.renderSections()}
+                        <div class="submit-container">
+                            <button class="submit-btn" onclick="app.submitSurvey()">
+                                Generate Requirements Summary
+                            </button>
+                        </div>
+                    `;
+                    
+                    this.updateVisibility();
+                }
+            }
+
+            submitSurvey() {
+                if (this.validateAnswers()) {
+                    this.showSummary = true;
+                    this.render();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const firstError = document.querySelector('.question.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            }
+
+            restart() {
+                this.currentAnswers = {};
+                this.showSummary = false;
+                this.clearValidationErrors();
+                this.render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Enhanced showError method with better formatting
+            showError(message) {
+                const appRoot = document.getElementById('app-root');
+                
+                // Check if this is a detailed JSON error (contains line breaks and specific format)
+                const isDetailedJsonError = message.includes('📍 Error Location:') || message.includes('JSON Parsing Error');
+                
+                if (isDetailedJsonError) {
+                    // Parse the detailed error message for better formatting
+                    const parts = message.split('\n');
+                    let formattedMessage = '<div class="error-title">JSON Configuration Error</div>';
+                    
+                    let currentSection = '';
+                    for (const part of parts) {
+                        const trimmedPart = part.trim();
+                        if (!trimmedPart) continue;
+                        
+                        if (trimmedPart.startsWith('📍')) {
+                            formattedMessage += '<div class="error-details"><strong>Error Location:</strong>';
+                        } else if (trimmedPart.startsWith('🔍')) {
+                            if (currentSection) formattedMessage += '</div>';
+                            formattedMessage += '<div class="error-details"><strong>Original Error:</strong><br>' + trimmedPart.replace('🔍 Original Error: ', '') + '</div>';
+                            currentSection = '';
+                        } else if (trimmedPart.startsWith('📝')) {
+                            formattedMessage += '<div class="error-context"><strong>Context Around Error:</strong><br>';
+                            currentSection = 'context';
+                        } else if (trimmedPart.startsWith('💡')) {
+                            if (currentSection) formattedMessage += '</div>';
+                            formattedMessage += '<div class="error-suggestions"><h4>💡 Suggestions:</h4><ul>';
+                            currentSection = 'suggestions';
+                        } else if (trimmedPart.startsWith('🛠️')) {
+                            if (currentSection === 'suggestions') formattedMessage += '</ul></div>';
+                            formattedMessage += '<div class="error-suggestions"><h4>🛠️ How to fix:</h4><ul>';
+                            currentSection = 'fixes';
+                        } else if (trimmedPart.match(/^\d+\./)) {
+                            // Numbered list item
+                            formattedMessage += '<li>' + trimmedPart.replace(/^\d+\.\s*/, '') + '</li>';
+                        } else if (trimmedPart.includes('Line:') || trimmedPart.includes('Column:') || trimmedPart.includes('Character Position:')) {
+                            formattedMessage += '<br>' + trimmedPart;
+                        } else if (trimmedPart.includes('►') && trimmedPart.includes('◄')) {
+                            // Context line with error markers
+                            const contextLine = trimmedPart.replace(/"/g, '').replace('►', '<span class="error-highlight">').replace('◄', '</span>');
+                            formattedMessage += '<br><code>' + contextLine + '</code>';
+                        } else if (currentSection) {
+                            formattedMessage += '<br>' + trimmedPart;
+                        }
+                    }
+                    
+                    // Close any open sections
+                    if (currentSection === 'suggestions' || currentSection === 'fixes') {
+                        formattedMessage += '</ul></div>';
+                    } else if (currentSection) {
+                        formattedMessage += '</div>';
+                    }
+                    
+                    appRoot.innerHTML = `<div class="error-message">${formattedMessage}</div>`;
+                } else {
+                    // Regular error message
+                    appRoot.innerHTML = `
+                        <div class="error-message">
+                            <div class="error-title">Configuration Error</div>
+                            <p>${message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        const app = new SurveyApp();
+    </script>
+</body>
+</html>
+

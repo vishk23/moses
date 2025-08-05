@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Conditions Survey - Admin</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Header Styles */
+        .admin-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3498db;
+            color: #3498db;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .admin-main {
+            display: flex;
+            flex: 1;
+            gap: 2rem;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sections-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .section-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .section-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #3498db;
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-item:hover {
+            background: #e9ecef;
+            border-color: #3498db;
+            transform: translateX(4px);
+        }
+
+        .section-item:hover::before {
+            opacity: 1;
+        }
+
+        .section-item.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border-color: #3498db;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .section-item.active::before {
+            opacity: 1;
+            background: white;
+        }
+
+        .section-item h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-meta {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .section-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #6c757d;
+            padding: 4rem 2rem;
+        }
+
+        .welcome-message h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .welcome-message p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Enhanced Editor Content */
+        .section-editor {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .section-title-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .section-title-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .section-title-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .questions-container {
+            margin-top: 1.5rem;
+        }
+
+        .questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .questions-header h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .question-editor {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-editor:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .question-content {
+            flex: 1;
+            margin: 0 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3498db;
+        }
+
+        .options-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            border: 2px solid #dee2e6;
+        }
+
+        .options-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .options-header h4 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .option-editor {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .option-editor:hover {
+            border-color: #27ae60;
+            box-shadow: 0 2px 12px rgba(39, 174, 96, 0.1);
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-label {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .option-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .child-questions {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #bdc3c7;
+        }
+
+        .child-questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .child-questions-header h5 {
+            color: #7f8c8d;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .child-question-editor {
+            background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+            border-left: 4px solid #3498db;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 10px 10px 0;
+            position: relative;
+        }
+
+        .child-question-editor::before {
+            content: '↳';
+            position: absolute;
+            left: -2px;
+            top: 1rem;
+            background: #3498db;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-content.large {
+            max-width: 1000px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .close {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        /* File drop zone */
+        .file-drop-zone {
+            border: 3px dashed #3498db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .file-drop-zone:hover {
+            border-color: #2980b9;
+            background: #e3f2fd;
+        }
+
+        .file-drop-zone.drag-over {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .file-drop-zone .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .validation-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .validation-success {
+            color: #27ae60;
+            font-weight: 600;
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .validation-error {
+            color: #e74c3c;
+            margin-bottom: 1.5rem;
+        }
+
+        .validation-error h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .validation-error ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .validation-error li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        /* Preview styles */
+        .preview-survey {
+            font-family: inherit;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .preview-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .preview-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .preview-question {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .preview-question h4 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .preview-option {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .preview-option input[type="text"] {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Copy Modal Styles */
+        .copy-modal .modal-body {
+            padding: 1rem;
+        }
+
+        .copy-textarea {
+            width: 100%;
+            height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            resize: none;
+            background: #f8f9fa;
+        }
+
+        .copy-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+        }
+
+        .copy-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Loading state */
+        .loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -20px 0 0 -20px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e9ecef;
+            border-left-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .admin-main {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 300px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-main {
+                padding: 1rem;
+            }
+
+            .content-body {
+                padding: 1rem;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .option-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .section-header {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <div>
+                        <h1>Loan Conditions Survey Admin</h1>
+                        <div class="header-subtitle">Create and manage your loan conditions survey</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="copy-embed-btn" class="btn btn-warning">📋 Copy for Embedding</button>
+                    <label for="file-input" class="btn btn-secondary">📁 Load Configuration</label>
+                    <input type="file" id="file-input" accept=".json" style="display: none;">
+                    <button id="save-btn" class="btn btn-primary">💾 Download Config</button>
+                    <button id="preview-btn" class="btn btn-outline">👁️ Preview</button>
+                    <button id="validate-btn" class="btn btn-success">✓ Validate</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Survey Sections</h3>
+                    <div class="status-indicator status-success" id="sections-count">0 sections</div>
+                </div>
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <button id="add-section-btn" class="btn btn-success btn-small">➕ Add New Section</button>
+                        <div id="sections-list" class="sections-list"></div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>Quick Actions</h3>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <button id="clear-all-btn" class="btn btn-small btn-danger">🗑️ Clear All</button>
+                            <button id="export-template-btn" class="btn btn-small btn-outline">📋 Export Template</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="main-content">
+                <div class="content-header">
+                    <div id="content-title">Welcome to Survey Admin</div>
+                </div>
+                <div class="content-body">
+                    <div id="editor-content" class="editor-content">
+                        <div class="welcome-message">
+                            <h2>🚀 Get Started</h2>
+                            <p>Select a section from the sidebar to begin editing, or add a new section to create your loan conditions survey.</p>
+                            
+                            <div class="file-drop-zone" id="file-drop-zone">
+                                <div class="icon">📁</div>
+                                <h3>Load Existing Configuration</h3>
+                                <p>Drag and drop a JSON file here, or click to browse</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Validation Modal -->
+        <div id="validation-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Validation Results</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="validation-results" class="validation-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Modal -->
+        <div id="preview-modal" class="modal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>Survey Preview</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="preview-content" class="preview-survey"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copy for Embedding Modal -->
+        <div id="copy-modal" class="modal copy-modal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>Copy Configuration for Embedding</h3>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Instructions:</strong> Copy the JSON below and paste it between the backticks (`) in the "EMBEDDED CONFIGURATION SECTION" of your survey.html file.</p>
+                    <textarea id="copy-textarea" class="copy-textarea" readonly></textarea>
+                    <div class="copy-actions">
+                        <button id="copy-to-clipboard-btn" class="btn btn-success">📋 Copy to Clipboard</button>
+                        <button class="btn btn-secondary" onclick="surveyAdmin.hideModal(document.getElementById('copy-modal'))">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SurveyAdmin {
+            constructor() {
+                this.config = [];
+                this.currentSectionId = null;
+                this.idCounter = 1;
+                this.init();
+            }
+
+            init() {
+                this.loadInitialConfig();
+                this.setupEventListeners();
+                this.setupDragAndDrop();
+            }
+
+            // ID Generation
+            generateUniqueId(prefix = 'item') {
+                return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            }
+
+            // Configuration Loading
+            async loadInitialConfig() {
+                try {
+                    const response = await fetch('survey-config.json');
+                    if (response.ok) {
+                        this.config = await response.json();
+                        this.renderSectionsList();
+                        this.showNotification('Configuration loaded successfully!', 'success');
+                    } else {
+                        console.log('No existing configuration found, starting fresh');
+                        this.config = [];
+                        this.renderSectionsList();
+                    }
+                } catch (error) {
+                    console.log('No existing configuration found, starting fresh');
+                    this.config = [];
+                    this.renderSectionsList();
+                }
+            }
+
+            // Enhanced Event Listeners
+            setupEventListeners() {
+                // Copy for embedding button
+                document.getElementById('copy-embed-btn').addEventListener('click', () => {
+                    this.showCopyForEmbedding();
+                });
+
+                // File input for loading config
+                document.getElementById('file-input').addEventListener('change', (e) => {
+                    this.handleFileLoad(e);
+                });
+
+                // Save button
+                document.getElementById('save-btn').addEventListener('click', () => {
+                    this.downloadConfig();
+                });
+
+                // Preview button
+                document.getElementById('preview-btn').addEventListener('click', () => {
+                    this.showPreview();
+                });
+
+                // Add section button
+                document.getElementById('add-section-btn').addEventListener('click', () => {
+                    this.addSection();
+                });
+
+                // Validate button
+                document.getElementById('validate-btn').addEventListener('click', () => {
+                    this.validateConfig();
+                });
+
+                // Clear all button
+                document.getElementById('clear-all-btn').addEventListener('click', () => {
+                    this.clearAll();
+                });
+
+                // Export template button
+                document.getElementById('export-template-btn').addEventListener('click', () => {
+                    this.exportTemplate();
+                });
+
+                // Copy to clipboard button
+                document.getElementById('copy-to-clipboard-btn').addEventListener('click', () => {
+                    this.copyToClipboard();
+                });
+
+                // Modal close buttons
+                document.querySelectorAll('.close').forEach(closeBtn => {
+                    closeBtn.addEventListener('click', (e) => {
+                        this.hideModal(e.target.closest('.modal'));
+                    });
+                });
+
+                // Modal background click
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            this.hideModal(modal);
+                        }
+                    });
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        switch(e.key) {
+                            case 's':
+                                e.preventDefault();
+                                this.downloadConfig();
+                                break;
+                            case 'n':
+                                e.preventDefault();
+                                this.addSection();
+                                break;
+                        }
+                    }
+                    if (e.key === 'Escape') {
+                        document.querySelectorAll('.modal.show').forEach(modal => {
+                            this.hideModal(modal);
+                        });
+                    }
+                });
+            }
+
+            // New method to show copy for embedding modal
+            showCopyForEmbedding() {
+                if (this.config.length === 0) {
+                    this.showNotification('Please add some content before copying for embedding.', 'warning');
+                    return;
+                }
+
+                const validationResult = this.validateConfigStructure();
+                if (!validationResult.isValid) {
+                    this.showNotification('Configuration has errors. Please fix them before copying.', 'error');
+                    this.showValidationResults(validationResult);
+                    return;
+                }
+
+                const modal = document.getElementById('copy-modal');
+                const textarea = document.getElementById('copy-textarea');
+                
+                // Pretty print the JSON for embedding
+                const jsonString = JSON.stringify(this.config, null, 2);
+                textarea.value = jsonString;
+                
+                this.showModal(modal);
+            }
+
+            // New method to copy to clipboard
+            async copyToClipboard() {
+                const textarea = document.getElementById('copy-textarea');
+                
+                try {
+                    await navigator.clipboard.writeText(textarea.value);
+                    this.showNotification('Configuration copied to clipboard! Paste it in your survey.html file.', 'success');
+                } catch (err) {
+                    // Fallback for older browsers
+                    textarea.select();
+                    textarea.setSelectionRange(0, 99999);
+                    try {
+                        document.execCommand('copy');
+                        this.showNotification('Configuration copied to clipboard! Paste it in your survey.html file.', 'success');
+                    } catch (fallbackErr) {
+                        this.showNotification('Unable to copy automatically. Please manually select and copy the text.', 'warning');
+                    }
+                }
+            }
+
+            // Drag and Drop Setup
+            setupDragAndDrop() {
+                const dropZone = document.getElementById('file-drop-zone');
+                
+                dropZone.addEventListener('click', () => {
+                    document.getElementById('file-input').click();
+                });
+
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('drag-over');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('drag-over');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('drag-over');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && files[0].type === 'application/json') {
+                        this.loadFileContent(files[0]);
+                    } else {
+                        this.showNotification('Please drop a valid JSON file.', 'error');
+                    }
+                });
+            }
+
+            // Enhanced File Handling
+            handleFileLoad(event) {
+                const file = event.target.files[0];
+                if (file && file.type === 'application/json') {
+                    this.loadFileContent(file);
+                } else {
+                    this.showNotification('Please select a valid JSON file.', 'error');
+                }
+            }
+
+            loadFileContent(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        this.config = data;
+                        this.renderSectionsList();
+                        this.showMainContent(`
+                            <div class="welcome-message">
+                                <h2>✅ Configuration Loaded!</h2>
+                                <p>Successfully loaded ${this.config.length} section${this.config.length !== 1 ? 's' : ''} from the file.</p>
+                                <p>Select a section from the sidebar to begin editing.</p>
+                            </div>
+                        `);
+                        this.showNotification('Configuration loaded successfully!', 'success');
+                        document.getElementById('content-title').textContent = `Loaded Configuration (${this.config.length} sections)`;
+                    } catch (error) {
+                        this.showNotification('Invalid JSON file. Please check the file format.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            // Enhanced Configuration Export
+            downloadConfig() {
+                const validationResult = this.validateConfigStructure();
+                if (!validationResult.isValid) {
+                    this.showNotification('Configuration has errors. Please fix them before downloading.', 'error');
+                    this.showValidationResults(validationResult);
+                    return;
+                }
+
+                const jsonString = JSON.stringify(this.config, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `survey-config-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showNotification('Configuration downloaded successfully!', 'success');
+            }
+
+            exportTemplate() {
+                const template = [
+                    {
+                        id: this.generateUniqueId('section'),
+                        title: "Sample Section",
+                        questions: [
+                            {
+                                id: this.generateUniqueId('question'),
+                                text: "Sample question?",
+                                type: "radio",
+                                required: true,
+                                options: [
+                                    {
+                                        id: this.generateUniqueId('option'),
+                                        text: "Yes",
+                                        summaryLabel: "Sample requirement"
+                                    },
+                                    {
+                                        id: this.generateUniqueId('option'),
+                                        text: "No",
+                                        summaryLabel: ""
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+
+                const jsonString = JSON.stringify(template, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'survey-template.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showNotification('Template exported successfully!', 'success');
+            }
+
+            // Section Management
+            addSection() {
+                const newSection = {
+                    id: this.generateUniqueId('section'),
+                    title: 'New Section',
+                    questions: []
+                };
+                this.config.push(newSection);
+                this.renderSectionsList();
+                this.editSection(newSection.id);
+                this.showNotification('New section added successfully!', 'success');
+            }
+
+            deleteSection(sectionId) {
+                if (confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
+                    this.config = this.config.filter(section => section.id !== sectionId);
+                    this.renderSectionsList();
+                    if (this.currentSectionId === sectionId) {
+                        this.showMainContent(`
+                            <div class="welcome-message">
+                                <h2>🗑️ Section Deleted</h2>
+                                <p>Select another section from the sidebar or add a new one to continue editing.</p>
+                            </div>
+                        `);
+                        this.currentSectionId = null;
+                        document.getElementById('content-title').textContent = 'Survey Admin';
+                    }
+                    this.showNotification('Section deleted successfully!', 'success');
+                }
+            }
+
+            // Question Management
+            addQuestion(sectionId, isChild = false, parentOptionId = null) {
+                const newQuestion = {
+                    id: this.generateUniqueId('question'),
+                    text: 'New Question',
+                    type: 'radio',
+                    options: [
+                        {
+                            id: this.generateUniqueId('option'),
+                            text: 'Yes',
+                            summaryLabel: ''
+                        },
+                        {
+                            id: this.generateUniqueId('option'),
+                            text: 'No',
+                            summaryLabel: ''
+                        }
+                    ],
+                    required: true
+                };
+
+                if (isChild && parentOptionId) {
+                    this.addChildQuestionToOption(parentOptionId, newQuestion);
+                } else {
+                    const section = this.config.find(s => s.id === sectionId);
+                    if (section) {
+                        section.questions.push(newQuestion);
+                    }
+                }
+                
+                this.editSection(sectionId);
+                this.showNotification('Question added successfully!', 'success');
+            }
+
+            addChildQuestionToOption(optionId, newQuestion) {
+                const findAndAddToOption = (questions) => {
+                    for (let question of questions) {
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.id === optionId) {
+                                    if (!option.childQuestions) {
+                                        option.childQuestions = [];
+                                    }
+                                    option.childQuestions.push(newQuestion);
+                                    return true;
+                                }
+                                if (option.childQuestions && findAndAddToOption(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (findAndAddToOption(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            deleteQuestion(questionId, sectionId) {
+                if (confirm('Are you sure you want to delete this question? This action cannot be undone.')) {
+                    const section = this.config.find(s => s.id === sectionId);
+                    if (section) {
+                        section.questions = section.questions.filter(q => q.id !== questionId);
+                        this.editSection(sectionId);
+                        this.showNotification('Question deleted successfully!', 'success');
+                    }
+                }
+            }
+
+            deleteChildQuestion(questionId, sectionId) {
+                if (confirm('Are you sure you want to delete this child question? This action cannot be undone.')) {
+                    const removeChildQuestion = (questions) => {
+                        for (let question of questions) {
+                            if (question.options) {
+                                for (let option of question.options) {
+                                    if (option.childQuestions) {
+                                        option.childQuestions = option.childQuestions.filter(cq => cq.id !== questionId);
+                                        if (removeChildQuestion(option.childQuestions)) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return false;
+                    };
+
+                    const section = this.config.find(s => s.id === sectionId);
+                    if (section) {
+                        removeChildQuestion(section.questions);
+                        this.editSection(sectionId);
+                        this.showNotification('Child question deleted successfully!', 'success');
+                    }
+                }
+            }
+
+            // Option Management
+            addOption(questionId, sectionId) {
+                const newOption = {
+                    id: this.generateUniqueId('option'),
+                    text: 'New Option',
+                    summaryLabel: ''
+                };
+
+                const findAndAddOption = (questions) => {
+                    for (let question of questions) {
+                        if (question.id === questionId) {
+                            if (!question.options) {
+                                question.options = [];
+                            }
+                            question.options.push(newOption);
+                            return true;
+                        }
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.childQuestions && findAndAddOption(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                const section = this.config.find(s => s.id === sectionId);
+                if (section) {
+                    findAndAddOption(section.questions);
+                    this.editSection(sectionId);
+                    this.showNotification('Option added successfully!', 'success');
+                }
+            }
+
+            deleteOption(optionId, sectionId) {
+                if (confirm('Are you sure you want to delete this option? This action cannot be undone.')) {
+                    const removeOption = (questions) => {
+                        for (let question of questions) {
+                            if (question.options) {
+                                question.options = question.options.filter(opt => opt.id !== optionId);
+                                for (let option of question.options) {
+                                    if (option.childQuestions) {
+                                        removeOption(option.childQuestions);
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    const section = this.config.find(s => s.id === sectionId);
+                    if (section) {
+                        removeOption(section.questions);
+                        this.editSection(sectionId);
+                        this.showNotification('Option deleted successfully!', 'success');
+                    }
+                }
+            }
+
+            // Enhanced Rendering Methods
+            renderSectionsList() {
+                const container = document.getElementById('sections-list');
+                const countElement = document.getElementById('sections-count');
+                
+                container.innerHTML = '';
+                countElement.textContent = `${this.config.length} section${this.config.length !== 1 ? 's' : ''}`;
+
+                if (this.config.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #6c757d;">
+                            <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+                            <p>No sections yet.<br>Add your first section to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.config.forEach((section, index) => {
+                    const questionCount = this.getTotalQuestionCount(section.questions);
+                    const sectionItem = document.createElement('div');
+                    sectionItem.className = `section-item ${this.currentSectionId === section.id ? 'active' : ''}`;
+                    sectionItem.innerHTML = `
+                        <h4>${section.title}</h4>
+                        <div class="section-meta">
+                            ${questionCount} question${questionCount !== 1 ? 's' : ''} • Section ${index + 1}
+                        </div>
+                        <div class="section-item-actions">
+                            <button class="btn btn-small btn-outline" onclick="surveyAdmin.editSection('${section.id}')" title="Edit Section">✏️ Edit</button>
+                            <button class="btn btn-small btn-danger" onclick="surveyAdmin.deleteSection('${section.id}')" title="Delete Section">🗑️</button>
+                        </div>
+                    `;
+                    container.appendChild(sectionItem);
+                });
+            }
+
+            getTotalQuestionCount(questions) {
+                let count = questions.length;
+                questions.forEach(question => {
+                    if (question.options) {
+                        question.options.forEach(option => {
+                            if (option.childQuestions) {
+                                count += this.getTotalQuestionCount(option.childQuestions);
+                            }
+                        });
+                    }
+                });
+                return count;
+            }
+
+            editSection(sectionId) {
+                this.currentSectionId = sectionId;
+                const section = this.config.find(s => s.id === sectionId);
+                if (!section) return;
+
+                this.renderSectionsList();
+                document.getElementById('content-title').textContent = `Editing: ${section.title}`;
+                
+                const questionCount = this.getTotalQuestionCount(section.questions);
+                const editorHtml = `
+                    <div class="section-editor">
+                        <div class="section-header">
+                            <div class="section-title-group">
+                                <label for="section-title">Section Title</label>
+                                <input type="text" id="section-title" class="section-title-input" value="${this.escapeHtml(section.title)}" 
+                                       onchange="surveyAdmin.updateSectionTitle('${section.id}', this.value)"
+                                       placeholder="Enter section title...">
+                            </div>
+                            <div class="section-actions">
+                                <button class="btn btn-success" onclick="surveyAdmin.addQuestion('${sectionId}')">➕ Add Question</button>
+                                <button class="btn btn-outline" onclick="surveyAdmin.duplicateSection('${sectionId}')">📋 Duplicate Section</button>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-container">
+                            <div class="questions-header">
+                                <h3>Questions (${questionCount} total)</h3>
+                                <div class="status-indicator ${questionCount > 0 ? 'status-success' : 'status-warning'}">
+                                    ${questionCount > 0 ? '✓' : '⚠️'} ${questionCount} question${questionCount !== 1 ? 's' : ''}
+                                </div>
+                            </div>
+                            ${questionCount > 0 ? this.renderQuestions(section.questions, sectionId) : `
+                                <div style="text-align: center; padding: 3rem; color: #6c757d; background: #f8f9fa; border-radius: 10px;">
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">❓</div>
+                                    <h3>No questions yet</h3>
+                                    <p>Add your first question to this section to get started.</p>
+                                    <button class="btn btn-success" onclick="surveyAdmin.addQuestion('${sectionId}')" style="margin-top: 1rem;">➕ Add First Question</button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+
+                this.showMainContent(editorHtml);
+            }
+
+            duplicateSection(sectionId) {
+                const section = this.config.find(s => s.id === sectionId);
+                if (!section) return;
+
+                const duplicatedSection = JSON.parse(JSON.stringify(section));
+                duplicatedSection.id = this.generateUniqueId('section');
+                duplicatedSection.title = `${duplicatedSection.title} (Copy)`;
+                
+                // Generate new IDs for all nested elements
+                this.regenerateIds(duplicatedSection);
+                
+                this.config.push(duplicatedSection);
+                this.renderSectionsList();
+                this.editSection(duplicatedSection.id);
+                this.showNotification('Section duplicated successfully!', 'success');
+            }
+
+            regenerateIds(obj) {
+                if (obj.questions) {
+                    obj.questions.forEach(question => {
+                        question.id = this.generateUniqueId('question');
+                        if (question.options) {
+                            question.options.forEach(option => {
+                                option.id = this.generateUniqueId('option');
+                                if (option.childQuestions) {
+                                    this.regenerateIds({ questions: option.childQuestions });
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            renderQuestions(questions, sectionId, isChild = false) {
+                return questions.map((question, index) => `
+                    <div class="question-editor ${isChild ? 'child-question-editor' : ''}">
+                        <div class="question-header">
+                            <div class="question-number">${index + 1}</div>
+                            <div class="question-actions">
+                                ${!isChild ? `
+                                    <button class="btn btn-small btn-outline" onclick="surveyAdmin.duplicateQuestion('${question.id}', '${sectionId}')" title="Duplicate Question">📋</button>
+                                    <button class="btn btn-small btn-danger" onclick="surveyAdmin.deleteQuestion('${question.id}', '${sectionId}')" title="Delete Question">🗑️</button>
+                                ` : `
+                                    <button class="btn btn-small btn-danger" onclick="surveyAdmin.deleteChildQuestion('${question.id}', '${sectionId}')" title="Delete Child Question">🗑️</button>
+                                `}
+                            </div>
+                        </div>
+                        
+                        <div class="question-content">
+                            <div class="form-group">
+                                <label>Question Text</label>
+                                <textarea class="form-control" rows="3" 
+                                          onchange="surveyAdmin.updateQuestionText('${question.id}', this.value)"
+                                          placeholder="Enter your question here...">${this.escapeHtml(question.text)}</textarea>
+                                <small style="color: #6c757d;">💡 Use \\n for line breaks (e.g., "Does it meet:\\n-Requirement A\\n-Requirement B")</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Question Type</label>
+                                <select class="form-control" onchange="surveyAdmin.updateQuestionType('${question.id}', '${sectionId}', this.value)">
+                                    <option value="radio" ${question.type === 'radio' ? 'selected' : ''}>📻 Radio (Single Choice)</option>
+                                    <option value="checkbox" ${question.type === 'checkbox' ? 'selected' : ''}>☑️ Checkbox (Multiple Choice)</option>
+                                    <option value="freeform" ${question.type === 'freeform' ? 'selected' : ''}>📝 Free Form Text</option>
+                                </select>
+                            </div>
+                            
+                            ${question.type === 'freeform' ? `
+                                <div class="form-group">
+                                    <label>Placeholder Text</label>
+                                    <input type="text" class="form-control" value="${this.escapeHtml(question.placeholder || '')}"
+                                           onchange="surveyAdmin.updateQuestionPlaceholder('${question.id}', this.value)"
+                                           placeholder="Enter placeholder text...">
+                                </div>
+                            ` : ''}
+                            
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="required_${question.id}" ${question.required ? 'checked' : ''} 
+                                       onchange="surveyAdmin.updateQuestionRequired('${question.id}', this.checked)">
+                                <label for="required_${question.id}">Required Question</label>
+                            </div>
+                            
+                            ${(question.type === 'radio' || question.type === 'checkbox') && question.options ? `
+                                <div class="options-container">
+                                    <div class="options-header">
+                                        <h4>Answer Options (${question.options.length})</h4>
+                                        <button class="btn btn-small btn-success" onclick="surveyAdmin.addOption('${question.id}', '${sectionId}')">➕ Add Option</button>
+                                    </div>
+                                    ${this.renderOptions(question.options, sectionId)}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            duplicateQuestion(questionId, sectionId) {
+                const section = this.config.find(s => s.id === sectionId);
+                if (!section) return;
+
+                const question = section.questions.find(q => q.id === questionId);
+                if (!question) return;
+
+                const duplicatedQuestion = JSON.parse(JSON.stringify(question));
+                duplicatedQuestion.id = this.generateUniqueId('question');
+                duplicatedQuestion.text += ' (Copy)';
+                
+                if (duplicatedQuestion.options) {
+                    duplicatedQuestion.options.forEach(option => {
+                        option.id = this.generateUniqueId('option');
+                        if (option.childQuestions) {
+                            this.regenerateIds({ questions: option.childQuestions });
+                        }
+                    });
+                }
+
+                const questionIndex = section.questions.findIndex(q => q.id === questionId);
+                section.questions.splice(questionIndex + 1, 0, duplicatedQuestion);
+                
+                this.editSection(sectionId);
+                this.showNotification('Question duplicated successfully!', 'success');
+            }
+
+            renderOptions(options, sectionId) {
+                return options.map((option, index) => `
+                    <div class="option-editor">
+                        <div class="option-header">
+                            <div class="option-label">Option ${index + 1}</div>
+                            <div class="option-actions">
+                                <button class="btn btn-small btn-outline" onclick="surveyAdmin.addQuestion('${sectionId}', true, '${option.id}')" title="Add Child Question">🔗 Child Question</button>
+                                <button class="btn btn-small btn-danger" onclick="surveyAdmin.deleteOption('${option.id}', '${sectionId}')" title="Delete Option">🗑️</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Option Text</label>
+                            <input type="text" class="form-control" value="${this.escapeHtml(option.text)}"
+                                   onchange="surveyAdmin.updateOptionText('${option.id}', this.value)"
+                                   placeholder="Enter option text...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Summary Label 
+                                <small style="color: #6c757d;">(Text to show in final summary - leave empty if no requirement)</small>
+                            </label>
+                            <input type="text" class="form-control" value="${this.escapeHtml(option.summaryLabel || '')}"
+                                   onchange="surveyAdmin.updateOptionSummaryLabel('${option.id}', this.value)"
+                                   placeholder="Enter requirement text for summary...">
+                        </div>
+                        
+                        ${option.childQuestions && option.childQuestions.length > 0 ? `
+                            <div class="child-questions">
+                                <div class="child-questions-header">
+                                    <h5>📎 Child Questions (${option.childQuestions.length})</h5>
+                                </div>
+                                ${this.renderQuestions(option.childQuestions, sectionId, true)}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+
+            showMainContent(html) {
+                document.getElementById('editor-content').innerHTML = html;
+            }
+
+            // Enhanced Update Methods with better error handling
+            updateSectionTitle(sectionId, newTitle) {
+                const section = this.config.find(s => s.id === sectionId);
+                if (section) {
+                    section.title = newTitle.trim();
+                    this.renderSectionsList();
+                    document.getElementById('content-title').textContent = `Editing: ${section.title}`;
+                }
+            }
+
+            updateQuestionText(questionId, newText) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.id === questionId) {
+                            question.text = newText.trim();
+                            return true;
+                        }
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            updateQuestionType(questionId, sectionId, newType) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.id === questionId) {
+                            question.type = newType;
+                            if (newType === 'radio' || newType === 'checkbox') {
+                                if (!question.options) {
+                                    question.options = [
+                                        {
+                                            id: this.generateUniqueId('option'),
+                                            text: 'Yes',
+                                            summaryLabel: ''
+                                        },
+                                        {
+                                            id: this.generateUniqueId('option'),
+                                            text: 'No',
+                                            summaryLabel: ''
+                                        }
+                                    ];
+                                }
+                            } else if (newType === 'freeform') {
+                                delete question.options;
+                                if (!question.placeholder) {
+                                    question.placeholder = 'Enter your answer...';
+                                }
+                            }
+                            return true;
+                        }
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+                
+                this.editSection(sectionId);
+            }
+
+            updateQuestionPlaceholder(questionId, newPlaceholder) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.id === questionId) {
+                            question.placeholder = newPlaceholder.trim();
+                            return true;
+                        }
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            updateQuestionRequired(questionId, isRequired) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.id === questionId) {
+                            question.required = isRequired;
+                            return true;
+                        }
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            updateOptionText(optionId, newText) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.id === optionId) {
+                                    option.text = newText.trim();
+                                    return true;
+                                }
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            updateOptionSummaryLabel(optionId, newLabel) {
+                const updateInQuestions = (questions) => {
+                    for (let question of questions) {
+                        if (question.options) {
+                            for (let option of question.options) {
+                                if (option.id === optionId) {
+                                    option.summaryLabel = newLabel.trim();
+                                    return true;
+                                }
+                                if (option.childQuestions && updateInQuestions(option.childQuestions)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                };
+
+                for (let section of this.config) {
+                    if (updateInQuestions(section.questions)) {
+                        break;
+                    }
+                }
+            }
+
+            // Enhanced Validation with better reporting
+            validateConfig() {
+                const result = this.validateConfigStructure();
+                this.showValidationResults(result);
+            }
+
+            validateConfigStructure() {
+                const errors = [];
+                const warnings = [];
+                const allIds = new Set();
+
+                if (!Array.isArray(this.config)) {
+                    errors.push('Configuration must be an array of sections');
+                    return { isValid: false, errors, warnings };
+                }
+
+                if (this.config.length === 0) {
+                    warnings.push('Configuration is empty - add at least one section');
+                }
+
+                this.config.forEach((section, sectionIndex) => {
+                    const sectionPath = `Section ${sectionIndex + 1} (${section.title || 'Untitled'})`;
+                    
+                    if (!section.id || typeof section.id !== 'string') {
+                        errors.push(`${sectionPath}: Missing or invalid section ID`);
+                    } else {
+                        if (allIds.has(section.id)) {
+                            errors.push(`${sectionPath}: Duplicate ID "${section.id}"`);
+                        }
+                        allIds.add(section.id);
+                    }
+
+                    if (!section.title || typeof section.title !== 'string' || section.title.trim() === '') {
+                        errors.push(`${sectionPath}: Missing or empty section title`);
+                    }
+
+                    if (!Array.isArray(section.questions)) {
+                        errors.push(`${sectionPath}: Questions must be an array`);
+                    } else {
+                        if (section.questions.length === 0) {
+                            warnings.push(`${sectionPath}: Section has no questions`);
+                        }
+                        this.validateQuestions(section.questions, sectionPath, errors, warnings, allIds);
+                    }
+                });
+
+                return {
+                    isValid: errors.length === 0,
+                    errors,
+                    warnings
+                };
+            }
+
+            validateQuestions(questions, parentPath, errors, warnings, allIds) {
+                questions.forEach((question, questionIndex) => {
+                    const questionPath = `${parentPath} > Question ${questionIndex + 1}`;
+
+                    if (!question.id || typeof question.id !== 'string') {
+                        errors.push(`${questionPath}: Missing or invalid question ID`);
+                    } else {
+                        if (allIds.has(question.id)) {
+                            errors.push(`${questionPath}: Duplicate ID "${question.id}"`);
+                        }
+                        allIds.add(question.id);
+                    }
+
+                    if (!question.text || typeof question.text !== 'string' || question.text.trim() === '') {
+                        errors.push(`${questionPath}: Missing or empty question text`);
+                    }
+
+                    if (!['radio', 'checkbox', 'freeform'].includes(question.type)) {
+                        errors.push(`${questionPath}: Invalid question type "${question.type}"`);
+                    }
+
+                    if (question.type === 'radio' || question.type === 'checkbox') {
+                        if (!Array.isArray(question.options) || question.options.length === 0) {
+                            errors.push(`${questionPath}: ${question.type} questions must have at least one option`);
+                        } else {
+                            if (question.options.length < 2) {
+                                warnings.push(`${questionPath}: ${question.type} questions should have at least 2 options`);
+                            }
+                            this.validateOptions(question.options, questionPath, errors, warnings, allIds);
+                        }
+                    }
+
+                    if (question.type === 'freeform') {
+                        if (question.options) {
+                            warnings.push(`${questionPath}: Freeform questions should not have options`);
+                        }
+                        if (!question.placeholder) {
+                            warnings.push(`${questionPath}: Freeform questions should have placeholder text`);
+                        }
+                    }
+                });
+            }
+
+            validateOptions(options, parentPath, errors, warnings, allIds) {
+                let hasRequirements = false;
+
+                options.forEach((option, optionIndex) => {
+                    const optionPath = `${parentPath} > Option ${optionIndex + 1}`;
+
+                    if (!option.id || typeof option.id !== 'string') {
+                        errors.push(`${optionPath}: Missing or invalid option ID`);
+                    } else {
+                        if (allIds.has(option.id)) {
+                            errors.push(`${optionPath}: Duplicate ID "${option.id}"`);
+                        }
+                        allIds.add(option.id);
+                    }
+
+                    if (!option.text || typeof option.text !== 'string' || option.text.trim() === '') {
+                        errors.push(`${optionPath}: Missing or empty option text`);
+                    }
+
+                    if (option.summaryLabel !== undefined && typeof option.summaryLabel !== 'string') {
+                        errors.push(`${optionPath}: Summary label must be a string`);
+                    }
+
+                    if (option.summaryLabel && option.summaryLabel.trim()) {
+                        hasRequirements = true;
+                    }
+
+                    if (option.childQuestions) {
+                        if (!Array.isArray(option.childQuestions)) {
+                            errors.push(`${optionPath}: Child questions must be an array`);
+                        } else {
+                            this.validateQuestions(option.childQuestions, optionPath, errors, warnings, allIds);
+                        }
+                    }
+                });
+
+                if (!hasRequirements) {
+                    warnings.push(`${parentPath}: No options have summary labels - consider adding requirements`);
+                }
+            }
+
+            showValidationResults(result) {
+                const modal = document.getElementById('validation-modal');
+                const resultsContainer = document.getElementById('validation-results');
+
+                let html = '';
+                
+                if (result.isValid) {
+                    html = `
+                        <div class="validation-success">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                            <h3>Configuration is Valid!</h3>
+                            <p>No errors found. Your survey configuration is ready to use.</p>
+                            ${result.warnings.length > 0 ? `<p style="margin-top: 1rem; opacity: 0.8;">Note: ${result.warnings.length} warning${result.warnings.length !== 1 ? 's' : ''} found (see below).</p>` : ''}
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="validation-error">
+                            <h4>❌ Configuration Errors (${result.errors.length}):</h4>
+                            <ul>
+                                ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                if (result.warnings.length > 0) {
+                    html += `
+                        <div class="validation-error" style="color: #856404; background: #fff3cd; padding: 1rem; border-radius: 8px; border: 1px solid #ffeaa7;">
+                            <h4>⚠️ Warnings (${result.warnings.length}):</h4>
+                            <ul>
+                                ${result.warnings.map(warning => `<li>${warning}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                resultsContainer.innerHTML = html;
+                this.showModal(modal);
+            }
+
+            // Enhanced Preview with better styling
+            showPreview() {
+                const modal = document.getElementById('preview-modal');
+                const previewContainer = document.getElementById('preview-content');
+
+                if (this.config.length === 0) {
+                    previewContainer.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #6c757d;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                            <h3>No Content to Preview</h3>
+                            <p>Add sections and questions to see how your survey will look.</p>
+                        </div>
+                    `;
+                    this.showModal(modal);
+                    return;
+                }
+
+                let html = '<div class="preview-survey">';
+                
+                this.config.forEach((section, sectionIndex) => {
+                    html += `
+                        <div class="preview-section">
+                            <h2>${section.title}</h2>
+                    `;
+                    
+                    section.questions.forEach((question, qIndex) => {
+                        // Handle line breaks in preview
+                        const questionText = this.escapeHtml(question.text).replace(/\\n/g, '<br>');
+                        
+                        html += `
+                            <div class="preview-question">
+                                <h4>${qIndex + 1}. ${questionText} ${question.required ? '<span style="color: #e74c3c;">*</span>' : ''}</h4>
+                        `;
+                        
+                        if (question.type === 'radio' && question.options) {
+                            question.options.forEach(option => {
+                                html += `
+                                    <div class="preview-option">
+                                        <input type="radio" name="preview_${question.id}" disabled>
+                                        <label>${option.text}</label>
+                                    </div>
+                                `;
+                            });
+                        } else if (question.type === 'checkbox' && question.options) {
+                            question.options.forEach(option => {
+                                html += `
+                                    <div class="preview-option">
+                                        <input type="checkbox" disabled>
+                                        <label>${option.text}</label>
+                                    </div>
+                                `;
+                            });
+                        } else if (question.type === 'freeform') {
+                            html += `
+                                <div class="preview-option">
+                                    <input type="text" placeholder="${this.escapeHtml(question.placeholder || 'Enter your answer...')}" disabled>
+                                </div>
+                            `;
+                        }
+                        
+                        html += '</div>';
+                    });
+                    
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+                
+                previewContainer.innerHTML = html;
+                this.showModal(modal);
+            }
+
+            // Enhanced Modal Management
+            showModal(modal) {
+                modal.classList.add('show');
+                modal.style.display = 'block';
+            }
+
+            hideModal(modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+
+            // Notification System
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : type === 'warning' ? '#f39c12' : '#3498db'};
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    font-weight: 600;
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                    max-width: 300px;
+                `;
+                
+                const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+                notification.innerHTML = `${icon} ${message}`;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // Clear all data
+            clearAll() {
+                if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                    this.config = [];
+                    this.currentSectionId = null;
+                    this.renderSectionsList();
+                    this.showMainContent(`
+                        <div class="welcome-message">
+                            <h2>🗑️ All Data Cleared</h2>
+                            <p>Start fresh by adding a new section to begin creating your survey.</p>
+                            <button class="btn btn-success" onclick="surveyAdmin.addSection()" style="margin-top: 1rem;">➕ Add First Section</button>
+                        </div>
+                    `);
+                    document.getElementById('content-title').textContent = 'Survey Admin';
+                    this.showNotification('All data cleared successfully!', 'success');
+                }
+            }
+
+            // Utility method for HTML escaping
+            escapeHtml(text) {
+                if (text === null || text === undefined) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the admin when page loads
+        let surveyAdmin;
+        document.addEventListener('DOMContentLoaded', () => {
+            surveyAdmin = new SurveyAdmin();
+        });
+    </script>
+</body>
+</html>
+
