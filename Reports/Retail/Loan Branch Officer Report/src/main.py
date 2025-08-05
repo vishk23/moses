@@ -45,6 +45,7 @@ import calendar
 import src.config
 import src.loan_branch_officer.fetch_data
 import src.loan_branch_officer.core
+import src.loan_branch_officer.output_to_excel
 import cdutils.pkey_sqlite 
 import cdutils.hhnbr
 import cdutils.selo
@@ -84,8 +85,8 @@ def main():
         # Add owner_id column for joining with agreements
         print("Adding owner_id...")
         df['owner_id'] = df.apply(
-            lambda row: f"O{row['taxrptfororgnbr']}" if pd.notna(row['taxrptfororgnbr']) and str(row['taxrptfororgnbr']).strip() != ''
-            else f"P{row['taxrptforpersnbr']}" if pd.notna(row['taxrptforpersnbr']) and str(row['taxrptforpersnbr']).strip() != ''
+            lambda row: f"O{int(float(row['taxrptfororgnbr']))}" if pd.notna(row['taxrptfororgnbr']) and str(row['taxrptfororgnbr']).strip() != ''
+            else f"P{int(float(row['taxrptforpersnbr']))}" if pd.notna(row['taxrptforpersnbr']) and str(row['taxrptforpersnbr']).strip() != ''
             else 'Unknown', axis=1
         )
 
@@ -131,36 +132,37 @@ def main():
         print(f"Writing output to: {output_file}")
         print(f"Report period: {report_month} {report_year}")
         
-        df.to_excel(output_file, sheet_name='Sheet1', index=False)
+        # Write and format Excel file
+        src.loan_branch_officer.output_to_excel.write_and_format_excel(df, output_file)
 
-#         # Email distribution
-#         if src.config.EMAIL_TO:
-#             import cdutils.distribution
+        # Email distribution
+        if src.config.EMAIL_TO:
+            import cdutils.distribution
             
-#             subject = f"{src.config.REPORT_NAME} - {report_month} {report_year}"
-#             body = f"""Hi,
+            subject = f"{src.config.REPORT_NAME} - {report_month} {report_year}"
+            body = f"""Hi,
 
-# Attached is the {src.config.REPORT_NAME} for {report_month} {report_year}. This report provides loan portfolio information organized by branch and loan officer.
+Attached is the {src.config.REPORT_NAME} for {report_month} {report_year}. This report provides loan portfolio information organized by branch and loan officer.
 
-# If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com
+If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com
 
-# Thanks!"""
+Thanks!"""
             
-#             cdutils.distribution.email_out(
-#                 recipients=src.config.EMAIL_TO,
-#                 cc_recipients=src.config.EMAIL_CC,
-#                 subject=subject,
-#                 body=body,
-#                 attachment_paths=[output_file]
-#             )
-#             print(f"Email sent to {len(src.config.EMAIL_TO)} recipients")
-#         else:
-#             print("Development mode - email not sent")
+            cdutils.distribution.email_out(
+                recipients=src.config.EMAIL_TO,
+                cc_recipients=src.config.EMAIL_CC,
+                subject=subject,
+                body=body,
+                attachment_paths=[output_file]
+            )
+            print(f"Email sent to {len(src.config.EMAIL_TO)} recipients")
+        else:
+            print("Development mode - email not sent")
 
-#         print(f"Completed {src.config.REPORT_NAME}")
-#         print(f"Records processed: {len(df):,}")
+        print(f"Completed {src.config.REPORT_NAME}")
+        print(f"Records processed: {len(df):,}")
         
-#         return True
+        return True
         
     except FileNotFoundError as e:
         print(f"File not found: {e}")
@@ -170,4 +172,6 @@ def main():
         return False
 
 if __name__ == "__main__":
-    main()
+    success = main()
+    if not success:
+        exit(1)

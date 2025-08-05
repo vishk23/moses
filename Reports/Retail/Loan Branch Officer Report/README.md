@@ -21,8 +21,9 @@ The Loan Branch Officer Report provides a comprehensive view of the bank's loan 
 
 - **Database:** OSIBANK (WH_ACCTCOMMON, WH_LOANS, WH_ACCTLOAN), OSIEXTN (HOUSEHLDACCT)
 - **Processing:** Python, Pandas, cdutils libraries
-- **Output:** Excel (XLSX format)
+- **Output:** Excel (XLSX format) with openpyxl formatting
 - **Distribution:** Email via cdutils.distribution
+- **Dependencies:** pandas, openpyxl, sqlalchemy 
 
 ## Project Status
 ### Completed ✅
@@ -31,13 +32,14 @@ The Loan Branch Officer Report provides a comprehensive view of the bank's loan 
 - Total exposure calculations and loan categorization
 - Primary key and household number assignment
 - Secondary loan officer attachment
-- Excel output generation with proper formatting
+- Owner ID generation with integer formatting (O/P prefix system)
+- Excel output generation with auto-fitted columns and header formatting
 - Column filtering and renaming for business requirements
+- Date-based filename generation (previous month/year)
 - Error handling and logging
 - Environment-aware configuration (dev/prod)
 
 ### Future Enhancements
-- Excel formatting automation (borders, bold headers, auto-fit columns)
 - Additional loan categorization rules
 - Performance optimization for large datasets
 - Dashboard integration capabilities

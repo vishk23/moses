@@ -1,1 +1,2 @@
-- [ ] Add templated way of doing the email distributions workspace wide.
+# 2025-08-04
+- Get rid of bristol county loans
