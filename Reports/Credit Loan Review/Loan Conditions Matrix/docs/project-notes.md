@@ -224,3 +224,25 @@ An appraisal is optional - Secured property is subject to a MAI bank ordered app
 
 
 For an obligation secured by CRE <$500M or a residential loan <$400M, a recent (under 12 months) tax assessed value with a bank site visit showing a maximum loan to value not to exceed 70%.
+
+Flood selection & output:
+The following conditions are required: 
+* Customer was informed 10 days prior to closing 
+* The flood insurance has been reviewed by Compliance 
+* Sufficient flood insurance has been obtained 
+
+
+Corporate guarantor requirements: FYE Statements within 120 days or 30 days of filing.
+- Accounts receivable agings
+- Accounts payable agings 
+- Projections
+- A free form field for input
+
+Environmental Selection only:
+The property is located in a high risk category. High risk category properties
+include: Gasoline & fuel oil handling, distribution, or refining, Concrete and asphalt
+plants, Plating operations, Printing plants, Electronics Manufacturers, Handling,
+distribution, or manufacture of chemicals Automotive manufacture, repair or
+service, Dry cleaning plants, Foundries and metal smelting, Hospital and
+biomedicine manufacturers, Waste handling, distribution and disposal
+- this needs to be broken up into bullets like the above items
