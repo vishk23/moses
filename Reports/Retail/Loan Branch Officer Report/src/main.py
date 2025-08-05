@@ -50,6 +50,7 @@ import cdutils.pkey_sqlite
 import cdutils.hhnbr
 import cdutils.selo
 import cdutils.loans.calculations
+import cdutils.distribution
 
 def main():
     """Main report execution."""
@@ -136,25 +137,24 @@ def main():
         src.loan_branch_officer.output_to_excel.write_and_format_excel(df, output_file)
 
         # Email distribution
-        if src.config.EMAIL_TO:
-            import cdutils.distribution
-            
-            subject = f"{src.config.REPORT_NAME} - {report_month} {report_year}"
-            body = f"""Hi,
+        subject = f"{src.config.REPORT_NAME} - {report_month} {report_year}"
+        body = f"""Hi,
 
 Attached is the {src.config.REPORT_NAME} for {report_month} {report_year}. This report provides loan portfolio information organized by branch and loan officer.
 
 If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com
 
 Thanks!"""
-            
-            cdutils.distribution.email_out(
-                recipients=src.config.EMAIL_TO,
-                cc_recipients=src.config.EMAIL_CC,
-                subject=subject,
-                body=body,
-                attachment_paths=[output_file]
-            )
+        
+        cdutils.distribution.email_out(
+            recipients=src.config.EMAIL_TO,
+            cc_recipients=src.config.EMAIL_CC,
+            subject=subject,
+            body=body,
+            attachment_paths=[output_file]
+        )
+        
+        if src.config.EMAIL_TO:
             print(f"Email sent to {len(src.config.EMAIL_TO)} recipients")
         else:
             print("Development mode - email not sent")
