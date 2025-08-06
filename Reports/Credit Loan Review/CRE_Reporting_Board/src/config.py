@@ -39,6 +39,20 @@ CACHE_DIR = Path(__file__).parent.parent / "cache" if USE_CACHING else None
 # Output file configuration
 OUTPUT_FILENAME = "cre_loader.xlsx"
 
+# I-CRE Analysis Years
+ICRE_ANALYSIS_YEARS = [2024, 2023, 2022]
+
+# FDIC Call Code grouping configuration
+FDIC_CALL_CODE_GROUPS = {
+    '1-4 Fam Construction': ['CNFM'],
+    'Construction': ['OTCN','LAND','LNDV','RECN'],
+    '1-4 Family': ['REFI','REOE','REJU'],
+    'OwnerOcc': ['REOW'],
+    'I-CRE': ['RENO','REMU'],
+    'C&I': ['CIUS'],
+    'Other': ['OTAL','AGPR','REFM']
+}
+
 # Property type grouping configuration
 PROPERTY_TYPE_GROUPS = {
     'Autobody/Gas Station': ['Autobody/Gas Station','Gas Station and Convenience St','Auto-Truck Repair'],
