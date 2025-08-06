@@ -17,7 +17,7 @@ REPORT_NAME = "Patch Dashboard"
 BUSINESS_LINE = "IT"
 SCHEDULE = "Monthly"
 OWNER = "IT Department"
-PROD_READY = False
+PROD_READY = True
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
