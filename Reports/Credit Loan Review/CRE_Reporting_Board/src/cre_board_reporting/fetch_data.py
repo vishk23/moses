@@ -9,7 +9,6 @@ Usage:
 """
 
 import cdutils.database.connect
-import cdutils.caching
 from sqlalchemy import text
 import src.config
 

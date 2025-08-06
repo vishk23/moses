@@ -10,17 +10,8 @@ Output: cre_loader.xlsx - Consolidated CRE portfolio data with property informat
 
 import src.config
 from src.cre_board_reporting.core import run_cre_reporting_pipeline
-from src._version import __version__
 
 def main():
-    print(f"Starting {src.config.REPORT_NAME} [{__version__}]")
-    print(f"Business Line: {src.config.BUSINESS_LINE}")
-    print(f"Schedule: {src.config.SCHEDULE}")
-    print(f"Owner: {src.config.OWNER}")
-    print(f"Environment: {src.config.ENV}")
-    print(f"Output directory: {src.config.OUTPUT_DIR}")
-    print("-" * 50)
-    
     try:
         # Run the CRE reporting pipeline
         output_path = run_cre_reporting_pipeline()
