@@ -53,9 +53,5 @@ def fetch_prop_data():
 
     data = cdutils.database.connect.retrieve_data(queries)
     
-    # Cache data for development if enabled
-    if hasattr(src.config, 'USE_CACHING') and src.config.USE_CACHING and hasattr(src.config, 'CACHE_DIR') and src.config.CACHE_DIR:
-        cdutils.caching.cache_data(str(src.config.CACHE_DIR), data)
-        
     return data
 

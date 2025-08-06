@@ -114,7 +114,7 @@ def process_cre_data():
     """
     print("Fetching data from COCC...")
     # Fetch data from database
-    main_loan_data = cdutils.acct_file_creation.core.fetch_daily_data()
+    main_loan_data = cdutils.acct_file_creation.core.query_df_on_date()
     prop_data_dict = fetch_prop_data()
     
     # Join property tables

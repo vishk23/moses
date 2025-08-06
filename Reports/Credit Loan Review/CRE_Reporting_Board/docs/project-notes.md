@@ -113,3 +113,52 @@ python -m src.main
 4. Update production paths in config.py
 
 This refactored version maintains 100% functional compatibility with the Production version while following best practices for maintainability and deployment.
+
+
+----
+
+2025-08-06 18:08:03 | INFO | === REPORT RUNNER SESSION START [DEV MODE] ===
+2025-08-06 18:08:03 | INFO | DISCOVERY COMPLETE | Found 23 reports | Environment: DEV
+2025-08-06 18:08:03 | INFO | BATCH START | 1 reports | Filter: name = CRE_Reporting_Board | Environment: DEV
+2025-08-06 18:08:03 | INFO | START | CRE Reporting Board | Business Line: Credit Loan Review | Environment: DEV
+2025-08-06 18:08:03 | INFO | DEBUG | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-06 18:08:03 | INFO | DEBUG | Working directory: Reports\Credit Loan Review\CRE_Reporting_Board
+2025-08-06 18:08:03 | INFO | DEBUG | Command: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe -m src.main
+2025-08-06 18:08:59 | ERROR | FAILED | CRE Reporting Board | Runtime: 0.92 minutes
+2025-08-06 18:08:59 | ERROR | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-06 18:08:59 | ERROR | Working directory: Reports\Credit Loan Review\CRE_Reporting_Board
+2025-08-06 18:08:59 | ERROR | Return code: 1
+2025-08-06 18:08:59 | ERROR | STDERR:
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\main.py", line 32, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\main.py", line 17, in main
+    output_path = run_cre_reporting_pipeline()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 181, in run_cre_reporting_pipeline
+    processed_data = process_cre_data()
+                     ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 129, in process_cre_data
+    single_prop_data = consolidation_with_one_prop(main_loan_data, prop_data)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 76, in consolidation_with_one_prop
+    result = pd.merge(main_loan_data, top_type_cleaned, on='acctnbr', how='left')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 170, in merge
+    op = _MergeOperation(
+         ^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 807, in __init__
+    self._maybe_coerce_merge_keys()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 1509, in _maybe_coerce_merge_keys
+    raise ValueError(msg)
+ValueError: You are trying to merge on object and int64 columns for key 'acctnbr'. If you wish to proceed you should use pd.concat
+2025-08-06 18:08:59 | ERROR | STDOUT:
+Fetching data from COCC...
+Joining property tables...
+Consolidating loan and property data...
+Error in CRE Reporting pipeline: You are trying to merge on object and int64 columns for key 'acctnbr'. If you wish to proceed you should use pd.concat
+Error in CRE Reporting Board processing: You are trying to merge on object and int64 columns for key 'acctnbr'. If you wish to proceed you should use pd.concat
+2025-08-06 18:08:59 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 0.92 minutes
+2025-08-06 18:08:59 | INFO | === REPORT RUNNER SESSION END ===
