@@ -162,3 +162,114 @@ Error in CRE Reporting pipeline: You are trying to merge on object and int64 col
 Error in CRE Reporting Board processing: You are trying to merge on object and int64 columns for key 'acctnbr'. If you wish to proceed you should use pd.concat
 2025-08-06 18:08:59 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 0.92 minutes
 2025-08-06 18:08:59 | INFO | === REPORT RUNNER SESSION END ===
+
+
+-----
+
+
+2025-08-06 18:41:34 | INFO | === REPORT RUNNER SESSION START [DEV MODE] ===
+2025-08-06 18:41:34 | INFO | DISCOVERY COMPLETE | Found 23 reports | Environment: DEV
+2025-08-06 18:41:34 | INFO | BATCH START | 1 reports | Filter: name = CRE_Reporting_Board | Environment: DEV
+2025-08-06 18:41:34 | INFO | START | CRE Reporting Board | Business Line: Credit Loan Review | Environment: DEV
+2025-08-06 18:41:34 | INFO | DEBUG | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-06 18:41:34 | INFO | DEBUG | Working directory: Reports\Credit Loan Review\CRE_Reporting_Board
+2025-08-06 18:41:34 | INFO | DEBUG | Command: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe -m src.main
+2025-08-06 18:43:54 | ERROR | FAILED | CRE Reporting Board | Runtime: 2.33 minutes
+2025-08-06 18:43:54 | ERROR | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-06 18:43:54 | ERROR | Working directory: Reports\Credit Loan Review\CRE_Reporting_Board
+2025-08-06 18:43:54 | ERROR | Return code: 1
+2025-08-06 18:43:54 | ERROR | STDERR:
+Traceback (most recent call last):
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'bookbalance'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\main.py", line 32, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\main.py", line 17, in main
+    output_path = run_cre_reporting_pipeline()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 487, in run_cre_reporting_pipeline
+    production_path, balance_path = generate_icre_reports()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 239, in generate_icre_reports
+    production_summary = calculate_production_summary()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 178, in calculate_production_summary
+    _, originated_loans = fetch_icre_data_for_year(year)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\src\cre_board_reporting\core.py", line 124, in fetch_icre_data_for_year
+    main_loan_data = cdutils.acct_file_creation.core.query_df_on_date(year_end_date)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\cdutils\cdutils\acct_file_creation\core.py", line 60, in query_df_on_date
+    raw_data = cdutils.acct_file_creation.core_transform.main_pipeline(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\cdutils\cdutils\acct_file_creation\core_transform.py", line 43, in main_pipeline
+    main_loan_data = cdutils.loans.calculations.append_total_exposure_field(main_loan_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\cdutils\cdutils\loans\calculations.py", line 26, in append_total_exposure_field
+    df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+                            ~~^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\frame.py", line 4107, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'bookbalance'
+2025-08-06 18:43:54 | ERROR | STDOUT:
+=== CRE Reporting Board Pipeline ===
+
+1. Processing CRE Loader data...
+Fetching data from COCC...
+Joining property tables...
+Enforcing data type consistency...
+Filtering to CRE loans only...
+Filtered from 89579 total loans to 1741 CRE loans
+Consolidating loan and property data...
+Adding call code grouping...
+Processing complete. Final dataset has 1741 records.
+
+2. Generating CRE Loader output...
+Writing output to: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\output\cre_loader.xlsx
+Output file created successfully: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\output\cre_loader.xlsx
+
+3. Generating Call Code Analysis reports...
+Generating Total CML report...
+Total CML report: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\output\total_cml.xlsx
+1-4 Fam Construction: $5,728,186.00
+1-4 Family: $53,897,618.14
+Construction: $105,913,940.08
+I-CRE: $659,524,952.53
+Other: $2,025,338.64
+OwnerOcc: $344,756,390.24
+Generating detailed I-CRE report...
+I-CRE detailed report: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\output\icre_detailed.xlsx
+I-CRE total balance: $659,524,952.53
+Generating Construction report...
+Construction report: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Credit Loan Review\CRE_Reporting_Board\output\construction.xlsx
+Construction total balance: $105,913,940.08
+
+4. Generating I-CRE Production and Balance reports...
+Generating I-CRE production and balance reports...
+Calculating I-CRE production summary...
+Fetching I-CRE data for 2024...
+Found 400 total I-CRE loans and 50 originated in 2024
+2024: $136,426,550.00 in production (50 loans)
+Fetching I-CRE data for 2023...
+Column 'acctnbr' not found. Creating it with default None values.
+Column 'acctnbr' not found. Creating it with default None values.
+Column 'acctnbr' not found. Creating it with default None values.
+Error in CRE Reporting pipeline: 'bookbalance'
+Error in CRE Reporting Board processing: 'bookbalance'
+2025-08-06 18:43:54 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 2.33 minutes
+2025-08-06 18:43:54 | INFO | === REPORT RUNNER SESSION END ===
