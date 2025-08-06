@@ -10,6 +10,7 @@ from pathlib import Path
 import src.config
 from src.cre_board_reporting.fetch_data import fetch_prop_data
 import cdutils.acct_file_creation.core
+import cdutils.input_cleansing
 
 # =============================================================================
 # DATA TRANSFORMATION AND JOINING FUNCTIONS
@@ -123,6 +124,17 @@ def process_cre_data():
     
     # Convert column names to lowercase for consistency
     prop_data.columns = prop_data.columns.str.lower()
+    
+    # Enforce consistent data types for merge keys
+    print("Enforcing data type consistency...")
+    
+    # Define schema for key columns to ensure consistent data types
+    loan_schema = {'acctnbr': str}
+    prop_schema = {'acctnbr': str, 'propnbr': str}
+    
+    # Apply schema enforcement
+    main_loan_data = cdutils.input_cleansing.enforce_schema(main_loan_data, loan_schema)
+    prop_data = cdutils.input_cleansing.enforce_schema(prop_data, prop_schema)
     
     # Consolidate loan data & property data (single property per loan)
     print("Consolidating loan and property data...")
