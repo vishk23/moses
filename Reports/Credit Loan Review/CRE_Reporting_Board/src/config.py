@@ -38,3 +38,19 @@ CACHE_DIR = Path(__file__).parent.parent / "cache" if USE_CACHING else None
 
 # Output file configuration
 OUTPUT_FILENAME = "cre_loader.xlsx"
+
+# Property type grouping configuration
+PROPERTY_TYPE_GROUPS = {
+    'Autobody/Gas Station': ['Autobody/Gas Station','Gas Station and Convenience St','Auto-Truck Repair'],
+    'Other': ['Other','Commercial - Other'],
+    'Retail': ['Retail - Big Box Store','Shopping Plaza','Strip Plaza','Dry Cleaner/Laundromat','General Retail'],
+    'Hospitality': ['Hotel/Motel','Hospitality/Event Space'],
+    'Recreation': ['Outdoor Recreation','Indoor Recreational'],
+    'Industrial': ['Manufacturing','Warehouse'],
+    'Land': ['Land - Unimproved','Land - Improved'],
+    'Mixed Use': ['Mixed Use (Retail/Office)','Mixed Use (Retail/Residential)','Mixed Use (Office/Residential)'],
+    'Multi Family': ['Apartment Building'],
+    'General Office': ['Office - Professional','Office- General'],
+    'Medical Office': ['Office - Medical'],
+    'Restaurant': ['Restaurant']
+}
