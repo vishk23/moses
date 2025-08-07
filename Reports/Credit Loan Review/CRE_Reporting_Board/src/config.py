@@ -50,7 +50,7 @@ FDIC_CALL_CODE_GROUPS = {
     'OwnerOcc': ['REOW'],
     'I-CRE': ['RENO','REMU'],
     'C&I': ['CIUS'],
-    'Other': ['OTAL','AGPR','REFM']
+    'Other': ['OTAL','AGPR','REFM','LENO']
 }
 
 # Property type grouping configuration

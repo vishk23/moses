@@ -369,6 +369,39 @@ def generate_construction_report(processed_data):
     
     return construction_output_path
 
+def generate_current_icre_report():
+    """
+    Generate current I-CRE loans report from daily loan data.
+    This filters the full daily file for I-CRE loans and writes to icre.xlsx.
+    
+    Returns:
+        Path: Path to the generated I-CRE output file
+    """
+    print("Generating current I-CRE report from daily data...")
+    
+    # Get current daily loan data
+    main_loan_data = cdutils.acct_file_creation.core.query_df_on_date()
+    
+    # Filter to I-CRE loans only (using FDIC call codes from config)
+    icre_call_codes = src.config.FDIC_CALL_CODE_GROUPS['I-CRE']  # ['RENO', 'REMU']
+    icre_data = main_loan_data[main_loan_data['fdiccatcd'].isin(icre_call_codes)].copy()
+    
+    # Ensure output directory exists
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Generate output file
+    icre_output_path = src.config.OUTPUT_DIR / "icre.xlsx"
+    icre_data.to_excel(icre_output_path, engine='openpyxl', index=False)
+    
+    # Calculate total for validation
+    total_balance = icre_data['Net Balance'].sum()
+    
+    print(f"Current I-CRE report: {icre_output_path}")
+    print(f"Current I-CRE total balance: ${total_balance:,.2f} ({len(icre_data)} loans)")
+    print(f"I-CRE call codes used: {icre_call_codes}")
+    
+    return icre_output_path
+
 # =============================================================================
 # MAIN PROCESSING PIPELINE
 # =============================================================================
@@ -482,8 +515,12 @@ def run_cre_reporting_pipeline():
         icre_detailed_path = generate_icre_detailed_report(processed_data)
         construction_path = generate_construction_report(processed_data)
         
+        # Generate current I-CRE report from daily data
+        print("\n4. Generating current I-CRE report...")
+        current_icre_path = generate_current_icre_report()
+        
         # Generate I-CRE production and balance reports
-        print("\n4. Generating I-CRE Production and Balance reports...")
+        print("\n5. Generating I-CRE Production and Balance reports...")
         production_path, balance_path = generate_icre_reports()
         
         print("\n=== Pipeline Complete ===")
@@ -493,6 +530,7 @@ def run_cre_reporting_pipeline():
             'total_cml': total_cml_path,
             'icre_detailed': icre_detailed_path,
             'construction': construction_path,
+            'current_icre': current_icre_path,
             'icre_production': production_path,
             'icre_balances': balance_path
         }
