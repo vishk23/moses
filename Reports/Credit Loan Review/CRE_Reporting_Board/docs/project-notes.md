@@ -301,3 +301,8 @@ Construction Report (subset):
 
 Filters from the CRE data: processed_data[processed_data['Cleaned Call Code'] == 'Construction']
 Uses config: src.config.FDIC_CALL_CODE_GROUPS['Construction'] = ['OTCN','LAND','LNDV','RECN']
+
+
+---
+
+Need to add in WH_LOANS.NEXTRATECHG
