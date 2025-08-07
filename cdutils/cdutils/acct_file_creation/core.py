@@ -20,16 +20,11 @@ import cdutils.input_cleansing # type: ignore
 def get_last_business_day(from_date: Optional[datetime] = None):
     """Get the last business day (excluding weekends and US federal holidays)"""
     if from_date is None:
-        start_date = datetime.now().date()
+        candidate_date = datetime.now().date() - timedelta(days=1)
     else:
-        start_date = from_date.date()
+        candidate_date = from_date.date()
     
-    # Create US federal holiday calendar
     cal = USFederalHolidayCalendar()
-    
-    # Start from the day before the given date and work backwards
-    candidate_date = start_date - timedelta(days=1)
-    
     while True:
         # Check if it's a weekend (Saturday=5, Sunday=6)
         if candidate_date.weekday() >= 5:
