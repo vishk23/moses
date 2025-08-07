@@ -67,12 +67,6 @@ PROPERTY_TYPE_GROUPS = {
     'Storage': ['Self Storage'],
     'Educational': ['Educational Facilities','Day Care'],
     'Religious': ['Church'],
-    'Funeral': ['Funeral Home'],
-    'Real Estate Related': ['Real Estate - Business','Real Estate - Bus&Bus Assets','Real Estate - Personal & Bus','Real Estate - Pers&Bus Assets'],
-    'Business Assets': ['All Business Assets','Bus Assets w/Accts Receivable','UCC - ABA','UCC- Equipment','Assignment of Leases/Rents'],
-    'Secured Deposits': ['Savings - Partially Secured','Passbook/Savings Secured'],
     'Vehicles': ['Vehicle - Business','Boat'],
-    'Contractor': ['General Contractor','Outdoor Dealers'],
-    'Securities': ['Marketable Securities','SBA Loan'],
-    'Other': ['Commercial - Other']
+    'Other': ['Commercial - Other','Real Estate - Business','Real Estate - Bus&Bus Assets','Real Estate - Personal & Bus','Real Estate - Pers&Bus Assets','All Business Assets','Bus Assets w/Accts Receivable','UCC - ABA','UCC- Equipment','Assignment of Leases/Rents','General Contractor','Outdoor Dealers','Marketable Securities','SBA Loan','Funeral Home','Savings - Partially Secured','Passbook/Savings Secured']
 }
