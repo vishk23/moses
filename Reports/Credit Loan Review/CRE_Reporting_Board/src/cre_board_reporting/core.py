@@ -147,7 +147,7 @@ def fetch_icre_data_for_year(year: int):
         ascending=[False, True]
     )
     
-    # Filter to loans originated in this year
+    # Filter to loans originated in specified year
     year_start = datetime(year, 1, 1)
     originated_this_year = icre_with_props[
         pd.to_datetime(icre_with_props['origdate']) >= year_start
