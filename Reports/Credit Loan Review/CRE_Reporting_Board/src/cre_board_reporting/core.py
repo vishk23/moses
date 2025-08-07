@@ -337,6 +337,7 @@ def generate_icre_detailed_report(processed_data):
     
     return icre_output_path
 
+
 def generate_construction_report(processed_data):
     """
     Generate Construction loans report with property type grouping.

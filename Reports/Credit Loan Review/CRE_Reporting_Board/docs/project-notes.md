@@ -273,3 +273,8 @@ Error in CRE Reporting pipeline: 'bookbalance'
 Error in CRE Reporting Board processing: 'bookbalance'
 2025-08-06 18:43:54 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 2.33 minutes
 2025-08-06 18:43:54 | INFO | === REPORT RUNNER SESSION END ===
+
+
+---
+
+Need to add in WH_LOANS.NEXTRATECHG
