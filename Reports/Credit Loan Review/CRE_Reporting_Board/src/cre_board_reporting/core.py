@@ -450,9 +450,9 @@ def process_cre_data():
     prop_data = cdutils.input_cleansing.enforce_schema(prop_data, prop_schema)
     
     # Filter to CRE loans only (before property merge for efficiency)
-    print("Filtering to CRE loans only...")
-    cre_loans = main_loan_data[main_loan_data['Category'] == 'CRE'].copy()
-    print(f"Filtered from {len(main_loan_data)} total loans to {len(cre_loans)} CRE loans")
+    print("Filtering to CML (CRE + HOA + C&I) loans only...")
+    cre_loans = main_loan_data[main_loan_data['Category'].isin(['CRE','C&I','HOA'])].copy()
+    print(f"Filtered from {len(main_loan_data)} total loans to {len(cre_loans)} CML loans")
     
     # Consolidate loan data & property data (single property per loan)
     print("Consolidating loan and property data...")
