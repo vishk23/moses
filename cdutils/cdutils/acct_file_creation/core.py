@@ -17,15 +17,18 @@ import cdutils.inactive_date # type: ignore
 import cdutils.input_cleansing # type: ignore
 
 
-def get_last_business_day():
+def get_last_business_day(from_date: Optional[datetime] = None):
     """Get the last business day (excluding weekends and US federal holidays)"""
-    today = datetime.now().date()
+    if from_date is None:
+        start_date = datetime.now().date()
+    else:
+        start_date = from_date.date()
     
     # Create US federal holiday calendar
     cal = USFederalHolidayCalendar()
     
-    # Start from yesterday and work backwards
-    candidate_date = today - timedelta(days=1)
+    # Start from the day before the given date and work backwards
+    candidate_date = start_date - timedelta(days=1)
     
     while True:
         # Check if it's a weekend (Saturday=5, Sunday=6)
@@ -52,7 +55,7 @@ def query_df_on_date(specified_date: Optional[datetime] = None):
         specified_date = get_last_business_day()
     else:
         assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
-        specified_date = specified_date.strftime('%Y-%m-%d %H:%M:%S')
+        specified_date = get_last_business_day(specified_date)
 
     data = cdutils.acct_file_creation.fetch_data.fetch_data(specified_date)
 
