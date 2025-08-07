@@ -123,6 +123,9 @@ def fetch_icre_data_for_year(year: int):
     year_end_date = datetime(year, 12, 31)
     main_loan_data = cdutils.acct_file_creation.core.query_df_on_date(year_end_date)
     
+    # Exclude SWAP Exposure (CM09) and ACH Manager (CI07)
+    main_loan_data = main_loan_data[~main_loan_data['currmiaccttypcd'].isin(['CM09', 'CI07'])].copy()
+    
     # Filter to I-CRE loans only
     icre_loans = main_loan_data[main_loan_data['fdiccatcd'].isin(['REMU', 'RENO'])].copy()
     
@@ -317,8 +320,11 @@ def generate_icre_detailed_report(processed_data):
     """
     print("Generating detailed I-CRE report...")
     
-    # Filter to I-CRE loans
-    icre_data = processed_data[processed_data['fdiccatcd'].isin(['RENO', 'REMU'])].copy()
+    # Filter to I-CRE loans and exclude CM09, CI07
+    icre_data = processed_data[
+        processed_data['fdiccatcd'].isin(['RENO', 'REMU']) &
+        ~processed_data['currmiaccttypcd'].isin(['CM09', 'CI07'])
+    ].copy()
     
     # Add property type grouping if proptypdesc column exists
     if 'proptypdesc' in icre_data.columns:
@@ -350,8 +356,11 @@ def generate_construction_report(processed_data):
     """
     print("Generating Construction report...")
     
-    # Filter to Construction loans
-    construction_data = processed_data[processed_data['Cleaned Call Code'] == 'Construction'].copy()
+    # Filter to Construction loans and exclude CM09, CI07
+    construction_data = processed_data[
+        (processed_data['Cleaned Call Code'] == 'Construction') &
+        ~processed_data['currmiaccttypcd'].isin(['CM09', 'CI07'])
+    ].copy()
     
     # Add property type grouping if proptypdesc column exists
     if 'proptypdesc' in construction_data.columns:
@@ -415,9 +424,12 @@ def process_cre_data():
         pd.DataFrame: Processed CRE data ready for output
     """
     print("Fetching data from COCC...")
-    # Fetch data from database
-    main_loan_data = cdutils.acct_file_creation.core.query_df_on_date()
+    # Fetch data from database as of June 30, 2025
+    main_loan_data = cdutils.acct_file_creation.core.query_df_on_date(datetime(2025, 6, 30))
     prop_data_dict = fetch_prop_data()
+    
+    # Exclude SWAP Exposure (CM09) and ACH Manager (CI07)
+    main_loan_data = main_loan_data[~main_loan_data['currmiaccttypcd'].isin(['CM09', 'CI07'])].copy()
     
     # Join property tables
     print("Joining property tables...")
