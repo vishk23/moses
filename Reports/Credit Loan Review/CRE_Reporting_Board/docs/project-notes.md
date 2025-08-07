@@ -273,3 +273,31 @@ Error in CRE Reporting pipeline: 'bookbalance'
 Error in CRE Reporting Board processing: 'bookbalance'
 2025-08-06 18:43:54 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 2.33 minutes
 2025-08-06 18:43:54 | INFO | === REPORT RUNNER SESSION END ===
+
+---
+```
+All Loans → Filter to 'CRE' Category → cre_loader.xlsx
+                                    ↓
+                            Apply Call Code Grouping
+                                    ↓
+                    ┌─────────────────┴─────────────────┐
+                    ↓                                   ↓
+            Filter to 'I-CRE'                 Filter to 'Construction'
+            ↓                                   ↓
+        icre_detailed.xlsx                 construction.xlsx
+```
+
+
+Report Hierarchy:
+cre_loader.xlsx (main file):
+
+Filters: [main_loan_data[main_loan_data['Category'] == 'CRE']]
+Contains ALL CRE loans (all call codes in the CRE category)
+I-CRE Detailed Report (subset):
+
+Filters from the CRE data: processed_data[processed_data['fdiccatcd'].isin(['RENO', 'REMU'])]
+Uses config: src.config.FDIC_CALL_CODE_GROUPS['I-CRE'] = ['RENO', 'REMU']
+Construction Report (subset):
+
+Filters from the CRE data: processed_data[processed_data['Cleaned Call Code'] == 'Construction']
+Uses config: src.config.FDIC_CALL_CODE_GROUPS['Construction'] = ['OTCN','LAND','LNDV','RECN']

@@ -55,7 +55,8 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.AVAILBALAMT,
         a.FDICCATDESC,
         a.ORIGBAL,
-        a.LOANLIMITYN
+        a.LOANLIMITYN,
+        a.NEXTRATECHG
     FROM
         COCCDM.WH_LOANS a
     WHERE
