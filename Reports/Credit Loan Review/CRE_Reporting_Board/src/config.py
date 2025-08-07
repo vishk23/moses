@@ -52,16 +52,27 @@ FDIC_CALL_CODE_GROUPS = {
 
 # Property type grouping configuration
 PROPERTY_TYPE_GROUPS = {
-    'Autobody/Gas Station': ['Autobody/Gas Station','Gas Station and Convenience St','Auto-Truck Repair'],
-    'Other': ['Other','Commercial - Other'],
-    'Retail': ['Retail - Big Box Store','Shopping Plaza','Strip Plaza','Dry Cleaner/Laundromat','General Retail'],
-    'Hospitality': ['Hotel/Motel','Hospitality/Event Space'],
-    'Recreation': ['Outdoor Recreation','Indoor Recreational'],
-    'Industrial': ['Manufacturing','Warehouse'],
-    'Land': ['Land - Unimproved','Land - Improved'],
+    'Autobody/Gas Station': ['Autobody/Gas Station','Gas Station and Convenience St','Auto-Truck Repair','Car Wash'],
+    'Retail': ['Retail - Big Box Store','Shopping Plaza','Strip Plaza','General Retail','Dealership'],
+    'Hospitality': ['Hotel/Motel','Hospitality/Event Space','Assisted Living'],
+    'Recreation': ['Outdoor Recreation','Indoor Recreational','Golf Course','Marina'],
+    'Industrial': ['Manufacturing','Warehouse','Industrial','Seafood Processing Plant','Solar Farm'],
+    'Land': ['Land - Unimproved','Land - Improved','Parking Lot'],
     'Mixed Use': ['Mixed Use (Retail/Office)','Mixed Use (Retail/Residential)','Mixed Use (Office/Residential)'],
-    'Multi Family': ['Apartment Building'],
+    'Multi Family': ['Apartment Building','Multi Family'],
     'General Office': ['Office - Professional','Office- General'],
     'Medical Office': ['Office - Medical'],
-    'Restaurant': ['Restaurant']
+    'Restaurant': ['Restaurant'],
+    'Residential': ['1-4 Fam Res - Non Own Occ','1 Family Residential - Own Occ','2 Family Residential - Own Occ','Condominium'],
+    'Storage': ['Self Storage'],
+    'Educational': ['Educational Facilities','Day Care'],
+    'Religious': ['Church'],
+    'Funeral': ['Funeral Home'],
+    'Real Estate Related': ['Real Estate - Business','Real Estate - Bus&Bus Assets','Real Estate - Personal & Bus','Real Estate - Pers&Bus Assets'],
+    'Business Assets': ['All Business Assets','Bus Assets w/Accts Receivable','UCC - ABA','UCC- Equipment','Assignment of Leases/Rents'],
+    'Secured Deposits': ['Savings - Partially Secured','Passbook/Savings Secured'],
+    'Vehicles': ['Vehicle - Business','Boat'],
+    'Contractor': ['General Contractor','Outdoor Dealers'],
+    'Securities': ['Marketable Securities','SBA Loan'],
+    'Other': ['Commercial - Other']
 }
