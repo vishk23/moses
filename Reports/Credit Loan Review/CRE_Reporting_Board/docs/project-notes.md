@@ -306,3 +306,17 @@ Uses config: src.config.FDIC_CALL_CODE_GROUPS['Construction'] = ['OTCN','LAND','
 ---
 
 Need to add in WH_LOANS.NEXTRATECHG
+
+
+---
+
+SWAP Exposure - CM09
+ACH Manager - CI07
+
+need to come out of everything. 
+
+
+- for CRE_loader, this should be fed datetime(2025,6,30) so date is as of then instead of passing nothing (and getting last business day)
+
+PBI:
+on slide for the interest rate change, only care about where next rate change < datemat
