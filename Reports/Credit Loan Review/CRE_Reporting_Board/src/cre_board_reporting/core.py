@@ -52,7 +52,7 @@ def consolidation_with_one_prop(main_loan_data, property_data):
     
     # Add cleaned property type to property data
     property_data = property_data.copy()
-    property_data['Cleaned PropType'] = property_data['proptypdesc'].map(proptype_mapping).fillna(property_data['proptypdesc'])
+    property_data['Cleaned PropType'] = property_data['proptypdesc'].map(proptype_mapping).fillna('Other')
     
     # Group by account and cleaned property type, sum appraisal values
     type_totals = (
@@ -329,7 +329,7 @@ def generate_icre_detailed_report(processed_data):
     # Add property type grouping if proptypdesc column exists
     if 'proptypdesc' in icre_data.columns:
         proptype_mapping = {code: group for group, codes in src.config.PROPERTY_TYPE_GROUPS.items() for code in codes}
-        icre_data['Cleaned PropType'] = icre_data['proptypdesc'].map(proptype_mapping).fillna(icre_data['proptypdesc'])
+        icre_data['Cleaned PropType'] = icre_data['proptypdesc'].map(proptype_mapping).fillna('Other')
     
     # Ensure output directory exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -365,7 +365,7 @@ def generate_construction_report(processed_data):
     # Add property type grouping if proptypdesc column exists
     if 'proptypdesc' in construction_data.columns:
         proptype_mapping = {code: group for group, codes in src.config.PROPERTY_TYPE_GROUPS.items() for code in codes}
-        construction_data['Cleaned PropType'] = construction_data['proptypdesc'].map(proptype_mapping).fillna(construction_data['proptypdesc'])
+        construction_data['Cleaned PropType'] = construction_data['proptypdesc'].map(proptype_mapping).fillna('Other')
     
     # Ensure output directory exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
