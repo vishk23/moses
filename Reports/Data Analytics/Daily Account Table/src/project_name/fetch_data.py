@@ -9,15 +9,19 @@ You need to set your own date that you want to see in effective date embedded in
 
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
+from datetime import datetime
 from typing import Optional
-from datetime import datetime, timedelta
-import pandas as pd
 
 def fetch_data(specified_date: Optional[datetime] = None):
     """
     Main data query
     """
-    
+    if specified_date is None:
+        specified_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
+        specified_date = specified_date.strftime('%Y-%m-%d %H:%M:%S')
+
     wh_acctcommon = text(f"""
     SELECT
         a.EFFDATE,
@@ -55,8 +59,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.AVAILBALAMT,
         a.FDICCATDESC,
         a.ORIGBAL,
-        a.LOANLIMITYN,
-        a.NEXTRATECHG
+        a.LOANLIMITYN
     FROM
         COCCDM.WH_LOANS a
     WHERE
