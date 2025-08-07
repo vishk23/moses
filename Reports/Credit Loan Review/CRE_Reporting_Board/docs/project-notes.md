@@ -320,3 +320,27 @@ need to come out of everything.
 
 PBI:
 on slide for the interest rate change, only care about where next rate change < datemat
+
+unique:
+array(['Apartment Building', 'Warehouse', 'Multi Family', 'Hotel/Motel',
+       'Office- General', '1-4 Fam Res - Non Own Occ', 'Shopping Plaza',
+       'Real Estate - Business', 'Office - Medical', 'Commercial - Other',
+       'Real Estate - Bus&Bus Assets', 'Industrial', 'Self Storage', nan,
+       'Strip Plaza', 'Dealership', 'General Retail', 'Parking Lot',
+       'Gas Station and Convenience St', 'Retail - Big Box Store',
+       'Outdoor Recreation', 'Mixed Use (Retail/Office)', 'Day Care',
+       'Restaurant', 'Mixed Use (Retail/Residential)',
+       'Office - Professional', 'Mixed Use (Office/Residential)',
+       'Manufacturing', 'Land - Improved', 'Auto-Truck Repair',
+       'Golf Course', 'Seafood Processing Plant', 'All Business Assets',
+       'Marketable Securities', 'Solar Farm', 'UCC - ABA',
+       'UCC- Equipment', 'Assignment of Leases/Rents', 'Assisted Living',
+       'Indoor Recreational', 'Land - Unimproved', 'Outdoor Dealers',
+       '1 Family Residential - Own Occ', 'General Contractor', 'Marina',
+       'Educational Facilities', 'Autobody/Gas Station', 'SBA Loan',
+       'Hospitality/Event Space', 'Church',
+       'Real Estate - Personal & Bus', 'Boat', 'Car Wash',
+       'Real Estate - Pers&Bus Assets', 'Bus Assets w/Accts Receivable',
+       'Savings - Partially Secured', '2 Family Residential - Own Occ',
+       'Funeral Home', 'Passbook/Savings Secured', 'Vehicle - Business',
+       'Condominium'], dtype=object)
