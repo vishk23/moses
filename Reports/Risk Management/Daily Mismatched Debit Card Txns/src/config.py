@@ -22,6 +22,7 @@ PROD_READY = True
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
 BASE_PATH = Path(r"\\00-da1\Home\Share\Line of Business_Shared Services\Risk Management\Daily Mismatched Debit Card Txns") if ENV == 'prod' else Path(__file__).parent.parent
+INPUT_DIR = BASE_PATH / "input"
 OUTPUT_DIR = BASE_PATH / "output"
 
 # Email Recipients

@@ -1,86 +1,116 @@
 """
 Main Entry Point
 """
+import pandas as pd
+import numpy as np
+
 from pathlib import Path
-from typing import List
-from datetime import datetime
-from collections import deque
 from openpyxl import load_workbook
 
 import os
 import shutil
 from src._version import __version__
-from src.config import BASE_PATH
+from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR
 
 
 def main():
 
     ASSETS_PATH = BASE_PATH / Path('./assets')
-    INPUT_PATH = BASE_PATH / Path('./input')
-    OUTPUT_PATH = BASE_PATH / Path('./output')
-
+    
     # ensure there is only one txt file in specified location
-    txt_files = [file.name for file in INPUT_PATH.glob("*.txt")]
+    txt_files = [file.name for file in INPUT_DIR.glob("*.txt")]
     assert len(txt_files) == 1, ("There should only be one file .txt file in " +
-                            str(INPUT_PATH))
+                            str(INPUT_DIR))
     file_to_move = txt_files[0]
-    output_date_str = file_to_move.split()[1]
-
-    # read in txt file
-    src_path = INPUT_PATH / Path(file_to_move)
-    with open(src_path, "r") as txt_file:
-        # txt_file = open(src_path, "r")
-        content = txt_file.read()
-
-        split_content = content.split()
-        split_content = deque(split_content)
-
-        # position head after first delimiter
-        while '----' not in split_content[0]:
-            split_content.popleft()
-        split_content.popleft() # popping first delimiter
-
-        acctnbrs = []
-        amount = []
-        merchants = []
-        deb_or_cred = [] # dep = credit, wth = withdrawal
-        initial_nums = []
+    input_src_path = INPUT_DIR / Path(file_to_move)
 
 
-        while split_content[0] != 'Credits':
-            initial_nums.append(split_content[0])
-            amount.append(split_content[1])
-            if split_content[2] == 'DEP':
-                deb_or_cred.append("Credit")
-            else:
-                deb_or_cred.append("Debit")
-            acctnbrs.append(split_content[3])
-            # i = 13
-            # currMerchant = []
-            # # covers edge case of multi-word merchant names
-            # while '----' not in split_content[i]:
-            #     currMerchant.append(split_content[i])
-            #     i += 1
-            # merchant = " ".join(currMerchant[:-1])
-            # merchant += f" ({split_content[0][-4:]})"
-            # merchants.append(merchant)
-            # repositioning head at next section
-            while '----' not in split_content[0]:
-                split_content.popleft()
-            split_content.popleft()
+    column_names = [
+        "Card Nbr",
+        "Acct Nbr",
+        "Trans Amt",
+        "RTXN Typ",
+        "RetRefNbr",
+        "Comment",
+        "Merchant"
+    ]
+
+    column_widths = [16, 20, 18, 18, 12, 35, 40]
+
+    df = pd.read_fwf(
+        input_src_path,
+        widths=column_widths,
+        names=column_names,
+        encoding='latin1'
+    )
+
+    input1 = df.copy()
+    input2 = df.copy()
+
+    input1 = input1[input1['Card Nbr'].str.contains('5', na=False)]
+    input1['Card and Acct and Tran Amt'] = input1['Card Nbr'] + input1['Acct Nbr'] + input1['Trans Amt']
+
+    summary_df = (
+    input1.groupby('Card and Acct and Tran Amt')
+    .size()
+    .reset_index(name="Count")
+)
+
+    summary_df = summary_df[summary_df['Count'].isin([1, 3, 5, 7, 9])]
+
+    merged_df = pd.merge(summary_df, input1, on="Card and Acct and Tran Amt", how="inner")
+    merged_df = merged_df[['Card Nbr', 'Acct Nbr', 'Trans Amt', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
+
+    field_widths = [120, 10]
+    field_names = ['Not Needed', 'Date']
+    input2 = pd.read_fwf(
+        input_src_path,
+        widths=field_widths,
+        names=field_names,
+        encoding='latin1'
+    )
+    input2['RecordID'] = pd.Series(range(1, len(input2) + 1), dtype='int32')
+    
+    date_str = input2.at[1, 'Date']
+    merged_df['Date'] = date_str
+    merged_df['Source'] = "co_vsus re-run"
+    
+    merged_df['Trans Amt'] = pd.to_numeric(merged_df['Trans Amt'], errors="coerce")
+    merged_df['Trans Amt'] = np.where(merged_df['RTXN Typ'] == "PWTH", 0 - merged_df['Trans Amt'], merged_df['Trans Amt'])
+
+    merged_df = merged_df[['Card Nbr', 'Date', 'Source', 'Trans Amt', 'Acct Nbr', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
+
+
+    cardnbrs = list(merged_df['Card Nbr'])
+    acctnbrs = list(merged_df['Acct Nbr'])
+    amount = list(merged_df['Trans Amt'])
+    deb_or_cred = []
+    merchants = list(merged_df['Merchant'])
+
+    for i in range(len(merged_df)):
+
+        # left padding acctnbrs with 0s
+        while len(acctnbrs[i]) < 12:
+            acctnbrs[i] = '0' + acctnbrs[i]
+
+        # determining if debit or credit based on sign of Trans Amt
+        if amount[i] < 0:
+            deb_or_cred.append("Debit")
+            amount[i] = amount[i] * -1  # making all amounts positive
+        elif amount[i] > 0:
+            deb_or_cred.append("Credit")
+        else:
+            raise ValueError("Transaction amount of 0")
         
-        # get merchants using this way due to inconsistensies in length of words for locations
-        split_on_delim = content.split('----------------------------------------------------------------------------------------------')
-        for section in split_on_delim[1:-1:]:
-            merchants.append(' '.join(section[198:len(section):].split()[:-1:]))
-        for i in range(len(merchants)):
-            merchants[i] = merchants[i] + f" ({initial_nums[i][-4:]})"
+        # appending last 4 digits of card number to the merchant
+
+        merchants[i] += f" ({cardnbrs[i][-4:]})"
+
 
     # move txt file to archive
-    input_archive_path = INPUT_PATH / Path('./archive') / Path(file_to_move)
-    shutil.move(src_path, input_archive_path)
+    input_archive_path = INPUT_DIR / Path('./archive') / Path(file_to_move)
+    shutil.move(input_src_path, input_archive_path)
     print(f"Moved {file_to_move} to input/archive directory.")
-
 
     # filling in template
     wb = load_workbook(ASSETS_PATH / Path("txtparser_template.xlsx"))
@@ -96,20 +126,19 @@ def main():
         ws.cell(row=8+2*i, column=7, value=value)
 
 
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
-    today = datetime.today()
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     # output_date_str = f"{today.month}.{today.day:02}.{today.year % 100:02}"
     # date_str = f"{today.month}/{today.day:02}/{today.year % 100:02}"
-    filename = "Daily Posting Sheet " + output_date_str + ".xlsx"
-    output_file = os.path.join(OUTPUT_PATH,filename)
+    filename = "Daily Posting Sheet " + date_str + ".xlsx"
+    output_file = os.path.join(OUTPUT_DIR,filename)
 
-    ws['C3'] = f"{output_date_str}"
+    ws['C3'] = f"{date_str}"
 
     # before saving, move everything in output folder to output/archive
-    for file in OUTPUT_PATH.glob("*.xlsx"):
+    for file in OUTPUT_DIR.glob("*.xlsx"):
         file_to_move = file.name
-        src_path = OUTPUT_PATH / Path(file_to_move)
-        output_archive_path = OUTPUT_PATH / Path('./archive') / Path(file_to_move)
+        src_path = OUTPUT_DIR / Path(file_to_move)
+        output_archive_path = OUTPUT_DIR / Path('./archive') / Path(file_to_move)
         shutil.move(src_path, output_archive_path)
         print(f"Moved {file_to_move} to output/archive directory.")
 
