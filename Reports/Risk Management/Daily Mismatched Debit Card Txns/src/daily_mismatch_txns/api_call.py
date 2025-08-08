@@ -96,9 +96,14 @@ def download_document(pkid, dest_path, storage_type_id=1):
 
     url = DOC_URL_TMPL.format(storage_type_id=storage_type_id, pkid=pkid)
     headers = {
-        "Accept": "*/*",
+        # Most APIs return bytes for docs; prefer octet-stream
+        "Accept": "application/octet-stream, */*",
         **_auth_headers(),
     }
+    if _REFERER:
+        headers["Referer"] = _REFERER
+    if _ORIGIN:
+        headers["Origin"] = _ORIGIN
 
     dest = Path(dest_path)
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -109,6 +114,14 @@ def download_document(pkid, dest_path, storage_type_id=1):
                 r.raise_for_status()
             except requests.HTTPError:
                 raise RuntimeError(f"Download failed: {r.status_code} {r.text[:500]}")
+            # If server returned JSON, it's likely an error payload; don't save it as the file
+            ctype = (r.headers.get("Content-Type") or "").lower()
+            if "json" in ctype:
+                try:
+                    j = r.json()
+                except Exception:
+                    j = r.text[:500]
+                raise RuntimeError(f"Unexpected JSON response when downloading document: {j}")
             with open(dest, "wb") as f:
                 for chunk in r.iter_content(chunk_size=1024 * 64):
                     if chunk:
