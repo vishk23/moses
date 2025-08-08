@@ -1,24 +1,50 @@
-# Project Title
+# Deposit Pocket Pricing
 
 ## Project Overview
+Automates monthly preparation of deposit growth and pricing insights from a source workbook provided by Commercial Loan Administration. The process cleans and reshapes the input and produces a consistent output workbook for downstream analytics and reporting (including Power BI).
 
 ## Authors & Stakeholders
-- **Project Lead:** 
-- **Executive Sponsor:** 
+- **Project Lead:** Chad Doorley
+- **Executive Sponsor:** Tim Chaves
 - **Key Stakeholders:**
+   - Becky Velasquez
+   - Commercial Lending (CML Lending)
 
 ## Project Goals
+- Maintain a working monthly dashboard/report leveraging a standardized input.
+- Provide an input parser that tolerates minor input changes and fails clearly when required fields are missing.
+- Produce a clean, consistent output file for analytics and visualization.
 
 ## Technology Stack
+- Python (pandas, openpyxl)
+- Power BI (downstream visualization)
+- Optional: SQL (as needed for enrichment)
 
 ## Project Status
+- [x] Early version of this
+- [x] Build input parser
+- [x] Update Power BI to reflect cleaned input
+- [ ] Automate distribution to stakeholders
+
 ### Completed ✅
+- Input discovery and archiving (newest .xlsx processed, others archived)
+- Output generation to OUTPUT_DIR
 
 ### Future Enhancements
+- Validation summary and data quality checks in the output
+- Optional schema contract for input workbook
+- Automated distribution scheduling and notifications
 
 ## File Paths
+- Project materials:
+   - \\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\DepositPocketPricing
+- Runtime folders (see `src/config.py`):
+   - INPUT_DIR: `<BASE_PATH>/input`
+   - OUTPUT_DIR: `<BASE_PATH>/output`
+   - Archives maintained in `input/archive` and `output/archive`
 
 ## Documentation
+- Design and notes: `./deposit_ytd_documentation.md`
 
 ---
 

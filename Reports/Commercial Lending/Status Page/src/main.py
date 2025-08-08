@@ -150,7 +150,13 @@ def main(production_flag: bool=False):
     subject = f"Status Page - {file_name}" 
     body = "Hi, \n\nAttached is your requested status page. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
     attachment_paths = [OUTPUT_PATH]
-    cdutils.distribution.email_out(recipients, bcc_recipients, subject, body, attachment_paths)
+    cdutils.distribution.email_out(
+        recipients=recipients,
+        bcc_recipients=bcc_recipients,
+        subject=subject,
+        body=body,
+        attachment_paths=[str(OUTPUT_PATH)]
+    )
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")

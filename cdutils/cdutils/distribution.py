@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from pathlib import Path
 
 import win32com.client as win32 # type: ignore
@@ -20,7 +20,14 @@ import win32com.client as win32 # type: ignore
 # body = "Hi all, \n\nAttached is the Weekly Loan Report with a 45 day lookback. Please let me know if you have any questions."
 # attachment_paths = [OUTPUT_PATH]
 
-def email_out(recipients: List[str], cc_recipients: Optional[List[str]] = None, bcc_recipients: Optional[List[str]] = None, subject: str = "", body: str = "", attachment_paths: Optional[List[Path]] = None) -> None:
+def email_out(
+    recipients: List[str],
+    cc_recipients: Optional[List[str]] = None,
+    bcc_recipients: Optional[List[str]] = None,
+    subject: str = "",
+    body: str = "",
+    attachment_paths: Optional[List[Union[str, Path]]] = None,
+) -> None:
     # Gracefully handle empty or None recipients
     if not recipients or len(recipients) == 0:
         print("No recipients provided - email not sent")
@@ -48,17 +55,29 @@ def email_out(recipients: List[str], cc_recipients: Optional[List[str]] = None, 
         #     else:
         #         print(f"Warning: Couldn't find {desired_email} in available Outlook Accounts")
         message.SentOnBehalfOfName = "BusinessIntelligence@bcsbmail.com"
-        
+
+        # Ensure all addresses are strings
+        recipients = [str(r) for r in recipients]
+        cc_recipients = [str(r) for r in cc_recipients] if cc_recipients else []
+        bcc_recipients = [str(r) for r in bcc_recipients] if bcc_recipients else []
+
         message.To = ";".join(recipients)
         if cc_recipients:
             message.CC = ";".join(cc_recipients)
         if bcc_recipients:
             message.BCC = ";".join(bcc_recipients)
-        message.Subject = subject
-        message.Body = body
+        message.Subject = str(subject)
+        message.Body = str(body)
 
         for file_path in attachment_paths:
-            absolute_path = str(Path(file_path).absolute())
+            # Normalize to string absolute path; accept str or Path
+            p = Path(file_path)
+            absolute_path = str(p.resolve())
+            # Optional existence check to avoid cryptic COM errors
+            if not p.exists():
+                print(f"Warning: attachment not found, skipping -> {absolute_path}")
+                continue
+            # Use positional arg; COM expects Source as first parameter
             message.Attachments.Add(absolute_path)
         message.Send()
         outlook.Quit()

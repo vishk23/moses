@@ -13,17 +13,17 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "<Project Name>"
-BUSINESS_LINE = "<Business Line or Department>"
-SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
-OWNER = "<Project Owner or Team>"
+REPORT_NAME = "Deposit Pocket Pricing"
+BUSINESS_LINE = "Commercial Lending"
+SCHEDULE = "Monthly"
+OWNER = "Becky Velasquez"
 
 # Status
 PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\DepositPocketPricing\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
@@ -32,3 +32,10 @@ EMAIL_TO = []  # List of primary recipients for production
 EMAIL_CC = []  # List of CC recipients for production
 
 # Add any additional configuration variables below as needed
+
+# Ensure directories exist (idempotent)
+BASE_PATH.mkdir(parents=True, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+INPUT_DIR.mkdir(parents=True, exist_ok=True)
+(INPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)
+(OUTPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)

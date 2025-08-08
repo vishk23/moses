@@ -10,6 +10,7 @@ Simple workflow migrated from src_old:
 """
 
 from pathlib import Path
+import shutil
 import pandas as pd
 import src.config
 
@@ -30,17 +31,21 @@ def main():
     print(f"Schedule: {src.config.SCHEDULE}")
     print(f"Environment: {src.config.ENV}")
 
-    # Paths
-    input_path = src.config.INPUT_DIR / 'DepositPocketPricing.xlsx'
+    # Discover newest .xlsx in INPUT_DIR and archive extras
+    xlsx_files = sorted(src.config.INPUT_DIR.glob("*.xlsx"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not xlsx_files:
+        raise FileNotFoundError(f"No .xlsx files found in {src.config.INPUT_DIR}")
+    input_path = xlsx_files[0]
+    for extra in xlsx_files[1:]:
+        shutil.move(extra, src.config.INPUT_DIR / "archive" / extra.name)
+        print(f"Archived extra input: {extra.name}")
+
     output_path = src.config.OUTPUT_DIR / 'deposit_pocket_pricing_raw.xlsx'
 
     # Ensure output dir exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load
-    if not input_path.exists():
-        raise FileNotFoundError(f"Input file not found: {input_path}")
-
     print(f"Reading input: {input_path}")
     df = pd.read_excel(input_path)
 
@@ -68,6 +73,10 @@ def main():
     # Write
     print(f"Writing output: {output_path}")
     df.to_excel(output_path, engine='openpyxl', index=False)
+    # Move processed input to archive
+    archive_dest = src.config.INPUT_DIR / "archive" / input_path.name
+    shutil.move(input_path, archive_dest)
+    print(f"Moved {input_path.name} to input/archive")
     print("Complete!")
 
 
