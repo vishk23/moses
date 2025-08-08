@@ -1,12 +1,6 @@
-Starting [v3.0.3-prod]
-C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Status Page\src\output_to_excel.py:104: FutureWarning: DataFrame.applymap has been 
-deprecated. Use DataFrame.map instead.
-  df_safe = df.astype(object).applymap(lambda x: str(x) if isinstance(x, Path) else x)
-C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Status Page\src\output_to_excel.py:104: FutureWarning: DataFrame.applymap has been 
-deprecated. Use DataFrame.map instead.
-  df_safe = df.astype(object).applymap(lambda x: str(x) if isinstance(x, Path) else x)
-C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Status Page\src\output_to_excel.py:104: FutureWarning: DataFrame.applymap has been 
-deprecated. Use DataFrame.map instead.
-  df_safe = df.astype(object).applymap(lambda x: str(x) if isinstance(x, Path) else x)
-Error: must be real number, not WindowsPath
-Complete!
+# 2025-08-08
+Had to fix a small bug (related to outlook application on distribution)
+
+Tried to convert to openpyxl, but remembered issues with the formatting of numbers and implications.
+- before I used to have the numbers as strings and put in $ and %, but then the analysts go in to adjust numbers and they are stored as text and don't work for math.
+  - orphaned this branch, but may come back to this later on.
