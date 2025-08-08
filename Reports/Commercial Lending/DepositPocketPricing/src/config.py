@@ -32,3 +32,10 @@ EMAIL_TO = []  # List of primary recipients for production
 EMAIL_CC = []  # List of CC recipients for production
 
 # Add any additional configuration variables below as needed
+
+# Ensure directories exist (idempotent)
+BASE_PATH.mkdir(parents=True, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+INPUT_DIR.mkdir(parents=True, exist_ok=True)
+(INPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)
+(OUTPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)
