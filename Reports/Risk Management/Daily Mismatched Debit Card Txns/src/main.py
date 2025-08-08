@@ -11,11 +11,27 @@ import os
 import shutil
 from src._version import __version__
 from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR
+from src.daily_mismatch_txns.api_call import (
+    kwyk_search_first_pkid,
+    download_document,
+)
 
 
 def main():
-
     ASSETS_PATH = BASE_PATH / Path('./assets')
+    # Ensure assets folder exists and fetch latest CO_VSUS file into it
+    ASSETS_PATH.mkdir(parents=True, exist_ok=True)
+    try:
+        pkid, _results = kwyk_search_first_pkid("CO_VSUS", results_limit=100)
+        if pkid:
+            dest_file = ASSETS_PATH / f"CO_VSUS_{pkid}.prn"
+            download_document(pkid, dest_file, storage_type_id=1)
+            print(f"Downloaded CO_VSUS document to: {dest_file}")
+        else:
+            print("No CO_VSUS documents found via API search.")
+    except Exception as e:
+        # Non-fatal: continue with local processing even if API fetch fails
+        print(f"Warning: API fetch skipped/failed: {e}")
     
     # ensure there is only one txt file in specified location
     txt_files = [file.name for file in INPUT_DIR.glob("*.txt")]
