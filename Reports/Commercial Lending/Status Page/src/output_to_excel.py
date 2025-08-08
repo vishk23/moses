@@ -101,7 +101,10 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
             # print(range_obj.Address)
             # Convert any Path objects inside the DataFrame to strings before writing to Excel
             if (df.dtypes == 'object').any():
-                df_safe = df.astype(object).applymap(lambda x: str(x) if isinstance(x, Path) else x)
+                df_safe = df.copy()
+                obj_cols = df_safe.select_dtypes(include=['object']).columns
+                for col in obj_cols:
+                    df_safe[col] = df_safe[col].map(lambda x: str(x) if isinstance(x, Path) else x)
             else:
                 df_safe = df
             # Provide data as a nested list for COM interop

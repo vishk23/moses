@@ -55,14 +55,19 @@ def email_out(
         #     else:
         #         print(f"Warning: Couldn't find {desired_email} in available Outlook Accounts")
         message.SentOnBehalfOfName = "BusinessIntelligence@bcsbmail.com"
-        
+
+        # Ensure all addresses are strings
+        recipients = [str(r) for r in recipients]
+        cc_recipients = [str(r) for r in cc_recipients] if cc_recipients else []
+        bcc_recipients = [str(r) for r in bcc_recipients] if bcc_recipients else []
+
         message.To = ";".join(recipients)
         if cc_recipients:
             message.CC = ";".join(cc_recipients)
         if bcc_recipients:
             message.BCC = ";".join(bcc_recipients)
-        message.Subject = subject
-        message.Body = body
+        message.Subject = str(subject)
+        message.Body = str(body)
 
         for file_path in attachment_paths:
             # Normalize to string absolute path; accept str or Path
@@ -72,8 +77,8 @@ def email_out(
             if not p.exists():
                 print(f"Warning: attachment not found, skipping -> {absolute_path}")
                 continue
-            # Use named parameter to avoid dispatch confusion on COM side
-            message.Attachments.Add(Source=absolute_path)
+            # Use positional arg; COM expects Source as first parameter
+            message.Attachments.Add(absolute_path)
         message.Send()
         outlook.Quit()
         print("Email sent!")
