@@ -41,6 +41,10 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
     if output_path.exists():
         output_path.unlink()
        
+    # Pre‑declare COM objects so we can safely close them in finally
+    excel = None
+    wb = None
+
     try:
         # Initialize Excel application
         excel = win32.Dispatch('Excel.Application')
@@ -53,6 +57,9 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
             if not value:
                 continue
             assert isinstance(cell, str), f"Cell address must be a string, got {cell}"
+            # Coerce Path-like values to string to avoid COM type conversion issues
+            if isinstance(value, Path):
+                value = str(value)
             ws.Range(cell).Value = value
         
         for insertion in df_inserts:
@@ -92,7 +99,13 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
             range_obj = ws.Range(start_cell).GetResize(num_rows, num_cols)
             # range_obj = ws.Range("A29").Resize(8, 7)
             # print(range_obj.Address)
-            range_obj.Value = df.values
+            # Convert any Path objects inside the DataFrame to strings before writing to Excel
+            if (df.dtypes == 'object').any():
+                df_safe = df.astype(object).applymap(lambda x: str(x) if isinstance(x, Path) else x)
+            else:
+                df_safe = df
+            # Provide data as a nested list for COM interop
+            range_obj.Value = df_safe.values.tolist()
 
             # # Define the starting cell (e.g., "A5" or "H29")
             # start_cell = f"{start_col}{start_row}"
@@ -108,7 +121,7 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
         ws.PageSetup.FitToPagesTall = 1
 
         excel.DisplayAlerts = False 
-        # Save the workbook to the output path
+    # Save the workbook to the output path
         wb.SaveAs(str(output_path.absolute()))
     
     except Exception as e:
@@ -117,7 +130,7 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
     
     finally:
         # Ensure workbook and Excel application are closed
-        if wb is not None:
+    if wb is not None:
             wb.Close(SaveChanges=False)
-        if excel is not None:
+    if excel is not None:
             excel.Quit()

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from pathlib import Path
 
 import win32com.client as win32 # type: ignore
@@ -20,7 +20,14 @@ import win32com.client as win32 # type: ignore
 # body = "Hi all, \n\nAttached is the Weekly Loan Report with a 45 day lookback. Please let me know if you have any questions."
 # attachment_paths = [OUTPUT_PATH]
 
-def email_out(recipients: List[str], cc_recipients: Optional[List[str]] = None, bcc_recipients: Optional[List[str]] = None, subject: str = "", body: str = "", attachment_paths: Optional[List[Path]] = None) -> None:
+def email_out(
+    recipients: List[str],
+    cc_recipients: Optional[List[str]] = None,
+    bcc_recipients: Optional[List[str]] = None,
+    subject: str = "",
+    body: str = "",
+    attachment_paths: Optional[List[Union[str, Path]]] = None,
+) -> None:
     # Gracefully handle empty or None recipients
     if not recipients or len(recipients) == 0:
         print("No recipients provided - email not sent")
@@ -58,8 +65,15 @@ def email_out(recipients: List[str], cc_recipients: Optional[List[str]] = None, 
         message.Body = body
 
         for file_path in attachment_paths:
-            absolute_path = str(Path(file_path).absolute())
-            message.Attachments.Add(absolute_path)
+            # Normalize to string absolute path; accept str or Path
+            p = Path(file_path)
+            absolute_path = str(p.resolve())
+            # Optional existence check to avoid cryptic COM errors
+            if not p.exists():
+                print(f"Warning: attachment not found, skipping -> {absolute_path}")
+                continue
+            # Use named parameter to avoid dispatch confusion on COM side
+            message.Attachments.Add(Source=absolute_path)
         message.Send()
         outlook.Quit()
         print("Email sent!")
