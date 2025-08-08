@@ -70,9 +70,7 @@ def get_latest_document(criteria_value: str = "CO_VSUS", results_limit: int = 10
     if _ORIGIN:
         headers["Origin"] = _ORIGIN
 
-    _dbg(f"SEARCH begin -> url={SEARCH_URL}")
-    _dbg(f"SEARCH headers keys: {list(headers.keys())}")
-    _dbg(f"SEARCH criteria={criteria_value} sortBy=StorageDate sortDirection=1 limit={results_limit}")
+    _dbg(f"SEARCH begin -> criteria={criteria_value} limit={results_limit}")
     with requests.Session() as s:
         if not API_KEY:
             raise RuntimeError("IDENTIFI_API_KEY is not set. Provide it in .env next to api_call.py or as an environment variable.")
@@ -83,19 +81,14 @@ def get_latest_document(criteria_value: str = "CO_VSUS", results_limit: int = 10
             # Helpful debug if 401/403/etc.
             raise RuntimeError(f"Search failed: {r.status_code} {r.text[:500]}")
 
-        _dbg(f"SEARCH response: status={r.status_code} ctype={r.headers.get('Content-Type')} len={len(r.content)}")
         data = r.json()
         # results are already descending by StorageDate based on sort; take the first
         results = data.get("results", [])
-        _dbg(f"SEARCH results count={len(results)}")
         if not results:
             return None
         doc = results[0]
         pkid = doc.get("PKID")
         _dbg(f"PKID: {pkid}")
-        # Some APIs include a downloadUrl in the `info` array; log presence
-        has_download_url = any((info or {}).get("downloadUrl") for info in (doc.get("info") or []))
-        _dbg(f"SEARCH first doc has downloadUrl={has_download_url}")
         return doc
 
 def fetch_latest_to_input(criteria_value: str = "CO_VSUS", storage_type_id: int = 1,
@@ -113,31 +106,16 @@ def fetch_latest_to_input(criteria_value: str = "CO_VSUS", storage_type_id: int 
     INPUT_DIR.mkdir(parents=True, exist_ok=True)
     dest = INPUT_DIR / filename_template.format(pkid=pkid)
     _dbg(f"FETCH latest -> destination={dest}")
-    # Prefer explicit downloadUrl if provided by API
-    download_url = None
-    for info in (doc.get("info") or []):
-        if info and info.get("downloadUrl"):
-            download_url = info["downloadUrl"]
-            break
-    _dbg(f"FETCH latest -> using override_url={bool(download_url)}")
-    download_document(pkid, dest, storage_type_id=storage_type_id, override_url=download_url)
+    download_document(pkid, dest, storage_type_id=storage_type_id)
     return dest
 
 def download_document(pkid, dest_path, storage_type_id=1, override_url: str | None = None):
     if not pkid:
         raise ValueError("pkid is required")
 
-    # Candidate URLs to try until we get non-JSON content
-    candidates = []
-    if override_url:
-        candidates.append(override_url if override_url.startswith("http") else f"{BASE_URL}{override_url}")
-    candidates.extend([
-        DOC_URL_TMPL.format(storage_type_id=storage_type_id, pkid=pkid),
-        f"{BASE_URL}/api/document/{storage_type_id}/{pkid}/file",
-        f"{BASE_URL}/api/document/{storage_type_id}/{pkid}/content",
-        f"{BASE_URL}/api/document/{storage_type_id}/{pkid}?download=true",
-    ])
-    _dbg(f"DOWNLOAD pkid={pkid} -> candidates={candidates}")
+    # Use the known-good endpoint that returns the binary PRN
+    url = f"{BASE_URL}/api/document/{storage_type_id}/{pkid}/content"
+    _dbg(f"DOWNLOAD -> url={url}")
 
     headers = {
         # Site reports mimeType "text/report" for PRN; prefer that
@@ -154,39 +132,24 @@ def download_document(pkid, dest_path, storage_type_id=1, override_url: str | No
     dest = Path(dest_path)
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-    last_error = None
     with requests.Session() as s:
-        for url in candidates:
-            try:
-                with s.get(url, headers=headers, stream=True, timeout=60) as r:
-                    try:
-                        r.raise_for_status()
-                    except requests.HTTPError as e:
-                        last_error = f"{r.status_code} {r.text[:300]}"
-                        _dbg(f"DOWNLOAD try url={url} -> HTTPError {last_error}")
-                        continue
-                    ctype = (r.headers.get("Content-Type") or "").lower()
-                    _dbg(f"DOWNLOAD try url={url} -> status={r.status_code} ctype={ctype}")
-                    if "json" in ctype:
-                        # JSON likely means metadata or error; try next candidate
-                        try:
-                            last_error = r.json()
-                        except Exception:
-                            last_error = r.text[:300]
-                        _dbg(f"DOWNLOAD try url={url} -> got JSON, skipping. Preview={str(last_error)[:180]}")
-                        continue
-                    with open(dest, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=1024 * 64):
-                            if chunk:
-                                f.write(chunk)
-                    _dbg(f"DOWNLOAD success -> wrote bytes={dest.stat().st_size} to {dest}")
-                    return dest
-            except requests.RequestException as e:
-                last_error = str(e)
-                _dbg(f"DOWNLOAD try url={url} -> RequestException {last_error}")
-                continue
-    _dbg(f"DOWNLOAD failed -> tried={len(candidates)} last_error={last_error}")
-    raise RuntimeError(f"Download failed for pkid={pkid}. Tried {len(candidates)} URLs. Last response: {last_error}")
+        with s.get(url, headers=headers, stream=True, timeout=60) as r:
+            r.raise_for_status()
+            ctype = (r.headers.get("Content-Type") or "").lower()
+            _dbg(f"DOWNLOAD -> status={r.status_code} ctype={ctype}")
+            if "json" in ctype:
+                # JSON likely means metadata or error; do not save
+                try:
+                    preview = r.json()
+                except Exception:
+                    preview = r.text[:300]
+                raise RuntimeError(f"Unexpected JSON when downloading content: {str(preview)[:180]}")
+            with open(dest, "wb") as f:
+                for chunk in r.iter_content(chunk_size=1024 * 64):
+                    if chunk:
+                        f.write(chunk)
+            _dbg(f"DOWNLOAD success -> wrote bytes={dest.stat().st_size} to {dest}")
+            return dest
     return dest
 
 # No top-level execution in this module
