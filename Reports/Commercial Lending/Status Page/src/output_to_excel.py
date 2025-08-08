@@ -130,7 +130,7 @@ def excel_mapping(template_path: Path, output_path: Path, cell_values: dict, df_
     
     finally:
         # Ensure workbook and Excel application are closed
-    if wb is not None:
+        if wb is not None:
             wb.Close(SaveChanges=False)
-    if excel is not None:
+        if excel is not None:
             excel.Quit()
