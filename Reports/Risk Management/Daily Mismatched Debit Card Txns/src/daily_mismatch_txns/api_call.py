@@ -4,7 +4,7 @@ import requests
 from dotenv import load_dotenv
 from src.config import INPUT_DIR
 
-BASE_URL = "https://randomorg.identifi.net"
+BASE_URL = "https://bcsb.identifi.net"
 SEARCH_URL = f"{BASE_URL}/api/documents/kwyk-search"
 DOC_URL_TMPL = f"{BASE_URL}/api/document/{{storage_type_id}}/{{pkid}}"
 
