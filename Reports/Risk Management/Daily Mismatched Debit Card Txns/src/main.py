@@ -10,13 +10,20 @@ from openpyxl import load_workbook
 import os
 import shutil
 from src._version import __version__
-from src.config import BASE_PATH, INPUT_FILE_PATH
+from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR
 
 
 def main():
 
     ASSETS_PATH = BASE_PATH / Path('./assets')
-    OUTPUT_PATH = BASE_PATH / Path('./output')
+    
+    # ensure there is only one txt file in specified location
+    txt_files = [file.name for file in INPUT_DIR.glob("*.txt")]
+    assert len(txt_files) == 1, ("There should only be one file .txt file in " +
+                            str(INPUT_DIR))
+    file_to_move = txt_files[0]
+    input_src_path = INPUT_DIR / Path(file_to_move)
+
 
     column_names = [
         "Card Nbr",
@@ -31,7 +38,7 @@ def main():
     column_widths = [16, 20, 18, 18, 12, 35, 40]
 
     df = pd.read_fwf(
-        INPUT_FILE_PATH,
+        input_src_path,
         widths=column_widths,
         names=column_names,
         encoding='latin1'
@@ -57,7 +64,7 @@ def main():
     field_widths = [120, 10]
     field_names = ['Not Needed', 'Date']
     input2 = pd.read_fwf(
-        INPUT_FILE_PATH,
+        input_src_path,
         widths=field_widths,
         names=field_names,
         encoding='latin1'
@@ -100,6 +107,10 @@ def main():
         merchants[i] += f" ({cardnbrs[i][-4:]})"
 
 
+    # move txt file to archive
+    input_archive_path = INPUT_DIR / Path('./archive') / Path(file_to_move)
+    shutil.move(input_src_path, input_archive_path)
+    print(f"Moved {file_to_move} to input/archive directory.")
 
     # filling in template
     wb = load_workbook(ASSETS_PATH / Path("txtparser_template.xlsx"))
@@ -115,19 +126,19 @@ def main():
         ws.cell(row=8+2*i, column=7, value=value)
 
 
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     # output_date_str = f"{today.month}.{today.day:02}.{today.year % 100:02}"
     # date_str = f"{today.month}/{today.day:02}/{today.year % 100:02}"
     filename = "Daily Posting Sheet " + date_str + ".xlsx"
-    output_file = os.path.join(OUTPUT_PATH,filename)
+    output_file = os.path.join(OUTPUT_DIR,filename)
 
     ws['C3'] = f"{date_str}"
 
     # before saving, move everything in output folder to output/archive
-    for file in OUTPUT_PATH.glob("*.xlsx"):
+    for file in OUTPUT_DIR.glob("*.xlsx"):
         file_to_move = file.name
-        src_path = OUTPUT_PATH / Path(file_to_move)
-        output_archive_path = OUTPUT_PATH / Path('./archive') / Path(file_to_move)
+        src_path = OUTPUT_DIR / Path(file_to_move)
+        output_archive_path = OUTPUT_DIR / Path('./archive') / Path(file_to_move)
         shutil.move(src_path, output_archive_path)
         print(f"Moved {file_to_move} to output/archive directory.")
 
