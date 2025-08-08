@@ -29,4 +29,9 @@ OUTPUT_DIR = BASE_PATH / "output"
 EMAIL_TO = [] if ENV == 'prod' else []
 EMAIL_CC = ["businessintelligence@bcsbmail.com"] if ENV == 'prod' else []
 
-# Creates directories
+# Creates directories (idempotent)
+BASE_PATH.mkdir(parents=True, exist_ok=True)
+INPUT_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+(INPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)
+(OUTPUT_DIR / "archive").mkdir(parents=True, exist_ok=True)

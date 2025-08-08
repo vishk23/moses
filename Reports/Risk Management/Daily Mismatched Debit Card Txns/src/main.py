@@ -29,12 +29,16 @@ def main():
     except Exception as e:
         print(f"Warning: API fetch skipped/failed: {e}")
     
-    # ensure there is only one txt file in specified location
-    txt_files = [file.name for file in INPUT_DIR.glob("*.txt")]
-    assert len(txt_files) == 1, ("There should only be one file .txt file in " +
-                            str(INPUT_DIR))
-    file_to_move = txt_files[0]
-    input_src_path = INPUT_DIR / Path(file_to_move)
+    # Choose newest .txt file and archive the rest
+    txt_files = sorted(INPUT_DIR.glob("*.txt"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not txt_files:
+        raise FileNotFoundError(f"No .txt files found in {INPUT_DIR}")
+    input_src_path = txt_files[0]
+    # Archive any extras to keep the folder clean for next runs
+    for extra in txt_files[1:]:
+        shutil.move(extra, INPUT_DIR / "archive" / extra.name)
+        print(f"Archived extra file: {extra.name}")
+    file_to_move = input_src_path.name
 
 
     column_names = [
@@ -83,7 +87,7 @@ def main():
     )
     input2['RecordID'] = pd.Series(range(1, len(input2) + 1), dtype='int32')
     
-    date_str = input2.at[1, 'Date']
+    date_str = str(input2.at[1, 'Date']).strip()
     merged_df['Date'] = date_str
     merged_df['Source'] = "co_vsus re-run"
     
