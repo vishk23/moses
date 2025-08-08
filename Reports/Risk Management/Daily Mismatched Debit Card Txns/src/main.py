@@ -11,18 +11,34 @@ import os
 import shutil
 from src._version import __version__
 from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR
+from src.daily_mismatch_txns.api_call import (
+    fetch_latest_to_input,
+)
 
 
 def main():
-
     ASSETS_PATH = BASE_PATH / Path('./assets')
+    ASSETS_PATH.mkdir(parents=True, exist_ok=True)
+    # Fetch latest .prn/.txt into INPUT_DIR so downstream reads it
+    try:
+        dest = fetch_latest_to_input("CO_VSUS", storage_type_id=1, filename_template="CO_VSUS_{pkid}.txt")
+        if dest:
+            print(f"Downloaded and saved latest CO_VSUS file to INPUT_DIR: {dest}")
+        else:
+            print("No CO_VSUS documents found via API search.")
+    except Exception as e:
+        print(f"Warning: API fetch skipped/failed: {e}")
     
-    # ensure there is only one txt file in specified location
-    txt_files = [file.name for file in INPUT_DIR.glob("*.txt")]
-    assert len(txt_files) == 1, ("There should only be one file .txt file in " +
-                            str(INPUT_DIR))
-    file_to_move = txt_files[0]
-    input_src_path = INPUT_DIR / Path(file_to_move)
+    # Choose newest .txt file and archive the rest
+    txt_files = sorted(INPUT_DIR.glob("*.txt"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not txt_files:
+        raise FileNotFoundError(f"No .txt files found in {INPUT_DIR}")
+    input_src_path = txt_files[0]
+    # Archive any extras to keep the folder clean for next runs
+    for extra in txt_files[1:]:
+        shutil.move(extra, INPUT_DIR / "archive" / extra.name)
+        print(f"Archived extra file: {extra.name}")
+    file_to_move = input_src_path.name
 
 
     column_names = [
@@ -71,7 +87,7 @@ def main():
     )
     input2['RecordID'] = pd.Series(range(1, len(input2) + 1), dtype='int32')
     
-    date_str = input2.at[1, 'Date']
+    date_str = str(input2.at[1, 'Date']).strip()
     merged_df['Date'] = date_str
     merged_df['Source'] = "co_vsus re-run"
     
