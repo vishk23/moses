@@ -23,10 +23,10 @@ Generates a daily posting sheet for mismatched debit card transactions. The job:
 - requests, python-dotenv
 
 ## Project Status
-- [x] Fetch latest CO_VSUS via API and save as .txt to INPUT_DIR
 - [x] Parse and transform to posting sheet format
-- [x] Archive rotation for input/output
-- [-] Hardening and observability (error messages, logging)
+- [x] Fetch latest CO_VSUS via Identifi API and save as .txt to INPUT_DIR
+- [x] Archive/input/output and network drive mapping  
+- [x] Hardening and observability (error messages, logging)
 - [ ] Automate distribution to Deposit Operations
 
 Key
