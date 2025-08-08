@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import requests
 from dotenv import load_dotenv
+from src.config import INPUT_DIR
 
 BASE_URL = "https://randomorg.identifi.net"
 SEARCH_URL = f"{BASE_URL}/api/documents/kwyk-search"
@@ -30,7 +31,7 @@ def _auth_headers():
         return {"Authorization": token}
     return {KEY_HEADER_NAME: API_KEY}
 
-def kwyk_search_first_pkid(criteria_value="CO_VSUS", results_limit=100):
+def get_latest_pkid(criteria_value: str = "CO_VSUS", results_limit: int = 100) -> int | None:
     # Build the JSON payload exactly like DevTools shows under Request Payload
     payload = {
         "criteria": [
@@ -67,11 +68,27 @@ def kwyk_search_first_pkid(criteria_value="CO_VSUS", results_limit=100):
             raise RuntimeError(f"Search failed: {r.status_code} {r.text[:500]}")
 
         data = r.json()
+        # results are already descending by StorageDate based on sort; take the first
         results = data.get("results", [])
         if not results:
-            return None, []
-        first_pkid = results[0].get("PKID")
-        return first_pkid, results
+            return None
+        pkid = results[0].get("PKID")
+        print(f"PKID: {pkid}")
+        return pkid
+
+def fetch_latest_to_input(criteria_value: str = "CO_VSUS", storage_type_id: int = 1,
+                          filename_template: str = "CO_VSUS_{pkid}.txt") -> Path | None:
+    """Search for latest PKID and download the document into INPUT_DIR as .txt.
+
+    Returns the destination Path if downloaded, else None.
+    """
+    pkid = get_latest_pkid(criteria_value=criteria_value)
+    if not pkid:
+        return None
+    INPUT_DIR.mkdir(parents=True, exist_ok=True)
+    dest = INPUT_DIR / filename_template.format(pkid=pkid)
+    download_document(pkid, dest, storage_type_id=storage_type_id)
+    return dest
 
 def download_document(pkid, dest_path, storage_type_id=1):
     if not pkid:
@@ -98,13 +115,4 @@ def download_document(pkid, dest_path, storage_type_id=1):
                         f.write(chunk)
     return dest
 
-# --- Example notebook cells ---
-# 1) Find the latest PKID for CO_VSUS
-first_pkid, results = kwyk_search_first_pkid("CO_VSUS", results_limit=100)
-print("First PKID:", first_pkid)
-print("Total results:", len(results))
-
-# 2) Download that document (PDF or similar) to a file
-if first_pkid:
-    out_file = download_document(first_pkid, "/tmp/CO_VSUS_latest.pdf", storage_type_id=1)
-    print("Saved to:", out_file)
+# No top-level execution in this module
