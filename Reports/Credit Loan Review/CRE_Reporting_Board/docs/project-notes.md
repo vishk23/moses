@@ -352,3 +352,15 @@ IF(
     "Y",
     "N"
 )
+
+Correction:
+IsNextRateChangeBeforeDateMat =
+IF(
+    ISBLANK( cre_loader[Next Rate Change] ),
+    "N",  // This is the result when Next Rate Change is null
+    IF(
+        cre_loader[Next Rate Change] < cre_loader[datemat],
+        "Y",
+        "N"
+    )
+)
