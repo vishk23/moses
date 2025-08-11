@@ -3,6 +3,8 @@ import shutil
 from pathlib import Path
 from lxml import html
 import re
+
+import src.config
 def extract_standardized_report_data(tree, report_title):
     """
     Extract report data from HTML tree and convert to standardized pandas DataFrame.
@@ -209,26 +211,26 @@ def extract_table_data(tree, report_title):
         return None
 def process_xls_files():
     """
-    Process up to 5 HTML files (saved as .xls) from assets folder and return dict of standardized dataframes.
+    Process up to 5 HTML files (saved as .xls) from input folder and return dict of standardized dataframes.
     
     Returns:
         dict: Dictionary with dataframe names as keys and standardized pandas DataFrames as values
               All DataFrames have consistent columns regardless of source report type
     """
-    # Need to use input path from config here to make this better and more modular
-    # assets_folder = Path('./input')
-    # archive_folder = Path('./assets/archive')
+    # Use config paths for input folder
+    input_folder = src.config.INPUT_DIR
+    archive_folder = input_folder / "archive"
     
     # Create folders if they don't exist
-    assets_folder.mkdir(exist_ok=True)
+    input_folder.mkdir(exist_ok=True)
     archive_folder.mkdir(exist_ok=True)
     
     # Find all .xls files (which are actually HTML files)
-    excel_files = list(assets_folder.glob('*.xls'))
+    excel_files = list(input_folder.glob('*.xls'))
     
     # Validate file count and types
     assert len(excel_files) <= 5, f"Found {len(excel_files)} .xls files, maximum is 5"
-    all_files = [f for f in assets_folder.iterdir() if f.is_file() and not f.name.startswith('.')]
+    all_files = [f for f in input_folder.iterdir() if f.is_file() and not f.name.startswith('.')]
     non_excel = [f for f in all_files if not f.name.endswith('.xls')]
     assert len(non_excel) == 0, f"Found non-.xls files: {[f.name for f in non_excel]}"
     

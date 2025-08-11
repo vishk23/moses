@@ -6,7 +6,7 @@ import numpy as np
 from pathlib import Path
 
 import src.config
-from src.ct_dashboard import fetch_data
+from src.ct_dashboard import fetch_cocc_data as fetch_data
 from src.ct_dashboard import ingest  
 from src.ct_dashboard import rel_entity_officer
 from src.ct_dashboard import output_to_excel_multiple_sheets
