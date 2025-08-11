@@ -1,19 +1,46 @@
-# CT Dashboard (Covenant & Ticklers)
+# Project Title
+
+Commercial Lending — CT Dashboard
 
 ## Project Overview
 
+The CT Dashboard processes covenant and tickler tracking reports from the bank's covenant tracking system. It ingests HTML exports saved as .xls files, enriches them with loan officer and deposit officer assignments from COCC data, and produces formatted Excel tracking files for Commercial Lending teams.
+
+Business logic:
+- Data ingestion: Processes up to 5 HTML files (saved with .xls extension) from assets/ folder containing covenant and tickler data exported from the tracking system.
+- Report parsing: Extracts standardized data including customer names, item details, required/actual values, dates, and comments from HTML tables.
+- Officer enrichment: Fetches officer assignments (loan officer, deposit officer) from OSIBANK.WH_ACCTCOMMON by customer name using statistical mode. Falls back to related entity data from WH_ALLROLES for missing assignments.
+- Data merging: Combines tracking data with officer assignments, normalizes date fields, and applies business rules for officer fallback logic.
+- Output generation: Creates two Excel files with multiple sheets: CT_Covenant_Tracking.xlsx (Past Due, In Default, Coming Due) and CT_Tickler_Tracking.xlsx (Past Due, Coming Due).
+- Excel formatting: Applies consistent formatting including auto-fit columns, bold headers, frozen panes, and date/currency number formats.
+- File archival: Moves processed HTML files to assets/archive to prevent reprocessing.
+
 ## Authors & Stakeholders
-- **Project Lead:** 
-- **Executive Sponsor:** 
-- **Key Stakeholders:**
+- **Project Lead:** Chad Doorley
+- **Executive Sponsor:** Tim Chaves
+- **Key Stakeholders:** Commercial Lending (Laurie Williams), Credit Administration, Risk Management
 
 ## Project Goals
+- Automate processing of covenant and tickler tracking exports to reduce manual effort
+- Enrich tracking data with current officer assignments for routing and follow-up
+- Provide consistent, formatted Excel outputs for Commercial Lending workflow integration
+- Maintain data quality through validation and standardized column mapping
 
 ## Technology Stack
+- Python, pandas, NumPy, lxml for HTML parsing
+- Internal library: cdutils (database connectivity, data cleansing, deduplication)
+- Data sources: Covenant tracking system HTML exports, OSIBANK tables (WH_ACCTCOMMON, WH_ALLROLES, WH_ORG, WH_PERS)
+- Output: Excel via openpyxl and pywin32/COM for formatting (Windows required for advanced formatting)
 
 ## Project Status
-- [ ] Description of tasks (YYYY-MM-DD)
-   - Short description 
+- [x] (2025-08-11) HTML parsing and data standardization implemented
+   - Extract covenant/tickler data from HTML tables with flexible column mapping
+- [x] (2025-08-11) Officer assignment enrichment and fallback logic
+   - COCC data fetch, mode calculation, related entity fallback for missing officers
+- [x] (2025-08-11) Excel output generation and formatting
+   - Multi-sheet Excel files with consistent formatting and archival of source files
+- [x] (2025-08-11) Template structure compliance and configuration management
+   - Proper package structure, config-driven paths, clean imports
 
 Key
 - [x] - Completed
@@ -21,8 +48,19 @@ Key
 - [ ] - TODO
 
 ## File Paths
+- `src/main.py` — Main entry point, imports config and calls core business logic
+- `src/config.py` — Configuration for paths, recipients, report metadata
+- `src/ct_dashboard/core.py` — Main business logic: ingest → enrich → output pipeline
+- `src/ct_dashboard/fetch_data.py` — COCC database queries for officer assignments
+- `src/ct_dashboard/ingest.py` — HTML parsing and standardization of tracking data
+- `src/ct_dashboard/rel_entity_officer.py` — Related entity officer lookup for fallback assignments
+- `src/ct_dashboard/output_to_excel_multiple_sheets.py` — Excel formatting utilities
+- `assets/` — Input folder for HTML files (processed files moved to assets/archive)
+- `output/` — Generated Excel tracking files
 
 ## Documentation
+- This README: project overview, business logic, and usage guide
+- Inline code documentation for complex business rules and data transformations
 
 ---
 

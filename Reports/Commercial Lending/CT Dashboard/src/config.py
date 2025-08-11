@@ -1,12 +1,9 @@
 """
-Project Configuration Template
+CT Dashboard Configuration
 
-This file provides a template for configuring a new report or data pipeline project.
-Fill in the placeholders below with your project's specific details.
-
-Input Files: <describe input files or data sources>
-Output Files: <describe output files or datasets>
-Tables: <list relevant database tables or data sources>
+Input Files: HTML exports from covenant/tickler tracking system saved as .xls files in assets/ folder
+Output Files: CT_Covenant_Tracking.xlsx and CT_Tickler_Tracking.xlsx in output/ folder  
+Tables: OSIBANK.WH_ACCTCOMMON, WH_ALLROLES, WH_ORG, WH_PERS for officer assignments
 """
 
 import os
@@ -19,16 +16,14 @@ SCHEDULE = "Monthly"
 OWNER = "Laurie Williams"
 
 # Status
-PROD_READY = False
+PROD_READY = True
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
 BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\CT_Dashboard\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
-INPUT_DIR = BASE_PATH / "input"
+INPUT_DIR = BASE_PATH / "assets"  # HTML files go in assets folder
 
 # Email Recipients
-EMAIL_TO = []  # List of primary recipients for production
-EMAIL_CC = []  # List of CC recipients for production
-
-# Add any additional configuration variables below as needed
+EMAIL_TO = ["laurie.williams@bcsbmail.com"]  # Primary recipients for production
+EMAIL_CC = ["businessintelligence@bcsbmail.com"]  # CC recipients for production
