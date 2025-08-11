@@ -22,7 +22,7 @@ PROD_READY = True
 ENV = os.getenv('REPORT_ENV', 'dev')
 BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\CT_Dashboard\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
-INPUT_DIR = BASE_PATH / "assets"  # HTML files go in assets folder
+INPUT_DIR = BASE_PATH / "input"  # HTML files go in assets folder
 
 # Email Recipients
 EMAIL_TO = ["laurie.williams@bcsbmail.com"]  # Primary recipients for production

@@ -215,9 +215,9 @@ def process_xls_files():
         dict: Dictionary with dataframe names as keys and standardized pandas DataFrames as values
               All DataFrames have consistent columns regardless of source report type
     """
-    
-    assets_folder = Path('./assets')
-    archive_folder = Path('./assets/archive')
+    # Need to use input path from config here to make this better and more modular
+    # assets_folder = Path('./input')
+    # archive_folder = Path('./assets/archive')
     
     # Create folders if they don't exist
     assets_folder.mkdir(exist_ok=True)
