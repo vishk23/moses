@@ -1,45 +1,30 @@
 
-"""Main entry point for CT Dashboard (Covenant & Tickler tracking)."""
+"""
+Main Entry Point
+"""
+import shutil
+import re
 from pathlib import Path
-import pandas as pd  # type: ignore
+from typing import List
+from datetime import datetime
+
+from lxml import html
+import pandas as pd # type: ignore
 import numpy as np
 
+import src.ct_dashboard.fetch_cocc_data 
+import src.ct_dashboard.ingest
+import src.output_to_excel_multiple_sheets
 from src._version import __version__
-from src import config
-from src.ct_dashboard import fetch_data as fetch_cocc_data
-from src.ct_dashboard import ingest
-from src.ct_dashboard import output_to_excel_multiple_sheets
-from src.ct_dashboard import rel_entity_officer
+import src.rel_entity_officer
 
 
-def main(production_flag: bool = False):
-    # Use config-managed base/output paths; production flag kept for parity/logging.
-    BASE_PATH = config.BASE_PATH
-    OUTPUT_DIR = config.OUTPUT_DIR
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+def main():
+    files = src.ct_dashboard.ingest.process_xls_files()
 
-    # Ingest HTML-as-.xls files into standardized DataFrames
-    files = ingest.process_xls_files()
+    cocc_data = src.fetch_cocc_data.fetch_data()
 
-    # %%
-    # files.keys()
-    # %%
-
-
-    # %%
-
-
-    # %%
-
-    # %%
-    # Fetch officer data from COCC
-    cocc_data = fetch_cocc_data.fetch_data()
-
-    # %%
     cocc_data = cocc_data['wh_acctcommon'].copy()
-
-    # %%
-    cocc_data
 
     # %%
     # Function to get mode, handling cases where there might be multiple modes
@@ -69,8 +54,7 @@ def main(production_flag: bool = False):
 
     # %%
     # cocc_data_grouped.info()
-    # Related entities officer fallback (mode from related roles)
-    rel_entity_grouped = rel_entity_officer.create_officer_df()
+    rel_entity_grouped = src.rel_entity_officer.create_officer_df()
 
     # %%
     def merge_with_mode(df_dict, cocc_data_grouped, rel_entity_grouped):
@@ -154,7 +138,7 @@ def main(production_flag: bool = False):
         covenants_in_default.to_excel(writer, sheet_name='In Default', index=False)
 
     # Format excel
-    output_to_excel_multiple_sheets.format_excel_file(COVENANT_OUTPUT_PATH)
+    src.output_to_excel_multiple_sheets.format_excel_file(COVENANT_OUTPUT_PATH)
 
     TICKLER_OUTPUT_PATH = BASE_PATH / Path('./output/CT_Tickler_Tracking.xlsx')
     with pd.ExcelWriter(TICKLER_OUTPUT_PATH, engine="openpyxl") as writer:
@@ -162,7 +146,7 @@ def main(production_flag: bool = False):
         ticklers_past_due.to_excel(writer, sheet_name='Past Due', index=False)
 
     # Format excel
-    output_to_excel_multiple_sheets.format_excel_file(TICKLER_OUTPUT_PATH)
+    src.output_to_excel_multiple_sheets.format_excel_file(TICKLER_OUTPUT_PATH)
 
     # Distribution
     # recipients = [
@@ -184,6 +168,7 @@ def main(production_flag: bool = False):
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")
+    # main(production_flag=True)
     main()
     print("Complete!")
 
