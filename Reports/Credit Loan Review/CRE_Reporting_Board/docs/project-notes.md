@@ -344,3 +344,11 @@ array(['Apartment Building', 'Warehouse', 'Multi Family', 'Hotel/Motel',
        'Savings - Partially Secured', '2 Family Residential - Own Occ',
        'Funeral Home', 'Passbook/Savings Secured', 'Vehicle - Business',
        'Condominium'], dtype=object)
+
+
+IsNextRateChangeBeforeDateMat = 
+IF(
+    cre_loader[Next Rate Change] < cre_loader[datemat],
+    "Y",
+    "N"
+)
