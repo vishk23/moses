@@ -61,8 +61,9 @@ def main_pipeline(effdate, acctcommon, acctloan):
 
         merged12 = merged1[merged1['mjaccttypcd'].isin(['CNS'])]
 
-        merged12T = merged12[merged12['Product Name'] == 'Unsecured HEAT Loans'].sort_values(by='Customer Name')
-        merged12F = merged12[merged12['Product Name'] != 'Unsecured HEAT Loans']
+        merged12_productNames = ['Unsecured HEAT Loans', 'Unsecured Loans']
+        merged12T = merged12[merged12['Product Name'].isin(merged12_productNames)].sort_values(by='Customer Name')
+        merged12F = merged12[~merged12['Product Name'].isin(merged12_productNames)]
 
         new_row = pd.DataFrame([{
             'Current Balance': merged12T['Current Balance'].sum(),
