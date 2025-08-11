@@ -40,6 +40,7 @@ from pathlib import Path
 import pandas as pd
 
 import src.config
+import src._version
 
 # Query parameters
 PAYROLL_VENDOR_ACCOUNT = 150523994.00
@@ -47,6 +48,7 @@ PAYROLL_ACCOUNT = 150524009.00
 ANALYSIS_DAYS = 30
 
 def main():
+    print(f"Running {src._version.__version__}")
 
     def fetch_data():
         """

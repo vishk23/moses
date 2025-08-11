@@ -17,6 +17,7 @@ from sqlalchemy import text # type: ignore
 import cdutils.input_cleansing # type: ignore
 import cdutils.distribution # type: ignore
 import src.config as config
+import src._version
 
 def process_assets_excel():
     assets_folder = config.ASSETS_FOLDER
@@ -52,6 +53,7 @@ def process_assets_excel():
         raise
 
 def main():
+    print(f"Running {src._version.__version__}")
     process_assets_excel()
     data = src.swap_pnc.fetch_data.fetch_data()
     raw_data = src.swap_pnc.core.main_pipeline(data)

@@ -7,7 +7,14 @@ import re
 import src.config
 def extract_standardized_report_data(tree, report_title):
     """
-    Extract report data from HTML tree and convert to standardized pandas DataFrame.
+    Extract report data frdef process_xls_files():
+    """
+    Process up to 3 HTML files (saved as .xls) from input folder and return dict of standardized dataframes.
+    
+    Returns:
+        dict: Dictionary with dataframe names as keys and standardized pandas DataFrames as values
+              All DataFrames have consistent columns regardless of source report type
+    """tree and convert to standardized pandas DataFrame.
     
     Creates a consistent DataFrame structure regardless of the source report type:
     - customer_name: Name of the customer
@@ -229,17 +236,15 @@ def process_xls_files():
     excel_files = list(input_folder.glob('*.xls'))
     
     # Validate file count and types
-    assert len(excel_files) <= 5, f"Found {len(excel_files)} .xls files, maximum is 5"
+    assert len(excel_files) <= 3, f"Found {len(excel_files)} .xls files, maximum is 3"
     all_files = [f for f in input_folder.iterdir() if f.is_file() and not f.name.startswith('.')]
     non_excel = [f for f in all_files if not f.name.endswith('.xls')]
     assert len(non_excel) == 0, f"Found non-.xls files: {[f.name for f in non_excel]}"
     
     # Mapping of report title patterns to dataframe keys
     df_mappings = {
-        'covenants coming due within the next 365 days': 'covenants_coming_due_365',
         'covenants 1 or more days past due': 'covenants_past_due',
         'covenants 1 or more days in default': 'covenants_in_default',
-        'ticklers coming due within 365 days': 'ticklers_coming_due_365',
         'ticklers 1 or more days past due': 'ticklers_past_due',
     }
     
@@ -299,12 +304,10 @@ def process_xls_files():
 # # Access individual report DataFrames (each with standardized columns)
 # if 'covenants_past_due' in files:
 #     df_covenants_pd = files['covenants_past_due'].copy()
-# if 'covenants_coming_due_365' in files:
-#     df_covenants_coming_due = files['covenants_coming_due_365'].copy()
 # if 'covenants_in_default' in files:
 #     df_covenants_default = files['covenants_in_default'].copy()
-# if 'ticklers_coming_due_365' in files:
-#     df_ticklers_coming_due = files['ticklers_coming_due_365'].copy()
+# if 'ticklers_past_due' in files:
+#     df_ticklers_past_due = files['ticklers_past_due'].copy()
 #     
 #     # Example queries on standardized data:
 #     # Get all items for a specific customer
@@ -313,6 +316,6 @@ def process_xls_files():
 #     # Get all past due items
 #     past_due = df_covenants_pd[df_covenants_pd['days_past_due'] != '']
 #     
-#     # Get items by type
-#     coming_due_covenants = df_covenants_coming_due[df_covenants_coming_due['report_type'].str.contains('coming due', case=False, na=False)]
+#     # Get items by report type
+#     in_default_covenants = df_covenants_default[df_covenants_default['report_type'].str.contains('in default', case=False, na=False)]
 

@@ -7,13 +7,13 @@ Commercial Lending — CT Dashboard
 The CT Dashboard processes covenant and tickler tracking reports from the bank's covenant tracking system. It ingests HTML exports saved as .xls files, enriches them with loan officer and deposit officer assignments from COCC data, and produces formatted Excel tracking files for Commercial Lending teams.
 
 Business logic:
-- Data ingestion: Processes up to 5 HTML files (saved with .xls extension) from input/ folder containing covenant and tickler data exported from the tracking system.
+- Data ingestion: Processes up to 3 HTML files (saved with .xls extension) from input/ folder containing covenant and tickler data exported from the tracking system.
 - Report parsing: Extracts standardized data including customer names, item details, required/actual values, dates, and comments from HTML tables.
 - Officer enrichment: Fetches officer assignments (loan officer, deposit officer) from OSIBANK.WH_ACCTCOMMON by customer name using statistical mode. Falls back to related entity data from WH_ALLROLES for missing assignments.
 - Data merging: Combines tracking data with officer assignments, normalizes date fields, and applies business rules for officer fallback logic.
-- Output generation: Creates two Excel files with multiple sheets: CT_Covenant_Tracking.xlsx (Past Due, In Default, Coming Due) and CT_Tickler_Tracking.xlsx (Past Due, Coming Due).
+- Output generation: Creates two Excel files with multiple sheets: CT_Covenant_Tracking.xlsx (Past Due, In Default) and CT_Tickler_Tracking.xlsx (Past Due).
 - Excel formatting: Applies consistent formatting including auto-fit columns, bold headers, frozen panes, and date/currency number formats.
-- File archival: Moves processed HTML files to assets/archive to prevent reprocessing.
+- File archival: Moves processed HTML files to input/archive to prevent reprocessing.
 
 ## Authors & Stakeholders
 - **Project Lead:** Chad Doorley
@@ -137,13 +137,13 @@ python -m src.main
 ```
 
 **Input Requirements:**
-- Up to 5 HTML files saved with .xls extension in `input/` folder
+- Up to 3 HTML files saved with .xls extension in `input/` folder
 - Files should contain covenant or tickler tracking data with recognizable report titles
-- Supported report types: "covenants past due", "covenants in default", "covenants coming due", "ticklers past due", "ticklers coming due"
+- Supported report types: "covenants past due", "covenants in default", "ticklers past due"
 
 **Output Files:**
-- `output/CT_Covenant_Tracking.xlsx` (sheets: Past Due, In Default, Coming Due)
-- `output/CT_Tickler_Tracking.xlsx` (sheets: Past Due, Coming Due)
+- `output/CT_Covenant_Tracking.xlsx` (sheets: Past Due, In Default)
+- `output/CT_Tickler_Tracking.xlsx` (sheet: Past Due)
 - Processed input files moved to `input/archive/`
 
 **Schedule:** Monthly processing (or as needed when new tracking exports are available)

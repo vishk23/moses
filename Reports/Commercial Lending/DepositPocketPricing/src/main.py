@@ -13,6 +13,7 @@ from pathlib import Path
 import shutil
 import pandas as pd
 import src.config
+import src._version
 
 REQUIRED_COLUMNS = [
     'Region',
@@ -27,6 +28,7 @@ REQUIRED_COLUMNS = [
 
 
 def main():
+    print(f"Running {src._version.__version__}")
     print(f"Running {src.config.REPORT_NAME} for {src.config.BUSINESS_LINE}")
     print(f"Schedule: {src.config.SCHEDULE}")
     print(f"Environment: {src.config.ENV}")

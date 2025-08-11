@@ -43,6 +43,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import calendar
 import src.config
+import src._version
 import src.loan_branch_officer.fetch_data
 import src.loan_branch_officer.core
 import src.loan_branch_officer.output_to_excel
@@ -55,6 +56,7 @@ import cdutils.distribution
 def main():
     """Main report execution."""
     try:
+        print(f"Running {src._version.__version__}")
         print(f"Starting {src.config.REPORT_NAME}")
         print(f"Environment: {src.config.ENV}")
         

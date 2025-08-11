@@ -39,6 +39,7 @@ from datetime import datetime
 import pandas as pd # type: ignore
 
 import src.config
+import src._version
 import src.active_acct_analysis.fetch_data # type: ignore
 from cdutils import input_cleansing # type: ignore
 from cdutils import deduplication # type: ignore
@@ -47,6 +48,7 @@ from src.active_acct_analysis.excel_formatting import format_excel
 
 
 def main():
+    print(f"Running {src._version.__version__}")
     # Ensure output directory exists
     src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     # Ensure subdirectories for Accounts and Agreements exist

@@ -101,7 +101,7 @@ def process_ct_dashboard():
     """
     Main processing function for CT Dashboard.
     
-    1. Ingests HTML files from assets folder
+    1. Ingests HTML files from input folder
     2. Fetches officer data from COCC database  
     3. Merges data and enriches with officer assignments
     4. Outputs formatted Excel files for covenants and ticklers
@@ -109,11 +109,11 @@ def process_ct_dashboard():
     print("Processing CT Dashboard files...")
     
     # Step 1: Ingest HTML files
-    print("Ingesting HTML files from assets folder...")
+    print("Ingesting HTML files from input folder...")
     files = ingest.process_xls_files()
     
     if not files:
-        print("No files found to process. Please place .xls files in the assets folder.")
+        print("No files found to process. Please place .xls files in the input folder.")
         return
     
     print(f"Found {len(files)} report types: {list(files.keys())}")
@@ -157,8 +157,6 @@ def process_ct_dashboard():
         covenant_sheets['Past Due'] = cleaned_dict['covenants_past_due']
     if 'covenants_in_default' in cleaned_dict:
         covenant_sheets['In Default'] = cleaned_dict['covenants_in_default']
-    if 'covenants_coming_due_365' in cleaned_dict:
-        covenant_sheets['Coming Due'] = cleaned_dict['covenants_coming_due_365']
     
     if covenant_sheets:
         covenant_output_path = src.config.OUTPUT_DIR / 'CT_Covenant_Tracking.xlsx'
@@ -175,8 +173,6 @@ def process_ct_dashboard():
     tickler_sheets = {}
     if 'ticklers_past_due' in cleaned_dict:
         tickler_sheets['Past Due'] = cleaned_dict['ticklers_past_due']
-    if 'ticklers_coming_due_365' in cleaned_dict:
-        tickler_sheets['Coming Due'] = cleaned_dict['ticklers_coming_due_365']
     
     if tickler_sheets:
         tickler_output_path = src.config.OUTPUT_DIR / 'CT_Tickler_Tracking.xlsx'

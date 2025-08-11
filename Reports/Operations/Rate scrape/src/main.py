@@ -61,6 +61,7 @@ from datetime import datetime
 import warnings
 
 import src.config
+import src._version
 
 # FRED API configuration
 API_KEY = "ac15589a824557b5b4d2260b45438215"  # FRED API key
@@ -506,6 +507,7 @@ Thanks!"""
 
 if __name__ == '__main__':
     
+    print(f"Running {src._version.__version__}")
     print("Running Rate Scraper")
     
     # FRED series IDs
