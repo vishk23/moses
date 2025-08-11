@@ -13,10 +13,10 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "<Project Name>"
-BUSINESS_LINE = "<Business Line or Department>"
-SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
-OWNER = "<Project Owner or Team>"
+REPORT_NAME = "CT Dashboard"
+BUSINESS_LINE = "Commercial Lending"
+SCHEDULE = "Monthly"
+OWNER = "Laurie Williams"
 
 # Status
 PROD_READY = False
