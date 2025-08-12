@@ -15,11 +15,6 @@ from typing import List, Dict, Any
 import numpy as np
 import pandas as pd
 
-# Ensure we can import from project modules
-project_root = Path(__file__).parent.parent.parent
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-
 import src.config as config
 import src.data_cleaning_main
 import src.accubranch.annual_deposit_history

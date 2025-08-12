@@ -11,8 +11,8 @@ from pathlib import Path
 # Project metadata
 REPORT_NAME = "Accubranch Analysis"
 BUSINESS_LINE = "Retail"
-SCHEDULE = "On-demand"
-OWNER = "Data Analytics Team"
+SCHEDULE = "On-Demand"
+OWNER = "Francine Ferguson"
 
 # Environment configuration
 ENVIRONMENT = os.getenv('REPORT_ENV', 'dev')
