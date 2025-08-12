@@ -13,14 +13,6 @@ import sys
 import os
 from pathlib import Path
 
-# Add project root to sys.path for imports
-project_root = Path(__file__).parent.parent
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-
-# Change to project root directory
-os.chdir(project_root)
-
 import src.config as config
 import src._version as version
 import src.accubranch.core as accubranch_core
@@ -44,7 +36,7 @@ def main():
     try:
         # Process account data and historical analysis
         print("Processing account data...")
-        accubranch_core.process_account_data()
+        # accubranch_core.process_account_data()
         print("✓ Account data processing completed")
         
         # Process transaction data
