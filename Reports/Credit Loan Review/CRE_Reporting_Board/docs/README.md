@@ -55,6 +55,9 @@ Key
 - [ ] - TODO
 
 ## File Paths
+Outputs stored on DA-1 drive:
+`\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Credit_Loan_Review\CRE_Reporting_Board`
+
 - `src/main.py` — Main entry point, orchestrates complete CRE reporting pipeline
 - `src/config.py` — Configuration for FDIC call codes, property types, analysis years, paths
 - `src/_version.py` — Version information for the project
