@@ -19,9 +19,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-import src.acct_file_creation
-import src.acct_data_gathering
-from src.join_functions import (
+import src.accubranch.acct_file_creation
+import src.accubranch.acct_data_gathering
+from src.accubranch.join_functions import (
     join_accounts_with_orgs,
     join_accounts_with_persons,
     join_accounts_with_addresses
@@ -60,7 +60,7 @@ def load_production_data() -> Dict[str, pd.DataFrame]:
     dict
         Dictionary containing all required dataframes for the pipeline
     """
-    data = src.acct_data_gathering.fetch_data()
+    data = src.accubranch.acct_data_gathering.fetch_data()
     return data
 
 
@@ -128,7 +128,7 @@ def run_data_cleaning_pipeline(
     print(f"\n=== Step 2: Generating account data for {as_of_date.date()} ===")
     # acct_df = generate_acct_df_for_date(as_of_date)
     # Here is where you call your own function
-    acct_df = src.acct_file_creation.query_df_on_date(as_of_date)
+    acct_df = src.accubranch.acct_file_creation.query_df_on_date(as_of_date)
     print(f"Generated {len(acct_df)} account records")
     print(f"Account types: {acct_df['mjaccttypcd'].value_counts().to_dict()}")
     
