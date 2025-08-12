@@ -15,11 +15,6 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-# Ensure we can import from project modules
-project_root = Path(__file__).parent.parent.parent
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-
 import src.config as config
 import src.transactions.fetch_data
 
@@ -183,7 +178,7 @@ def process_transaction_data(
     print(f"Fetching transaction data from {start_date.date()} to {end_date.date()}...")
     
     # Fetch transaction data
-    transaction_result = src.transactions.fetch_data.fetch_transactions_window_test(
+    transaction_result = src.transactions.fetch_data.fetch_transactions_window(
         start_date=start_date, 
         end_date=end_date
     )

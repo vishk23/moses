@@ -320,7 +320,7 @@ def process_current_account_data() -> pd.DataFrame:
     print("Fetching current account data...")
     
     # Determine the date to use
-    current_date = config.CURRENT_DATA_DATE or datetime.now()
+    current_date = config.CURRENT_DATA_DATE or None 
     print(f"Using date: {current_date}")
     
     # Use the data cleaning pipeline to get complete account data with addresses and person info

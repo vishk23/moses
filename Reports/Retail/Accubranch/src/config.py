@@ -27,7 +27,7 @@ INPUT_DIR = PROJECT_ROOT / "input"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 # Current data date - None means use latest available date from cdutils
-CURRENT_DATA_DATE = None  # Set to datetime(2025, 6, 30) to use specific date
+CURRENT_DATA_DATE = datetime(2025,6,30)  # Set to datetime(2025, 6, 30) to use specific date
 
 # Transaction date range configuration  
 TRANSACTION_START_DATE = datetime(2024, 6, 30)
@@ -44,9 +44,7 @@ if ENVIRONMENT == 'prod':
         # Add production email recipients here
     ]
 else:
-    EMAIL_RECIPIENTS = [
-        # Add development email recipients here
-    ]
+    EMAIL_RECIPIENTS = []
 
 # Date configurations for historical analysis
 HISTORICAL_YEARS = [
