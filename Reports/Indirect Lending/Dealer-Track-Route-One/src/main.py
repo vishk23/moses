@@ -393,12 +393,79 @@ def main():
             routeone_vault_df = routeone_vault_df.iloc[sort_key.argsort()]
             routeone_vault_df.reset_index(drop=True, inplace=True)
     
+    # Create structured NOT RECONCILED dataframes with sections
+    # For DT Vault NOT RECONCILED
+    dt_not_reconciled_structured = pd.DataFrame()
+    if not dtvault_df.empty or not unmatched_dt_econtracts.empty:
+        sections = []
+        
+        # Section 1: In Vault but not in Funding
+        if not dtvault_df.empty:
+            header_df = pd.DataFrame([["IN VAULT BUT NOT IN FUNDING"] + [""] * (dtvault_df.shape[1] - 1)], 
+                                    columns=dtvault_df.columns)
+            sections.append(header_df)
+            sections.append(dtvault_df)
+            
+        # Add separator row
+        if not dtvault_df.empty and not unmatched_dt_econtracts.empty:
+            separator_df = pd.DataFrame([[""] * max(dtvault_df.shape[1], unmatched_dt_econtracts.shape[1])], 
+                                       columns=dtvault_df.columns if not dtvault_df.empty else unmatched_dt_econtracts.columns)
+            sections.append(separator_df)
+            
+        # Section 2: In Funding but not in Vault
+        if not unmatched_dt_econtracts.empty:
+            # Ensure same number of columns
+            max_cols = max(dtvault_df.shape[1] if not dtvault_df.empty else 0, unmatched_dt_econtracts.shape[1])
+            header_df = pd.DataFrame([["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1)])
+            if not dtvault_df.empty:
+                header_df.columns = dtvault_df.columns[:max_cols]
+            else:
+                header_df.columns = unmatched_dt_econtracts.columns[:max_cols]
+            sections.append(header_df)
+            sections.append(unmatched_dt_econtracts)
+            
+        if sections:
+            dt_not_reconciled_structured = pd.concat(sections, ignore_index=True)
+    
+    # For Route One Vault NOT RECONCILED
+    routeone_not_reconciled_structured = pd.DataFrame()
+    if not routeone_df.empty or not unmatched_routeone_econtracts.empty:
+        sections = []
+        
+        # Section 1: In Vault but not in Funding
+        if not routeone_df.empty:
+            header_df = pd.DataFrame([["IN VAULT BUT NOT IN FUNDING"] + [""] * (routeone_df.shape[1] - 1)], 
+                                    columns=routeone_df.columns)
+            sections.append(header_df)
+            sections.append(routeone_df)
+            
+        # Add separator row
+        if not routeone_df.empty and not unmatched_routeone_econtracts.empty:
+            separator_df = pd.DataFrame([[""] * max(routeone_df.shape[1], unmatched_routeone_econtracts.shape[1])], 
+                                       columns=routeone_df.columns if not routeone_df.empty else unmatched_routeone_econtracts.columns)
+            sections.append(separator_df)
+            
+        # Section 2: In Funding but not in Vault  
+        if not unmatched_routeone_econtracts.empty:
+            # Ensure same number of columns
+            max_cols = max(routeone_df.shape[1] if not routeone_df.empty else 0, unmatched_routeone_econtracts.shape[1])
+            header_df = pd.DataFrame([["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1)])
+            if not routeone_df.empty:
+                header_df.columns = routeone_df.columns[:max_cols]
+            else:
+                header_df.columns = unmatched_routeone_econtracts.columns[:max_cols]
+            sections.append(header_df)
+            sections.append(unmatched_routeone_econtracts)
+            
+        if sections:
+            routeone_not_reconciled_structured = pd.concat(sections, ignore_index=True)
+    
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
-        f"Route One Vault NOT RECONCILED {suffix}": pd.concat([routeone_df, unmatched_routeone_econtracts], ignore_index=True) if not unmatched_routeone_econtracts.empty else routeone_df,
+        f"Route One Vault NOT RECONCILED {suffix}": routeone_not_reconciled_structured,
         f"Route One Vault Errors {suffix}": routeone_error_df,
         f"DT Vault {suffix}": dt_resolved_df,
-        f"DT Vault NOT RECONCILED {suffix}": pd.concat([dtvault_df, unmatched_dt_econtracts], ignore_index=True) if not unmatched_dt_econtracts.empty else dtvault_df,
+        f"DT Vault NOT RECONCILED {suffix}": dt_not_reconciled_structured,
         f"DT Vault Errors {suffix}": dt_error_df,
         f"{month_year} DL Paper contract Report": unmatched_paper_contracts,
     }
@@ -542,33 +609,31 @@ def main():
             elif "Route One Vault NOT RECONCILED" in sheet_name:
                 print(f"Formatting {sheet_name}...")
                 
-                # Reorder columns: S-AI first, then A-S
+                # Get the data range
                 max_row = sheet.max_row
                 max_col = sheet.max_column
                 
-                # Create new data structure
-                new_data = []
+                # Format all rows
                 for row in range(1, max_row + 1):
-                    row_data = []
-                    # Add columns S-AI first (columns 19-35)
-                    for col in range(19, 36):
-                        if col <= max_col:
-                            cell_value = sheet.cell(row=row, column=col).value
-                            row_data.append(cell_value)
-                    # Add columns A-S (columns 1-18)
-                    for col in range(1, 19):
-                        if col <= max_col:
-                            cell_value = sheet.cell(row=row, column=col).value
-                            row_data.append(cell_value)
-                    new_data.append(row_data)
-                
-                # Clear the sheet and write new data
-                sheet.delete_rows(1, max_row)
-                for row_idx, row_data in enumerate(new_data, 1):
-                    for col_idx, cell_value in enumerate(row_data, 1):
-                        cell = sheet.cell(row=row_idx, column=col_idx, value=cell_value)
-                        # Make header row bold with borders
-                        if row_idx == 1:
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    # Check if this is a section header
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # Style section header row
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
+                            cell.font = styles.Font(bold=True, size=12)
+                            cell.fill = styles.PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    elif row == 1:
+                        # Style column headers (first row after export)
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
                             cell.font = styles.Font(bold=True)
                             cell.border = styles.Border(
                                 left=styles.Side(style='thin'),
@@ -576,14 +641,14 @@ def main():
                                 top=styles.Side(style='thin'),
                                 bottom=styles.Side(style='thin')
                             )
-                
-                # Highlight Econtracts (check column Q for "E Contract")
-                for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
-                    if contract_type == "E Contract":
-                        for col in range(1, sheet.max_column + 1):
-                            cell = sheet.cell(row=row, column=col)
-                            cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+                    else:
+                        # Check for E Contract highlighting if column Q exists
+                        if max_col >= 17:
+                            contract_type = sheet.cell(row=row, column=17).value  # Column Q
+                            if contract_type == "E Contract":
+                                for col in range(1, max_col + 1):
+                                    cell = sheet.cell(row=row, column=col)
+                                    cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
             
             # Special handling for DT Vault NOT RECONCILED sheet
             elif "DT Vault NOT RECONCILED" in sheet_name:
@@ -593,24 +658,42 @@ def main():
                 max_row = sheet.max_row
                 max_col = sheet.max_column
                 
-                # Make header row bold with borders
-                for col in range(1, max_col + 1):
-                    cell = sheet.cell(row=1, column=col)
-                    cell.font = styles.Font(bold=True)
-                    cell.border = styles.Border(
-                        left=styles.Side(style='thin'),
-                        right=styles.Side(style='thin'),
-                        top=styles.Side(style='thin'),
-                        bottom=styles.Side(style='thin')
-                    )
-                
-                # Highlight Econtracts (check column Q for "E Contract")
-                for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
-                    if contract_type == "E Contract":
-                        for col in range(1, sheet.max_column + 1):
+                # Format all rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    # Check if this is a section header
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # Style section header row
+                        for col in range(1, max_col + 1):
                             cell = sheet.cell(row=row, column=col)
-                            cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+                            cell.font = styles.Font(bold=True, size=12)
+                            cell.fill = styles.PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    elif row == 1:
+                        # Style column headers (first row after export)
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
+                            cell.font = styles.Font(bold=True)
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    else:
+                        # Check for E Contract highlighting if column Q exists
+                        if max_col >= 17:
+                            contract_type = sheet.cell(row=row, column=17).value  # Column Q
+                            if contract_type == "E Contract":
+                                for col in range(1, max_col + 1):
+                                    cell = sheet.cell(row=row, column=col)
+                                    cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
             
             # Special handling for Summary sheet
             elif "Summary" in sheet_name:
