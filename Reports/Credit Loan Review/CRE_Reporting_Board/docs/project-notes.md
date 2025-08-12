@@ -369,3 +369,28 @@ IF(
 1 Month CME Term SOFR
 the BCSB Corporate Base Rate
 the Wall Street Prime Rate
+
+
+IsNextRateChangeBeforeDateMat =
+VAR LoanIndex = cre_loader[loanidx]
+RETURN
+IF(
+    // Rule 1: Check for the specific loan indexes first
+    LoanIndex IN {
+        "1 Month CME Term SOFR",
+        "the BCSB Corporate Base Rate",
+        "the Wall Street Prime Rate"
+    },
+    "N", // If it's one of those, force it to be "N"
+    
+    // If not, proceed to the original logic you had
+    IF(
+        ISBLANK( cre_loader[Next Rate Change] ),
+        "N", // Rule 2: Handle blank dates
+        IF(
+            cre_loader[Next Rate Change] < cre_loader[datemat],
+            "Y", // Rule 3: The primary date comparison
+            "N"  // All other cases
+        )
+    )
+)
