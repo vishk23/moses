@@ -348,6 +348,10 @@ def generate_construction_report(processed_data):
     """
     Generate Construction loans report with property type grouping.
     
+    Includes loans where:
+    - Cleaned Call Code = 'Construction', OR
+    - currmiaccttypcd is in ['CM07', 'CM08', 'CM79', 'CM81', 'ML02']
+    
     Args:
         processed_data (pd.DataFrame): Processed CRE data
         
@@ -356,9 +360,12 @@ def generate_construction_report(processed_data):
     """
     print("Generating Construction report...")
     
-    # Filter to Construction loans and exclude CM09, CI07
+    # Filter to Construction loans: either by call code or specific account types
     construction_data = processed_data[
-        (processed_data['Cleaned Call Code'] == 'Construction') &
+        (
+            (processed_data['Cleaned Call Code'] == 'Construction') |
+            (processed_data['currmiaccttypcd'].isin(['CM07', 'CM08', 'CM79', 'CM81', 'ML02']))
+        ) &
         ~processed_data['currmiaccttypcd'].isin(['CM09', 'CI07'])
     ].copy()
     
