@@ -40,7 +40,6 @@ from pathlib import Path
 import pandas as pd
 
 import src.config
-import src._version
 
 # Query parameters
 PAYROLL_VENDOR_ACCOUNT = 150523994.00
@@ -48,17 +47,25 @@ PAYROLL_ACCOUNT = 150524009.00
 ANALYSIS_DAYS = 30
 
 def main():
-    print(f"Running {src._version.__version__}")
+
+    
+
+    """Get the last 2 actual month ends (for DPD calculations)"""
+    ends = pd.date_range(end=pd.Timestamp.today(), periods=2, freq="ME")  # Month End, not Business Month End
+    actual_month_ends = [d.to_pydatetime().date() for d in ends]
+    START_DATE = actual_month_ends[0]
+    END_DATE = actual_month_ends[1]
+    
+
 
     def fetch_data():
         """
         Main data query
         """
-        end_date = datetime.today()
-        start_date = end_date - timedelta(days=ANALYSIS_DAYS)
+
     
-        end_date = datetime.today().strftime('%Y-%m-%d')+' 00:00:00'
-        start_date = start_date.strftime('%Y-%m-%d')+' 00:00:00'
+        end_date = END_DATE.strftime('%Y-%m-%d')+' 00:00:00'
+        start_date = START_DATE.strftime('%Y-%m-%d')+' 00:00:00'
         
         # Engine 2
         vendor_query = text(f"""
@@ -68,7 +75,7 @@ def main():
                 COCCDM.WH_RTXN.TRANAMT 
             from COCCDM.WH_RTXN 
             where COCCDM.WH_RTXN.ACCTNBR = {PAYROLL_VENDOR_ACCOUNT} 
-                and COCCDM.WH_RTXN.POSTDATE >= TO_DATE('{start_date}', 'yyyy-mm-dd hh24:mi:ss') 
+                and COCCDM.WH_RTXN.POSTDATE > TO_DATE('{start_date}', 'yyyy-mm-dd hh24:mi:ss') 
                 and COCCDM.WH_RTXN.POSTDATE <= TO_DATE('{end_date}', 'yyyy-mm-dd hh24:mi:ss')
             and COCCDM.WH_RTXN.CHECKNBR is not NULL
         """)
@@ -80,7 +87,7 @@ def main():
                 COCCDM.WH_RTXN.TRANAMT 
             from COCCDM.WH_RTXN 
             where COCCDM.WH_RTXN.ACCTNBR = {PAYROLL_ACCOUNT} 
-                and COCCDM.WH_RTXN.POSTDATE >= TO_DATE('{start_date}', 'yyyy-mm-dd hh24:mi:ss') 
+                and COCCDM.WH_RTXN.POSTDATE > TO_DATE('{start_date}', 'yyyy-mm-dd hh24:mi:ss') 
                 and COCCDM.WH_RTXN.POSTDATE <= TO_DATE('{end_date}', 'yyyy-mm-dd hh24:mi:ss')
             and COCCDM.WH_RTXN.CHECKNBR is not NULL    
             """)
@@ -113,7 +120,8 @@ def main():
     formatted_lines = payroll_query.apply(format_payroll_row, axis=1).tolist()
 
     # Payroll output path
-    PAYROLL_OUTPUT_PATH = src.config.OUTPUT_DIR / 'payroll_report.txt' 
+    outfile_path = END_DATE.strftime('%Y-%m-%d') + 'payroll_report.txt' 
+    PAYROLL_OUTPUT_PATH = src.config.OUTPUT_DIR / outfile_path
 
     # Write to a .txt file
     with open(PAYROLL_OUTPUT_PATH, "w") as f:
@@ -138,7 +146,8 @@ def main():
     vendor_output = vendor_output[['acctnbr', 'checknbr', 'tranamt', '', '', 'postdate']]
 
     # Write to CSV without header and index
-    VENDOR_OUTPUT_PATH = src.config.OUTPUT_DIR / 'vendor_report.csv' 
+    outfile_path = END_DATE.strftime('%Y-%m-%d') + 'vendor_report.csv' 
+    VENDOR_OUTPUT_PATH = src.config.OUTPUT_DIR / outfile_path 
 
     vendor_output.to_csv(VENDOR_OUTPUT_PATH, index=False, header=False)
 
