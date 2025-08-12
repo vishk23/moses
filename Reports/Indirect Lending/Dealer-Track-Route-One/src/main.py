@@ -187,9 +187,9 @@ def main():
         fs_acceptance_dates = pd.to_datetime(routeone_df.iloc[:, 5], errors='coerce')
         month_year_mask = (fs_acceptance_dates.dt.month == target_month) & (fs_acceptance_dates.dt.year == target_year)
         
-        # Apply the filter
+        # Apply the filter - use .copy() to avoid SettingWithCopyWarning
         original_count = len(routeone_df)
-        routeone_df = routeone_df[month_year_mask]
+        routeone_df = routeone_df[month_year_mask].copy()
         filtered_count = len(routeone_df)
 
         
@@ -397,68 +397,120 @@ def main():
     # For DT Vault NOT RECONCILED
     dt_not_reconciled_structured = pd.DataFrame()
     if not dtvault_df.empty or not unmatched_dt_econtracts.empty:
-        sections = []
+        all_rows = []
+        
+        # Determine the maximum number of columns needed
+        max_cols = max(
+            dtvault_df.shape[1] if not dtvault_df.empty else 0,
+            unmatched_dt_econtracts.shape[1] if not unmatched_dt_econtracts.empty else 0
+        )
         
         # Section 1: In Vault but not in Funding
         if not dtvault_df.empty:
-            header_df = pd.DataFrame([["IN VAULT BUT NOT IN FUNDING"] + [""] * (dtvault_df.shape[1] - 1)], 
-                                    columns=dtvault_df.columns)
-            sections.append(header_df)
-            sections.append(dtvault_df)
+            # Add section header row
+            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
             
-        # Add separator row
+            # Add the actual column headers from dtvault_df
+            vault_headers = list(dtvault_df.columns)
+            # Pad with empty strings if needed
+            while len(vault_headers) < max_cols:
+                vault_headers.append("")
+            all_rows.append(vault_headers)
+            
+            # Add the data rows
+            for _, row in dtvault_df.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+            
+        # Add separator rows if both sections exist
         if not dtvault_df.empty and not unmatched_dt_econtracts.empty:
-            separator_df = pd.DataFrame([[""] * max(dtvault_df.shape[1], unmatched_dt_econtracts.shape[1])], 
-                                       columns=dtvault_df.columns if not dtvault_df.empty else unmatched_dt_econtracts.columns)
-            sections.append(separator_df)
+            all_rows.append([""] * max_cols)  # Empty separator row
             
         # Section 2: In Funding but not in Vault
         if not unmatched_dt_econtracts.empty:
-            # Ensure same number of columns
-            max_cols = max(dtvault_df.shape[1] if not dtvault_df.empty else 0, unmatched_dt_econtracts.shape[1])
-            header_df = pd.DataFrame([["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1)])
-            if not dtvault_df.empty:
-                header_df.columns = dtvault_df.columns[:max_cols]
-            else:
-                header_df.columns = unmatched_dt_econtracts.columns[:max_cols]
-            sections.append(header_df)
-            sections.append(unmatched_dt_econtracts)
+            # Add section header row
+            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
             
-        if sections:
-            dt_not_reconciled_structured = pd.concat(sections, ignore_index=True)
+            # Add the actual column headers from unmatched_dt_econtracts
+            funding_headers = list(unmatched_dt_econtracts.columns)
+            # Pad with empty strings if needed
+            while len(funding_headers) < max_cols:
+                funding_headers.append("")
+            all_rows.append(funding_headers)
+            
+            # Add the data rows
+            for _, row in unmatched_dt_econtracts.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+        
+        # Create DataFrame from all rows if we have data
+        if all_rows:
+            # Create generic column names for the structured dataframe
+            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+            dt_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
     
     # For Route One Vault NOT RECONCILED
     routeone_not_reconciled_structured = pd.DataFrame()
     if not routeone_df.empty or not unmatched_routeone_econtracts.empty:
-        sections = []
+        all_rows = []
+        
+        # Determine the maximum number of columns needed
+        max_cols = max(
+            routeone_df.shape[1] if not routeone_df.empty else 0,
+            unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 0
+        )
         
         # Section 1: In Vault but not in Funding
         if not routeone_df.empty:
-            header_df = pd.DataFrame([["IN VAULT BUT NOT IN FUNDING"] + [""] * (routeone_df.shape[1] - 1)], 
-                                    columns=routeone_df.columns)
-            sections.append(header_df)
-            sections.append(routeone_df)
+            # Add section header row
+            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
             
-        # Add separator row
+            # Add the actual column headers from routeone_df
+            vault_headers = list(routeone_df.columns)
+            # Pad with empty strings if needed
+            while len(vault_headers) < max_cols:
+                vault_headers.append("")
+            all_rows.append(vault_headers)
+            
+            # Add the data rows
+            for _, row in routeone_df.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+            
+        # Add separator rows if both sections exist
         if not routeone_df.empty and not unmatched_routeone_econtracts.empty:
-            separator_df = pd.DataFrame([[""] * max(routeone_df.shape[1], unmatched_routeone_econtracts.shape[1])], 
-                                       columns=routeone_df.columns if not routeone_df.empty else unmatched_routeone_econtracts.columns)
-            sections.append(separator_df)
+            all_rows.append([""] * max_cols)  # Empty separator row
             
         # Section 2: In Funding but not in Vault  
         if not unmatched_routeone_econtracts.empty:
-            # Ensure same number of columns
-            max_cols = max(routeone_df.shape[1] if not routeone_df.empty else 0, unmatched_routeone_econtracts.shape[1])
-            header_df = pd.DataFrame([["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1)])
-            if not routeone_df.empty:
-                header_df.columns = routeone_df.columns[:max_cols]
-            else:
-                header_df.columns = unmatched_routeone_econtracts.columns[:max_cols]
-            sections.append(header_df)
-            sections.append(unmatched_routeone_econtracts)
+            # Add section header row
+            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
             
-        if sections:
-            routeone_not_reconciled_structured = pd.concat(sections, ignore_index=True)
+            # Add the actual column headers from unmatched_routeone_econtracts
+            funding_headers = list(unmatched_routeone_econtracts.columns)
+            # Pad with empty strings if needed
+            while len(funding_headers) < max_cols:
+                funding_headers.append("")
+            all_rows.append(funding_headers)
+            
+            # Add the data rows
+            for _, row in unmatched_routeone_econtracts.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+        
+        # Create DataFrame from all rows if we have data
+        if all_rows:
+            # Create generic column names for the structured dataframe
+            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+            routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
     
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
@@ -539,9 +591,15 @@ def main():
         
         # Convert DataFrame to list of lists for manual writing
         if not df.empty:
-            # Convert all values to strings to avoid any formula issues
-            df_str = df.astype(str)
-            data = [df_str.columns.tolist()] + df_str.values.tolist()
+            # Check if this is a NOT RECONCILED sheet (has generic column names)
+            if "NOT RECONCILED" in sheet_name and df.columns[0].startswith("Column_"):
+                # Skip the generic column headers, just write the data
+                df_str = df.astype(str)
+                data = df_str.values.tolist()
+            else:
+                # Normal sheet - include column headers
+                df_str = df.astype(str)
+                data = [df_str.columns.tolist()] + df_str.values.tolist()
         else:
             # Empty DataFrame - just write headers
             data = [df.columns.tolist()] if not df.empty else [['No Data']]
@@ -551,8 +609,8 @@ def main():
             for col_idx, cell_value in enumerate(row_data, 1):
                 cell = ws.cell(row=row_idx, column=col_idx, value=str(cell_value))
                 
-                # Format header row
-                if row_idx == 1:
+                # Format header row (only for non-NOT RECONCILED sheets)
+                if row_idx == 1 and "NOT RECONCILED" not in sheet_name:
                     cell.font = styles.Font(bold=True)
                     cell.border = styles.Border(
                         left=styles.Side(style='thin'),
@@ -613,7 +671,19 @@ def main():
                 max_row = sheet.max_row
                 max_col = sheet.max_column
                 
-                # Format all rows
+                # Track which rows are column headers (rows immediately after section headers)
+                column_header_rows = []
+                
+                # First pass: identify section headers and column header rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # The next row will be column headers
+                        if row + 1 <= max_row:
+                            column_header_rows.append(row + 1)
+                
+                # Second pass: format all rows
                 for row in range(1, max_row + 1):
                     first_cell_value = str(sheet.cell(row=row, column=1).value)
                     
@@ -630,8 +700,8 @@ def main():
                                 top=styles.Side(style='thin'),
                                 bottom=styles.Side(style='thin')
                             )
-                    elif row == 1:
-                        # Style column headers (first row after export)
+                    elif row in column_header_rows:
+                        # Style column headers
                         for col in range(1, max_col + 1):
                             cell = sheet.cell(row=row, column=col)
                             cell.font = styles.Font(bold=True)
@@ -658,7 +728,19 @@ def main():
                 max_row = sheet.max_row
                 max_col = sheet.max_column
                 
-                # Format all rows
+                # Track which rows are column headers (rows immediately after section headers)
+                column_header_rows = []
+                
+                # First pass: identify section headers and column header rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # The next row will be column headers
+                        if row + 1 <= max_row:
+                            column_header_rows.append(row + 1)
+                
+                # Second pass: format all rows
                 for row in range(1, max_row + 1):
                     first_cell_value = str(sheet.cell(row=row, column=1).value)
                     
@@ -675,8 +757,8 @@ def main():
                                 top=styles.Side(style='thin'),
                                 bottom=styles.Side(style='thin')
                             )
-                    elif row == 1:
-                        # Style column headers (first row after export)
+                    elif row in column_header_rows:
+                        # Style column headers
                         for col in range(1, max_col + 1):
                             cell = sheet.cell(row=row, column=col)
                             cell.font = styles.Font(bold=True)
