@@ -176,9 +176,9 @@ def process_transaction_data(
     """
     # Set default date range if not provided
     if start_date is None:
-        start_date = datetime(2024, 6, 30)
+        start_date = config.TRANSACTION_START_DATE
     if end_date is None:
-        end_date = datetime(2025, 6, 30)
+        end_date = config.TRANSACTION_END_DATE
     
     print(f"Fetching transaction data from {start_date.date()} to {end_date.date()}...")
     

@@ -9,7 +9,18 @@ The process includes:
 2. Transaction data processing for specified date windows
 3. Output generation to CSV files
 """
+import sys
 import os
+from pathlib import Path
+
+# Add project root to sys.path for imports
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Change to project root directory
+os.chdir(project_root)
+
 import src.config as config
 import src._version as version
 import src.accubranch.core as accubranch_core

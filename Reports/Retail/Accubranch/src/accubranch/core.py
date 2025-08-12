@@ -16,8 +16,9 @@ import numpy as np
 import pandas as pd
 
 import src.config as config
-import src.data_cleaning_main
+import src.accubranch.data_cleaning_main
 import src.accubranch.annual_deposit_history
+import cdutils.acct_file_creation.core
 import cdutils.pkey_sqlite
 import cdutils.hhnbr
 import cdutils.loans.calculations
@@ -232,12 +233,8 @@ def process_current_account_data() -> pd.DataFrame:
     """
     print("Fetching current account data...")
     
-    # Fetch current data
-    data_current = src.data_cleaning_main.run_data_cleaning_pipeline(
-        as_of_date=datetime(2025, 6, 30),
-        data_source="production",
-        exclude_org_types=config.EXCLUDE_ORG_TYPES
-    )
+    # Fetch current data using cdutils
+    data_current = cdutils.acct_file_creation.core.query_df_on_date(config.CURRENT_DATA_DATE)
     
     print("Applying data transformations...")
     
@@ -282,11 +279,7 @@ def process_historical_data() -> pd.DataFrame:
         print(f"Processing year {year_config['year']}...")
         year_date = datetime.strptime(year_config['date'], '%Y-%m-%d')
         
-        year_data = src.data_cleaning_main.run_data_cleaning_pipeline(
-            as_of_date=year_date,
-            data_source="production",
-            exclude_org_types=config.EXCLUDE_ORG_TYPES
-        )
+        year_data = cdutils.acct_file_creation.core.query_df_on_date(year_date)
         
         dataframes.append(year_data)
         dates.append(year_config['date'])

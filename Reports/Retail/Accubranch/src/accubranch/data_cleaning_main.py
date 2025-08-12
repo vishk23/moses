@@ -19,8 +19,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-import src.accubranch.acct_file_creation
 import src.accubranch.acct_data_gathering
+import cdutils.acct_file_creation.core
 from src.accubranch.join_functions import (
     join_accounts_with_orgs,
     join_accounts_with_persons,
@@ -128,7 +128,7 @@ def run_data_cleaning_pipeline(
     print(f"\n=== Step 2: Generating account data for {as_of_date.date()} ===")
     # acct_df = generate_acct_df_for_date(as_of_date)
     # Here is where you call your own function
-    acct_df = src.accubranch.acct_file_creation.query_df_on_date(as_of_date)
+    acct_df = cdutils.acct_file_creation.core.query_df_on_date(as_of_date)
     print(f"Generated {len(acct_df)} account records")
     print(f"Account types: {acct_df['mjaccttypcd'].value_counts().to_dict()}")
     

@@ -7,6 +7,7 @@ for configuration and environment logic.
 
 import os
 from pathlib import Path
+from datetime import datetime
 
 # Project metadata
 REPORT_NAME = "Accubranch Analysis"
@@ -24,6 +25,13 @@ INPUT_DIR = PROJECT_ROOT / "input"
 
 # Ensure output directory exists
 OUTPUT_DIR.mkdir(exist_ok=True)
+
+# Current data date - None means use latest available date from cdutils
+CURRENT_DATA_DATE = None  # Set to datetime(2025, 6, 30) to use specific date
+
+# Transaction date range configuration  
+TRANSACTION_START_DATE = datetime(2024, 6, 30)
+TRANSACTION_END_DATE = datetime(2025, 6, 30)
 
 # File paths
 ACCOUNT_OUTPUT_FILE = OUTPUT_DIR / "account_data.csv"
