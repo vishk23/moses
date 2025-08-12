@@ -204,20 +204,26 @@ def process_transaction_data(
     # Add branch information via WH_CASHBOXRTXN -> WH_ORG join
     print("Adding branch information from WH_ORG...")
     
-    # First join: transactions -> WH_CASHBOXRTXN on branchorgnbr
+    # Debug: Print column names to identify the issue
+    print("WH_CASHBOXRTXN columns:", list(cashboxrtxn.columns))
+    print("WH_ORG columns:", list(wh_org.columns))
+    print("Transaction columns (sample):", list(merged_rtxn.columns)[:10])
+    
+    # First join: transactions -> WH_CASHBOXRTXN on cashboxnbr
+    print("First join: transactions -> WH_CASHBOXRTXN on cashboxnbr...")
     merged_rtxn = pd.merge(
         merged_rtxn, 
-        cashboxrtxn[['branchorgnbr', 'orgnbr']], 
-        left_on='branchorgnbr', 
-        right_on='branchorgnbr', 
+        cashboxrtxn, 
+        on='cashboxnbr', 
         how='left'
     )
     
-    # Second join: result -> WH_ORG on orgnbr to get orgname (branch name)
+    # Second join: result -> WH_ORG on branchorgnbr=orgnbr to get orgname (branch name)
+    print("Second join: WH_CASHBOXRTXN -> WH_ORG on branchorgnbr=orgnbr...")
     merged_rtxn = pd.merge(
         merged_rtxn, 
         wh_org[['orgnbr', 'orgname']], 
-        left_on='orgnbr', 
+        left_on='branchorgnbr', 
         right_on='orgnbr', 
         how='left'
     )
