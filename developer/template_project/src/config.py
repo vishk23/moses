@@ -28,7 +28,7 @@ OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
 # Email Recipients
-EMAIL_TO = []  # List of primary recipients for production
+EMAIL_TO = [] if ENV == 'prod' else [] # List of primary recipients for production
 EMAIL_CC = []  # List of CC recipients for production
 
 # Add any additional configuration variables below as needed
