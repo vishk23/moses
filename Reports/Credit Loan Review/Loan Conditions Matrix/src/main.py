@@ -1,7 +1,5 @@
 """
-Main entry point for your project.
-
-Replace this docstring with a description of your project's purpose and logic.
+Main entry point for Loan Conditions Matrix project.
 """
 
 import src.config
@@ -15,7 +13,6 @@ def main():
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
     # Add your main project logic here
-    # Example: print('Hello, world!')
 
 if __name__ == "__main__":
     main()

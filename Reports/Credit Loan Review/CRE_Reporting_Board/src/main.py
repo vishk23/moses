@@ -9,9 +9,11 @@ Output: cre_loader.xlsx - Consolidated CRE portfolio data with property informat
 """
 
 import src.config
+import src._version
 from src.cre_board_reporting.core import run_cre_reporting_pipeline
 
 def main():
+    print(f"Running {src._version.__version__}")
     try:
         # Run the CRE reporting pipeline
         output_path = run_cre_reporting_pipeline()

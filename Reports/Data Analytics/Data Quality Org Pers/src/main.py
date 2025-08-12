@@ -15,6 +15,7 @@ import src.data_quality.core
 import src.data_quality.fetch_data # type: ignore
 import cdutils.acct_file_creation.core # type: ignore
 import src.config as config
+import src._version
 
 def create_acct_df():
     """
@@ -120,6 +121,7 @@ def main():
     """
     Main entry point for the data quality ETL pipeline.
     """
+    print(f"Running {src._version.__version__}")
     # Ensure all necessary directories exist (moved from config.py)
     config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     config.INPUT_DIR.mkdir(parents=True, exist_ok=True)

@@ -344,3 +344,56 @@ array(['Apartment Building', 'Warehouse', 'Multi Family', 'Hotel/Motel',
        'Savings - Partially Secured', '2 Family Residential - Own Occ',
        'Funeral Home', 'Passbook/Savings Secured', 'Vehicle - Business',
        'Condominium'], dtype=object)
+
+
+IsNextRateChangeBeforeDateMat = 
+IF(
+    cre_loader[Next Rate Change] < cre_loader[datemat],
+    "Y",
+    "N"
+)
+
+Correction:
+IsNextRateChangeBeforeDateMat =
+IF(
+    ISBLANK( cre_loader[Next Rate Change] ),
+    "N",  // This is the result when Next Rate Change is null
+    IF(
+        cre_loader[Next Rate Change] < cre_loader[datemat],
+        "Y",
+        "N"
+    )
+)
+
+
+1 Month CME Term SOFR
+the BCSB Corporate Base Rate
+the Wall Street Prime Rate
+
+
+IsNextRateChangeBeforeDateMat =
+VAR LoanIndex = cre_loader[loanidx]
+RETURN
+IF(
+    // Rule 1: Check for the specific loan indexes first
+    LoanIndex IN {
+        "1 Month CME Term SOFR",
+        "the BCSB Corporate Base Rate",
+        "the Wall Street Prime Rate"
+    },
+    "N", // If it's one of those, force it to be "N"
+    
+    // If not, proceed to the original logic you had
+    IF(
+        ISBLANK( cre_loader[Next Rate Change] ),
+        "N", // Rule 2: Handle blank dates
+        IF(
+            cre_loader[Next Rate Change] < cre_loader[datemat],
+            "Y", // Rule 3: The primary date comparison
+            "N"  // All other cases
+        )
+    )
+)
+
+
+May have lost this logic. Just need to readd to DAX if it didn't save on PBI side.

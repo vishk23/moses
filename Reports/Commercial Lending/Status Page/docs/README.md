@@ -19,9 +19,9 @@ Business logic (high level):
 - Output: Render CML, Personal, and Deposit sections (with summary rows) into an Excel template via pywin32, fit to a page for attachment to approval packages.
 
 ## Authors & Stakeholders
-- **Project Lead:** Chad Doorley
+- **Project Lead:** Chad Doorley (chad.doorley@bcsbmail.com)
 - **Executive Sponsor:** Tim Chaves
-- **Key Stakeholders:** Commercial Lending, Credit Administration, Underwriting, Portfolio Management
+- **Key Stakeholders:** Commercial Lending, Credit, Underwriting, Portfolio Management
 
 ## Project Goals
 - Provide a reliable, one‑page relationship snapshot grouped by portfolio key for credit approval and monitoring.
@@ -40,10 +40,8 @@ Business logic (high level):
    - Fetch queries and schema enforcement; joining of core loan tables
 - [x] (2025-08-08) Exposure, stratification, and summary metrics
    - Total Exposure math, loan/deposit sections, summary section
-- [-] (2025-08-08) Excel template mapping and formatting
+- [x] (2025-08-08) Excel template mapping and formatting
    - Writing to template with pywin32; finalize template ranges/styles
-- [ ] (2025-08-08) Packaging with approval docs and CLI options
-   - Wire portfolio_key inputs and add/delete overrides for on‑demand runs
 
 Key
 - [x] - Completed

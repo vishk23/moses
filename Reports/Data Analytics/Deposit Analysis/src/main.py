@@ -5,8 +5,10 @@ Replace this docstring with a description of your project's purpose and logic.
 """
 
 import src.config
+import src._version
 
 def main():
+    print(f"Running {src._version.__version__}")
     print(f"Running {src.config.REPORT_NAME} for {src.config.BUSINESS_LINE}")
     print(f"Schedule: {src.config.SCHEDULE}")
     print(f"Owner: {src.config.OWNER}")

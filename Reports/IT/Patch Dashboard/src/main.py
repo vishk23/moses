@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import glob
 import src.config as config
+import src._version
 
 
 def ensure_directories():
@@ -92,6 +93,7 @@ def archive_output_files():
 
 def main():
     """Main processing function."""
+    print(f"Running {src._version.__version__}")
     print(f"Patch Dashboard - Environment: {config.ENV}")
     print(f"Business Line: {config.BUSINESS_LINE}")
     print(f"Input directory: {config.INPUT_DIR}")
