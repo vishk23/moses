@@ -381,8 +381,20 @@ def main():
     
     # Build final export dict with month/year suffix
     suffix = f"({month_year})"
+    
+    # For Route One Vault sheet, sort to put Paper contracts at the bottom
+    routeone_vault_df = routeone_resolved_df.copy() if not routeone_resolved_df.empty else pd.DataFrame()
+    if not routeone_vault_df.empty:
+        # Check if column Q (17th column, index 16) exists (contract type column)
+        if routeone_vault_df.shape[1] > 16:
+            # Create a sort key: Paper contracts get value 1, others get 0
+            sort_key = (routeone_vault_df.iloc[:, 16] == 'Paper').astype(int)
+            # Sort by this key to put Paper contracts at the bottom
+            routeone_vault_df = routeone_vault_df.iloc[sort_key.argsort()]
+            routeone_vault_df.reset_index(drop=True, inplace=True)
+    
     dfs_to_export = {
-        f"Route One Vault {suffix}": routeone_resolved_df,
+        f"Route One Vault {suffix}": routeone_vault_df,
         f"Route One Vault NOT RECONCILED {suffix}": pd.concat([routeone_df, unmatched_routeone_econtracts], ignore_index=True) if not unmatched_routeone_econtracts.empty else routeone_df,
         f"Route One Vault Errors {suffix}": routeone_error_df,
         f"DT Vault {suffix}": dt_resolved_df,
@@ -498,8 +510,36 @@ def main():
         for sheet in wb.worksheets:
             sheet_name = sheet.title
             
+            # Special handling for Route One Vault sheet (reconciled)
+            if "Route One Vault" in sheet_name and "NOT RECONCILED" not in sheet_name and "Errors" not in sheet_name:
+                print(f"Formatting {sheet_name}...")
+                
+                # Get the data range
+                max_row = sheet.max_row
+                max_col = sheet.max_column
+                
+                # Make header row bold with borders
+                for col in range(1, max_col + 1):
+                    cell = sheet.cell(row=1, column=col)
+                    cell.font = styles.Font(bold=True)
+                    cell.border = styles.Border(
+                        left=styles.Side(style='thin'),
+                        right=styles.Side(style='thin'),
+                        top=styles.Side(style='thin'),
+                        bottom=styles.Side(style='thin')
+                    )
+                
+                # Highlight Paper contracts (check column Q for "Paper")
+                for row in range(2, max_row + 1):  # Skip header row
+                    if max_col >= 17:  # Make sure column Q exists
+                        contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
+                        if contract_type == "Paper":
+                            for col in range(1, sheet.max_column + 1):
+                                cell = sheet.cell(row=row, column=col)
+                                cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+            
             # Special handling for Route One Vault NOT RECONCILED sheet
-            if "Route One Vault NOT RECONCILED" in sheet_name:
+            elif "Route One Vault NOT RECONCILED" in sheet_name:
                 print(f"Formatting {sheet_name}...")
                 
                 # Reorder columns: S-AI first, then A-S
@@ -537,9 +577,9 @@ def main():
                                 bottom=styles.Side(style='thin')
                             )
                 
-                # Highlight Econtracts (check column P for "E Contract")
+                # Highlight Econtracts (check column Q for "E Contract")
                 for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=16).value  # Column P (16th column)
+                    contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
                     if contract_type == "E Contract":
                         for col in range(1, sheet.max_column + 1):
                             cell = sheet.cell(row=row, column=col)
@@ -564,9 +604,9 @@ def main():
                         bottom=styles.Side(style='thin')
                     )
                 
-                # Highlight Econtracts (check column P for "E Contract")
+                # Highlight Econtracts (check column Q for "E Contract")
                 for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=16).value  # Column P (16th column)
+                    contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
                     if contract_type == "E Contract":
                         for col in range(1, sheet.max_column + 1):
                             cell = sheet.cell(row=row, column=col)
