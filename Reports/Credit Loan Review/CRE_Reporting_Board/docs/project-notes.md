@@ -364,3 +364,8 @@ IF(
         "N"
     )
 )
+
+
+1 Month CME Term SOFR
+the BCSB Corporate Base Rate
+the Wall Street Prime Rate
