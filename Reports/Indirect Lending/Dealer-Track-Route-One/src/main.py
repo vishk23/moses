@@ -187,9 +187,9 @@ def main():
         fs_acceptance_dates = pd.to_datetime(routeone_df.iloc[:, 5], errors='coerce')
         month_year_mask = (fs_acceptance_dates.dt.month == target_month) & (fs_acceptance_dates.dt.year == target_year)
         
-        # Apply the filter
+        # Apply the filter - use .copy() to avoid SettingWithCopyWarning
         original_count = len(routeone_df)
-        routeone_df = routeone_df[month_year_mask]
+        routeone_df = routeone_df[month_year_mask].copy()
         filtered_count = len(routeone_df)
 
         
@@ -381,12 +381,143 @@ def main():
     
     # Build final export dict with month/year suffix
     suffix = f"({month_year})"
+    
+    # For Route One Vault sheet, sort to put Paper contracts at the bottom
+    routeone_vault_df = routeone_resolved_df.copy() if not routeone_resolved_df.empty else pd.DataFrame()
+    if not routeone_vault_df.empty:
+        # Check if column Q (17th column, index 16) exists (contract type column)
+        if routeone_vault_df.shape[1] > 16:
+            # Create a sort key: Paper contracts get value 1, others get 0
+            sort_key = (routeone_vault_df.iloc[:, 16] == 'Paper').astype(int)
+            # Sort by this key to put Paper contracts at the bottom
+            routeone_vault_df = routeone_vault_df.iloc[sort_key.argsort()]
+            routeone_vault_df.reset_index(drop=True, inplace=True)
+    
+    # Create structured NOT RECONCILED dataframes with sections
+    # For DT Vault NOT RECONCILED
+    dt_not_reconciled_structured = pd.DataFrame()
+    if not dtvault_df.empty or not unmatched_dt_econtracts.empty:
+        all_rows = []
+        
+        # Determine the maximum number of columns needed
+        max_cols = max(
+            dtvault_df.shape[1] if not dtvault_df.empty else 0,
+            unmatched_dt_econtracts.shape[1] if not unmatched_dt_econtracts.empty else 0
+        )
+        
+        # Section 1: In Vault but not in Funding
+        if not dtvault_df.empty:
+            # Add section header row
+            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
+            
+            # Add the actual column headers from dtvault_df
+            vault_headers = list(dtvault_df.columns)
+            # Pad with empty strings if needed
+            while len(vault_headers) < max_cols:
+                vault_headers.append("")
+            all_rows.append(vault_headers)
+            
+            # Add the data rows
+            for _, row in dtvault_df.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+            
+        # Add separator rows if both sections exist
+        if not dtvault_df.empty and not unmatched_dt_econtracts.empty:
+            all_rows.append([""] * max_cols)  # Empty separator row
+            
+        # Section 2: In Funding but not in Vault
+        if not unmatched_dt_econtracts.empty:
+            # Add section header row
+            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
+            
+            # Add the actual column headers from unmatched_dt_econtracts
+            funding_headers = list(unmatched_dt_econtracts.columns)
+            # Pad with empty strings if needed
+            while len(funding_headers) < max_cols:
+                funding_headers.append("")
+            all_rows.append(funding_headers)
+            
+            # Add the data rows
+            for _, row in unmatched_dt_econtracts.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+        
+        # Create DataFrame from all rows if we have data
+        if all_rows:
+            # Create generic column names for the structured dataframe
+            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+            dt_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+    
+    # For Route One Vault NOT RECONCILED
+    routeone_not_reconciled_structured = pd.DataFrame()
+    if not routeone_df.empty or not unmatched_routeone_econtracts.empty:
+        all_rows = []
+        
+        # Determine the maximum number of columns needed
+        max_cols = max(
+            routeone_df.shape[1] if not routeone_df.empty else 0,
+            unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 0
+        )
+        
+        # Section 1: In Vault but not in Funding
+        if not routeone_df.empty:
+            # Add section header row
+            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
+            
+            # Add the actual column headers from routeone_df
+            vault_headers = list(routeone_df.columns)
+            # Pad with empty strings if needed
+            while len(vault_headers) < max_cols:
+                vault_headers.append("")
+            all_rows.append(vault_headers)
+            
+            # Add the data rows
+            for _, row in routeone_df.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+            
+        # Add separator rows if both sections exist
+        if not routeone_df.empty and not unmatched_routeone_econtracts.empty:
+            all_rows.append([""] * max_cols)  # Empty separator row
+            
+        # Section 2: In Funding but not in Vault  
+        if not unmatched_routeone_econtracts.empty:
+            # Add section header row
+            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
+            
+            # Add the actual column headers from unmatched_routeone_econtracts
+            funding_headers = list(unmatched_routeone_econtracts.columns)
+            # Pad with empty strings if needed
+            while len(funding_headers) < max_cols:
+                funding_headers.append("")
+            all_rows.append(funding_headers)
+            
+            # Add the data rows
+            for _, row in unmatched_routeone_econtracts.iterrows():
+                row_data = list(row)
+                while len(row_data) < max_cols:
+                    row_data.append("")
+                all_rows.append(row_data)
+        
+        # Create DataFrame from all rows if we have data
+        if all_rows:
+            # Create generic column names for the structured dataframe
+            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+            routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+    
     dfs_to_export = {
-        f"Route One Vault {suffix}": routeone_resolved_df,
-        f"Route One Vault NOT RECONCILED {suffix}": pd.concat([routeone_df, unmatched_routeone_econtracts], ignore_index=True) if not unmatched_routeone_econtracts.empty else routeone_df,
+        f"Route One Vault {suffix}": routeone_vault_df,
+        f"Route One Vault NOT RECONCILED {suffix}": routeone_not_reconciled_structured,
         f"Route One Vault Errors {suffix}": routeone_error_df,
         f"DT Vault {suffix}": dt_resolved_df,
-        f"DT Vault NOT RECONCILED {suffix}": pd.concat([dtvault_df, unmatched_dt_econtracts], ignore_index=True) if not unmatched_dt_econtracts.empty else dtvault_df,
+        f"DT Vault NOT RECONCILED {suffix}": dt_not_reconciled_structured,
         f"DT Vault Errors {suffix}": dt_error_df,
         f"{month_year} DL Paper contract Report": unmatched_paper_contracts,
     }
@@ -460,9 +591,15 @@ def main():
         
         # Convert DataFrame to list of lists for manual writing
         if not df.empty:
-            # Convert all values to strings to avoid any formula issues
-            df_str = df.astype(str)
-            data = [df_str.columns.tolist()] + df_str.values.tolist()
+            # Check if this is a NOT RECONCILED sheet (has generic column names)
+            if "NOT RECONCILED" in sheet_name and df.columns[0].startswith("Column_"):
+                # Skip the generic column headers, just write the data
+                df_str = df.astype(str)
+                data = df_str.values.tolist()
+            else:
+                # Normal sheet - include column headers
+                df_str = df.astype(str)
+                data = [df_str.columns.tolist()] + df_str.values.tolist()
         else:
             # Empty DataFrame - just write headers
             data = [df.columns.tolist()] if not df.empty else [['No Data']]
@@ -472,8 +609,8 @@ def main():
             for col_idx, cell_value in enumerate(row_data, 1):
                 cell = ws.cell(row=row_idx, column=col_idx, value=str(cell_value))
                 
-                # Format header row
-                if row_idx == 1:
+                # Format header row (only for non-NOT RECONCILED sheets)
+                if row_idx == 1 and "NOT RECONCILED" not in sheet_name:
                     cell.font = styles.Font(bold=True)
                     cell.border = styles.Border(
                         left=styles.Side(style='thin'),
@@ -498,55 +635,8 @@ def main():
         for sheet in wb.worksheets:
             sheet_name = sheet.title
             
-            # Special handling for Route One Vault NOT RECONCILED sheet
-            if "Route One Vault NOT RECONCILED" in sheet_name:
-                print(f"Formatting {sheet_name}...")
-                
-                # Reorder columns: S-AI first, then A-S
-                max_row = sheet.max_row
-                max_col = sheet.max_column
-                
-                # Create new data structure
-                new_data = []
-                for row in range(1, max_row + 1):
-                    row_data = []
-                    # Add columns S-AI first (columns 19-35)
-                    for col in range(19, 36):
-                        if col <= max_col:
-                            cell_value = sheet.cell(row=row, column=col).value
-                            row_data.append(cell_value)
-                    # Add columns A-S (columns 1-18)
-                    for col in range(1, 19):
-                        if col <= max_col:
-                            cell_value = sheet.cell(row=row, column=col).value
-                            row_data.append(cell_value)
-                    new_data.append(row_data)
-                
-                # Clear the sheet and write new data
-                sheet.delete_rows(1, max_row)
-                for row_idx, row_data in enumerate(new_data, 1):
-                    for col_idx, cell_value in enumerate(row_data, 1):
-                        cell = sheet.cell(row=row_idx, column=col_idx, value=cell_value)
-                        # Make header row bold with borders
-                        if row_idx == 1:
-                            cell.font = styles.Font(bold=True)
-                            cell.border = styles.Border(
-                                left=styles.Side(style='thin'),
-                                right=styles.Side(style='thin'),
-                                top=styles.Side(style='thin'),
-                                bottom=styles.Side(style='thin')
-                            )
-                
-                # Highlight Econtracts (check column P for "E Contract")
-                for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=16).value  # Column P (16th column)
-                    if contract_type == "E Contract":
-                        for col in range(1, sheet.max_column + 1):
-                            cell = sheet.cell(row=row, column=col)
-                            cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
-            
-            # Special handling for DT Vault NOT RECONCILED sheet
-            elif "DT Vault NOT RECONCILED" in sheet_name:
+            # Special handling for Route One Vault sheet (reconciled)
+            if "Route One Vault" in sheet_name and "NOT RECONCILED" not in sheet_name and "Errors" not in sheet_name:
                 print(f"Formatting {sheet_name}...")
                 
                 # Get the data range
@@ -564,13 +654,128 @@ def main():
                         bottom=styles.Side(style='thin')
                     )
                 
-                # Highlight Econtracts (check column P for "E Contract")
+                # Highlight Paper contracts (check column Q for "Paper")
                 for row in range(2, max_row + 1):  # Skip header row
-                    contract_type = sheet.cell(row=row, column=16).value  # Column P (16th column)
-                    if contract_type == "E Contract":
-                        for col in range(1, sheet.max_column + 1):
+                    if max_col >= 17:  # Make sure column Q exists
+                        contract_type = sheet.cell(row=row, column=17).value  # Column Q (17th column)
+                        if contract_type == "Paper":
+                            for col in range(1, sheet.max_column + 1):
+                                cell = sheet.cell(row=row, column=col)
+                                cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+            
+            # Special handling for Route One Vault NOT RECONCILED sheet
+            elif "Route One Vault NOT RECONCILED" in sheet_name:
+                print(f"Formatting {sheet_name}...")
+                
+                # Get the data range
+                max_row = sheet.max_row
+                max_col = sheet.max_column
+                
+                # Track which rows are column headers (rows immediately after section headers)
+                column_header_rows = []
+                
+                # First pass: identify section headers and column header rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # The next row will be column headers
+                        if row + 1 <= max_row:
+                            column_header_rows.append(row + 1)
+                
+                # Second pass: format all rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    # Check if this is a section header
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # Style section header row
+                        for col in range(1, max_col + 1):
                             cell = sheet.cell(row=row, column=col)
-                            cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+                            cell.font = styles.Font(bold=True, size=12)
+                            cell.fill = styles.PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    elif row in column_header_rows:
+                        # Style column headers
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
+                            cell.font = styles.Font(bold=True)
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    else:
+                        # Check for E Contract highlighting if column Q exists
+                        if max_col >= 17:
+                            contract_type = sheet.cell(row=row, column=17).value  # Column Q
+                            if contract_type == "E Contract":
+                                for col in range(1, max_col + 1):
+                                    cell = sheet.cell(row=row, column=col)
+                                    cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+            
+            # Special handling for DT Vault NOT RECONCILED sheet
+            elif "DT Vault NOT RECONCILED" in sheet_name:
+                print(f"Formatting {sheet_name}...")
+                
+                # Get the data range
+                max_row = sheet.max_row
+                max_col = sheet.max_column
+                
+                # Track which rows are column headers (rows immediately after section headers)
+                column_header_rows = []
+                
+                # First pass: identify section headers and column header rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # The next row will be column headers
+                        if row + 1 <= max_row:
+                            column_header_rows.append(row + 1)
+                
+                # Second pass: format all rows
+                for row in range(1, max_row + 1):
+                    first_cell_value = str(sheet.cell(row=row, column=1).value)
+                    
+                    # Check if this is a section header
+                    if first_cell_value in ["IN VAULT BUT NOT IN FUNDING", "IN FUNDING BUT NOT IN VAULT"]:
+                        # Style section header row
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
+                            cell.font = styles.Font(bold=True, size=12)
+                            cell.fill = styles.PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    elif row in column_header_rows:
+                        # Style column headers
+                        for col in range(1, max_col + 1):
+                            cell = sheet.cell(row=row, column=col)
+                            cell.font = styles.Font(bold=True)
+                            cell.border = styles.Border(
+                                left=styles.Side(style='thin'),
+                                right=styles.Side(style='thin'),
+                                top=styles.Side(style='thin'),
+                                bottom=styles.Side(style='thin')
+                            )
+                    else:
+                        # Check for E Contract highlighting if column Q exists
+                        if max_col >= 17:
+                            contract_type = sheet.cell(row=row, column=17).value  # Column Q
+                            if contract_type == "E Contract":
+                                for col in range(1, max_col + 1):
+                                    cell = sheet.cell(row=row, column=col)
+                                    cell.fill = styles.PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
             
             # Special handling for Summary sheet
             elif "Summary" in sheet_name:
