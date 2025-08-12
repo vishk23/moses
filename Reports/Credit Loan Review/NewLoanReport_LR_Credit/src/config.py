@@ -16,7 +16,7 @@ SCHEDULE = "Weekly"
 OWNER = "Chad Doorley"
 
 # Status
-PROD_READY = True
+PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')

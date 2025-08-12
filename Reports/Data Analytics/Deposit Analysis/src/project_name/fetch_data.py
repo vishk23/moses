@@ -12,17 +12,11 @@ from sqlalchemy import text # type: ignore
 from datetime import datetime
 from typing import Optional
 
-def fetch_data(specified_date: Optional[datetime] = None):
+def fetch_data():
     """
     Main data query
     """
-    if specified_date is None:
-        specified_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    else:
-        assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
-        specified_date = specified_date.strftime('%Y-%m-%d %H:%M:%S')
-
-    wh_acctcommon = text(f"""
+    wh_rtxn = text(f"""
     SELECT
         a.EFFDATE,
         a.ACCTNBR,
@@ -49,63 +43,8 @@ def fetch_data(specified_date: Optional[datetime] = None):
         (a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS'))
     """)
 
-    wh_loans = text(f"""
-    SELECT
-        a.ACCTNBR,
-        a.ORIGDATE,
-        a.CURRTERM,
-        a.LOANIDX,
-        a.RCF,
-        a.AVAILBALAMT,
-        a.FDICCATDESC,
-        a.ORIGBAL,
-        a.LOANLIMITYN
-    FROM
-        COCCDM.WH_LOANS a
-    WHERE
-        a.RUNDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS')
-    """)
-
-    wh_acctloan = text(f"""
-    SELECT
-        a.ACCTNBR,
-        a.CREDITLIMITAMT,
-        a.ORIGINTRATE,
-        a.MARGINFIXED,
-        a.FDICCATCD,
-        a.AMORTTERM,
-        a.TOTALPCTSOLD,
-        a.COBAL,
-        a.CREDLIMITCLATRESAMT,
-        a.RISKRATINGCD
-    FROM
-        COCCDM.WH_ACCTLOAN a
-    WHERE
-        a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS')
-    """)
-
-    househldacct = text("""
-    SELECT
-        a.ACCTNBR,
-        a.HOUSEHOLDNBR,
-        a.DATELASTMAINT
-    FROM
-        OSIEXTN.HOUSEHLDACCT a
-    """)
-
-    wh_pers = text("""
-    SELECT
-        *
-    FROM
-        OSIBANK.WH_PERS a
-    """)    
-
     queries = [
         {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
-        {'key':'wh_loans', 'sql':wh_loans, 'engine':2},
-        {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':2},
-        {'key':'househldacct', 'sql':househldacct, 'engine':1},
-        {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
 
 
