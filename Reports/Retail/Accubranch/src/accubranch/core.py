@@ -29,11 +29,12 @@ import cdutils.input_cleansing
 def create_primary_key(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create Primary Key (Tax Owner of Account).
+    Checks for required columns before creating the key.
     
     Parameters:
     -----------
     df : pd.DataFrame
-        DataFrame with taxrptfororgnbr and taxrptforpersnbr columns
+        DataFrame with tax reporting columns
         
     Returns:
     --------
@@ -41,22 +42,31 @@ def create_primary_key(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with added 'Primary Key' column
     """
     df = df.copy()
-    df['Primary Key'] = np.where(
-        df['taxrptfororgnbr'].isnull(), 
-        'P' + df['taxrptforpersnbr'].astype(str), 
-        'O' + df['taxrptfororgnbr'].astype(str)
-    )
+    
+    if 'taxrptfororgnbr' in df.columns and 'taxrptforpersnbr' in df.columns:
+        df['Primary Key'] = np.where(
+            df['taxrptfororgnbr'].isnull(), 
+            'P' + df['taxrptforpersnbr'].astype(str), 
+            'O' + df['taxrptfororgnbr'].astype(str)
+        )
+        print("Created Primary Key column")
+    else:
+        print("Warning: Required columns for Primary Key not found")
+        print(f"Available columns: {list(df.columns)}")
+        df['Primary Key'] = 'UNKNOWN'
+    
     return df
 
 
 def create_address_field(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Create consolidated address field from text1, text2, text3.
+    Create consolidated address field from available address columns.
+    Checks for multiple possible column name patterns.
     
     Parameters:
     -----------
     df : pd.DataFrame
-        DataFrame with text1, text2, text3 columns
+        DataFrame with address columns
         
     Returns:
     --------
@@ -64,14 +74,36 @@ def create_address_field(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with added 'Address' column
     """
     def concat_address(text1, text2, text3):
-        parts = [str(p).strip() for p in [text1, text2, text3] if p and str(p).strip()]
+        parts = [str(p).strip() for p in [text1, text2, text3] if p and str(p).strip() and str(p) != 'nan']
         return ' '.join(parts) if parts else pd.NA
     
     df = df.copy()
-    df['Address'] = df.apply(
-        lambda row: concat_address(row.get('text1'), row.get('text2'), row.get('text3')),
-        axis=1
-    )
+    
+    # Check for different possible address column patterns
+    address_patterns = [
+        ('text1', 'text2', 'text3'),  # Original pattern
+        ('addr1', 'addr2', 'addr3'),  # Alternative pattern
+        ('address1', 'address2', 'address3'),  # Another alternative
+        ('street1', 'street2', 'street3'),  # Yet another alternative
+    ]
+    
+    address_cols = None
+    for pattern in address_patterns:
+        if all(col in df.columns for col in pattern):
+            address_cols = pattern
+            print(f"Using address columns: {address_cols}")
+            break
+    
+    if address_cols:
+        df['Address'] = df.apply(
+            lambda row: concat_address(row.get(address_cols[0]), row.get(address_cols[1]), row.get(address_cols[2])),
+            axis=1
+        )
+    else:
+        print("Warning: No address columns found, setting Address to empty")
+        print(f"Available columns: {list(df.columns)}")
+        df['Address'] = pd.NA
+    
     return df
 
 
@@ -122,23 +154,41 @@ def apply_account_type_mapping(df: pd.DataFrame) -> pd.DataFrame:
 def apply_loan_amount_logic(df: pd.DataFrame) -> pd.DataFrame:
     """
     Apply original loan amount logic for loan accounts only.
+    Checks for multiple possible column names for original loan amount.
     
     Parameters:
     -----------
     df : pd.DataFrame
-        DataFrame with mjaccttypcd and orig_ttl_loan_amt columns
+        DataFrame with loan amount columns
         
     Returns:
     --------
     pd.DataFrame
-        DataFrame with updated orig_ttl_loan_amt column
+        DataFrame with updated loan amount column
     """
     df = df.copy()
-    df['orig_ttl_loan_amt'] = np.where(
-        df['mjaccttypcd'].isin(config.LOAN_ACCOUNT_TYPES),
-        df['orig_ttl_loan_amt'],
-        pd.NA
-    )
+    
+    # Check for different possible loan amount column names
+    loan_amount_cols = ['orig_ttl_loan_amt', 'origbal', 'original_balance', 'loan_amount']
+    loan_col = None
+    
+    for col in loan_amount_cols:
+        if col in df.columns:
+            loan_col = col
+            print(f"Using loan amount column: {loan_col}")
+            break
+    
+    if loan_col and 'mjaccttypcd' in df.columns:
+        df['Original Balance (Loans)'] = np.where(
+            df['mjaccttypcd'].isin(config.LOAN_ACCOUNT_TYPES),
+            df[loan_col],
+            pd.NA
+        )
+        print(f"Applied loan amount logic using {loan_col}")
+    else:
+        print("Warning: Required columns for loan amount logic not found")
+        df['Original Balance (Loans)'] = pd.NA
+    
     return df
 
 
@@ -168,6 +218,7 @@ def create_business_individual_flag(df: pd.DataFrame) -> pd.DataFrame:
 def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
     """
     Apply standard column renaming for output.
+    Only renames columns that actually exist in the DataFrame.
     
     Parameters:
     -----------
@@ -180,21 +231,45 @@ def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with renamed columns
     """
     df = df.copy()
-    return df.rename(columns={
+    
+    # Define potential column mappings
+    column_mappings = {
         'cityname': 'City',
-        'statecd': 'State',
+        'statecd': 'State', 
         'zipcd': 'Zip',
         'branchname': 'Branch Associated',
         'contractdate': 'Date Account Opened',
         'Net Balance': 'Current Balance',
         'orig_ttl_loan_amt': 'Original Balance (Loans)',
-        'datebirth': 'Date of Birth'
-    })
+        'datebirth': 'Date of Birth',
+        # Add potential alternative column names from cdutils
+        'city': 'City',
+        'state': 'State',
+        'zip': 'Zip',
+        'branch': 'Branch Associated',
+        'opendate': 'Date Account Opened',
+        'balance': 'Current Balance',
+        'origbal': 'Original Balance (Loans)',
+        'dob': 'Date of Birth'
+    }
+    
+    # Only apply mappings for columns that actually exist
+    existing_mappings = {old_col: new_col for old_col, new_col in column_mappings.items() 
+                        if old_col in df.columns}
+    
+    if existing_mappings:
+        print(f"Renaming columns: {existing_mappings}")
+        df = df.rename(columns=existing_mappings)
+    else:
+        print("No matching columns found for renaming")
+    
+    return df
 
 
 def select_final_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Select final columns for output.
+    Only selects columns that actually exist in the DataFrame.
     
     Parameters:
     -----------
@@ -206,7 +281,7 @@ def select_final_columns(df: pd.DataFrame) -> pd.DataFrame:
     pd.DataFrame
         DataFrame with selected columns
     """
-    final_columns = [
+    desired_columns = [
         'Primary Key',
         'Address',
         'City',
@@ -219,7 +294,18 @@ def select_final_columns(df: pd.DataFrame) -> pd.DataFrame:
         'Original Balance (Loans)',
         'Date of Birth'
     ]
-    return df[final_columns].copy()
+    
+    # Only select columns that actually exist
+    available_columns = [col for col in desired_columns if col in df.columns]
+    missing_columns = [col for col in desired_columns if col not in df.columns]
+    
+    if missing_columns:
+        print(f"Warning: Missing columns in output: {missing_columns}")
+        print(f"Available columns: {list(df.columns)}")
+    
+    print(f"Selecting {len(available_columns)} columns for output: {available_columns}")
+    
+    return df[available_columns].copy()
 
 
 def process_current_account_data() -> pd.DataFrame:
@@ -233,8 +319,19 @@ def process_current_account_data() -> pd.DataFrame:
     """
     print("Fetching current account data...")
     
-    # Fetch current data using cdutils
-    data_current = cdutils.acct_file_creation.core.query_df_on_date(config.CURRENT_DATA_DATE)
+    # Determine the date to use
+    current_date = config.CURRENT_DATA_DATE or datetime.now()
+    print(f"Using date: {current_date}")
+    
+    # Use the data cleaning pipeline to get complete account data with addresses and person info
+    data_current = src.accubranch.data_cleaning_main.run_data_cleaning_pipeline(
+        as_of_date=current_date,
+        data_source="production",
+        exclude_org_types=config.EXCLUDE_ORG_TYPES
+    )
+    
+    print(f"Retrieved {len(data_current)} records")
+    print(f"Available columns: {list(data_current.columns)}")
     
     print("Applying data transformations...")
     
@@ -242,16 +339,28 @@ def process_current_account_data() -> pd.DataFrame:
     data_current = create_primary_key(data_current)
     data_current = create_address_field(data_current)
     
-    # Filter to target account types
-    data_current = data_current[
-        data_current['mjaccttypcd'].isin(config.ALL_TARGET_ACCOUNT_TYPES)
-    ].copy()
+    # Filter to target account types (if column exists)
+    # Note: data_cleaning_main may have already done some filtering
+    if 'mjaccttypcd' in data_current.columns:
+        initial_count = len(data_current)
+        data_current = data_current[
+            data_current['mjaccttypcd'].isin(config.ALL_TARGET_ACCOUNT_TYPES)
+        ].copy()
+        print(f"Filtered to target account types: {len(data_current)} of {initial_count} records")
+    else:
+        print("Warning: mjaccttypcd column not found, skipping account type filtering")
     
-    # Exclude ACH Manager products
-    data_current = data_current[
-        ~data_current['currmiaccttypcd'].isin(config.EXCLUDE_ACCOUNT_TYPES)
-    ].copy()
+    # Exclude ACH Manager products (if column exists)
+    if 'currmiaccttypcd' in data_current.columns:
+        initial_count = len(data_current)
+        data_current = data_current[
+            ~data_current['currmiaccttypcd'].isin(config.EXCLUDE_ACCOUNT_TYPES)
+        ].copy()
+        print(f"Excluded ACH Manager products: {len(data_current)} of {initial_count} records")
+    else:
+        print("Warning: currmiaccttypcd column not found, skipping ACH Manager exclusion")
     
+    # Apply business logic transformations
     data_current = apply_account_type_mapping(data_current)
     data_current = apply_loan_amount_logic(data_current)
     data_current = create_business_individual_flag(data_current)
@@ -279,7 +388,12 @@ def process_historical_data() -> pd.DataFrame:
         print(f"Processing year {year_config['year']}...")
         year_date = datetime.strptime(year_config['date'], '%Y-%m-%d')
         
-        year_data = cdutils.acct_file_creation.core.query_df_on_date(year_date)
+        # Use the data cleaning pipeline for historical data too
+        year_data = src.accubranch.data_cleaning_main.run_data_cleaning_pipeline(
+            as_of_date=year_date,
+            data_source="production", 
+            exclude_org_types=config.EXCLUDE_ORG_TYPES
+        )
         
         dataframes.append(year_data)
         dates.append(year_config['date'])

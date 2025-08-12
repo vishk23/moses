@@ -38,6 +38,20 @@ class TestAccubranchCore:
         assert result_df.iloc[0]['Primary Key'] == 'P67890'
         assert result_df.iloc[1]['Primary Key'] == 'O12345'
         assert result_df.iloc[2]['Primary Key'] == 'P11111'
+        
+    def test_create_primary_key_missing_columns(self):
+        """Test primary key creation when required columns are missing."""
+        # Create test data without required columns
+        test_df = pd.DataFrame({
+            'other_column': [1, 2, 3]
+        })
+        
+        # Apply function
+        result_df = accubranch_core.create_primary_key(test_df)
+        
+        # Check that Primary Key column exists with default value
+        assert 'Primary Key' in result_df.columns
+        assert all(result_df['Primary Key'] == 'UNKNOWN')
     
     def test_map_account_type(self):
         """Test account type mapping functionality."""
