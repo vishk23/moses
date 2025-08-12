@@ -9,7 +9,7 @@ The CRE Reporting Board project generates comprehensive Commercial Real Estate p
 Business logic:
 - Data ingestion: Queries COCC data mart tables including WH_ACCTCOMMON, WH_LOANS, WH_ACCTLOAN, WH_PROP, and WH_PROP2 as of specific reporting dates (e.g., June 30, 2025).
 - Portfolio filtering: Excludes SWAP Exposure (CM09) and ACH Manager (CI07) products, focuses on CRE, C&I, and HOA loan categories.
-- Property consolidation: For loans with multiple properties, selects the property type with highest total appraised value per account to ensure one-to-one loan-to-property relationships.
+- Property consolidation: For loans with multiple properties, it groups by property type and sums up appraised value. The property type with highest combined appraised value is the type that is applied to that particular loan.
 - Call code categorization: Groups FDIC call codes into business-meaningful categories (1-4 Family Construction, Construction, I-CRE, C&I, etc.) for reporting consistency.
 - Construction loan identification: Enhanced filtering for construction loans includes both Cleaned Call Code = 'Construction' OR specific account types (CM07, CM08, CM79, CM81, ML02) to capture all construction-related lending.
 - Property type grouping: Consolidates detailed property descriptions into standardized categories (Retail, Industrial, Hospitality, Mixed Use, etc.) for analysis.
@@ -38,18 +38,16 @@ Business logic:
 - Alteryx for CML Variable Rate analysis (legacy component)
 - Output: Multiple Excel files feeding PowerBI dashboard
 
-## Project Status
-- [x] (2025-02-15) Pipeline overhaul and consolidation [v2.0.0-prod]
-   - Rebuilt complete processing pipeline for easier maintenance
-   - Integrated CML Variable Rate logic into main pipeline
-   - Updated paths post-drive conversion
-- [x] (2025-02-15) Interest rate change analysis integration [v2.0.1-prod]
-   - Eliminated separate Alteryx workflow for CML Variable Rate
-   - Added rate change vs maturity flag logic directly in cre_loader.xlsx
-   - Enhanced PowerBI visualization capabilities for interest rate analysis
-- [x] (2025-08-11) Template compliance and version management
-   - Updated to follow monorepo template structure
-   - Added version tracking and standardized configuration
+## Project Status - Operational
+
+- [x] Discovery
+- [x] Develop data pipelines
+- [x] Build Power BI dashboard for visualization
+- [x] Testing & Validation
+- [x] Adjust property type logic to group by type and sum instead of take the single highest appraised value
+- [x] Investigate missing construction minor
+    - Revised logic for construction breakdown to match monthly construction report
+- [x] Adjust logic on interest rate change vs hard maturity
 
 Key
 - [x] - Completed
@@ -67,13 +65,6 @@ Key
 - `output/icre_balances.xlsx` — I-CRE portfolio balance trends by year
 - `output/total_cml.xlsx` — CML totals by call code categories
 - `dashboard/CRE_Dashboard.pbix` — PowerBI dashboard for board presentations
-- `bin/CML VAR with Rate Change_v2.yxmd` — Alteryx workflow (legacy)
-
-## Documentation
-- This README: project overview, business logic, and usage guide
-- [Technical Documentation](./Technical/technical_doc.md): Comprehensive technical details, filters, calculations, and changelog
-- [Daily Notes](./Technical/daily_notes.md): Development activities, technical decisions, and ongoing updates
-- Inline code documentation for complex business rules and data transformations
 
 ---
 
@@ -110,9 +101,9 @@ python -m src.main
 - `output/icre.xlsx` — Current I-CRE portfolio details
 - `output/construction.xlsx` — Construction loan portfolio analysis (includes Cleaned Call Code = 'Construction' OR account types CM07, CM08, CM79, CM81, ML02)
 
-**Schedule:** Semi-annual execution (upon request from Tim Chaves/Linda Sternfelt)
+**Schedule:** Semi-annual execution (upon request)
 
-**Validation:** Reconcile total CML figures with Federal Call Report numbers using provided accounting worksheets
+**Validation:** Reconcile total CML figures with FDIC Call Report numbers using provided accounting worksheets
 
 ---
 
