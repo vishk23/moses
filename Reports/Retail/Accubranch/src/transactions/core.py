@@ -177,14 +177,18 @@ def process_transaction_data(
     
     print(f"Fetching transaction data from {start_date.date()} to {end_date.date()}...")
     
-    # Fetch transaction data
-    transaction_result = src.transactions.fetch_data.fetch_transactions_window(
+    # Fetch transaction data with branch information
+    transaction_result = src.transactions.fetch_data.fetch_transactions_window_test(
         start_date=start_date, 
         end_date=end_date
     )
     rtxn = transaction_result['query'].copy()
+    cashboxrtxn = transaction_result['wh_cashboxrtxn'].copy()
+    wh_org = transaction_result['wh_org'].copy()
     
     print(f"Retrieved {len(rtxn)} transaction records")
+    print(f"Retrieved {len(cashboxrtxn)} cashbox transaction records")
+    print(f"Retrieved {len(wh_org)} organization records")
     
     # Fetch account data for merging
     print("Fetching account data for merging...")
@@ -196,6 +200,30 @@ def process_transaction_data(
     # Merge transaction and account data
     print("Merging transaction and account data...")
     merged_rtxn = pd.merge(rtxn, acct_data, on='acctnbr', how='left')
+    
+    # Add branch information via WH_CASHBOXRTXN -> WH_ORG join
+    print("Adding branch information from WH_ORG...")
+    
+    # First join: transactions -> WH_CASHBOXRTXN on branchorgnbr
+    merged_rtxn = pd.merge(
+        merged_rtxn, 
+        cashboxrtxn[['branchorgnbr', 'orgnbr']], 
+        left_on='branchorgnbr', 
+        right_on='branchorgnbr', 
+        how='left'
+    )
+    
+    # Second join: result -> WH_ORG on orgnbr to get orgname (branch name)
+    merged_rtxn = pd.merge(
+        merged_rtxn, 
+        wh_org[['orgnbr', 'orgname']], 
+        left_on='orgnbr', 
+        right_on='orgnbr', 
+        how='left'
+    )
+    
+    # Rename orgname to branchname for compatibility with existing transformations
+    merged_rtxn = merged_rtxn.rename(columns={'orgname': 'branchname'})
     
     print("Applying data transformations...")
     

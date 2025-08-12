@@ -1,6 +1,7 @@
 # Database query - Transactions
 
 import cdutils.database.connect # type: ignore
+import cdutils.deduplication # type: ignore
 from sqlalchemy import text # type: ignore
 from datetime import datetime, timedelta
 from typing import Optional
@@ -36,10 +37,34 @@ def fetch_transactions_window(
         ORDER BY RUNDATE DESC
     """)
 
+    # Add WH_CASHBOXRTXN query for branch information
+    cashboxrtxn_query = text("""
+        SELECT 
+            *
+        FROM
+            COCCDM.WH_CASHBOXRTXN
+    """)
+
+    # Add WH_ORG query for branch names
+    wh_org_query = text("""
+        SELECT 
+            *
+        FROM
+            OSIBANK.WH_ORG
+    """)
+
     queries = [
-        {'key': 'query','sql': query,'engine':2}
+        {'key': 'query','sql': query,'engine':2},
+        {'key': 'wh_cashboxrtxn','sql': cashboxrtxn_query,'engine':2},
+        {'key': 'wh_org','sql': wh_org_query,'engine':1}
     ]
     data = cdutils.database.connect.retrieve_data(queries)
+    
+    # Deduplicate WH_ORG data
+    if 'wh_org' in data:
+        dedupe_list = [{'df': data['wh_org'], 'field': 'orgnbr'}]
+        data['wh_org'] = cdutils.deduplication.dedupe(dedupe_list)
+    
     return data
 
 def fetch_transactions_window_test(
@@ -74,10 +99,34 @@ def fetch_transactions_window_test(
         FETCH FIRST 100000 ROWS ONLY
     """)
 
+    # Add WH_CASHBOXRTXN query for branch information
+    cashboxrtxn_query = text("""
+        SELECT 
+            *
+        FROM
+            COCCDM.WH_CASHBOXRTXN
+    """)
+
+    # Add WH_ORG query for branch names
+    wh_org_query = text("""
+        SELECT 
+            *
+        FROM
+            OSIBANK.WH_ORG
+    """)
+
     queries = [
-        {'key': 'query','sql': query,'engine':2}
+        {'key': 'query','sql': query,'engine':2},
+        {'key': 'wh_cashboxrtxn','sql': cashboxrtxn_query,'engine':2},
+        {'key': 'wh_org','sql': wh_org_query,'engine':1}
     ]
     data = cdutils.database.connect.retrieve_data(queries)
+    
+    # Deduplicate WH_ORG data
+    if 'wh_org' in data:
+        dedupe_list = [{'df': data['wh_org'], 'field': 'orgnbr'}]
+        data['wh_org'] = cdutils.deduplication.dedupe(dedupe_list)
+    
     return data
 
 ### Fetching account data
