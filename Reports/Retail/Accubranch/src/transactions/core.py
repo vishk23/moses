@@ -215,7 +215,8 @@ def process_transaction_data(
         merged_rtxn, 
         cashboxrtxn, 
         on='cashboxnbr', 
-        how='left'
+        how='left',
+        suffixes=('', '_cashbox')
     )
     
     # Second join: result -> WH_ORG on branchorgnbr=orgnbr to get orgname (branch name)
@@ -230,6 +231,14 @@ def process_transaction_data(
     
     # Rename orgname to branchname for compatibility with existing transformations
     merged_rtxn = merged_rtxn.rename(columns={'orgname': 'branchname'})
+    
+    # Handle actdatetime column - use the one from cashbox if main transaction doesn't have it
+    if 'actdatetime' not in merged_rtxn.columns and 'actdatetime_cashbox' in merged_rtxn.columns:
+        merged_rtxn['actdatetime'] = merged_rtxn['actdatetime_cashbox']
+    elif 'actdatetime' not in merged_rtxn.columns:
+        # If neither exists, we need to handle this case
+        print("Warning: No actdatetime column found in transaction or cashbox data")
+        merged_rtxn['actdatetime'] = pd.NaT  # Not a Time - pandas null for datetime
     
     print("Applying data transformations...")
     
