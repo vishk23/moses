@@ -7,15 +7,6 @@ import re
 import src.config
 def extract_standardized_report_data(tree, report_title):
     """
-    Extract report data frdef process_xls_files():
-    """
-    Process up to 3 HTML files (saved as .xls) from input folder and return dict of standardized dataframes.
-    
-    Returns:
-        dict: Dictionary with dataframe names as keys and standardized pandas DataFrames as values
-              All DataFrames have consistent columns regardless of source report type
-    """tree and convert to standardized pandas DataFrame.
-    
     Creates a consistent DataFrame structure regardless of the source report type:
     - customer_name: Name of the customer
     - item_name: Name/description of the item (covenant or tickler)
