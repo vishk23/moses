@@ -127,3 +127,6 @@ The sync utility properly handles different scenarios:
 ```Powershell
 $env:REPORT_ENV="prod"
 ```
+
+### Daily Reports
+python testing/run_reports.py --name "R360"; python testing/run_reports.py --name "Daily Deposit Update"; python testing/run_reports.py --name "Dealer Reserve Recon"; python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"
