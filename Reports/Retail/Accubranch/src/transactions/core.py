@@ -223,10 +223,11 @@ def process_transaction_data(
     print("Second join: WH_CASHBOXRTXN -> WH_ORG on branchorgnbr=orgnbr...")
     merged_rtxn = pd.merge(
         merged_rtxn, 
-        wh_org[['orgnbr', 'orgname']], 
+        wh_org, 
         left_on='branchorgnbr', 
         right_on='orgnbr', 
-        how='left'
+        how='left',
+        suffixes=('','_org')
     )
     
     # Rename orgname to branchname for compatibility with existing transformations
