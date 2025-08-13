@@ -35,7 +35,8 @@ TRANSACTION_END_DATE = datetime(2025, 6, 30)
 
 # File paths
 ACCOUNT_OUTPUT_FILE = OUTPUT_DIR / "account_data.csv"
-TRANSACTION_OUTPUT_FILE = OUTPUT_DIR / "transaction.csv"
+# TRANSACTION_OUTPUT_FILE = OUTPUT_DIR / "transaction.csv"
+TRANSACTION_OUTPUT_FILE = OUTPUT_DIR / "transaction.parquet"
 FIVE_YR_HISTORY_FILE = OUTPUT_DIR / "five_yr_history.csv"
 
 # Email configuration

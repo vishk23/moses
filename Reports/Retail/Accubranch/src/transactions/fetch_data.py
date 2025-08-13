@@ -144,7 +144,6 @@ def fetch_account_data(specified_date: Optional[datetime] = None):
     wh_acctcommon = text(f"""
     SELECT
         a.ACCTNBR,
-        a.BRANCHNAME,
         a.PRIMARYOWNERCITY,
         a.PRIMARYOWNERSTATE,
         a.TAXRPTFORPERSNBR,

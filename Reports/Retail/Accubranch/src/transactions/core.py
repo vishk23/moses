@@ -251,5 +251,6 @@ def process_transaction_data(
     
     # Save to output file
     print(f"Saving transaction data to {config.TRANSACTION_OUTPUT_FILE}")
-    merged_rtxn.to_csv(config.TRANSACTION_OUTPUT_FILE, index=False)
+    # merged_rtxn.to_csv(config.TRANSACTION_OUTPUT_FILE, index=False)
+    merged_rtxn.to_parquet(config.TRANSACTION_OUTPUT_FILE, index=False)
     print(f"✓ Transaction data saved: {len(merged_rtxn)} records")
