@@ -247,7 +247,7 @@ def process_transaction_data(
     merged_rtxn = parse_datetime_fields(merged_rtxn)
     merged_rtxn = apply_account_type_mapping(merged_rtxn)
     merged_rtxn = apply_column_renaming(merged_rtxn)
-    merged_rtxn = select_final_columns(merged_rtxn)
+    # merged_rtxn = select_final_columns(merged_rtxn)
     
     # Save to output file
     print(f"Saving transaction data to {config.TRANSACTION_OUTPUT_FILE}")
