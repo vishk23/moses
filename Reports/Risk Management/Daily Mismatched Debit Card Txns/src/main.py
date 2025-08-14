@@ -60,22 +60,21 @@ def main():
         encoding='latin1'
     )
 
-    input1 = df.copy()
-    input2 = df.copy()
+    df['Card and Acct and Tran Amt'] = df['Card Nbr'] + df['Acct Nbr'] + df['Trans Amt']
 
-    input1 = input1[input1['Card Nbr'].str.contains('5', na=False)]
-    input1['Card and Acct and Tran Amt'] = input1['Card Nbr'] + input1['Acct Nbr'] + input1['Trans Amt']
+    # locating row index that starts Records On Fiserv ACH File but not ON AT_CACT File which separates top half of the report from bottom half
+    idx = df[df['RetRefNbr'].str.contains('t not ON AT_', case=False, na=False)].index[0]
 
-    summary_df = (
-    input1.groupby('Card and Acct and Tran Amt')
-    .size()
-    .reset_index(name="Count")
-)
+    top = df.loc[:idx]
+    top = top[top['Card Nbr'].str.contains('5', na=False)]
+    bottom = df.loc[idx:]
+    bottom = bottom[bottom['Card Nbr'].str.contains('5', na=False)]
 
-    summary_df = summary_df[summary_df['Count'].isin([1, 3, 5, 7, 9])]
-
-    merged_df = pd.merge(summary_df, input1, on="Card and Acct and Tran Amt", how="inner")
-    merged_df = merged_df[['Card Nbr', 'Acct Nbr', 'Trans Amt', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
+    # now we just find unique occurances of Card and Acct and Tran Amt (occurances from either dataframe that isn't in the other one)
+    unique_in_top = top[~top['Card and Acct and Tran Amt'].isin(bottom['Card and Acct and Tran Amt'])]
+    unique_in_bottom = bottom[~bottom['Card and Acct and Tran Amt'].isin(top['Card and Acct and Tran Amt'])]
+    result = pd.concat([unique_in_top, unique_in_bottom])
+    result = result[['Card Nbr', 'Acct Nbr', 'Trans Amt', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
 
     field_widths = [120, 10]
     field_names = ['Not Needed', 'Date']
@@ -87,23 +86,23 @@ def main():
     )
     input2['RecordID'] = pd.Series(range(1, len(input2) + 1), dtype='int32')
     
+    # adding date to result dataframe
     date_str = str(input2.at[1, 'Date']).strip()
-    merged_df['Date'] = date_str
-    merged_df['Source'] = "co_vsus re-run"
+    result['Date'] = date_str
+    result['Source'] = "co_vsus re-run"
     
-    merged_df['Trans Amt'] = pd.to_numeric(merged_df['Trans Amt'], errors="coerce")
-    merged_df['Trans Amt'] = np.where(merged_df['RTXN Typ'] == "PWTH", 0 - merged_df['Trans Amt'], merged_df['Trans Amt'])
+    result['Trans Amt'] = pd.to_numeric(result['Trans Amt'], errors="coerce")
+    result['Trans Amt'] = np.where(result['RTXN Typ'] == "PWTH", 0 - result['Trans Amt'], result['Trans Amt'])
+    result = result[['Card Nbr', 'Date', 'Source', 'Trans Amt', 'Acct Nbr', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
 
-    merged_df = merged_df[['Card Nbr', 'Date', 'Source', 'Trans Amt', 'Acct Nbr', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
 
-
-    cardnbrs = list(merged_df['Card Nbr'])
-    acctnbrs = list(merged_df['Acct Nbr'])
-    amount = list(merged_df['Trans Amt'])
+    cardnbrs = list(result['Card Nbr'])
+    acctnbrs = list(result['Acct Nbr'])
+    amount = list(result['Trans Amt'])
     deb_or_cred = []
-    merchants = list(merged_df['Merchant'])
+    merchants = list(result['Merchant'])
 
-    for i in range(len(merged_df)):
+    for i in range(len(result)):
 
         # left padding acctnbrs with 0s
         while len(acctnbrs[i]) < 12:
