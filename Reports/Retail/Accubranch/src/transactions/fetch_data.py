@@ -37,14 +37,6 @@ def fetch_transactions_window(
         ORDER BY RUNDATE DESC
     """)
 
-    # Add WH_CASHBOXRTXN query for branch information
-    cashboxrtxn_query = text("""
-        SELECT 
-            *
-        FROM
-            COCCDM.WH_CASHBOXRTXN
-    """)
-
     # Add WH_ORG query for branch names
     wh_org_query = text("""
         SELECT 
@@ -55,7 +47,6 @@ def fetch_transactions_window(
 
     queries = [
         {'key': 'query','sql': query,'engine':2},
-        {'key': 'wh_cashboxrtxn','sql': cashboxrtxn_query,'engine':2},
         {'key': 'wh_org','sql': wh_org_query,'engine':1}
     ]
     data = cdutils.database.connect.retrieve_data(queries)
@@ -99,14 +90,6 @@ def fetch_transactions_window_test(
         FETCH FIRST 100000 ROWS ONLY
     """)
 
-    # Add WH_CASHBOXRTXN query for branch information
-    cashboxrtxn_query = text("""
-        SELECT 
-            *
-        FROM
-            COCCDM.WH_CASHBOXRTXN
-    """)
-
     # Add WH_ORG query for branch names
     wh_org_query = text("""
         SELECT 
@@ -117,7 +100,6 @@ def fetch_transactions_window_test(
 
     queries = [
         {'key': 'query','sql': query,'engine':2},
-        {'key': 'wh_cashboxrtxn','sql': cashboxrtxn_query,'engine':2},
         {'key': 'wh_org','sql': wh_org_query,'engine':1}
     ]
     data = cdutils.database.connect.retrieve_data(queries)

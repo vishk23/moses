@@ -34,10 +34,10 @@ TRANSACTION_START_DATE = datetime(2024, 6, 30)
 TRANSACTION_END_DATE = datetime(2025, 6, 30)
 
 # File paths
-ACCOUNT_OUTPUT_FILE = OUTPUT_DIR / "account_data.csv"
+ACCOUNT_OUTPUT_FILE = OUTPUT_DIR / "account_data.parquet"
 # TRANSACTION_OUTPUT_FILE = OUTPUT_DIR / "transaction.csv"
 TRANSACTION_OUTPUT_FILE = OUTPUT_DIR / "transaction.parquet"
-FIVE_YR_HISTORY_FILE = OUTPUT_DIR / "five_yr_history.csv"
+FIVE_YR_HISTORY_FILE = OUTPUT_DIR / "five_yr_history.parquet"
 
 # Email configuration
 if ENVIRONMENT == 'prod':

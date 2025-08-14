@@ -123,7 +123,7 @@ def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
     return df.rename(columns={
-        'branchname': 'Branch of Transaction',
+        'orgname': 'Branch of Transaction',
         'rtxntypdesc': 'Type of Transaction',
         'rtxnsourcecd': 'Type of Teller'
     })
@@ -178,16 +178,14 @@ def process_transaction_data(
     print(f"Fetching transaction data from {start_date.date()} to {end_date.date()}...")
     
     # Fetch transaction data with branch information
-    transaction_result = src.transactions.fetch_data.fetch_transactions_window_test(
+    transaction_result = src.transactions.fetch_data.fetch_transactions_window(
         start_date=start_date, 
         end_date=end_date
     )
     rtxn = transaction_result['query'].copy()
-    cashboxrtxn = transaction_result['wh_cashboxrtxn'].copy()
     wh_org = transaction_result['wh_org'].copy()
     
     print(f"Retrieved {len(rtxn)} transaction records")
-    print(f"Retrieved {len(cashboxrtxn)} cashbox transaction records")
     print(f"Retrieved {len(wh_org)} organization records")
     
     # Fetch account data for merging
@@ -201,44 +199,21 @@ def process_transaction_data(
     print("Merging transaction and account data...")
     merged_rtxn = pd.merge(rtxn, acct_data, on='acctnbr', how='left')
     
-    # Add branch information via WH_CASHBOXRTXN -> WH_ORG join
+    # Add branch information via direct join to WH_ORG
     print("Adding branch information from WH_ORG...")
     
-    # Debug: Print column names to identify the issue
-    print("WH_CASHBOXRTXN columns:", list(cashboxrtxn.columns))
-    print("WH_ORG columns:", list(wh_org.columns))
-    print("Transaction columns (sample):", list(merged_rtxn.columns)[:10])
-    
-    # First join: transactions -> WH_CASHBOXRTXN on cashboxnbr
-    print("First join: transactions -> WH_CASHBOXRTXN on cashboxnbr...")
-    merged_rtxn = pd.merge(
-        merged_rtxn, 
-        cashboxrtxn, 
-        on='cashboxnbr', 
-        how='left',
-        suffixes=('', '_cashbox')
-    )
-    
-    # Second join: result -> WH_ORG on branchorgnbr=orgnbr to get orgname (branch name)
-    print("Second join: WH_CASHBOXRTXN -> WH_ORG on branchorgnbr=orgnbr...")
+    # Direct join: transactions -> WH_ORG on branchorgnbr=orgnbr to get orgname (branch name)
     merged_rtxn = pd.merge(
         merged_rtxn, 
         wh_org[['orgnbr', 'orgname']], 
-        left_on='branchorgnbr', 
-        right_on='orgnbr', 
+        on='orgnbr', 
         how='left'
     )
     
-    # Rename orgname to branchname for compatibility with existing transformations
-    merged_rtxn = merged_rtxn.rename(columns={'orgname': 'branchname'})
-    
-    # Handle actdatetime column - use the one from cashbox if main transaction doesn't have it
-    if 'actdatetime' not in merged_rtxn.columns and 'actdatetime_cashbox' in merged_rtxn.columns:
-        merged_rtxn['actdatetime'] = merged_rtxn['actdatetime_cashbox']
-    elif 'actdatetime' not in merged_rtxn.columns:
-        # If neither exists, we need to handle this case
-        print("Warning: No actdatetime column found in transaction or cashbox data")
-        merged_rtxn['actdatetime'] = pd.NaT  # Not a Time - pandas null for datetime
+    # Handle actdatetime column - ensure it exists for downstream processing
+    if 'actdatetime' not in merged_rtxn.columns:
+        print("Warning: No 'actdatetime' column found in transaction data. Time fields will be null.")
+        merged_rtxn['actdatetime'] = pd.NaT  # Add column if missing to prevent downstream errors
     
     print("Applying data transformations...")
     
@@ -247,10 +222,9 @@ def process_transaction_data(
     merged_rtxn = parse_datetime_fields(merged_rtxn)
     merged_rtxn = apply_account_type_mapping(merged_rtxn)
     merged_rtxn = apply_column_renaming(merged_rtxn)
-    # merged_rtxn = select_final_columns(merged_rtxn)
+    merged_rtxn = select_final_columns(merged_rtxn)
     
     # Save to output file
     print(f"Saving transaction data to {config.TRANSACTION_OUTPUT_FILE}")
-    # merged_rtxn.to_csv(config.TRANSACTION_OUTPUT_FILE, index=False)
     merged_rtxn.to_parquet(config.TRANSACTION_OUTPUT_FILE, index=False)
     print(f"✓ Transaction data saved: {len(merged_rtxn)} records")
