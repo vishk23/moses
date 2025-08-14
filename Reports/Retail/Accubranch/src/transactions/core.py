@@ -210,9 +210,6 @@ def process_transaction_data(
         how='left'
     )
     
-    # Rename orgname to branchname for compatibility with existing transformations
-    merged_rtxn = merged_rtxn.rename(columns={'orgname': 'branchname'})
-    
     # Handle actdatetime column - ensure it exists for downstream processing
     if 'actdatetime' not in merged_rtxn.columns:
         print("Warning: No 'actdatetime' column found in transaction data. Time fields will be null.")
