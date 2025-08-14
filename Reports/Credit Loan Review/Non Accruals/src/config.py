@@ -24,7 +24,7 @@ PROD_READY = True
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-DA1\Home\Share\Data & Analytics Initiatives\Project Management\Credit_Loan_Review\Resolution Committee Automation\Production") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"\\00-DA1\Home\Share\Data & Analytics Initiatives\Project Management\Credit_Loan_Review\Resolution Committee Automation\Non Accruals\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 
 # Email Recipients

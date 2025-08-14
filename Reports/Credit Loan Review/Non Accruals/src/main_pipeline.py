@@ -3,11 +3,13 @@ import numpy as np # type: ignore
 
 def main_pipeline(effdate, acctcommon, acctloan):
         
-        # ------------ following alteryx workflow ------------ 
+        # ------------ following the alteryx workflow ------------ 
         
         acctcommon = acctcommon[acctcommon['effdate'] == effdate]
         acctcommon.loc[acctcommon['currmiaccttypcd'].isin(['CM15', 'CM16']), 'mjaccttypcd'] = 'CNS'
 
+        acctcommon['acctnbr'] = acctcommon['acctnbr'].astype(str)
+        acctloan['acctnbr'] = acctloan['acctnbr'].astype(str)
         df_for_other_pipeline = pd.merge(acctcommon, acctloan, on='acctnbr', how='left')
         
         npfm_rows = acctcommon[acctcommon['curracctstatcd'] == "NPFM"]
@@ -15,9 +17,7 @@ def main_pipeline(effdate, acctcommon, acctloan):
         merged1 = pd.merge(npfm_rows, acctloan, on='acctnbr', how='left')
 
         merged1['acctnbr'] = merged1['acctnbr'].astype(str)
-
         merged1['Days Past Due'] = (merged1['effdate'] - merged1['currduedate']).dt.days
-        
         merged1['Days Past Due'] = np.where(merged1['Days Past Due'] < 0, 0, merged1['Days Past Due'])
 
         merged1 = merged1.rename(columns={
@@ -61,8 +61,9 @@ def main_pipeline(effdate, acctcommon, acctloan):
 
         merged12 = merged1[merged1['mjaccttypcd'].isin(['CNS'])]
 
-        merged12T = merged12[merged12['Product Name'] == 'Unsecured HEAT Loans'].sort_values(by='Customer Name')
-        merged12F = merged12[merged12['Product Name'] != 'Unsecured HEAT Loans']
+        merged12_productNames = ['Unsecured HEAT Loans', 'Unsecured Loans']
+        merged12T = merged12[merged12['Product Name'].isin(merged12_productNames)].sort_values(by='Customer Name')
+        merged12F = merged12[~merged12['Product Name'].isin(merged12_productNames)]
 
         new_row = pd.DataFrame([{
             'Current Balance': merged12T['Current Balance'].sum(),
