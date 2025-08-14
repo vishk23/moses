@@ -123,7 +123,7 @@ def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
     return df.rename(columns={
-        'branchname': 'Branch of Transaction',
+        'orgname': 'Branch of Transaction',
         'rtxntypdesc': 'Type of Transaction',
         'rtxnsourcecd': 'Type of Teller'
     })
@@ -206,8 +206,7 @@ def process_transaction_data(
     merged_rtxn = pd.merge(
         merged_rtxn, 
         wh_org[['orgnbr', 'orgname']], 
-        left_on='branchorgnbr', 
-        right_on='orgnbr', 
+        on='orgnbr', 
         how='left'
     )
     
