@@ -178,7 +178,7 @@ def process_transaction_data(
     print(f"Fetching transaction data from {start_date.date()} to {end_date.date()}...")
     
     # Fetch transaction data with branch information
-    transaction_result = src.transactions.fetch_data.fetch_transactions_window_test(
+    transaction_result = src.transactions.fetch_data.fetch_transactions_window(
         start_date=start_date, 
         end_date=end_date
     )
