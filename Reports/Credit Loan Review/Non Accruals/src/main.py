@@ -39,6 +39,19 @@ def main():
     curr_acctcommon, prior_acctcommon = data2['wh_acctcommon'], data2['wh_acctcommon2']
     curr_acctloan, prior_acctloan = data2['wh_acctloan'], data2['wh_acctloan2']
 
+
+    totalpayments = src.get_total_past_due.isolate_total_past_due(data['totalpaymentsdue'])
+
+    curr_acctloan['acctnbr'] = curr_acctloan['acctnbr'].astype(str)
+    prior_acctloan['acctnbr'] = prior_acctloan['acctnbr'].astype(str)
+    totalpayments['acctnbr'] = totalpayments['acctnbr'].astype(str)
+
+    curr_acctloan = pd.merge(curr_acctloan, totalpayments, how='left', on='acctnbr')
+    curr_acctloan['totalpaymentsdue'] = curr_acctloan['totalpaymentsdue'].fillna(0)
+    prior_acctloan = pd.merge(prior_acctloan, totalpayments, how='left', on='acctnbr')
+    prior_acctloan['totalpaymentsdue'] = prior_acctloan['totalpaymentsdue'].fillna(0)
+
+
     # generating reports for most current month and previous month
     current_report, current_report_raw, df_for_other_pipeline = src.main_pipeline.main_pipeline(effdate1, curr_acctcommon, curr_acctloan)
     prior_month_report, x, y = src.main_pipeline.main_pipeline(effdate2, prior_acctcommon, prior_acctloan)
@@ -64,7 +77,8 @@ def main():
     df3 = df3[df3['product'] == "Repossessed Collateral"]
 
     # Performing reconciliation (new_additions, removed, and repo collateral)
-    # right side only
+    # COMPARING THE CURRENT REPORT (right side) WITH THE PRIOR MONTH'S REPORT (left side)
+    # right side only (only rows that are present in the current report and not the previous month's report)
     new_additions = current_report[~current_report['Account Number'].isin(prior_month_report['Account Number'])] # Reconciliation section for new Non-Accrual loans
     new_additions = new_additions.drop(columns=['Current Balance', 'Charged Off'])
     new_additions.insert(6, 'Total Change', new_additions['Net Balance'])
@@ -76,7 +90,8 @@ def main():
         }])
     new_additions = pd.concat([title_row, new_additions], ignore_index=True)
     new_additions = new_additions[["Product Name", "Account Number", "Customer Name", "Responsibility Officer", "Days Past Due", "Net Balance", "Total Change", "COUNT", "Risk", "Non Accrual", "Total Amount Due", "Next Payment Due Date", "TagType"]]
-    # the rest
+    
+    # the rest (everything that was present the previous month's report but not the current one)
     left_only = prior_month_report[~prior_month_report['Account Number'].isin(current_report['Account Number'])]
     left_only = left_only.drop(columns=['Current Balance', 'Charged Off'])
     left_only.insert(6, 'Total Change', left_only['Net Balance'] * -1)
@@ -89,19 +104,9 @@ def main():
         }])
     removed = pd.concat([title_row, removed], ignore_index=True)
     removed = removed[["Product Name", "Account Number", "Customer Name", "Responsibility Officer", "Days Past Due", "Net Balance", "Total Change", "COUNT", "Risk", "Non Accrual", "Total Amount Due", "Next Payment Due Date", "TagType"]]
+    
     # reposessed collateral
-
-    totalpayments = src.get_total_past_due.isolate_total_past_due(data['totalpaymentsdue'])
-
     repo = left_only[left_only['Account Number'].isin(df3['Account Number'])].copy() # Previously on NonAccrual and now has Repo Collateral as property type
-    repo['Account Number'] = repo['Account Number'].astype(str)
-    totalpayments['Account Number'] = totalpayments['Account Number'].astype(str)
-    repo = pd.merge(repo, totalpayments, on='Account Number', how='left')
-    repo.drop('Total Amount Due', axis=1, inplace=True)
-    repo = repo.rename(columns={
-        'totaldue': 'Total Amount Due',
-        })
-
     repo.loc[:, 'Product Name'] = 'Repossessed Collateral'
     title_row = pd.DataFrame([{
             'Customer Name': 'INTO OTHER REPO COLLATERAL',
