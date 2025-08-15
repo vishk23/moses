@@ -169,7 +169,7 @@ def apply_loan_amount_logic(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     
     # Check for different possible loan amount column names
-    loan_amount_cols = ['orig_ttl_loan_amt', 'origbal', 'original_balance', 'loan_amount']
+    loan_amount_cols = ['orig_ttl_loan_amt']
     loan_col = None
     
     for col in loan_amount_cols:
@@ -240,7 +240,6 @@ def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
         'branchname': 'Branch Associated',
         'contractdate': 'Date Account Opened',
         'Net Balance': 'Current Balance',
-        'orig_ttl_loan_amt': 'Original Balance (Loans)',
         'datebirth': 'Date of Birth',
         # Add potential alternative column names from cdutils
         'city': 'City',
@@ -248,8 +247,6 @@ def apply_column_renaming(df: pd.DataFrame) -> pd.DataFrame:
         'zip': 'Zip',
         'branch': 'Branch Associated',
         'opendate': 'Date Account Opened',
-        'balance': 'Current Balance',
-        'origbal': 'Original Balance (Loans)',
         'dob': 'Date of Birth'
     }
     
@@ -415,13 +412,13 @@ def process_account_data():
     
     # Save current account data
     print(f"Saving account data to {config.ACCOUNT_OUTPUT_FILE}")
-    current_data.to_csv(config.ACCOUNT_OUTPUT_FILE, index=False)
+    current_data.to_parquet(config.ACCOUNT_OUTPUT_FILE, index=False)
     print(f"✓ Account data saved: {len(current_data)} records")
     
     # Process historical data
-    historical_data = process_historical_data()
+    historical_data = process_historical_data().reset_index()
     
     # Save historical data
     print(f"Saving historical data to {config.FIVE_YR_HISTORY_FILE}")
-    historical_data.to_csv(config.FIVE_YR_HISTORY_FILE, index=False)
+    historical_data.to_parquet(config.FIVE_YR_HISTORY_FILE, index=False)
     print(f"✓ Historical data saved: {len(historical_data)} records")

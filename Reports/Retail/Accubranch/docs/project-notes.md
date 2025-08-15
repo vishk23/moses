@@ -20,3 +20,12 @@ Merging transaction and account data...
 Adding branch information from WH_ORG...
 Applying data transformations...
 Error during processing: "['Branch of Transaction'] not in index"
+
+
+---
+
+Attrition model
+- DD -> no DD
+    - find classifier
+
+Segmentation - branch only

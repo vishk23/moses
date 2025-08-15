@@ -36,12 +36,12 @@ def main():
     try:
         # Process account data and historical analysis
         print("Processing account data...")
-        # accubranch_core.process_account_data()
+        accubranch_core.process_account_data()
         print("✓ Account data processing completed")
         
         # Process transaction data
         print("Processing transaction data...")
-        transaction_core.process_transaction_data()
+        # transaction_core.process_transaction_data()
         print("✓ Transaction data processing completed")
         
         print("-" * 50)
