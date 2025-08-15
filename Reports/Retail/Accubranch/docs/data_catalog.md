@@ -4,13 +4,13 @@
 
 3 files have been produced for Accubranch to perform their analysis
 
-1.  **Account Data Pipeline (`account_data.parquet`)**:
+1.  **Account Data (`account_data.parquet`)**:
 
-2.  **Historical Analysis Pipeline (`five_yr_history.parquet`)**:
+2.  **Transaction Data (`transaction_cleaned.parquet`)**:
 
-3.  **Transaction Data Pipeline (`transaction_cleaned.parquet`)**:
+2.  **Historical FYE Deposits per Branch (`five_yr_history.parquet`)**:
 
-## 
+## Notes
 
 ### 1. `account_data.parquet`
 
@@ -43,7 +43,7 @@ This file contains a detailed log of all completed customer transactions over a 
 
 | Column                | Description                                                                                             | Source Field(s)                                    |
 | :-------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------- |
-| `Customer Unique ID`  | A unique identifier for the tax-reporting customer. Matches `Primary Key` in the account file.          | `taxrptforpersnbr`, `taxrptfororgnbr`             |
+| `Customer Unique ID`  | A unique identifier for an entity.           | `P/O + persnbr/orgnbr`             |
 | `Date of Transaction` | The date the transaction occurred.                                                                      | `actdatetime`                                      |
 | `Time of Transaction` | The time the transaction occurred.                                                                      | `actdatetime`                                      |
 | `Branch of Transaction` | The branch where the transaction was processed. All digital transactions are assigned to Main Office. | `orgname`                                          |
@@ -112,6 +112,10 @@ The `rtxnsourcecd` field is mapped to the `Type of Teller` to identify the trans
 *   **Real Time Payment:** `RTP`
 *   **Batch Processing:** `BAT` (System-generated, often internal processing. Should be used with caution as 'COCC' is the branch for over 99% of these records).
 
+#### ITM Operations
+
+To classify ITM Operations, there is a Branch assigned to all ITM transcations:
+- `BCSB - ITM OPS`
 ### Data Exclusions
 
 The following records are explicitly filtered out during the pipeline:
