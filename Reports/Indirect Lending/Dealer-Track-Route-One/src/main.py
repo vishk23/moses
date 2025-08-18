@@ -394,123 +394,133 @@ def main():
             routeone_vault_df.reset_index(drop=True, inplace=True)
     
     # Create structured NOT RECONCILED dataframes with sections
-    # For DT Vault NOT RECONCILED
+    # For DT Vault NOT RECONCILED - Always show both headers
     dt_not_reconciled_structured = pd.DataFrame()
-    if not dtvault_df.empty or not unmatched_dt_econtracts.empty:
-        all_rows = []
-        
-        # Determine the maximum number of columns needed
-        max_cols = max(
-            dtvault_df.shape[1] if not dtvault_df.empty else 0,
-            unmatched_dt_econtracts.shape[1] if not unmatched_dt_econtracts.empty else 0
-        )
-        
-        # Section 1: In Vault but not in Funding
-        if not dtvault_df.empty:
-            # Add section header row
-            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
-            
-            # Add the actual column headers from dtvault_df
-            vault_headers = list(dtvault_df.columns)
-            # Pad with empty strings if needed
-            while len(vault_headers) < max_cols:
-                vault_headers.append("")
-            all_rows.append(vault_headers)
-            
-            # Add the data rows
-            for _, row in dtvault_df.iterrows():
-                row_data = list(row)
-                while len(row_data) < max_cols:
-                    row_data.append("")
-                all_rows.append(row_data)
-            
-        # Add separator rows if both sections exist
-        if not dtvault_df.empty and not unmatched_dt_econtracts.empty:
-            all_rows.append([""] * max_cols)  # Empty separator row
-            
-        # Section 2: In Funding but not in Vault
-        if not unmatched_dt_econtracts.empty:
-            # Add section header row
-            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
-            
-            # Add the actual column headers from unmatched_dt_econtracts
-            funding_headers = list(unmatched_dt_econtracts.columns)
-            # Pad with empty strings if needed
-            while len(funding_headers) < max_cols:
-                funding_headers.append("")
-            all_rows.append(funding_headers)
-            
-            # Add the data rows
-            for _, row in unmatched_dt_econtracts.iterrows():
-                row_data = list(row)
-                while len(row_data) < max_cols:
-                    row_data.append("")
-                all_rows.append(row_data)
-        
-        # Create DataFrame from all rows if we have data
-        if all_rows:
-            # Create generic column names for the structured dataframe
-            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
-            dt_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+    all_rows = []
     
-    # For Route One Vault NOT RECONCILED
+    # Determine the maximum number of columns needed
+    # Use a minimum of 20 columns to ensure proper structure even if data is empty
+    max_cols = max(
+        dtvault_df.shape[1] if not dtvault_df.empty else 20,
+        unmatched_dt_econtracts.shape[1] if not unmatched_dt_econtracts.empty else 20,
+        20  # Minimum columns to ensure structure
+    )
+    
+    # Section 1: In Vault but not in Funding - ALWAYS show header
+    # Add section header row
+    all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
+    
+    if not dtvault_df.empty:
+        # Add the actual column headers from dtvault_df
+        vault_headers = list(dtvault_df.columns)
+        # Pad with empty strings if needed
+        while len(vault_headers) < max_cols:
+            vault_headers.append("")
+        all_rows.append(vault_headers)
+        
+        # Add the data rows
+        for _, row in dtvault_df.iterrows():
+            row_data = list(row)
+            while len(row_data) < max_cols:
+                row_data.append("")
+            all_rows.append(row_data)
+    else:
+        # Even if empty, add a placeholder row to indicate no data
+        all_rows.append(["No data in this section"] + [""] * (max_cols - 1))
+    
+    # Add separator row between sections
+    all_rows.append([""] * max_cols)  # Empty separator row
+    
+    # Section 2: In Funding but not in Vault - ALWAYS show header
+    # Add section header row
+    all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
+    
+    if not unmatched_dt_econtracts.empty:
+        # Add the actual column headers from unmatched_dt_econtracts
+        funding_headers = list(unmatched_dt_econtracts.columns)
+        # Pad with empty strings if needed
+        while len(funding_headers) < max_cols:
+            funding_headers.append("")
+        all_rows.append(funding_headers)
+        
+        # Add the data rows
+        for _, row in unmatched_dt_econtracts.iterrows():
+            row_data = list(row)
+            while len(row_data) < max_cols:
+                row_data.append("")
+            all_rows.append(row_data)
+    else:
+        # Even if empty, add a placeholder row to indicate no data
+        all_rows.append(["No data in this section"] + [""] * (max_cols - 1))
+    
+    # Create DataFrame from all rows
+    # Create generic column names for the structured dataframe
+    generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+    dt_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+    
+    # For Route One Vault NOT RECONCILED - Always show both headers
     routeone_not_reconciled_structured = pd.DataFrame()
-    if not routeone_df.empty or not unmatched_routeone_econtracts.empty:
-        all_rows = []
+    all_rows = []
+    
+    # Determine the maximum number of columns needed
+    # Use a minimum of 20 columns to ensure proper structure even if data is empty
+    max_cols = max(
+        routeone_df.shape[1] if not routeone_df.empty else 20,
+        unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 20,
+        20  # Minimum columns to ensure structure
+    )
+    
+    # Section 1: In Vault but not in Funding - ALWAYS show header
+    # Add section header row
+    all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
+    
+    if not routeone_df.empty:
+        # Add the actual column headers from routeone_df
+        vault_headers = list(routeone_df.columns)
+        # Pad with empty strings if needed
+        while len(vault_headers) < max_cols:
+            vault_headers.append("")
+        all_rows.append(vault_headers)
         
-        # Determine the maximum number of columns needed
-        max_cols = max(
-            routeone_df.shape[1] if not routeone_df.empty else 0,
-            unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 0
-        )
+        # Add the data rows
+        for _, row in routeone_df.iterrows():
+            row_data = list(row)
+            while len(row_data) < max_cols:
+                row_data.append("")
+            all_rows.append(row_data)
+    else:
+        # Even if empty, add a placeholder row to indicate no data
+        all_rows.append(["No data in this section"] + [""] * (max_cols - 1))
+    
+    # Add separator row between sections
+    all_rows.append([""] * max_cols)  # Empty separator row
+    
+    # Section 2: In Funding but not in Vault - ALWAYS show header
+    # Add section header row
+    all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
+    
+    if not unmatched_routeone_econtracts.empty:
+        # Add the actual column headers from unmatched_routeone_econtracts
+        funding_headers = list(unmatched_routeone_econtracts.columns)
+        # Pad with empty strings if needed
+        while len(funding_headers) < max_cols:
+            funding_headers.append("")
+        all_rows.append(funding_headers)
         
-        # Section 1: In Vault but not in Funding
-        if not routeone_df.empty:
-            # Add section header row
-            all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
-            
-            # Add the actual column headers from routeone_df
-            vault_headers = list(routeone_df.columns)
-            # Pad with empty strings if needed
-            while len(vault_headers) < max_cols:
-                vault_headers.append("")
-            all_rows.append(vault_headers)
-            
-            # Add the data rows
-            for _, row in routeone_df.iterrows():
-                row_data = list(row)
-                while len(row_data) < max_cols:
-                    row_data.append("")
-                all_rows.append(row_data)
-            
-        # Add separator rows if both sections exist
-        if not routeone_df.empty and not unmatched_routeone_econtracts.empty:
-            all_rows.append([""] * max_cols)  # Empty separator row
-            
-        # Section 2: In Funding but not in Vault  
-        if not unmatched_routeone_econtracts.empty:
-            # Add section header row
-            all_rows.append(["IN FUNDING BUT NOT IN VAULT"] + [""] * (max_cols - 1))
-            
-            # Add the actual column headers from unmatched_routeone_econtracts
-            funding_headers = list(unmatched_routeone_econtracts.columns)
-            # Pad with empty strings if needed
-            while len(funding_headers) < max_cols:
-                funding_headers.append("")
-            all_rows.append(funding_headers)
-            
-            # Add the data rows
-            for _, row in unmatched_routeone_econtracts.iterrows():
-                row_data = list(row)
-                while len(row_data) < max_cols:
-                    row_data.append("")
-                all_rows.append(row_data)
-        
-        # Create DataFrame from all rows if we have data
-        if all_rows:
-            # Create generic column names for the structured dataframe
-            generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
-            routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+        # Add the data rows
+        for _, row in unmatched_routeone_econtracts.iterrows():
+            row_data = list(row)
+            while len(row_data) < max_cols:
+                row_data.append("")
+            all_rows.append(row_data)
+    else:
+        # Even if empty, add a placeholder row to indicate no data
+        all_rows.append(["No data in this section"] + [""] * (max_cols - 1))
+    
+    # Create DataFrame from all rows
+    # Create generic column names for the structured dataframe
+    generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
+    routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
     
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
