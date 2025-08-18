@@ -63,6 +63,8 @@ def fetch_data():
     queries = [
         {'key':'wh_org', 'sql':wh_org, 'engine':1},
         {'key':'orgaddruse', 'sql':orgaddruse, 'engine':1},
+        {'key':'wh_addr', 'sql':wh_addr, 'engine':1},
+        
         # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
     ]
 

@@ -24,6 +24,7 @@ Here is how I understand the suppression assignment:
 4. Repeat over the course of the period
     - If a new prospect has signed up for an account with the bank, they will now show up on the BCSB provided suppresion list in step 1. When completing step 2, that new customer won't be mailed because they are filtered out.
 
+Note: Some business addresses have their full street address listed as PO box, which shows up on the data that was sent over.
 
 A second piece is the DO NOT MAIL piece, which falls out of the scope of the above section. We will need to maintain a list of business not to mail to and we have a field "ALLOWPROMOYN" (in WH_ORG table in engine 1 database).
 
