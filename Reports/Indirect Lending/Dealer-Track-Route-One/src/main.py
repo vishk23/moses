@@ -568,7 +568,7 @@ def main():
         routeone_for_export = routeone_df.drop(columns=["Reconciled"], errors="ignore")
         
         # Reorder columns to match DT structure pattern
-        # Priority columns: Application Number, Customer Name, Dealer Name, Amount, Dates
+        # Priority columns: FS Application Number, R1 Contract Number, then other key fields
         cols = list(routeone_for_export.columns)
         
         # Build new column order with most important fields first
@@ -580,27 +580,32 @@ def main():
             reordered_cols.append(cols[14])
             remaining_cols.remove(cols[14])
         
-        # 2. Customer Name (column 3)
+        # 2. R1 Contract Number (column 9 after removing Reconciled)
+        if len(cols) > 9 and cols[9] in remaining_cols:
+            reordered_cols.append(cols[9])
+            remaining_cols.remove(cols[9])
+        
+        # 3. Customer Name (column 3)
         if len(cols) > 3 and cols[3] in remaining_cols:
             reordered_cols.append(cols[3])
             remaining_cols.remove(cols[3])
         
-        # 3. Dealership Name (column 1)
+        # 4. Dealership Name (column 1)
         if len(cols) > 1 and cols[1] in remaining_cols:
             reordered_cols.append(cols[1])
             remaining_cols.remove(cols[1])
         
-        # 4. FS Loan Amount (column 15 after removing Reconciled, if it exists)
+        # 5. FS Loan Amount (column 15 after removing Reconciled, if it exists)
         if len(cols) > 15 and cols[15] in remaining_cols:
             reordered_cols.append(cols[15])
             remaining_cols.remove(cols[15])
         
-        # 5. Contract Date (column 4)
+        # 6. Contract Date (column 4)
         if len(cols) > 4 and cols[4] in remaining_cols:
             reordered_cols.append(cols[4])
             remaining_cols.remove(cols[4])
         
-        # 6. FS Acceptance Date (column 5)
+        # 7. FS Acceptance Date (column 5)
         if len(cols) > 5 and cols[5] in remaining_cols:
             reordered_cols.append(cols[5])
             remaining_cols.remove(cols[5])
