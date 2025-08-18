@@ -120,3 +120,84 @@ final_data_extract = create_full_street_address(raw_address_data)
 print("Resulting Cleaned Data:")
 for item in final_data_extract:
     print(item)
+
+
+---
+import pandas as pd
+import numpy as np
+
+# --- 1. Setup ---
+
+# Define the set of type codes that belong to a street address.
+# Using a set is very fast. We'll compare against the lowercase version.
+STREET_TYPES = {
+    'street', 'apartment number', 'mobile home park name', 'rural route number',
+    'building number', 'suite number', 'apartment complex name', 'room number'
+}
+
+# Create a sample DataFrame that matches your structure and column names.
+# np.nan represents a NULL value from the database.
+data = {
+    'addrnbr': [101, 102, 103, 104, 105],
+    'text1': ['123 Maple St', 'PO BOX 4567', '45 Ocean View Dr', 'PO BOX 1122', '789 Industrial Pkwy'],
+    'addrlinetypdesc1': ['street', 'post office box number', 'street', 'post office box number', 'street'],
+    'text2': ['Apt 4B', 'c/o John Doe', np.nan, '555 Side Street', np.nan],
+    'addrlinetypdesc2': ['apartment number', 'attention', np.nan, 'street', np.nan],
+    'text3': [np.nan, np.nan, 'Building C', np.nan, np.nan],
+    'addrlinetypdesc3': [np.nan, np.nan, 'building number', np.nan, np.nan],
+    'cityname': ['Springfield', 'Metropolis', 'Gotham', 'Metropolis', 'Springfield'],
+    'statecd': ['IL', 'NY', 'NJ', 'NY', 'IL'],
+    'zipcd': ['62704', '10001', '07001', '10001', '62704']
+}
+df = pd.DataFrame(data)
+
+# --- 2. The Cleaning Logic ---
+
+# We will create temporary 'parts' columns, just like in the SQL logic.
+
+for i in [1, 2, 3]:
+    # Define the columns for this iteration
+    text_col = f'text{i}'
+    type_col = f'addrlinetypdesc{i}'
+    part_col = f'street_part{i}' # The new temporary column
+
+    # Create the condition: True if the type is a non-null street type
+    # .str.lower() makes the check case-insensitive.
+    # .isin() checks against our set of STREET_TYPES.
+    # .fillna(False) handles cases where the type description is null.
+    is_street_part = df[type_col].str.lower().isin(STREET_TYPES).fillna(False)
+
+    # Use the .where() method to get the text value if the condition is True,
+    # otherwise, it will be NaN (which is exactly what we want).
+    df[part_col] = df[text_col].where(is_street_part)
+
+# Now, combine the parts into the final address column
+street_part_columns = ['street_part1', 'street_part2', 'street_part3']
+
+# The .apply() method lets us run a function on each row.
+# We join the non-null values from our street parts.
+df['Full_Street_Address'] = df[street_part_columns].apply(
+    lambda row: ' '.join(row.dropna().astype(str)),
+    axis=1
+)
+
+
+# --- 3. Finalizing the Extract ---
+
+# Create the final, clean DataFrame with user-friendly column names
+df_clean = df[[
+    'addrnbr',
+    'Full_Street_Address',
+    'cityname',
+    'statecd',
+    'zipcd'
+]].rename(columns={
+    'addrnbr': 'id',
+    'cityname': 'city',
+    'statecd': 'state',
+    'zipcd': 'zip'
+})
+
+
+print("Final Cleaned DataFrame:")
+print(df_clean)
