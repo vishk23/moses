@@ -566,7 +566,52 @@ def main():
     if not routeone_df.empty:
         # Remove the "Reconciled" column for consistency with funding headers
         routeone_for_export = routeone_df.drop(columns=["Reconciled"], errors="ignore")
-        # Add the actual column headers from routeone_df (without Reconciled)
+        
+        # Reorder columns to match DT structure pattern
+        # Priority columns: Application Number, Customer Name, Dealer Name, Amount, Dates
+        cols = list(routeone_for_export.columns)
+        
+        # Build new column order with most important fields first
+        reordered_cols = []
+        remaining_cols = cols.copy()
+        
+        # 1. FS Application Number (column 14 after removing Reconciled)
+        if len(cols) > 14 and cols[14] in remaining_cols:
+            reordered_cols.append(cols[14])
+            remaining_cols.remove(cols[14])
+        
+        # 2. Customer Name (column 3)
+        if len(cols) > 3 and cols[3] in remaining_cols:
+            reordered_cols.append(cols[3])
+            remaining_cols.remove(cols[3])
+        
+        # 3. Dealership Name (column 1)
+        if len(cols) > 1 and cols[1] in remaining_cols:
+            reordered_cols.append(cols[1])
+            remaining_cols.remove(cols[1])
+        
+        # 4. FS Loan Amount (column 15 after removing Reconciled, if it exists)
+        if len(cols) > 15 and cols[15] in remaining_cols:
+            reordered_cols.append(cols[15])
+            remaining_cols.remove(cols[15])
+        
+        # 5. Contract Date (column 4)
+        if len(cols) > 4 and cols[4] in remaining_cols:
+            reordered_cols.append(cols[4])
+            remaining_cols.remove(cols[4])
+        
+        # 6. FS Acceptance Date (column 5)
+        if len(cols) > 5 and cols[5] in remaining_cols:
+            reordered_cols.append(cols[5])
+            remaining_cols.remove(cols[5])
+        
+        # Add all remaining columns in their original order
+        reordered_cols.extend(remaining_cols)
+        
+        # Apply the reordering
+        routeone_for_export = routeone_for_export[reordered_cols]
+        
+        # Add the actual column headers from reordered routeone_df
         vault_headers = list(routeone_for_export.columns)
         # DEBUG: Print vault headers before padding
         print(f"\n[DEBUG] RouteOne Vault headers for NOT RECONCILED (Section 1):")
@@ -595,6 +640,7 @@ def main():
     
     if not unmatched_routeone_econtracts.empty:
         # Add the actual column headers from unmatched_routeone_econtracts
+        # Note: Funding already has Application Number as first column, so no reordering needed
         funding_headers = list(unmatched_routeone_econtracts.columns)
         # DEBUG: Print funding headers before padding
         print(f"\n[DEBUG] RouteOne Funding headers for NOT RECONCILED (Section 2):")
