@@ -25,7 +25,34 @@ def fetch_data():
     FROM
         OSIBANK.WH_ORG a
     """)
-    
+
+    orgaddruse = text(f"""
+    SELECT
+        a.ADDRNBR,
+        a.ADDRUSECD,
+        a.ORGNBR
+    FROM
+        OSIBANK.ORGADDRUSE a
+    """)
+
+    wh_addr = text(f"""
+    SELECT
+        a.ADDRNBR,
+        a.TEXT1,
+        a.ADDRLINETYPCD1,
+        a.ADDRLINETYPDESC1,
+        a.TEXT2,
+        a.ADDRLINETYPCD2,
+        a.ADDRLINETYPDESC2,
+        a.TEXT3,
+        a.ADDRLINETYPCD3,
+        a.ADDRLINETYPDESC3,
+        a.CITYNAME,
+        a.STATECD,
+        a.ZIPCD
+    FROM
+        OSIBANK.WH_ADDR a
+    """)    
     # vieworgtaxid = text(f"""
     # SELECT
     #     *
@@ -35,6 +62,7 @@ def fetch_data():
 
     queries = [
         {'key':'wh_org', 'sql':wh_org, 'engine':1},
+        {'key':'orgaddruse', 'sql':orgaddruse, 'engine':1},
         # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
     ]
 
