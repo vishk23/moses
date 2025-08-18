@@ -202,3 +202,91 @@ df_clean = df[[
 
 print("Final Cleaned DataFrame:")
 print(df_clean)
+
+
+---
+
+import pandas as pd
+import numpy as np
+
+# --- 1. Setup ---
+
+# Define the TYPE sets for clarity.
+STREET_TYPES = {
+    'street', 'apartment number', 'mobile home park name', 'rural route number',
+    'building number', 'suite number', 'apartment complex name', 'room number'
+}
+POBOX_TYPE = 'post office box number' # It's a single value
+
+# Create a sample DataFrame that can test the new logic
+# - ID 101: Street + Unit (Street should win)
+# - ID 102: PO Box only (PO Box should be used)
+# - ID 104: PO Box and Street (Street should win)
+data = {
+    'addrnbr': [101, 102, 103, 104, 105],
+    'text1': ['123 Maple St', 'PO BOX 4567', '45 Ocean View Dr', 'PO BOX 1122', '789 Industrial Pkwy'],
+    'addrlinetypdesc1': ['street', 'post office box number', 'street', 'post office box number', 'street'],
+    'text2': ['Apt 4B', 'c/o John Doe', np.nan, '555 Side Street', np.nan],
+    'addrlinetypdesc2': ['apartment number', 'attention', np.nan, 'street', np.nan],
+    'text3': [np.nan, np.nan, 'Building C', np.nan, np.nan],
+    'addrlinetypdesc3': [np.nan, np.nan, 'building number', np.nan, np.nan],
+    'cityname': ['Springfield', 'Metropolis', 'Gotham', 'Metropolis', 'Springfield'],
+    'statecd': ['IL', 'NY', 'NJ', 'NY', 'IL'],
+    'zipcd': ['62704', '10001', '07001', '10001', '62704']
+}
+df = pd.DataFrame(data)
+
+# --- 2. The Enhanced Cleaning Logic ---
+
+# Step A: Extract both street parts AND po box parts into temporary columns
+for i in [1, 2, 3]:
+    text_col = f'text{i}'
+    type_col = f'addrlinetypdesc{i}'
+    
+    # Condition for street parts
+    is_street_part = df[type_col].str.lower().isin(STREET_TYPES).fillna(False)
+    df[f'street_part{i}'] = df[text_col].where(is_street_part)
+    
+    # Condition for PO Box parts
+    is_pobox_part = (df[type_col].str.lower() == POBOX_TYPE).fillna(False)
+    df[f'pobox_part{i}'] = df[text_col].where(is_pobox_part)
+
+
+# Step B: Combine the parts into two separate, complete address strings
+street_parts = ['street_part1', 'street_part2', 'street_part3']
+pobox_parts = ['pobox_part1', 'pobox_part2', 'pobox_part3']
+
+df['combined_street'] = df[street_parts].apply(
+    lambda row: ' '.join(row.dropna().astype(str)), axis=1
+)
+df['combined_pobox'] = df[pobox_parts].apply(
+    lambda row: ' '.join(row.dropna().astype(str)), axis=1
+)
+
+# Step C: Apply the final rule: Use Street, but if it's empty, use PO Box.
+# First, replace empty strings '' in the street column with NaN so .fillna() works
+df['combined_street'].replace('', np.nan, inplace=True)
+
+# Now, use .fillna() to populate empty street addresses with the po box value
+df['Full_Street_Address'] = df['combined_street'].fillna(df['combined_pobox'])
+
+
+# --- 3. Finalizing the Extract ---
+
+# Create the final, clean DataFrame with user-friendly column names
+df_clean = df[[
+    'addrnbr',
+    'Full_Street_Address',
+    'cityname',
+    'statecd',
+    'zipcd'
+]].rename(columns={
+    'addrnbr': 'id',
+    'cityname': 'city',
+    'statecd': 'state',
+    'zipcd': 'zip'
+})
+
+
+print("Final Cleaned DataFrame:")
+print(df_clean)
