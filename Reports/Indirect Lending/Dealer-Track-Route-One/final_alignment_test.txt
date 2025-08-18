@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/src/main.py", line 1092, in <module>
+    main()
+    ~~~~^^
+  File "/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/src/main.py", line 132, in main
+    assert len(files) == 3, f"Expected 3 files, found {len(files)}"
+           ^^^^^^^^^^^^^^^
+AssertionError: Expected 3 files, found 0
+Starting Dealer Track - Route One Reconciliation Report
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/.DS_Store
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/Archive
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/input
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/report_output.txt
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/final_test.txt
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/final_alignment_test.txt
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/Reports
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/src
+---------
+/Users/vk/woork/Reports/Indirect Lending/Dealer-Track-Route-One/Input

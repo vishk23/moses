@@ -169,10 +169,6 @@ def main():
     for key, path in matched_files.items():
         df = pd.read_excel(path, header=2 if key == "funding" else 0)
         
-        # DEBUG: Print headers after initial read
-        print(f"\n[DEBUG] Headers after reading {key}:")
-        print(f"  Columns: {list(df.columns)[:10]}...")  # Show first 10 columns
-        print(f"  Shape: {df.shape}")
 
         if key == "funding":
             # Handle None values before datetime conversion
@@ -219,11 +215,6 @@ def main():
     routeone_df = dfs["routeonevault"]
     dtvault_df = dfs["dtvault"]
     
-    # DEBUG: Print headers after splitting
-    print(f"\n[DEBUG] Headers after splitting:")
-    print(f"  Funding columns: {list(funding_df.columns)[:10]}...")
-    print(f"  RouteOne columns: {list(routeone_df.columns)[:10]}...")
-    print(f"  DT Vault columns: {list(dtvault_df.columns)[:10]}...")
     
     # Filter Route One Vault records to only include those with FS Acceptance Date in the current month
     # Parse the month_year to get the target month and year
@@ -337,15 +328,6 @@ def main():
     routeone_df.reset_index(drop=True, inplace=True)
     dtvault_df.reset_index(drop=True, inplace=True)
     
-    # DEBUG: Print headers after cleanup
-    print(f"\n[DEBUG] Headers after cleanup (before adding Reconciled column):")
-    print(f"  Remaining funding rows: {len(funding_df)}")
-    print(f"  Remaining routeone rows: {len(routeone_df)}")
-    print(f"  Remaining dtvault rows: {len(dtvault_df)}")
-    if not routeone_df.empty:
-        print(f"  RouteOne columns: {list(routeone_df.columns)[:10]}...")
-    if not dtvault_df.empty:
-        print(f"  DT Vault columns: {list(dtvault_df.columns)[:10]}...")
 
     # Insert reconciled = No + drop blanks
     if not routeone_df.empty:
@@ -366,14 +348,6 @@ def main():
     # All Paper contracts (both RouteOne and DT)
     unmatched_paper_contracts = funding_df[funding_df.iloc[:, 15] == 'Paper']
     
-    # DEBUG: Print unmatched headers
-    print(f"\n[DEBUG] Unmatched funding headers:")
-    print(f"  Unmatched RouteOne Econtracts: {len(unmatched_routeone_econtracts)} rows")
-    if not unmatched_routeone_econtracts.empty:
-        print(f"    Columns: {list(unmatched_routeone_econtracts.columns)[:10]}...")
-    print(f"  Unmatched DT Econtracts: {len(unmatched_dt_econtracts)} rows")
-    if not unmatched_dt_econtracts.empty:
-        print(f"    Columns: {list(unmatched_dt_econtracts.columns)[:10]}...")
     
 
     
@@ -493,11 +467,73 @@ def main():
     if not dtvault_df.empty:
         # Remove the "Reconciled" column for consistency with funding headers
         dtvault_for_export = dtvault_df.drop(columns=["Reconciled"], errors="ignore")
-        # Add the actual column headers from dtvault_df (without Reconciled)
+        
+        # Reorder DT Vault columns to align with funding structure
+        dt_cols = list(dtvault_for_export.columns)
+        dt_reordered = []
+        dt_remaining = dt_cols.copy()
+        
+        # Match exactly to funding structure positions:
+        # ['Application Number', 'Application Date', 'Application Status', 'Applicant Name', 'Co-Applicant Name', 'Portal', 'Dealer Name', 'Effective Fund Date', 'Funded by', 'Dealer Flat', ...]
+        
+        # 1. Container ID (matches Application Number)
+        if 'Container ID' in dt_remaining:
+            dt_reordered.append('Container ID')
+            dt_remaining.remove('Container ID')
+        
+        # 2. Creation Date (matches Application Date)  
+        if 'Creation Date' in dt_remaining:
+            dt_reordered.append('Creation Date')
+            dt_remaining.remove('Creation Date')
+            
+        # 3. Status (matches Application Status)
+        if 'Status' in dt_remaining:
+            dt_reordered.append('Status') 
+            dt_remaining.remove('Status')
+            
+        # 4. Customer Name (matches Applicant Name)
+        if 'Customer Name' in dt_remaining:
+            dt_reordered.append('Customer Name')
+            dt_remaining.remove('Customer Name')
+            
+        # 5. Vault ID (matches Co-Applicant Name position)
+        if 'Vault ID' in dt_remaining:
+            dt_reordered.append('Vault ID')
+            dt_remaining.remove('Vault ID')
+        
+        # 6. Billing Type (matches Portal position)
+        if 'Billing Type' in dt_remaining:
+            dt_reordered.append('Billing Type')
+            dt_remaining.remove('Billing Type')
+        
+        # 7. Dealership Name (matches Dealer Name position) 
+        if 'Dealership Name' in dt_remaining:
+            dt_reordered.append('Dealership Name')
+            dt_remaining.remove('Dealership Name')
+            
+        # 8. Transaction Creator (matches Effective Fund Date position)
+        if 'Transaction Creator' in dt_remaining:
+            dt_reordered.append('Transaction Creator')
+            dt_remaining.remove('Transaction Creator')
+            
+        # 9. Loan Amount (matches Funded by position) 
+        if 'Loan Amount (cents)' in dt_remaining:
+            dt_reordered.append('Loan Amount (cents)')
+            dt_remaining.remove('Loan Amount (cents)')
+            
+        # 10. Continue filling positions to maintain structure
+        # 11. Asset Type (position K/11 for VIN alignment)
+        if 'Asset Type' in dt_remaining:
+            dt_reordered.append('Asset Type')
+            dt_remaining.remove('Asset Type')
+            
+        # Add remaining columns
+        dt_reordered.extend(dt_remaining)
+        
+        dtvault_for_export = dtvault_for_export[dt_reordered]
+        
+        # Add the actual column headers from reordered dtvault_df
         vault_headers = list(dtvault_for_export.columns)
-        # DEBUG: Print vault headers before padding
-        print(f"\n[DEBUG] DT Vault headers for NOT RECONCILED (Section 1):")
-        print(f"  Original headers: {vault_headers[:10]}...")
         # Pad with empty strings if needed
         while len(vault_headers) < max_cols:
             vault_headers.append("")
@@ -523,9 +559,6 @@ def main():
     if not unmatched_dt_econtracts.empty:
         # Add the actual column headers from unmatched_dt_econtracts
         funding_headers = list(unmatched_dt_econtracts.columns)
-        # DEBUG: Print funding headers before padding
-        print(f"\n[DEBUG] DT Funding headers for NOT RECONCILED (Section 2):")
-        print(f"  Original headers: {funding_headers[:10]}...")
         # Pad with empty strings if needed
         while len(funding_headers) < max_cols:
             funding_headers.append("")
@@ -567,60 +600,77 @@ def main():
         # Remove the "Reconciled" column for consistency with funding headers
         routeone_for_export = routeone_df.drop(columns=["Reconciled"], errors="ignore")
         
-        # Reorder columns to match DT structure pattern
-        # Priority columns: FS Application Number, R1 Contract Number, then other key fields
+        # Match exactly to funding structure positions:
+        # ['Application Number', 'Application Date', 'Application Status', 'Applicant Name', 'Co-Applicant Name', 'Portal', 'Dealer Name', 'Effective Fund Date', 'Funded by', 'Dealer Flat', ...]
         cols = list(routeone_for_export.columns)
         
-        # Build new column order with most important fields first
-        reordered_cols = []
-        remaining_cols = cols.copy()
         
-        # 1. FS Application Number (column 14 after removing Reconciled)
-        if len(cols) > 14 and cols[14] in remaining_cols:
-            reordered_cols.append(cols[14])
-            remaining_cols.remove(cols[14])
+        ro_reordered = []
+        ro_remaining = cols.copy()
         
-        # 2. R1 Contract Number (column 9 after removing Reconciled)
-        if len(cols) > 9 and cols[9] in remaining_cols:
-            reordered_cols.append(cols[9])
-            remaining_cols.remove(cols[9])
+        # 1. FS Aplcn Num (matches Application Number)
+        if 'FS Aplcn Num' in ro_remaining:
+            ro_reordered.append('FS Aplcn Num')
+            ro_remaining.remove('FS Aplcn Num')
+            
+        # 2. FS Acceptance Date (matches Application Date)
+        if 'FS Acceptance Date' in ro_remaining:
+            ro_reordered.append('FS Acceptance Date')
+            ro_remaining.remove('FS Acceptance Date')
+            
+        # 3. Contract Status (matches Application Status)
+        if 'Contract Status' in ro_remaining:
+            ro_reordered.append('Contract Status')
+            ro_remaining.remove('Contract Status')
+            
+        # 4. Customer Name (matches Applicant Name)
+        if 'Customer Name' in ro_remaining:
+            ro_reordered.append('Customer Name')
+            ro_remaining.remove('Customer Name')
+            
+        # 5. R1 Contract Number (matches Co-Applicant Name position)
+        if 'R1 Contract Number' in ro_remaining:
+            ro_reordered.append('R1 Contract Number')
+            ro_remaining.remove('R1 Contract Number')
         
-        # 3. Customer Name (column 3)
-        if len(cols) > 3 and cols[3] in remaining_cols:
-            reordered_cols.append(cols[3])
-            remaining_cols.remove(cols[3])
+        # 6. Sales Class (matches Portal position)
+        if 'Sales Class' in ro_remaining:
+            ro_reordered.append('Sales Class')
+            ro_remaining.remove('Sales Class')
         
-        # 4. Dealership Name (column 1)
-        if len(cols) > 1 and cols[1] in remaining_cols:
-            reordered_cols.append(cols[1])
-            remaining_cols.remove(cols[1])
-        
-        # 5. FS Loan Amount (column 15 after removing Reconciled, if it exists)
-        if len(cols) > 15 and cols[15] in remaining_cols:
-            reordered_cols.append(cols[15])
-            remaining_cols.remove(cols[15])
-        
-        # 6. Contract Date (column 4)
-        if len(cols) > 4 and cols[4] in remaining_cols:
-            reordered_cols.append(cols[4])
-            remaining_cols.remove(cols[4])
-        
-        # 7. FS Acceptance Date (column 5)
-        if len(cols) > 5 and cols[5] in remaining_cols:
-            reordered_cols.append(cols[5])
-            remaining_cols.remove(cols[5])
-        
-        # Add all remaining columns in their original order
-        reordered_cols.extend(remaining_cols)
+        # 7. Dealership Name (matches Dealer Name position) 
+        if 'Dealership Name' in ro_remaining:
+            ro_reordered.append('Dealership Name')
+            ro_remaining.remove('Dealership Name')
+            
+        # 8. Contract Date (matches Effective Fund Date position)
+        if 'Contract Date' in ro_remaining:
+            ro_reordered.append('Contract Date')
+            ro_remaining.remove('Contract Date')
+            
+        # 9. Loan Volume (matches Funded by position) 
+        if 'Loan Volume' in ro_remaining:
+            ro_reordered.append('Loan Volume')
+            ro_remaining.remove('Loan Volume')
+            
+        # 10. Assignee of Record (matches Dealer Flat position)
+        if 'Assignee of Record' in ro_remaining:
+            ro_reordered.append('Assignee of Record')
+            ro_remaining.remove('Assignee of Record')
+            
+        # 11. VIN (position K/11 - matches Asset Type)
+        if 'VIN' in ro_remaining:
+            ro_reordered.append('VIN')
+            ro_remaining.remove('VIN')
+            
+        # Add remaining columns in their original order
+        ro_reordered.extend(ro_remaining)
         
         # Apply the reordering
-        routeone_for_export = routeone_for_export[reordered_cols]
+        routeone_for_export = routeone_for_export[ro_reordered]
         
         # Add the actual column headers from reordered routeone_df
         vault_headers = list(routeone_for_export.columns)
-        # DEBUG: Print vault headers before padding
-        print(f"\n[DEBUG] RouteOne Vault headers for NOT RECONCILED (Section 1):")
-        print(f"  Original headers: {vault_headers[:10]}...")
         # Pad with empty strings if needed
         while len(vault_headers) < max_cols:
             vault_headers.append("")
@@ -647,9 +697,6 @@ def main():
         # Add the actual column headers from unmatched_routeone_econtracts
         # Note: Funding already has Application Number as first column, so no reordering needed
         funding_headers = list(unmatched_routeone_econtracts.columns)
-        # DEBUG: Print funding headers before padding
-        print(f"\n[DEBUG] RouteOne Funding headers for NOT RECONCILED (Section 2):")
-        print(f"  Original headers: {funding_headers[:10]}...")
         # Pad with empty strings if needed
         while len(funding_headers) < max_cols:
             funding_headers.append("")
@@ -670,19 +717,6 @@ def main():
     generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
     routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
     
-    # DEBUG: Print final structured dataframe info
-    print(f"\n[DEBUG] Final NOT RECONCILED structured dataframes:")
-    print(f"  DT NOT RECONCILED shape: {dt_not_reconciled_structured.shape}")
-    if not dt_not_reconciled_structured.empty:
-        print(f"    First 3 rows of data:")
-        for i in range(min(3, len(dt_not_reconciled_structured))):
-            print(f"      Row {i}: {dt_not_reconciled_structured.iloc[i, 0][:50]}...")
-    
-    print(f"  RouteOne NOT RECONCILED shape: {routeone_not_reconciled_structured.shape}")
-    if not routeone_not_reconciled_structured.empty:
-        print(f"    First 3 rows of data:")
-        for i in range(min(3, len(routeone_not_reconciled_structured))):
-            print(f"      Row {i}: {routeone_not_reconciled_structured.iloc[i, 0][:50]}...")
     
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
@@ -754,7 +788,6 @@ def main():
     ws_summary.column_dimensions['A'].width = 45
     ws_summary.column_dimensions['B'].width = 15
 
-    print(f"[DEBUG] Summary sheet '{summary_sheet_name[:31]}' written with static values.")
 
     # Write each sheet manually
     for sheet_name, df in dfs_to_export.items():
