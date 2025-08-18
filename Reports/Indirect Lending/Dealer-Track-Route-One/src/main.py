@@ -479,8 +479,9 @@ def main():
     
     # Determine the maximum number of columns needed
     # Use a minimum of 20 columns to ensure proper structure even if data is empty
+    # Subtract 1 from vault df columns to account for "Reconciled" column removal
     max_cols = max(
-        dtvault_df.shape[1] if not dtvault_df.empty else 20,
+        (dtvault_df.shape[1] - 1) if not dtvault_df.empty else 20,  # -1 for Reconciled column
         unmatched_dt_econtracts.shape[1] if not unmatched_dt_econtracts.empty else 20,
         20  # Minimum columns to ensure structure
     )
@@ -490,8 +491,10 @@ def main():
     all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
     
     if not dtvault_df.empty:
-        # Add the actual column headers from dtvault_df
-        vault_headers = list(dtvault_df.columns)
+        # Remove the "Reconciled" column for consistency with funding headers
+        dtvault_for_export = dtvault_df.drop(columns=["Reconciled"], errors="ignore")
+        # Add the actual column headers from dtvault_df (without Reconciled)
+        vault_headers = list(dtvault_for_export.columns)
         # DEBUG: Print vault headers before padding
         print(f"\n[DEBUG] DT Vault headers for NOT RECONCILED (Section 1):")
         print(f"  Original headers: {vault_headers[:10]}...")
@@ -501,7 +504,7 @@ def main():
         all_rows.append(vault_headers)
         
         # Add the data rows
-        for _, row in dtvault_df.iterrows():
+        for _, row in dtvault_for_export.iterrows():
             row_data = list(row)
             while len(row_data) < max_cols:
                 row_data.append("")
@@ -549,8 +552,9 @@ def main():
     
     # Determine the maximum number of columns needed
     # Use a minimum of 20 columns to ensure proper structure even if data is empty
+    # Subtract 1 from vault df columns to account for "Reconciled" column removal
     max_cols = max(
-        routeone_df.shape[1] if not routeone_df.empty else 20,
+        (routeone_df.shape[1] - 1) if not routeone_df.empty else 20,  # -1 for Reconciled column
         unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 20,
         20  # Minimum columns to ensure structure
     )
@@ -560,8 +564,10 @@ def main():
     all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
     
     if not routeone_df.empty:
-        # Add the actual column headers from routeone_df
-        vault_headers = list(routeone_df.columns)
+        # Remove the "Reconciled" column for consistency with funding headers
+        routeone_for_export = routeone_df.drop(columns=["Reconciled"], errors="ignore")
+        # Add the actual column headers from routeone_df (without Reconciled)
+        vault_headers = list(routeone_for_export.columns)
         # DEBUG: Print vault headers before padding
         print(f"\n[DEBUG] RouteOne Vault headers for NOT RECONCILED (Section 1):")
         print(f"  Original headers: {vault_headers[:10]}...")
@@ -571,7 +577,7 @@ def main():
         all_rows.append(vault_headers)
         
         # Add the data rows
-        for _, row in routeone_df.iterrows():
+        for _, row in routeone_for_export.iterrows():
             row_data = list(row)
             while len(row_data) < max_cols:
                 row_data.append("")
