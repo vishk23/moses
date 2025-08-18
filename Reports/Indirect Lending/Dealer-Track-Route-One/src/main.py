@@ -119,6 +119,11 @@ def main():
     dfs = {}
     for key, path in matched_files.items():
         df = pd.read_excel(path, header=2 if key == "funding" else 0)
+        
+        # DEBUG: Print headers after initial read
+        print(f"\n[DEBUG] Headers after reading {key}:")
+        print(f"  Columns: {list(df.columns)[:10]}...")  # Show first 10 columns
+        print(f"  Shape: {df.shape}")
 
         if key == "funding":
             # Handle None values before datetime conversion
@@ -164,6 +169,12 @@ def main():
     funding_df = dfs["funding"]
     routeone_df = dfs["routeonevault"]
     dtvault_df = dfs["dtvault"]
+    
+    # DEBUG: Print headers after splitting
+    print(f"\n[DEBUG] Headers after splitting:")
+    print(f"  Funding columns: {list(funding_df.columns)[:10]}...")
+    print(f"  RouteOne columns: {list(routeone_df.columns)[:10]}...")
+    print(f"  DT Vault columns: {list(dtvault_df.columns)[:10]}...")
     
     # Filter Route One Vault records to only include those with FS Acceptance Date in the current month
     # Parse the month_year to get the target month and year
@@ -276,6 +287,16 @@ def main():
     dtvault_df.drop(index=dtvault_indices_to_drop, inplace=True)
     routeone_df.reset_index(drop=True, inplace=True)
     dtvault_df.reset_index(drop=True, inplace=True)
+    
+    # DEBUG: Print headers after cleanup
+    print(f"\n[DEBUG] Headers after cleanup (before adding Reconciled column):")
+    print(f"  Remaining funding rows: {len(funding_df)}")
+    print(f"  Remaining routeone rows: {len(routeone_df)}")
+    print(f"  Remaining dtvault rows: {len(dtvault_df)}")
+    if not routeone_df.empty:
+        print(f"  RouteOne columns: {list(routeone_df.columns)[:10]}...")
+    if not dtvault_df.empty:
+        print(f"  DT Vault columns: {list(dtvault_df.columns)[:10]}...")
 
     # Insert reconciled = No + drop blanks
     if not routeone_df.empty:
@@ -295,6 +316,15 @@ def main():
     
     # All Paper contracts (both RouteOne and DT)
     unmatched_paper_contracts = funding_df[funding_df.iloc[:, 15] == 'Paper']
+    
+    # DEBUG: Print unmatched headers
+    print(f"\n[DEBUG] Unmatched funding headers:")
+    print(f"  Unmatched RouteOne Econtracts: {len(unmatched_routeone_econtracts)} rows")
+    if not unmatched_routeone_econtracts.empty:
+        print(f"    Columns: {list(unmatched_routeone_econtracts.columns)[:10]}...")
+    print(f"  Unmatched DT Econtracts: {len(unmatched_dt_econtracts)} rows")
+    if not unmatched_dt_econtracts.empty:
+        print(f"    Columns: {list(unmatched_dt_econtracts.columns)[:10]}...")
     
 
     
@@ -413,6 +443,9 @@ def main():
     if not dtvault_df.empty:
         # Add the actual column headers from dtvault_df
         vault_headers = list(dtvault_df.columns)
+        # DEBUG: Print vault headers before padding
+        print(f"\n[DEBUG] DT Vault headers for NOT RECONCILED (Section 1):")
+        print(f"  Original headers: {vault_headers[:10]}...")
         # Pad with empty strings if needed
         while len(vault_headers) < max_cols:
             vault_headers.append("")
@@ -438,6 +471,9 @@ def main():
     if not unmatched_dt_econtracts.empty:
         # Add the actual column headers from unmatched_dt_econtracts
         funding_headers = list(unmatched_dt_econtracts.columns)
+        # DEBUG: Print funding headers before padding
+        print(f"\n[DEBUG] DT Funding headers for NOT RECONCILED (Section 2):")
+        print(f"  Original headers: {funding_headers[:10]}...")
         # Pad with empty strings if needed
         while len(funding_headers) < max_cols:
             funding_headers.append("")
@@ -477,6 +513,9 @@ def main():
     if not routeone_df.empty:
         # Add the actual column headers from routeone_df
         vault_headers = list(routeone_df.columns)
+        # DEBUG: Print vault headers before padding
+        print(f"\n[DEBUG] RouteOne Vault headers for NOT RECONCILED (Section 1):")
+        print(f"  Original headers: {vault_headers[:10]}...")
         # Pad with empty strings if needed
         while len(vault_headers) < max_cols:
             vault_headers.append("")
@@ -502,6 +541,9 @@ def main():
     if not unmatched_routeone_econtracts.empty:
         # Add the actual column headers from unmatched_routeone_econtracts
         funding_headers = list(unmatched_routeone_econtracts.columns)
+        # DEBUG: Print funding headers before padding
+        print(f"\n[DEBUG] RouteOne Funding headers for NOT RECONCILED (Section 2):")
+        print(f"  Original headers: {funding_headers[:10]}...")
         # Pad with empty strings if needed
         while len(funding_headers) < max_cols:
             funding_headers.append("")
@@ -521,6 +563,20 @@ def main():
     # Create generic column names for the structured dataframe
     generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
     routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
+    
+    # DEBUG: Print final structured dataframe info
+    print(f"\n[DEBUG] Final NOT RECONCILED structured dataframes:")
+    print(f"  DT NOT RECONCILED shape: {dt_not_reconciled_structured.shape}")
+    if not dt_not_reconciled_structured.empty:
+        print(f"    First 3 rows of data:")
+        for i in range(min(3, len(dt_not_reconciled_structured))):
+            print(f"      Row {i}: {dt_not_reconciled_structured.iloc[i, 0][:50]}...")
+    
+    print(f"  RouteOne NOT RECONCILED shape: {routeone_not_reconciled_structured.shape}")
+    if not routeone_not_reconciled_structured.empty:
+        print(f"    First 3 rows of data:")
+        for i in range(min(3, len(routeone_not_reconciled_structured))):
+            print(f"      Row {i}: {routeone_not_reconciled_structured.iloc[i, 0][:50]}...")
     
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
