@@ -386,15 +386,18 @@ def main():
     # Build final export dict with month/year suffix
     suffix = f"({month_year})"
     
-    # For Route One Vault sheet, sort to put Paper contracts at the bottom
+    # For Route One Vault sheet, filter out Paper contracts (they should go to NOT RECONCILED)
     routeone_vault_df = routeone_resolved_df.copy() if not routeone_resolved_df.empty else pd.DataFrame()
+    routeone_paper_contracts = pd.DataFrame()
+    
     if not routeone_vault_df.empty:
         # Check if column Q (17th column, index 16) exists (contract type column)
         if routeone_vault_df.shape[1] > 16:
-            # Create a sort key: Paper contracts get value 1, others get 0
-            sort_key = (routeone_vault_df.iloc[:, 16] == 'Paper').astype(int)
-            # Sort by this key to put Paper contracts at the bottom
-            routeone_vault_df = routeone_vault_df.iloc[sort_key.argsort()]
+            # Separate paper contracts from reconciled records
+            paper_mask = routeone_vault_df.iloc[:, 16] == 'Paper'
+            routeone_paper_contracts = routeone_vault_df[paper_mask].copy()
+            # Keep only E-Contracts in the reconciled sheet
+            routeone_vault_df = routeone_vault_df[~paper_mask].copy()
             routeone_vault_df.reset_index(drop=True, inplace=True)
     
     # Create structured NOT RECONCILED dataframes with sections
@@ -534,11 +537,22 @@ def main():
     routeone_not_reconciled_structured = pd.DataFrame()
     all_rows = []
     
+    # Combine unreconciled vault records with paper contracts first to calculate max_cols
+    vault_records_for_calc = []
+    if not routeone_df.empty:
+        vault_records_for_calc.append(routeone_df)
+    if not routeone_paper_contracts.empty:
+        vault_records_for_calc.append(routeone_paper_contracts)
+    
+    combined_vault_cols = 0
+    if vault_records_for_calc:
+        temp_combined = pd.concat(vault_records_for_calc, ignore_index=True)
+        combined_vault_cols = temp_combined.shape[1] - 1  # -1 for Reconciled column
+    
     # Determine the maximum number of columns needed
     # Use a minimum of 20 columns to ensure proper structure even if data is empty
-    # Subtract 1 from vault df columns to account for "Reconciled" column removal
     max_cols = max(
-        (routeone_df.shape[1] - 1) if not routeone_df.empty else 20,  # -1 for Reconciled column
+        combined_vault_cols if combined_vault_cols > 0 else 20,
         unmatched_routeone_econtracts.shape[1] if not unmatched_routeone_econtracts.empty else 20,
         20  # Minimum columns to ensure structure
     )
@@ -547,9 +561,28 @@ def main():
     # Add section header row
     all_rows.append(["IN VAULT BUT NOT IN FUNDING"] + [""] * (max_cols - 1))
     
+    # Combine unreconciled vault records with paper contracts that were filtered from reconciled
+    vault_records_for_not_reconciled = []
+    
+    # Add regular unreconciled vault records
     if not routeone_df.empty:
-        # Remove the "Reconciled" column for consistency with funding headers
-        routeone_for_export = routeone_df.drop(columns=["Reconciled"], errors="ignore")
+        vault_records_for_not_reconciled.append(routeone_df)
+    
+    # Add paper contracts that were moved from reconciled sheet
+    if not routeone_paper_contracts.empty:
+        # Remove "Reconciled" column from paper contracts to match structure
+        paper_for_export = routeone_paper_contracts.drop(columns=["Reconciled"], errors="ignore")
+        vault_records_for_not_reconciled.append(paper_for_export)
+    
+    # Combine all vault records for the NOT RECONCILED section
+    if vault_records_for_not_reconciled:
+        combined_vault_df = pd.concat(vault_records_for_not_reconciled, ignore_index=True)
+    else:
+        combined_vault_df = pd.DataFrame()
+    
+    if not combined_vault_df.empty:
+        # Remove the "Reconciled" column for consistency with funding headers  
+        routeone_for_export = combined_vault_df.drop(columns=["Reconciled"], errors="ignore")
         
         # Match exactly to funding structure positions:
         # ['Application Number', 'Application Date', 'Application Status', 'Applicant Name', 'Co-Applicant Name', 'Portal', 'Dealer Name', 'Effective Fund Date', 'Funded by', 'Dealer Flat', ...]
