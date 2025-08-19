@@ -1,0 +1,69 @@
+def main():
+    """
+    Main execution
+    """
+    # Database Connection Configuration
+    tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+    credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+    credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+        
+    # Core SQL function
+    acctcommon, acctloan, loans, househldacct, allroles, persaddruse, wh_addr, pers, acctstatistichist, acctloanlimithist = core_sql_query(db_handler)
+    
+    # Core ETL
+    loan_data = filter_and_merge_loan_tables(acctcommon, acctloan, loans)
+    loan_data = append_total_exposure_field(loan_data)
+    loan_data = append_household_number(loan_data, househldacct)
+    household_grouping_df = household_total_exposure(loan_data)
+    loan_data = append_household_exposure(loan_data, household_grouping_df)
+    loan_data = filter_to_target_products(loan_data)
+    acctstatistic_output = acctstatistichist_cleaning(acctstatistichist, acctcommon)
+    pd_df = count_pd(acctstatistic_output)
+    pd30_df = count_pd30(acctstatistic_output)
+    loan_data = append_pd_info(loan_data, pd_df, pd30_df)
+    deposit_data = deposit_criteria_testing()
+    loan_data = append_deposit_data(loan_data, deposit_data)
+    utilization_data, cleanup_data = line_utilization_fetch(db_handler, loan_data)
+    loan_data = append_line_utilization_data(loan_data, utilization_data, cleanup_data)
+    inactive_date_df = get_inactive_date(acctloanlimithist)
+    loan_data = append_inactive_date(loan_data, inactive_date_df)
+    loan_data = criteria_flags(loan_data)
+    
+    # Consolidation of the columns necessary
+    final_df = loan_data[['acctnbr','effdate','ownername','product','loanofficer','inactivedate','Net Balance','Net Available','Net Collateral Reserve','cobal','creditlimitamt','Total Exposure_hhgroup','ttm_pd','ttm_pd30','TTM Overdrafts','NOTEBAL','Year Ago Balance','Deposit Change Pct','ttm line utilization','cleanup_provision','riskratingcd']]
+    
+    # Writing output
+    file_path = r'\\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\CML_Executive_Leadership_Projects\Alerts\Production\Sources\alerts_backend.xlsx'
+    final_df.to_excel(file_path, index=False, engine='openpyxl')
+    
+    # Produce Documentation (docstrings)
+    documentation_list = [DatabaseHandler,
+                          core_sql_query,
+                          filter_and_merge_loan_tables, 
+                          append_total_exposure_field, 
+                          append_household_number, 
+                          household_total_exposure, 
+                          append_household_exposure, 
+                          filter_to_target_products,
+                          acctstatistichist_cleaning,
+                          count_pd,
+                          count_pd30,
+                          append_pd_info,
+                          deposit_criteria_testing,
+                          append_deposit_data,
+                          line_utilization_fetch,
+                          append_line_utilization_data,
+                          get_inactive_date,
+                          append_inactive_date,
+                          criteria_flags]
+
+    for i in documentation_list:
+        print(help(i))
+        print("")
+        
+    print('Execution Complete!')
+    
+# if __name__ == "__main__":
+#     main()
+main()

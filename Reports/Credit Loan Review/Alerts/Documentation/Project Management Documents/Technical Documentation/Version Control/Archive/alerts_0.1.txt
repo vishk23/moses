@@ -1,0 +1,65 @@
+#################################
+# List all non-standard packages to be imported by your 
+# script here (only missing packages will be installed)
+from ayx import Package
+#Package.installPackages(['pandas','numpy'])
+
+
+#################################
+
+
+
+#################################
+from ayx import Alteryx
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+#################################
+allroles = Alteryx.read("#1")
+acctcommon = Alteryx.read("#2")
+acctloan = Alteryx.read("#3")
+acctstatistic = Alteryx.read("#4")
+acctloanlimithist = Alteryx.read("#5")
+household = Alteryx.read("#6")
+
+
+#################################
+acctcommon.info()
+
+
+#################################
+# Filtering down to Active/NPFM loans in CML major
+df = acctcommon[acctcommon['CURRACCTSTATCD'].isin(['ACT','NPFM'])]
+df = df[df['MJACCTTYPCD'].isin(['CML'])]
+
+# Specific minors
+df = df[df['CURRMIACCTTYPCD'].isin(["CM06","CM11","CM30","CM52","CM57","CM62","CM71","CM76"])]
+
+
+#################################
+df['PRODUCT'].unique().tolist()
+
+
+#################################
+acctloan = acctloan.dropna(axis=1, how='all')
+
+
+#################################
+# Merging ACCTCOMMON & ACCTLOAN
+merged_df = pd.merge(df, acctloan, on='ACCTNBR', how='inner')
+
+# Merging the dataframe with ALLROLES table
+merged_df = pd.merge(merged_df, allroles, on='ACCTNBR', how='inner')
+
+
+#################################
+merged_df.info()
+
+
+#################################
+merged_df.columns.tolist()
+
+
+#################################
