@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2022.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="59" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||SELECT * FROM WH_ALLROLES</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=SELECT * FROM WH_ALLROLES</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="ACCTNBR" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="Int64" />
+            <Field name="ACCTROLECD" size="20" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="String" />
+            <Field name="ACCTROLEDESC" size="30" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="String" />
+            <Field name="EMPLROLEYN" size="1" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="String" />
+            <Field name="PERSNBR" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="Int64" />
+            <Field name="ORGNBR" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="Int64" />
+            <Field name="RUNDATE" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="DateTime" />
+            <Field name="DATELASTMAINT" source="File: aka:R1625.world|||SELECT * FROM WH_ALLROLES" type="DateTime" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="60" y="197" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <CachedCosmeticName />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTCOMMON</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=SELECT * FROM OSIBANK.WH_ACC...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field description="PrimaryKey" name="ACCTNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field description="PrimaryKey" name="EFFDATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="MONTHENDYN" size="1" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="MJACCTTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="CURRMIACCTTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRODUCT" size="30" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="CURRACCTSTATCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="CURRACCTSTATEFFDATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="ACCTOPENCURRMONTHYN" size="1" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="ACCTCLOSECURRMONTHYN" size="1" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="BRANCHORGNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="BRANCHNAME" size="60" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="BANKORGNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="NOTEINTRATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="NOTENEXTRATECHANGEDATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="NOTERATECHANGECALPERCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="NOTEOPENAMT" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="NOTEBAL" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="BOOKBALANCE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="NOTEMTDAVGBAL" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="NOTEINTCALCSCHEDNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="CALCBALTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="COMPOUNDCALPERCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="DAYSMETHCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="INTMETHCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="INTMINCALCBALTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="RATETYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="INTBASE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int32" />
+            <Field name="INTMINBALAMT" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Double" />
+            <Field name="DATEMAT" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="CURRTERM" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int32" />
+            <Field name="CONTRACTDATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="CLOSEDATE" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="TAXRPTFORORGNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="TAXRPTFORPERSNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="ORIGPERSNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="ORIGINATINGPERSON" size="50" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="ACCTOFFICERNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="ACCTOFFICER" size="50" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="LOANOFFICERSNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="LOANOFFICER" size="50" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="MANAGINGOFFICERNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="Int64" />
+            <Field name="MANAGINGOFFICER" size="50" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="NAMEADDR1" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="NAMEADDR2" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="NAMEADDR3" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="NAMEADDR4" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="NAMEADDR5" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="OWNERNAME" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="OWNERSORTNAME" size="128" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="PRIMARYOWNERZIPCD" size="5" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRIMARYOWNERZIPCDSUFF" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRIMARYOWNERCITY" size="30" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRIMARYOWNERSTATE" size="2" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="DATELASTMAINT" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+            <Field name="HOMEPHONE" size="30" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="BUSINESSPHONE" size="30" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="TAXIDNBR" size="60" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="V_String" />
+            <Field name="PRIMARYOWNERCTRYCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRIMARYOWNERCTRYSUBDIVCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+            <Field name="PRIMARYOWNERCTRYMAILCD" size="11" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||SELECT * FROM OSIBANK.WH_ACCTCOMMON" type="String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="JupyterCode">
+        <Position x="260" y="86" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <WorkflowName>h:\chad\projects\database_roles\guar_analysis.yxmd</WorkflowName>
+          <JupyterProduction>false</JupyterProduction>
+          <vEnvName>designerbasetools_venv</vEnvName>
+          <DefaultVenv>1</DefaultVenv>
+          <productionModeScript />
+          <Port>60076</Port>
+          <JupyterGuidDir>2bafa46e244efedb0476814fe56d80d1</JupyterGuidDir>
+          <JupyterGuidCopy />
+          <LastExecutedByEngineVersion>2022.3.1.450</LastExecutedByEngineVersion>
+          <Notebook><![CDATA[{"cells":[{"cell_type":"markdown","metadata":{"ayx":{"cell_css":"border: 3px solid #357; margin: 4px; background: #fbffff","contents_keyword":"Alteryx.help()","label":"info"}},"source":["Run `Alteryx.help()` for info about useful functions.  \n","i.e., `Alteryx.read(\"#1\")`, `Alteryx.write(df,1)`, `Alteryx.getWorkflowConstant(\"Engine.WorkflowDirectory\")`"]},{"cell_type":"code","execution_count":26,"metadata":{"ayx":{"cell_css":"border: 1px solid #58a; margin: 2px;","contents_keyword":"installPackages","label":"deps"}},"outputs":[],"source":["# List all non-standard packages to be imported by your \n","# script here (only missing packages will be installed)\n","from ayx import Package\n","#Package.installPackages(['pandas','numpy'])"]},{"cell_type":"code","execution_count":27,"metadata":{},"outputs":[],"source":["from ayx import Alteryx\n","import pandas as pd\n","import numpy as np\n","import matplotlib.pyplot as plt"]},{"cell_type":"code","execution_count":28,"metadata":{},"outputs":[],"source":["allroles = Alteryx.read(\"#1\")\n","acctcommon = Alteryx.read(\"#2\")\n","acctloan = Alteryx.read(\"#3\")"]},{"cell_type":"code","execution_count":30,"metadata":{},"outputs":[],"source":["acctcommon.info()"]},{"cell_type":"code","execution_count":36,"metadata":{},"outputs":[],"source":["df = acctcommon[acctcommon['CURRACCTSTATCD'].isin(['ACT','NPFM'])]\n","df = df[df['MJACCTTYPCD'].isin(['CML'])]"]},{"cell_type":"code","execution_count":37,"metadata":{},"outputs":[],"source":["acctloan = acctloan.dropna(axis=1, how='all')"]},{"cell_type":"code","execution_count":38,"metadata":{},"outputs":[],"source":["# Merging ACCTCOMMON & ACCTLOAN\n","merged_df = pd.merge(df, acctloan, on='ACCTNBR', how='inner')\n","\n","# Merging the dataframe with ALLROLES table\n","merged_df = pd.merge(merged_df, allroles, on='ACCTNBR', how='inner')"]},{"cell_type":"code","execution_count":39,"metadata":{},"outputs":[],"source":["merged_df.info()"]},{"cell_type":"code","execution_count":42,"metadata":{},"outputs":[],"source":["merged_df.columns.tolist()"]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]}],"metadata":{"kernelspec":{"display_name":"designerbasetools_venv","language":"python","name":"designerbasetools_venv"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.5"}},"nbformat":4,"nbformat_minor":2}]]></Notebook>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxJupyterPluginEngine.dll" EngineDllEntryPoint="AlteryxJupyter" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="57" y="347" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=SELECT * FROM OSIBANK.WH_ACC...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field description="PrimaryKey" name="EFFDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="INVRNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="PROPNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="ESCBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="UNAPPBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIPBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="COBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LATECHARGEDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTENONACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PURPCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="LNQUALITYCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="FDICCATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="FHLBCATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="PMTMETHCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="OCCLOANCATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="OTSLOANCATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="DATE1STPMTDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="GRACEDAYS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int32" />
+            <Field name="NEXTDUEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="NEXTPMTCHANGEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="DEMANDYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="RESTRUCTUREDYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="CREDITREPORTTYPCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="NOTREYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="ESCCOMPMTH" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="LOANSOURCECD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="BALLOONYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="LOANLOSSCATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="TOTALPCTSOLD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="INVRCONFORMYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="RISKRATINGCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="BILLADVANCEYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="RATECHANGERECALCPMTYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="LOANAGENCYCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="CURRDUEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="SLPCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="CRACATCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="LASTREVIEWDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="LASTPAYMENTDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="MARGINFIXED" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MARGINPCT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MAXRATECHANGEUP" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MINRATECHANGEUP" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MININTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MAXINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="CAPITALIZEINTYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="AMORTTERM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int32" />
+            <Field name="RATECHANGERNDMETHCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="PMTCHANGERNDMETHCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="MINRATECHANGEDOWN" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="MAXRATECHANGEDOWN" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NEGAMORTALLOWEDYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="ADJUSTTERMYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="PMTCHANGECALPERCD" size="4" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="CREDITLIMITAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ORIGINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ORIGLOANLIMIT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PREPAYCHARGE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="TOTALPI" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="TOTALPIDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCROWDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="TOTALPAYMENTSDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NUMBERPMTSDUE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int32" />
+            <Field name="YTDLATE30" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int16" />
+            <Field name="YTDLATE60" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int16" />
+            <Field name="YTDLATE90" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int16" />
+            <Field name="YTDLATE120PLUS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int16" />
+            <Field name="YTDINTEREST" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="YTDLATECHRGPAID" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="YTDPREPAIDCHARGE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFCOSTREM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFCOSTUNEARNED" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFCOSTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFCOSTRATEMONTHLY" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="STNDCOSTREM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="STNDCOSTUNEARNED" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="STNDCOSTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="STNDCOSTRATEMONTHLY" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFFEEREM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFFEEUNEARNED" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFFEERATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFFEERATEMONTHLY" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DEFREMTERM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="DATELASTMAINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="MLACCTNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="CALLDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="ESTDATEMAT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="INTPDTOPRINBALANCE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PRIVATEBALANCE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="SHADOWACCTGYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="SHADOWACCTGSTARTDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="SHADOWACCTGENDDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="TRANSFERSERVORGNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="TRANSFERSERVEFFDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="TRANSFERSERVDESC" size="30" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="TRANSFERSERVPURCHASEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="INTFIRSTCONVERTDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="SCHEDULEBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="REFIPRIORACCTNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="YTDACCRUED" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIMITODBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIMITODINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIMITODACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIMITODYTDINTCHRG" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIMITODBALSUBACCTNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="LIMITODAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ODEXCESSBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ODEXCESSINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ODEXCESSACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ODEXCESSYTDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ODEXCESSSUBACCTNBR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="ARAGINGEFFDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="ARAGINGCATSUMAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="CREDLIMITCLATRESAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="CREDLIMITCLATRESEFFDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="FORBEARANCEBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PRINSURPLUSPROCYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="OPERATINGFUNDBAL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="OPERATINGFUNDINTRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="OPERATINGFUNDACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEAVAIL" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="TOTALFUNDHOLDSAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="BILLINGLEADDAYSOVR" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="SBAACCTNBR" size="64" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="V_String" />
+            <Field name="SBADISBURSEMENTDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="PPPDEFFPRINCIPALAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PPPDEFFINTERESTAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ALLOWSUBMASTERLINESYN" size="1" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="AMORTFIRSTDUEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="AMORTMATDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="AMORTREMTERM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="PREPAYPENALTYEFFDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="PREPAYPENALTYINACTIVEDATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="DateTime" />
+            <Field name="PREPAYPENALTYRATE" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="PREPAYPENALTYMETHCD" size="30" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="PREPAYPENALTYDATETYPCD" size="30" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="String" />
+            <Field name="AMORTLEADDAYS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="NBRREMPMTS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="REMTERM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="AMORTNBRREMPMTS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="UNUSEDAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFACCRUEDINTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFACCRUEDINTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFACCRUEDINTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFACCRUEDINTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFPARTACCRUEDINTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFINTEXPENSEDISBYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFPARTINTEXPENSEDISBYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NBROFINDLBLTYHOLDERS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="AMORTTERMINMONTHS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="AMORTREMTERMINMONTHS" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Int64" />
+            <Field name="LOANTOVALUERATIO" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="COMBLOANTOVALUERATIO" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LOSSDRAFTACCRUEDINT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEBALPERDIEM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCBALPERDIEM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="WCOFBALPERDIEM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFBALPERDIEM" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNETLIPAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNETLIPAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNETLIPAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEACCRUEDINTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEACCRUEDINTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBNOTEACCRUEDINTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBESCACCRUEDINTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBESCACCRUEDINTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBESCACCRUEDINTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBLDRFACCRUEDINTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBLDRFACCRUEDINTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBLDRFACCRUEDINTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEBALACTVAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEBALACTVAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEBALACTVAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEBALACTVAMTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIPBALACTVAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIPBALACTVAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIPBALACTVAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LIPBALACTVAMTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTAMTACCRUEDMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTAMTACCRUEDQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTAMTACCRUEDYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTAMTACCRUEDLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTAMTACCRUEDMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTAMTACCRUEDQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTAMTACCRUEDYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTAMTACCRUEDLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTAMTACCRUEDMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTAMTACCRUEDQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTAMTACCRUEDYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTAMTACCRUEDLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTPAIDACTVAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTPAIDACTVAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTPAIDACTVAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="NOTEINTPAIDACTVAMTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTPAIDACTVAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTPAIDACTVAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTPAIDACTVAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ESCINTPAIDACTVAMTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTPAIDACTVAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTPAIDACTVAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTPAIDACTVAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="LDRFINTPAIDACTVAMTLTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBUNAPAMTMTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBUNAPAMTQTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="ADBUNAPAMTYTD" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="INTRESERVECARVEOUTUNUSEDAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+            <Field name="CARVEOUTUNUSEDAMT" source="File: aka:R1625.world|||SELECT * FROM OSIBANK.WH_ACCTLOAN" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection name="#1">
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Alerts</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="74408d53-0d9e-4b50-adbf-83c8b5d015c0" />
+      <Telemetry>
+        <PreviousWorkflowId value="50456df4-3cd1-4c01-b89b-e3ca13ae5c40" />
+        <OriginWorkflowId value="1dd07caa-f527-4659-ab02-bb11357958b6" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

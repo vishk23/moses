@@ -1,0 +1,171 @@
+#################################
+# List all non-standard packages to be imported by your 
+# script here (only missing packages will be installed)
+from ayx import Package
+#Package.installPackages(['pandas','numpy'])
+
+
+#################################
+from ayx import Alteryx
+import pandas as pd
+import numpy as np
+import os
+import json
+from sqlalchemy import create_engine
+
+class DatabaseHandler:
+    def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):
+        os.environ['TNS_ADMIN'] = tns_admin_path
+        
+        with open(credentials_path_db1) as config_file:
+            config1 = json.load(config_file)
+            
+        self.username1 = config1['username']
+        self.password1 = config1['password']
+        self.dsn1 = config1['dsn']
+        
+        with open(credentials_path_db2) as config_file:
+            config2 = json.load(config_file)
+            
+        self.username2 = config2['username']
+        self.password2 = config2['password']
+        self.dsn2 = config2['dsn']
+        
+        self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'
+        self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'
+        
+        self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)
+        self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)
+        
+    def query(self, sql_query, engine=1):
+        if engine == 1:
+            selected_engine = self.engine1
+        elif engine == 2:
+            selected_engine = self.engine2
+        else:
+            raise ValueError("Engine must be 1 or 2")
+            
+        with selected_engine.connect() as connection:
+            df = pd.read_sql(sql_query, connection)
+        return df
+
+# Database Connection Configuration
+tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+
+
+#################################
+import time
+
+start_time = time.time()
+
+acctcommon = db_handler.query("SELECT * FROM OSIBANK.WH_ACCTCOMMON", engine=1)
+acctloan = db_handler.query("SELECT * FROM OSIBANK.WH_ACCTLOAN", engine=1)
+loans = db_handler.query("SELECT * FROM OSIBANK.WH_LOANS", engine=1)
+househldacct = db_handler.query("SELECT * FROM OSIEXTN.HOUSEHLDACCT", engine=1)
+
+print(f"Query took {time.time() - start_time} seconds.")
+
+
+#################################
+# ## This is a field lookup query. This is not included in production code.
+# import time
+
+# start_time = time.time()
+
+# all_fields = "SELECT * FROM sys.all_tab_columns col"
+
+
+# with engine1.connect() as connection:
+#     all_fields = pd.read_sql(all_fields, connection)
+    
+# print(f"Query took {time.time() - start_time} seconds.")
+
+
+#################################
+# temp_df = all_fields[all_fields['column_name'].str.contains('household', case=False, na=False)]
+# temp_df
+
+
+#################################
+def filter_and_merge_loan_tables(acctcommon, acctloan, loans):
+    # Active/NPFM products
+    df = acctcommon[acctcommon['curracctstatcd'].isin(['ACT','NPFM'])]
+
+    # CML loans
+    df = df[df['mjaccttypcd'].isin(['CML'])]
+
+    # Merging and dropping blank fields
+    df = pd.merge(df, acctloan, on='acctnbr', how='left', suffixes=('_df', '_acctloan'))
+    df = pd.merge(df, loans, on='acctnbr', how='left', suffixes=('_df', '_loans'))
+    df = df.dropna(axis=1, how='all')
+    
+    return df
+
+loan_data = filter_and_merge_loan_tables(acctcommon, acctloan, loans)
+
+
+#################################
+def cleanse_loan_data(df):
+    # Data Cleansing
+    df['totalpctsold'] = df['totalpctsold'].fillna(0)
+    df['availbalamt'] = df['availbalamt'].fillna(0)
+    df['credlimitclatresamt'] = df['credlimitclatresamt'].fillna(0)
+    return df
+
+loan_data = cleanse_loan_data(loan_data)
+
+
+#################################
+def append_total_exposure_field(df):
+    """ Single Obligor Exposure Calculation
+    
+    I'll figure out docstring later
+    
+    """
+    # Tax Exempt bonds always have $0 Book Balance so need to take NOTEBAL
+    df['bookbalance'] = np.where(df['currmiaccttypcd'].isin(['CM45']), df['notebal'], df['bookbalance'])
+    df['Net Balance'] = df['bookbalance'] - df['cobal']
+    df['Net Available'] = df['availbalamt'] * (1 - df['totalpctsold'])
+    df['Net Collateral Reserve'] = df['credlimitclatresamt'] * (1 - df['totalpctsold'])
+    df['Total Exposure'] = df['Net Balance'] + df['Net Available'] + df['Net Collateral Reserve']
+    return df
+
+loan_data = append_total_exposure_field(loan_data)
+
+
+#################################
+def append_household_number(df, househldacct):
+    df = pd.merge(df, househldacct, on='acctnbr', how='left', suffixes=('_df', '_househldacct'))
+    return df
+
+loan_data = append_household_number(loan_data, househldacct)
+
+
+#################################
+def household_total_exposure(df):
+    household_grouping_df = df.groupby('householdnbr')['Total Exposure'].sum().reset_index()
+    household_grouping_df = pd.DataFrame(household_grouping_df)
+    return household_grouping_df
+
+household_grouping_df = household_total_exposure(loan_data)
+
+
+#################################
+def append_household_exposure(df, household_grouping_df):
+    df = pd.merge(df, household_grouping_df, on='householdnbr', how='left', suffixes=('_df','_hhgroup'))
+
+loan_data = append_household_exposure(loan_data, household_grouping_df)
+
+
+#################################
+def filter_to_target_products(df):
+    # Lines of Credit
+    df = df[df['currmiaccttypcd'].isin(["CM06","CM11","CM30","CM52","CM57","CM62","CM71","CM76"])]
+    # Credit Limit Amount <= $500M & Household Exposure <= $1MM
+    df = df[(df['creditlimitamt'] <= 500000) & (df2['Total Exposure_hhgroup'] <= 1000000)]
+    return df
+
+loan_data = filter_to_target_products(loan_data)

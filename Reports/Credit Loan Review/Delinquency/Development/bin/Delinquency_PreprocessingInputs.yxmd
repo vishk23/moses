@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2022.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="85" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">\\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`</File>
+          <FormatSpecificOptions>
+            <FirstRowData>False</FirstRowData>
+            <ImportLine>1</ImportLine>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Updated Past Due Loans.xlsx
+Query=`Delinquency$`</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Product Family" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="Account Number" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_WString" />
+            <Field name="Product Name" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="Customer Name" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="Responsibility Officer" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="YTD Over 30" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="YTD Over 60" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="YTD Over 90" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="YTD Over 120" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="NDPD" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="Current Balance" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="Charged Off" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="Net Balance" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="Risk" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="Non Accrual" size="255" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="V_String" />
+            <Field name="Total Amount Due" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Double" />
+            <Field name="Next Payment Due Date" source="File: \\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard\Updated Past Due Loans.xlsx|||`Delinquency$`" type="Date" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="205" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="Account Number" selected="True" type="V_String" size="255" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="278" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="ACCTNBR" selected="True" type="V_String" size="255" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+        <Position x="377" y="66" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FieldFind>Account Number</FieldFind>
+          <FieldSearch>ACCTNBR</FieldSearch>
+          <ReplaceFoundField>MJACCTTYPCD</ReplaceFoundField>
+          <FindMode>FindWhole</FindMode>
+          <NoCase value="False" />
+          <MatchWholeWord value="False" />
+          <ReplaceMode>Append</ReplaceMode>
+          <ReplaceMultipleFound value="True" />
+          <ReplaceAppendFields>
+            <Field field="MJACCTTYPCD" />
+          </ReplaceAppendFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="699" y="66" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File MaxRecords="" FileFormat="25">\\10.161.85.66\Home\Share\Data &amp; Analytics Initiatives\Project Management\Chad Projects\Resolution Committee Automation\Delinquency\Production\Sources\iDashboard_Appended\Delinquency_withMajor.xlsx|||Sheet1</File>
+          <Passwords />
+          <Disable>False</Disable>
+          <FormatSpecificOptions>
+            <PreserveFormat>False</PreserveFormat>
+            <SkipFieldNames>False</SkipFieldNames>
+            <OutputOption>Overwrite</OutputOption>
+          </FormatSpecificOptions>
+          <MultiFile value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Delinquency_withMajor.xlsx
+Query=Sheet1</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="603" y="66" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="MJACCTTYPCD" selected="True" rename="Major" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="54" y="263" width="387" height="240" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Add Current Minor here &amp; change CM15&amp;CM16 to CNS</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="2">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="79" y="315" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <CachedCosmeticName />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,
+	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,
+	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD 
+from OSIBANK.WH_ACCTCOMMON</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="MJACCTTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="CURRMIACCTTYPCD" size="4" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="10">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="181" y="312" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="IF [CURRMIACCTTYPCD] IN (&quot;CM15&quot;,&quot;CM16&quot;) THEN &quot;CNS&quot; ELSE [MJACCTTYPCD] ENDIF" field="MJACCTTYPCD" size="4" type="String" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>MJACCTTYPCD = IF [CURRMIACCTTYPCD] IN ("CM15","CM16") THEN "CNS" ELSE [MJACCTTYP...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+      </ChildNodes>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="5" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="5" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="Output" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="8" Connection="Output" />
+      <Destination ToolID="7" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="10" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Delinquency_PreprocessingInputs</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="5c98c4fe-7b6d-45b9-88a8-55e9cdd36d11" />
+      <Telemetry>
+        <PreviousWorkflowId value="30c4fc4d-4e01-4b43-b3c0-172df49ffb87" />
+        <OriginWorkflowId value="2727bbc7-5027-45ca-97c6-653e0b4ade9b" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
