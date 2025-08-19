@@ -250,9 +250,9 @@ def print_report_list(reports: List[Dict]):
                 status_indicators.append("✗ No main.py")
             
             if report['prod_ready']:
-                status_indicators.append("PROD")
+                status_indicators.append("Production")
             else:
-                status_indicators.append("DEV")
+                status_indicators.append("Not Ready")
             
             # Schedule info
             schedule = categorize_by_schedule(report['schedule']).title()

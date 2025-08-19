@@ -67,7 +67,7 @@ def main():
     merged_data = src.transformations.filters.filtering_down_to_relevant_fields(merged_data)
 
     # Write out to excel
-    output_path = Path(r'Z:\Chad Projects\Ad Hoc Reports\Lee_Mason_Ins_Tracking\Production\output\lee_mason_extract.xlsx')
+    output_path = Path("./output/lee_mason_extract.xlsx")
     merged_data.to_excel(output_path, engine='openpyxl', index=False)
     print(f"Report generation complete! File written to {output_path}")
 
