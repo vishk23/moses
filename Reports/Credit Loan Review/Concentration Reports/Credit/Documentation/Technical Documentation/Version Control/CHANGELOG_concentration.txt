@@ -1,0 +1,8 @@
+== [v0.6] 2024-09-16
+- Built general framework for the report
+- Worked on the retrieve_data() method
+
+
+== [v0.5] 2024-09-12
+- Began refactoring concentration reports and rewriting in python
+- Development with sample data

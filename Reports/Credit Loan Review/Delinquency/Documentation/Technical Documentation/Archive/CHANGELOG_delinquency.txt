@@ -1,0 +1,3 @@
+## [v1.1] 2024-09-11
+- Starting to refactor the backend for Delinquency.
+- Cleaning up & better documentation

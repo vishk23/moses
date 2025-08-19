@@ -1,0 +1,263 @@
+#################################
+# List all non-standard packages to be imported by your 
+# script here (only missing packages will be installed)
+from ayx import Package
+#Package.installPackages(['pandas','numpy'])
+
+
+#################################
+"""
+Concentration Reports
+@ Chad Doorley
+2024
+"""
+
+from ayx import Alteryx
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+
+#################################
+def main():
+    df = retrieve_data()
+    df = etl(df)
+    df = group_by_household(df)
+    write_to_excel(df)
+
+
+#################################
+def retrieve_data():
+    """
+    This method is responsible for connecting to the SQL database and 
+    retrieving data that will be transformed into a pandas DataFrame
+    to generate the concentration reports
+    
+    Args:
+        None
+        
+    Returns:
+        df: Data from SQL database joined together into 1 table
+        
+    Operations:
+        - Initialize class DatabaseHandler
+        - Query database
+        - Join data
+    """
+    
+    class DatabaseHandler:
+    """
+    This class abstracts the connection to the database and allows a clean
+    interface for the developer to use.
+    
+    """
+    def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):
+        """
+        Args:
+            tns_admin_path (str): Oracle driver path
+            credentials_path_db1 (str): Database 1 credentials path
+            credentials_path_db1 (str): Databsae 2 credentials path
+        """
+        os.environ['TNS_ADMIN'] = tns_admin_path
+        
+        with open(credentials_path_db1) as config_file:
+            config1 = json.load(config_file)
+            
+        self.username1 = config1['username']
+        self.password1 = config1['password']
+        self.dsn1 = config1['dsn']
+        
+        with open(credentials_path_db2) as config_file:
+            config2 = json.load(config_file)
+            
+        self.username2 = config2['username']
+        self.password2 = config2['password']
+        self.dsn2 = config2['dsn']
+        
+        self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'
+        self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'
+        
+        self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)
+        self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)
+        
+    def query(self, sql_query, engine=1):
+        """
+        This allows abstraction of the connection and the class
+        so the developer can query a single table as a dataframe
+        
+        Args:
+            sql_query (str): The query to SQL database is passed as a string
+            engine (int): This selects the database. There are two engines:
+                1 -> R1625
+                2 -> COCC DataMart
+                
+        Returns:
+            df: The SQL query is returned as a pandas DataFrame
+            
+        Usage:
+            df = db_handler.query("SELECT * FROM DB.TABLE", engine=1)
+            
+            In this example, db_handler = DatabaseHandler(args)
+        """
+        if engine == 1:
+            selected_engine = self.engine1
+        elif engine == 2:
+            selected_engine = self.engine2
+        else:
+            raise ValueError("Engine must be 1 or 2")
+            
+        with selected_engine.connect() as connection:
+            df = pd.read_sql(sql_query, connection)
+        return df
+    
+    # Database Connection Configuration
+    tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+    credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+    credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+    
+    print("Starting SQL query ...")
+    start_time = time.time()
+    
+    with db_handler.engine1.connect() as connection:
+        acctcommon = text("""
+        SELECT 
+            a.ACCTNBR, 
+            a.EFFDATE, 
+            a.MJACCTTYPCD, 
+            a.PRODUCT, 
+            a.CURRMIACCTTYPCD, 
+            a.BOOKBALANCE, 
+            a.LOANOFFICER, 
+            a.OWNERNAME, 
+            a.CURRACCTSTATCD, 
+            a.CONTRACTDATE, 
+            a.NOTEBAL
+        FROM 
+            OSIBANK.WH_ACCTCOMMON a
+        WHERE 
+            a.CURRACCTSTATCD IN ('ACT')
+        """)
+        acctcommon = pd.read_sql(acctcommon, connection)
+        
+    print(f"SQL query took {time.time() - start_time} seconds.")
+    
+
+
+#################################
+# Create sample data
+np.random.seed(42)
+num_records = 10
+
+data = {
+    'acctnbr': [f'{i:05d}' for i in range(1, num_records + 1)],
+    'customer_name': [f'Customer {i}' for i in range(1, num_records + 1)],
+    'officer': np.random.choice(['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'], num_records),
+    'contract_date': [datetime.now().date() - timedelta(days=np.random.randint(1, 365)) for _ in range(num_records)],
+    'balance': np.random.uniform(1000, 100000, num_records).round(2),
+    'interest_rate': np.random.uniform(0.01, 0.05, num_records).round(4),
+    'household_number': np.random.choice([123456, 234567, 345678], num_records)
+}
+
+# Create the DataFrame
+df = pd.DataFrame(data)
+
+
+#################################
+# # Set acctnbr as the primary key (index)
+# df.set_index('acctnbr', inplace=True)
+
+# Display the DataFrame
+# print(df)
+
+def group_by_household(df):
+    """
+    Group the input DataFrame by household, sort by total balance, and format the output.
+
+    This function processes account information, grouping it by household and adding summary rows.
+    It also sorts the data to present households with the highest total balances first.
+
+    Args:
+        df (pandas.DataFrame): Input DataFrame containing account information.
+
+    Returns:
+        pandas.DataFrame: A new DataFrame grouped by household, including:
+            - Individual account records
+            - Household total balance rows
+            - Empty rows for visual separation
+        The DataFrame is sorted by descending total household balance.
+
+    Operations:
+        1. Reset index to make acctnbr a column.
+        2. Sort data by household_number and balance (descending).
+        3. Group data by household_number.
+        4. Calculate and sort total balances for each household.
+        5. Create a new DataFrame with household records, sum rows, and empty rows.
+        6. Ensure acctnbr is the first column in the result.
+    """
+    # Reset index to make acctnbr a column
+    df = df.reset_index()
+    
+    # Sort the DataFrame by household_number and balance in descending order
+    df_sorted = df.sort_values(['household_number', 'balance'], ascending=[True, False])
+    
+    # Group by household_number
+    grouped = df_sorted.groupby('household_number')
+    
+    # Calculate total balance for each household
+    household_totals = grouped['balance'].sum().sort_values(ascending=False)
+    
+    # Create a new DataFrame to store the result
+    result = pd.DataFrame()
+    
+    for household in household_totals.index:
+        # Get records for the current household
+        household_records = grouped.get_group(household)
+        
+        # Add records to the result DataFrame
+        result = pd.concat([result, household_records])
+        
+        # Add a sum row for the household
+        sum_row = pd.DataFrame({
+            'acctnbr': [''],
+            'customer_name': ['Total'],
+            'officer': [''],
+            'contract_date': [pd.NaT],
+            'balance': [household_records['balance'].sum()],
+            'interest_rate': [np.nan],
+            'household_number': [household]
+        })
+        
+        result = pd.concat([result, sum_row])
+        
+        # Add an empty row
+        empty_row = pd.DataFrame({
+            'acctnbr': [f'{household}_empty'],
+            'customer_name': [''],
+            'officer': [''],
+            'contract_date': [pd.NaT],
+            'balance': [np.nan],
+            'interest_rate': [np.nan],
+            'household_number': [np.nan]
+        })
+        result = pd.concat([result, empty_row])
+    
+    # Ensure acctnbr is the first column
+    columns = ['acctnbr'] + [col for col in result.columns if col != 'acctnbr']
+    result = result[columns]
+    
+    return result
+
+
+
+
+#################################
+# Example usage:
+grouped_df = group_by_household(df)
+print(grouped_df)
+
+# grouped_df.to_csv('grouped_df.csv')
+
+
+
+#################################
