@@ -1,0 +1,851 @@
+#################################
+# List all non-standard packages to be imported by your 
+# script here (only missing packages will be installed)
+from ayx import Package
+# Package.installPackages(['openpyxl'])
+
+
+#################################
+"""
+    Delinquency Report
+    @author: Chad Doorley
+"""
+
+# This report automates a 30 minute task in Loan Review
+# This is attached to loan review's monthly resolution package
+
+
+""" Documentation Legend
+
+###: Global Specific
+ ##: Section Specific
+  #: Details
+---: New section
+
+Variable definitions
+# 'CNS' = Consumer
+# '(N)DPD' = (Number of) Days Past Due
+# 90plus, 60to89, 30to59, 15to29 = 90+ days past due, 60-89 days, etc...
+
+    Workflow Outline:
+    1. environment setup
+    2. inputs (iDashboard <-> COCC)
+    3. pre-processing
+    4. ETL (pandas dataframe)
+    5. joining the data
+    6. Formatting
+    7. Write to Excel
+
+
+"""
+
+### Environment Setup
+from ayx import Alteryx
+import pandas as pd
+import numpy as np
+from openpyxl import load_workbook
+from openpyxl.styles import Font, Border, Side, Alignment
+from openpyxl.styles.numbers import NumberFormat
+import os
+from datetime import datetime, timedelta
+
+
+### Inputs --------------------------------------------------------------
+df = Alteryx.read("#1") # Currently iDashboard-generated
+
+### Pre-Processing --------------------------------------------------------------
+df = df.drop('Product Family',axis=1) # Product Family Column (first column) is removed
+
+columns_to_sum = ['Current Balance','Charged Off','Net Balance'] # This will allow me to reference these specific columns for later sum() calls
+
+# Sum Function - Reusable
+def sum_function(current_df,total_title):
+    """ Sum Function
+    
+    Description:
+    - This reusable function will count the number of records and sum the columns specified in
+      the 'columns_to_sum' variable.
+    
+    Arguments:
+    - current_df: A dataframe is passed in. It must have 'NDPD','Current Balance','Charged Off',
+      and 'Net Balance' columns.
+    - total_title: The summed row will need a label placed in the left most column. This is
+      explicitly passed into the function as a string
+      
+    Returns:
+    - summed_df: A new dataframe with only 1 row is created. with null values for all 
+    
+    """
+    ndpd_count = len(current_df) # Counts the number of records in the dataframe
+    sums = current_df[columns_to_sum].sum().to_dict() # Converts the sums for targeted columns as a python dictionary
+    new_dictionary = {col: [sums.get(col, np.nan)] for col in current_df.columns} # Creates a new sum row to insert, with Null values for all other columns
+    new_dictionary['NDPD'] = [ndpd_count]
+    new_dictionary[current_df.columns[0]] = [total_title]
+    summed_df = pd.DataFrame(new_dictionary)
+    return summed_df
+
+# Join Function - Reusable
+def join_function(section_title, subsection_title, current_section, summed_row):
+    """ Join Function
+    
+    Description:
+    - This reusable function will concatenate several dataframes together in a set order
+    
+    Arguments:
+    - section_title: This is the major header for each section, like 'CONSUMER LOANS'
+    - subsection_title: This is the subheader, such as '90+ Days Past Due'
+    - current_section: The filtered data (df1) is passed in, containing the specific items
+    - summed_row: The summed row is a result of the other 'Sum Function' and is the last row in each section
+    """
+    dataframes = []
+    if section_title is not None:
+        dataframes.append(section_title) # 'None' is passed as an argument for sections where there is no section header
+    dataframes.append(subsection_title) # The other three arguments are required
+    dataframes.append(current_section) 
+    dataframes.append(summed_row)
+    joined_df = pd.concat(dataframes, ignore_index=True)
+    return joined_df # This sequence is repeated throughout workflow to join dataframes in a set structure
+
+# Remove Leading/Trailing Whitespace
+def strip_if_string(value):
+    """This function removes leading and trailing whitespace from all string values in a dataframe"""
+    if isinstance(value, str):
+        return value.strip() # If it is a string, it will remove leading/trailing whitespace
+    return value # Otherwise, it just return the value
+    
+# Data Cleaning
+df = df.applymap(strip_if_string) # The 'strip_if_string' is applied to all values in the dataframe
+
+# Most recent month end
+today = datetime.today()
+if today.day == 1:
+    most_recent_month_end = today - timedelta(days=1)
+else:
+    most_recent_month_end = today.replace(day=1) - timedelta(days=1)
+most_recent_month_end_str = most_recent_month_end.strftime("%m/%d/%y")
+
+### Section Outline --------------------------------------------------------------
+
+
+## Section Title - Consumer Loans, 90+ Days Past Due 
+
+# Variable definition
+# This structure is repeated throughout the workflow.
+df1_condition = (df['Product Name'].isin(['Unsecured Loans','Unsecured HEAT Loans',"Flexi PRA's",'TMLP Saves Loan'])) & (df['NDPD'] >= 90)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data' # This data is labelled for formatting later on
+
+# Descriptive Labels
+section_title = pd.DataFrame([['CONSUMER LOANS'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cns_90plus = completed_df # Consumer 90+ dataframe is stored in memory, to be used later on in the report output
+
+
+## Section Title - Consumer Loans, 60-89 Days Past Due
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Unsecured Loans','Unsecured HEAT Loans',"Flexi PRA's",'TMLP Saves Loan'])) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cns_60to89 = completed_df
+
+
+## Section Title - Consumer Loans, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Unsecured Loans','Unsecured HEAT Loans',"Flexi PRA's",'TMLP Saves Loan'])) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cns_30to59 = completed_df
+
+
+## Section Title - Consumer Loans, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Unsecured Loans','Unsecured HEAT Loans',"Flexi PRA's",'TMLP Saves Loan'])) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cns_15to29 = completed_df
+
+
+## Section Title - HOME EQUITY LINE OF CREDIT, 90+ Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 90)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['HOME EQUITY LINE OF CREDIT'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+heloc_90plus = completed_df
+
+
+## Section Title - HOME EQUITY LINE OF CREDIT, 60-89 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+heloc_60to89 = completed_df
+
+
+## Section Title - HOME EQUITY LINE OF CREDIT, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+heloc_30to59 = completed_df
+
+
+## Section Title - HOME EQUITY LINE OF CREDIT, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+heloc_15to29 = completed_df
+
+
+## Section Title - INDIRECT, 90+ Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].str.contains('Indirect',case=False, na=False)) & (df['NDPD'] >= 90)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['INDIRECT LOANS'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+indirect_90plus = completed_df
+
+
+
+## Section Title - INDIRECT, 60-89 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].str.contains('Indirect',case=False, na=False)) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+indirect_60to89 = completed_df
+
+
+## Section Title - INDIRECT, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].str.contains('Indirect',case=False, na=False)) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+df1 = None # This makes this section subtotal only, as it would exhaustive to show all of them
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+indirect_30to59 = completed_df
+
+
+## Section Title - INDIRECT, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Product Name'].str.contains('Indirect',case=False, na=False)) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+df1 = None # This makes this section subtotal only, as it would exhaustive to show all of them
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+indirect_15to29 = completed_df
+
+
+## Section Title - RESIDENTIAL, 90+ Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'MTG') & (~df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 90)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['RESIDENTIAL MORTGAGES'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+resi_90plus = completed_df
+
+
+## Section Title - RESIDENTIAL, 60-89 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'MTG') & (~df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+resi_60to89 = completed_df
+
+## Section Title - RESIDENTIAL, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'MTG') & (~df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+resi_30to59 = completed_df
+
+
+## Section Title - RESIDENTIAL, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'MTG') & (~df['Product Name'].isin(['Equity Line of Credit','Special HELOC'])) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29)
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+resi_15to29 = completed_df # By this point, all residential loans are captured and stored in memory
+
+
+## Section Title - COMMERCIAL, 90+ Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'CML') & (df['Net Balance'] != 0) & (df['NDPD'] >= 90) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['COMMERCIAL LOANS'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cml_90plus = completed_df
+
+
+## Section Title - COMMERCIAL, 60-89 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'CML') & (df['Net Balance'] != 0) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cml_60to89 = completed_df
+
+
+## Section Title - COMMERCIAL, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'CML') & (df['Net Balance'] != 0) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cml_30to59 = completed_df
+
+
+## Section Title - COMMERCIAL, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Major'] == 'CML') & (df['Net Balance'] != 0) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+cml_15to29 = completed_df
+
+
+## Section Title - COMMERCIAL PEM, 90+ Days Past Due
+
+# Variable definition
+df1_condition = (df['Risk'].str.contains('3P',case=False, na=False)) & (df['NDPD'] >= 90) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['COMMERCIAL LOANS - PORTFOLIO EXCEPTIONS MANAGED'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+section_title['Tag Type'] = 'title'
+subsection_title = pd.DataFrame([['90+ DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 90+ DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+pem_90plus = completed_df
+
+
+## Section Title - COMMERCIAL PEM, 60-89 Days Past Due
+
+# Variable definition
+df1_condition = (df['Risk'].str.contains('3P',case=False, na=False)) & (df['NDPD'] >= 60) & (df['NDPD'] <= 89) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['60-89 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 60-89 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+pem_60to89 = completed_df
+
+
+## Section Title - COMMERCIAL PEM, 30-59 Days Past Due
+
+# Variable definition
+df1_condition = (df['Risk'].str.contains('3P',case=False, na=False)) & (df['NDPD'] >= 30) & (df['NDPD'] <= 59) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['30-59 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 30-59 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+pem_30to59 = completed_df
+
+
+## Section Title - COMMERCIAL PEM, 15-29 Days Past Due
+
+# Variable definition
+df1_condition = (df['Risk'].str.contains('3P',case=False, na=False)) & (df['NDPD'] >= 15) & (df['NDPD'] <= 29) # This captures CML loans with a non-zero Net Balance. Those with a $0 Balance are captured in another section below
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = None
+subsection_title = pd.DataFrame([['15-29 DAYS PAST DUE'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns) # 'Consumer Loans' is placed in the first column with null values for all the other columns
+subsection_title['Tag Type'] = 'subtitle'
+
+# Completed Section
+summed_row = sum_function(df1,'TOTAL 15-29 DAYS PAST DUE')
+summed_row['Tag Type'] = 'sum'
+
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+pem_15to29 = completed_df
+
+
+## Section Title - COMMERCIAL NET BALANCE PAID OR REDUCED TO $0
+
+# Variable definition
+df1_condition = (df['Major'] == 'CML') & (df['Net Balance'] == 0) # This captures CML loans where Net Balance is paid or reduced to $0
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['NET BALANCE PAID or REDUCED TO $O'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns)
+section_title['Tag Type'] = 'title'
+subsection_title = None 
+
+
+# Completed Section
+summed_row = None
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+netbalancezero = completed_df
+
+
+## Section Title - REPOSSESSED
+
+# Variable definition
+df1_condition = (df['Product Name'].str.contains('Repossessed Collateral', case=False, na=False)) # Repo Loans
+df1 = df.loc[df1_condition].copy()
+df1['Tag Type'] = 'data'
+
+# Descriptive Labels
+section_title = pd.DataFrame([['REPOSSESSED'] + [np.nan] * (df1.shape[1] - 1)], columns=df1.columns)
+section_title['Tag Type'] = 'title'
+subsection_title = None 
+
+# Completed Section
+summed_row = None
+completed_df = join_function(section_title, subsection_title, df1, summed_row)
+
+# Save df to memory
+repo = completed_df
+
+
+### Combined and Completed Report --------------------------------------------------------------
+# Here all dfs are stored in a list
+all_dfs = [cns_90plus,cns_60to89,cns_30to59,cns_15to29,heloc_90plus,heloc_60to89,heloc_30to59,heloc_15to29,indirect_90plus,indirect_60to89,indirect_30to59,indirect_15to29,resi_90plus,resi_60to89,resi_30to59,resi_15to29,cml_90plus,cml_60to89,cml_30to59,cml_15to29,pem_90plus,pem_60to89,pem_30to59,pem_15to29,netbalancezero,repo]
+
+concat_dfs = [] # Empty list to store dataframes
+
+for i,df in enumerate(all_dfs):
+    concat_dfs.append(df) # Each dataframe
+    if i < len(all_dfs) - 1:
+        concat_dfs.append(pd.DataFrame([[None]*df.shape[1]], columns=df.columns)) # Null row
+    
+completed_df = pd.concat(concat_dfs, ignore_index=True)
+
+### WRITING TO EXCEL --------------------------------------------------------------
+
+## Set Directory and Filename
+output_dir = r"\\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\RC\Delinquency\OUTPUT"
+os.makedirs(output_dir, exist_ok=True)
+filename = "Delinquency.xlsx"
+output_file = os.path.join(output_dir,filename)
+
+with pd.ExcelWriter(output_file, engine='openpyxl', mode='w') as writer:
+    completed_df.to_excel(writer, index=False, sheet_name='Sheet1', startrow=4)
+
+wb = load_workbook(output_file)
+ws = wb.active
+
+## Define Formatting
+# Dimensions
+ws.row_dimensions[5].height = 44
+
+ws.column_dimensions['A'].width = 13
+ws.column_dimensions['B'].width = 29
+ws.column_dimensions['C'].width = 32
+ws.column_dimensions['D'].width = 20
+ws.column_dimensions['E'].width = 5
+ws.column_dimensions['F'].width = 5
+ws.column_dimensions['G'].width = 5
+ws.column_dimensions['H'].width = 5
+ws.column_dimensions['I'].width = 6
+ws.column_dimensions['J'].width = 12
+ws.column_dimensions['K'].width = 10
+ws.column_dimensions['L'].width = 12
+ws.column_dimensions['M'].width = 29
+ws.column_dimensions['N'].width = 8
+ws.column_dimensions['O'].width = 13
+ws.column_dimensions['P'].width = 10
+ws.column_dimensions['Q'].width = 46
+
+
+
+# Font
+upper_section_font = Font(size=14, name='Calibri', bold=True, italic=True)
+title_font = Font(size=12, name='Arial', bold=True)
+subtitle_font = Font(size=10, name='Arial', bold=True)
+data_font = Font(size=10, name='Arial')
+sum_font = Font(size=10, name='Arial', bold=True)
+wrap_alignment = Alignment(wrap_text=True, vertical='bottom', horizontal='center')
+
+
+# Border
+double_border = Border(bottom=Side(style='double'))
+
+# Header
+ws['A1'] = "BRISTOL COUNTY SAVINGS BANK"
+ws['A1'].font = upper_section_font
+ws['A2'] = "MONTHLY DELINQUENCY REPORT"
+ws['A2'].font = upper_section_font
+ws['A3'] = f"AS OF {most_recent_month_end_str}"
+ws['A3'].font = upper_section_font
+
+
+
+# Clean out Column Q
+for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=17, max_col=17):
+    for cell in row:
+        cell.value = None
+        
+
+
+# Center Align Columns E:I
+for col in range(5,10):
+    for cell in ws.iter_cols(min_col=col, max_col=col, min_row=1, max_row=ws.max_row):
+        for c in cell:
+            c.alignment = Alignment(horizontal='center')
+            
+# Center Align Columns M:N
+for col in range(13,15):
+    for cell in ws.iter_cols(min_col=col, max_col=col, min_row=1, max_row=ws.max_row):
+        for c in cell:
+            c.alignment = Alignment(horizontal='center')
+
+# for cell in ws['P']:
+#     cell.number_format = NumberFormat('%m/%d/%y')
+
+## Iterate over rows and apply formatting
+for cell in ws[5]:
+    cell.alignment = wrap_alignment
+    
+start_row = 6 # This is a counter variable
+
+for idx, row in completed_df.iterrows():
+    row_type = row['Tag Type']
+    current_row = start_row + idx
+    
+    if row_type == 'title':
+        for cell in ws[current_row]:
+            cell.font = title_font
+            
+    elif row_type == 'subtitle':
+        for cell in ws[current_row]:
+            cell.font = subtitle_font
+            
+    elif row_type == 'data':
+        for cell in ws[current_row]:
+            cell.font = data_font
+            
+    elif row_type == 'sum':
+        for cell in ws[current_row]:
+            cell.font = sum_font
+            cell.border = double_border
+            
+
+
+# Final formatting
+# Clean out Column R
+for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=18, max_col=18):
+    for cell in row:
+        cell.value = None
+        cell.border = None
+        
+ws['Q5'] = "Comments"
+temp_border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+ws['Q5'].border = temp_border
+            
+# Saving
+wb.save(output_file)
+
+print(f"Report saved to {output_file}")
+
+
+
+#################################
+
+
+
+#################################

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2022.3">
+  <Nodes>
+    <Node ToolID="2">
+      <GuiSettings Plugin="JupyterCode">
+        <Position x="54" y="42" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <WorkflowName>c:\users\w322800\appdata\local\alteryx\bin\new workflow2</WorkflowName>
+          <JupyterProduction>false</JupyterProduction>
+          <vEnvName>designerbasetools_venv</vEnvName>
+          <DefaultVenv>1</DefaultVenv>
+          <productionModeScript />
+          <Port>58061</Port>
+          <JupyterGuidDir>7258f1c37b64e919b9d8936940278504</JupyterGuidDir>
+          <JupyterGuidCopy />
+          <LastExecutedByEngineVersion>*</LastExecutedByEngineVersion>
+          <Notebook><![CDATA[{"cells":[{"cell_type":"markdown","metadata":{"ayx":{"cell_css":"border: 3px solid #357; margin: 4px; background: #fbffff","contents_keyword":"Alteryx.help()","label":"info"}},"source":["Run `Alteryx.help()` for info about useful functions.  \n","i.e., `Alteryx.read(\"#1\")`, `Alteryx.write(df,1)`, `Alteryx.getWorkflowConstant(\"Engine.WorkflowDirectory\")`"]},{"cell_type":"code","execution_count":1,"metadata":{"ayx":{"cell_css":"border: 1px solid #58a; margin: 2px;","contents_keyword":"installPackages","label":"deps"}},"outputs":[],"source":["# List all non-standard packages to be imported by your \n","# script here (only missing packages will be installed)\n","from ayx import Package\n","# Package.installPackages(['shutil'])"]},{"cell_type":"code","execution_count":13,"metadata":{},"outputs":[],"source":["from ayx import Alteryx\n","import os\n","import shutil\n","from datetime import datetime\n","from pathlib import Path\n","\n","file_path1 = Path(r\"X:\\CrystalReports\\Loans\")\n","file_path2 = Path(r\"\\\\10.161.85.66\\Home\\Share\\Line of Business_Shared Services\\Commercial Credit\\FinishedReports\\CoStar\\Supporting Files\")\n","\n","def find_latest_file(starting_with, directory):\n","    latest_file = None\n","    latest_name = None\n","    \n","    try:\n","        files = os.listdir(directory)\n","        if not files:\n","            print(\"directory is empty or DNE\")\n","            return None\n","        for filename in files:\n","            if filename.startswith(starting_with) and filename.endswith(\".xls\"):\n","                current_file_path = os.path.join(directory, filename)\n","                file_time = os.path.getmtime(current_file_path)\n","            if latest_file is None or file_time > latest_time:\n","                latest_file = current_file_path\n","                latest_time = file_time\n","    except FileNotFoundError:\n","        print(f\"Directory not found {directory}\")\n","        return None\n","    except Exception as e:\n","            print(f\"Error occurred whie finding the latest file: {e}\")\n","                \n","    return latest_file\n","\n","def copy_file(source, destination):\n","    try:     \n","        if source is not None:\n","            shutil.copy2(source, destination)\n","            print(f\"File '{source}' copied to '{destination}'.\")\n","        else:\n","            print(\"No file found to copy.\")\n","    except Exception as e:\n","        print(f\"Error occured while copying the file: {e}\")\n","        \n","try:\n","    latest_file = find_latest_file(\"Participation_Bought\", file_path1)\n","    copy_file(latest_file, file_path2)\n","except Exception as e:\n","    print(f\"An error has occured: {e}\")\n"]},{"cell_type":"code","execution_count":6,"metadata":{},"outputs":[],"source":["# import os\n","# file_path1 = r\"X:\\CrystalReports\\Loans\"\n","# os.chdir(file_path1)\n","# for file in os.listdir('.'):\n","#     print(file)"]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]}],"metadata":{"kernelspec":{"display_name":"designerbasetools_venv","language":"python","name":"designerbasetools_venv"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.5"}},"nbformat":4,"nbformat_minor":2}]]></Notebook>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxJupyterPluginEngine.dll" EngineDllEntryPoint="AlteryxJupyter" />
+    </Node>
+  </Nodes>
+  <Connections />
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>UploadScript_doesntwork</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="0d0a4200-5eb8-40ab-8090-59f732b2952d" />
+      <Telemetry>
+        <PreviousWorkflowId value="80fb77bc-8356-497c-aca4-b72735f384dc" />
+        <OriginWorkflowId value="80fb77bc-8356-497c-aca4-b72735f384dc" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

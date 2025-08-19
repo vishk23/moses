@@ -1,0 +1,650 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2024.1">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,
+	OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,
+	OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,
+	OSIEXTN.HOUSEHLD.HEADOFHOUSETYP 
+from OSIEXTN.HOUSEHLD</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>True</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=select OSIEXTN.HOUSEHLD.HOUS...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA;	OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="66" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,
+	OSIBANK.WH_PERS.PERSNAME 
+from OSIBANK.WH_PERS</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>True</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_PERS.PERSN...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="PERSNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA;	OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA;	OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="78" y="318" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,
+	OSIBANK.WH_ORG.ORGNAME 
+from OSIBANK.WH_ORG</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>True</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ORG.ORGNBR...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="ORGNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="Int64" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="246" y="66" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" field="ORG HHNBR" size="19.6" type="FixedDecimal" />
+            <FormulaField expression="IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" field="PERS HHNBR" size="19.6" type="FixedDecimal" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>ORG HHNBR = IF [HEADOFHOUSETYP] = "ORG" THEN [HEADOFHOUSENBR] ELSE 0 ENDIF
+PERS ...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+            <Field name="ORG HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERS HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="378" y="90" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="PERS HHNBR" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="PERSNBR" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Left">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+            <Field name="ORG HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERS HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="PERS HHNBR" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Join">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+            <Field name="ORG HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERS HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERSNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="PERS HHNBR" order="" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Right">
+          <RecordInfo>
+            <Field name="PERSNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="PERSNBR" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="534" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="ORG HHNBR" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="ORGNBR" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Left">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+            <Field name="ORG HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERS HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="ORG HHNBR" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Join">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HOUSEHOLDTITLE" size="100" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="V_String" />
+            <Field name="HEADOFHOUSENBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HEADOFHOUSETYP" size="4" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="String" />
+            <Field name="ORG HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;ORG&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="PERS HHNBR" scale="6" size="19" source="Formula: IF [HEADOFHOUSETYP] = &quot;PERS&quot; THEN [HEADOFHOUSENBR] ELSE 0 ENDIF" type="FixedDecimal" />
+            <Field name="ORGNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="Int64" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="ORG HHNBR" order="" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Right">
+          <RecordInfo>
+            <Field name="ORGNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="Int64" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="ORGNBR" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="714" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <AutoResetMode>ByName</AutoResetMode>
+          <MultiMetaInfo>
+            <MetaInfo name="#1">
+              <RecordInfo>
+                <Field name="HOUSEHOLDNBR" scale="0" size="24" source="File: odbc:DSN=tm5xyhRA;PWD=__EncPwd1__|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="FixedDecimal" column="1" />
+                <Field name="PERSNAME" size="60" source="File: odbc:DSN=tm5xyhRA;PWD=__EncPwd1__|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" column="2" />
+              </RecordInfo>
+            </MetaInfo>
+            <MetaInfo name="#2">
+              <RecordInfo>
+                <Field name="HOUSEHOLDNBR" scale="0" size="24" source="File: odbc:DSN=tm5xyhRA;PWD=__EncPwd1__|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="FixedDecimal" column="1" />
+                <Field name="ORGNAME" size="60" source="File: odbc:DSN=tm5xyhRA;PWD=__EncPwd1__|||select OSIBANK.WH_ORG.ORGNBR,&#xA; OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" column="3" />
+              </RecordInfo>
+            </MetaInfo>
+          </MultiMetaInfo>
+          <ByName_ErrorMode>Warning</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ManualDelayed</Mode>
+          <SetOutputOrder value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="498" y="126" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="HOUSEHOLDTITLE" selected="False" />
+            <SelectField field="HEADOFHOUSENBR" selected="False" />
+            <SelectField field="HEADOFHOUSETYP" selected="False" />
+            <SelectField field="ORG HHNBR" selected="False" />
+            <SelectField field="PERS HHNBR" selected="False" />
+            <SelectField field="PERSNBR" selected="False" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="606" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="HOUSEHOLDTITLE" selected="False" />
+            <SelectField field="HEADOFHOUSENBR" selected="False" />
+            <SelectField field="HEADOFHOUSETYP" selected="False" />
+            <SelectField field="ORG HHNBR" selected="False" />
+            <SelectField field="PERS HHNBR" selected="False" />
+            <SelectField field="ORGNBR" selected="False" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="798" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF" field="HouseHold Title" size="1073741823" type="V_WString" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[HouseHold Title = IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="PERSNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA; OSIBANK.WH_PERS.PERSNAME &#xA;from OSIBANK.WH_PERS" type="V_String" />
+            <Field name="ORGNAME" size="60" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME &#xA;from OSIBANK.WH_ORG" type="V_String" />
+            <Field name="HouseHold Title" size="1073741823" source="Formula: IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="906" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="PERSNAME" selected="False" />
+            <SelectField field="ORGNAME" selected="False" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HouseHold Title" size="1073741823" source="Formula: IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
+        <Position x="0" y="0" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
+        <Position x="1110" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Name>Output25</Name>
+          <Abbrev>O</Abbrev>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>O Output</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="1014" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="HOUSEHOLDNBR" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Unique">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HouseHold Title" size="1073741823" source="Formula: IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="HOUSEHOLDNBR" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Duplicates">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLD.HOUSEHOLDNBR,&#xA; OSIEXTN.HOUSEHLD.HOUSEHOLDTITLE,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSENBR,&#xA; OSIEXTN.HOUSEHLD.HEADOFHOUSETYP &#xA;from OSIEXTN.HOUSEHLD" type="Int64" />
+            <Field name="HouseHold Title" size="1073741823" source="Formula: IF IsNull([ORGNAME]) THEN [PERSNAME] ELSE [ORGNAME] ENDIF" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="HOUSEHOLDNBR" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="11" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="11" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="13" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Left" />
+      <Destination ToolID="13" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Join" />
+      <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="13" Connection="Join" />
+      <Destination ToolID="17" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="15" Connection="Output" />
+      <Destination ToolID="19" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="15" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="17" Connection="Output" />
+      <Destination ToolID="15" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="19" Connection="Output" />
+      <Destination ToolID="22" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Output" />
+      <Destination ToolID="26" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="26" Connection="Unique" />
+      <Destination ToolID="25" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="True" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <IsTemplate value="False" />
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>HouseHold Title</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="4e0a5235-6d36-45dc-a3c7-42f127e8892b" />
+      <Telemetry>
+        <PreviousWorkflowId value="5c31dc73-af89-4aec-87f0-951de54738ea" />
+        <OriginWorkflowId value="0a3ac7db-fb1d-4246-a2e8-2d477756953d" />
+      </Telemetry>
+      <PlatformWorkflowId value="" />
+    </MetaInfo>
+    <Events>
+      <Enabled value="False" />
+    </Events>
+    <RuntimeProperties>
+      <Actions />
+      <Questions>
+        <Question>
+          <Type>Tab</Type>
+          <Description>Questions</Description>
+          <Name>Tab (24)</Name>
+          <ToolId value="24" />
+          <Questions>
+            <Question>
+              <Type>MacroOutput</Type>
+              <Description>Macro Output (25)</Description>
+              <Name>Macro Output (25)</Name>
+              <ToolId value="25" />
+            </Question>
+          </Questions>
+        </Question>
+      </Questions>
+      <ModuleType>Macro</ModuleType>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="False" />
+      <MacroImageStd value="39" />
+      <MacroInputs />
+      <MacroOutputs />
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
+      <Wiz_OpenOutputTools>
+        <Tool ToolId="25" Selected="True" />
+      </Wiz_OpenOutputTools>
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
+    </RuntimeProperties>
+  </Properties>
+</AlteryxDocument>
