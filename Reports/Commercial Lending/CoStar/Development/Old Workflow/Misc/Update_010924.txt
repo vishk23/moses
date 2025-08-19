@@ -1,0 +1,3 @@
+I had the CoStar platform updated to pull current balance for all products except for construction/LOCs. 
+
+FYI: Wychmere and Amicus (loans that you pointed out to me on our last call because they weren’t showing up) have FDIC Category Codes of REOW, which is RE Own Occ, and REFI, which is RE 1-4 Res or Other. CoStar had recommended that I only load in Non-Owner Occupied or Multi-Family.

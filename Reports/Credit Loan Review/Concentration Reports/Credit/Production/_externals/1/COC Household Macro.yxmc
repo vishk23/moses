@@ -1,0 +1,486 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<AlteryxDocument yxmdVer="2022.3">
+  <Nodes>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="414" y="222" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="HOUSEHOLDNBR" action="GroupBy" rename="HOUSEHOLDNBR" />
+            <SummarizeField field="Net and Available" action="Sum" rename="Net and Available" />
+            <SummarizeField field="NOTEBAL" action="Sum" rename="NOTEBAL" />
+            <SummarizeField field="BCSB Available" action="Sum" rename="BCSB Available" />
+            <SummarizeField field="AVAILBALAMT" action="Sum" rename="AVAILBALAMT" />
+            <SummarizeField field="Net Balance" action="Sum" rename="Net Balance" />
+            <SummarizeField field="BCSB Collateral Reserve" action="Sum" rename="BCSB Collateral Reserve" />
+            <SummarizeField field="CLATRESAMT" action="Sum" rename="CLATRESAMT" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="Summarize: GroupBy - HOUSEHOLDNBR" type="Double" />
+            <Field name="Net and Available" source="Summarize: Sum - Net and Available" type="Double" />
+            <Field name="NOTEBAL" source="Summarize: Sum - NOTEBAL" type="Double" />
+            <Field name="BCSB Available" source="Summarize: Sum - BCSB Available" type="Double" />
+            <Field name="AVAILBALAMT" source="Summarize: Sum - AVAILBALAMT" type="Double" />
+            <Field name="Net Balance" source="Summarize: Sum - Net Balance" type="Double" />
+            <Field name="BCSB Collateral Reserve" source="Summarize: Sum - BCSB Collateral Reserve" type="Double" />
+            <Field name="CLATRESAMT" source="Summarize: Sum - CLATRESAMT" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
+        <Position x="0" y="0" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+        <Position x="174" y="258" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Mode>Simple</Mode>
+          <Simple>
+            <Operator>=</Operator>
+            <Field>HOUSEHOLDNBR</Field>
+            <Operands>
+              <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+              <DateType>fixed</DateType>
+              <PeriodDate>2023-01-11 15:26:49</PeriodDate>
+              <PeriodType>
+              </PeriodType>
+              <PeriodCount>0</PeriodCount>
+              <Operand>193906</Operand>
+              <StartDate>2023-01-11 15:26:49</StartDate>
+              <EndDate>2023-01-11 15:26:49</EndDate>
+            </Operands>
+          </Simple>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>[HOUSEHOLDNBR] = 193906</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="True">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="OWNERNAME" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="PRODUCT" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="LOANOFFICER" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="EFFDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="NAICSCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="RISKRATINGCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CIFNBR" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CONTRACTDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="MJACCTTYPCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="FDICCATCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="False">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="OWNERNAME" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="PRODUCT" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="LOANOFFICER" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="EFFDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="NAICSCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="RISKRATINGCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CIFNBR" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CONTRACTDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="MJACCTTYPCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="FDICCATCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.ControlParam.ControlParam">
+        <Position x="186" y="54" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Control Parameter (7)</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+        <Position x="186" y="138" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Update Value</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="510" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ByName_ErrorMode>Warning</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ByName</Mode>
+          <SetOutputOrder value="True" />
+          <OutputOrder>
+            <Connection>#3</Connection>
+            <Connection>#1</Connection>
+          </OutputOrder>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="(Multiple Sources)" type="Double" />
+            <Field name="Net and Available" source="(Multiple Sources)" type="Double" />
+            <Field name="NOTEBAL" source="(Multiple Sources)" type="Double" />
+            <Field name="BCSB Available" source="(Multiple Sources)" type="Double" />
+            <Field name="AVAILBALAMT" source="(Multiple Sources)" type="Double" />
+            <Field name="Net Balance" source="(Multiple Sources)" type="Double" />
+            <Field name="BCSB Collateral Reserve" source="(Multiple Sources)" type="Double" />
+            <Field name="CLATRESAMT" source="(Multiple Sources)" type="Double" />
+            <Field name="OWNERNAME" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="PRODUCT" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="LOANOFFICER" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="EFFDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="NAICSCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="RISKRATINGCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CIFNBR" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CONTRACTDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="MJACCTTYPCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="FDICCATCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="New_HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
+        <Position x="690" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Name>Output10</Name>
+          <Abbrev />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Output</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
+        <Position x="54" y="234" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UseFileInput value="True" />
+          <Name>Input11</Name>
+          <Abbrev />
+          <ShowFieldMap value="False" />
+          <Optional value="False" />
+          <FileInput>
+            <Configuration>
+              <Passwords />
+              <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">\\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`</File>
+              <FormatSpecificOptions>
+                <FirstRowData>False</FirstRowData>
+                <ImportLine>1</ImportLine>
+              </FormatSpecificOptions>
+            </Configuration>
+          </FileInput>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>PreBatchTemplate.xlsx
+Query=`Sheet1$`</DefaultAnnotationText>
+          <Left value="True" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="OWNERNAME" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="PRODUCT" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="LOANOFFICER" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="EFFDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="NAICSCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="RISKRATINGCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CIFNBR" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="CONTRACTDATE" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="MJACCTTYPCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="FDICCATCD" size="255" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_HOUSEHOLDNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_ACCTNBR" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_NOTEBAL" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_AVAILBALAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_TOTALPCTSOLD" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_CLATRESAMT" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net Balance" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_BCSB Collateral Reserve" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+            <Field name="New_Net and Available" source="File: \\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\COC_Reports\Supporting Files\PreBatchTemplate.xlsx|||`Sheet1$`" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection name="#1">
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="6" Connection="True" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="6" Connection="True" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="7" Connection="Question" />
+      <Destination ToolID="8" Connection="Question" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="8" Connection="Action" />
+      <Destination ToolID="6" Connection="Action" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Output" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <Constants>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>ControlParam.Control Parameter (7)</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Macro Output (10)</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Macro Input (11)</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+    </Constants>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>COC Household Macro</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="bc6438c3-dbc0-4d29-8e41-1b07a4652ab5" />
+      <Telemetry>
+        <PreviousWorkflowId value="a6ba9aee-44f9-4ff1-9ae4-985059fdf155" />
+        <OriginWorkflowId value="ebfb6829-6ca2-4a8b-bcd5-5174665af0a6" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="False" />
+    </Events>
+    <RuntimeProperties>
+      <Actions>
+        <NoCondition>
+          <Type>NoCondition</Type>
+          <Description>(Always Run)</Description>
+          <True>
+            <Action>
+              <Type>UpdateValue</Type>
+              <Description />
+              <ToolId value="8" />
+              <Mode>Simple</Mode>
+              <Variable />
+              <Replace value="False" />
+              <Destination>6/Simple/Operands/Operand</Destination>
+            </Action>
+          </True>
+        </NoCondition>
+      </Actions>
+      <Questions>
+        <Question>
+          <Type>Tab</Type>
+          <Description>Questions</Description>
+          <Name>Tab (5)</Name>
+          <ToolId value="5" />
+          <Questions>
+            <Question>
+              <Type>ControlParam</Type>
+              <Description>Control Parameter (7)</Description>
+              <Name>Control Parameter (7)</Name>
+              <ToolId value="7" />
+            </Question>
+            <Question>
+              <Type>MacroOutput</Type>
+              <Description>Macro Output (10)</Description>
+              <Name>Macro Output (10)</Name>
+              <ToolId value="10" />
+            </Question>
+            <Question>
+              <Type>MacroInput</Type>
+              <Description />
+              <Name>Macro Input (11)</Name>
+              <ToolId value="11" />
+            </Question>
+          </Questions>
+        </Question>
+      </Questions>
+      <ModuleType>Macro</ModuleType>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="False" />
+      <MacroImageStd value="39" />
+      <MacroInputs />
+      <MacroOutputs />
+      <BatchMacro>
+        <OutputMode>AutoByName</OutputMode>
+        <ControlParams>
+          <ControlParam>
+            <Name>Control Parameter (7)</Name>
+            <Description>Control Parameter (7)</Description>
+          </ControlParam>
+        </ControlParams>
+      </BatchMacro>
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
+      <Wiz_OpenOutputTools />
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
+    </RuntimeProperties>
+  </Properties>
+</AlteryxDocument>

@@ -1,0 +1,36 @@
+from ayx import Alteryx
+import pandas as pd
+import openpyxl
+from openpyxl.utils import get_column_letter
+
+# Template and new data loaded in
+df1_path = r'\\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\BalanceTracker\Template\Portfolio_Balance_Tracker_2024YTD.xlsx'
+try:
+    df1 = pd.read_excel(df1_path,engine='openpyxl')
+except:
+    print("ERROR")
+finally:
+    pass
+df2 = Alteryx.read("#2")
+
+
+def update_excel_template(template_path, new_data_df, output_path):
+    wb = openpyxl.load_workbook(template_path)
+    sheet = wb["Calendar 2024"]
+    
+    last_filled_month_col = None
+    for col in range(1, sheet.max_column + 1):
+        if sheet.cell(row=5, column=col).value is None:
+            last_filled_month_col = col - 1
+            break
+    
+    for i, value in enumerate(new_data_df.iloc[:, 0]):
+        row = 5 + (i * 2)
+        sheet.cell(row=row, column=last_filled_month_col + 1).value = value
+        
+    wb.save(output_path)
+    
+output_path = r'\\10.161.85.66\Home\Share\Line of Business_Shared Services\Commercial Credit\FinishedReports\BalanceTracker\Template\Portfolio_Balance_Tracker_2024YTD.xlsx'
+
+update_excel_template(df1_path,df2,output_path)
+
