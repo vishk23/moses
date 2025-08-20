@@ -13,13 +13,13 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "SMB Campaign BKM Suppression List"
-BUSINESS_LINE = "Marketing"
-SCHEDULE = "On-Demand"
-OWNER = "Kati Kelley"
+REPORT_NAME = "<Project Name>"
+BUSINESS_LINE = "<Business Line or Department>"
+SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
+OWNER = "<Project Owner or Team>"
 
 # Status
-PROD_READY = True
+PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')

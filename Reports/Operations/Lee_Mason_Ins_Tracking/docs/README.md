@@ -12,10 +12,8 @@
 ## Technology Stack
 
 ## Project Status
-- [x] Create Suppresion List (2025-08-19)
-- [x] Send out first list (2025-08-20)
-   - Mimecast LFS
-- [ ] Create README
+- [ ] Description of tasks (YYYY-MM-DD)
+   - Short description 
 
 Key
 - [x] - Completed
