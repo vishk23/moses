@@ -6,7 +6,7 @@ Replace this docstring with a description of your project's purpose and logic.
 
 import src.config
 import src._version
-import src.smb_campaign.core
+import src.lee_mason.core
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -16,17 +16,14 @@ def main():
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
     # Add your main project logic here
+    # Example: print('Hello, world!')
+    df = src.lee_mason.core.main()
 
-    df = src.smb_campaign.core.main_pipeline()
 
-    OUTPUT_PATH = src.config.OUTPUT_DIR / "bkm_suppresion_list.parquet"
+    OUTPUT_PATH = src.config.OUTPUT_DIR / "lee_mason.parquet"
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
     df.to_parquet(OUTPUT_PATH, index=False)
-
-    OUTPUT_PATH = src.config.OUTPUT_DIR / "bkm_suppresion_list.csv"
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(OUTPUT_PATH, index=False)
-
 
 if __name__ == "__main__":
     main()

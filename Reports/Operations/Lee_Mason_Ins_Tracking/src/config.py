@@ -13,17 +13,17 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "SMB Campaign BKM Suppression List"
-BUSINESS_LINE = "Marketing"
+REPORT_NAME = "Lee & Mason Extract"
+BUSINESS_LINE = "Operations"
 SCHEDULE = "On-Demand"
-OWNER = "Kati Kelley"
+OWNER = "Kelly Abernathy"
 
 # Status
-PROD_READY = True
+PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Operations\Lee_Mason_Ins_Tracking") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 

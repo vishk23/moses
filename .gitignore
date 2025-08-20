@@ -17,6 +17,8 @@ cdutils/**/*.xlsx
 **/*.pptx
 output/
 **/output/
+**/*.zip
+*.zip
 
 .gitconfig
 # Python cache
