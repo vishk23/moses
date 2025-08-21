@@ -15,6 +15,9 @@ import src.core_transform
 import src.output_to_excel
 from src._version import __version__
 import src.output_to_excel_multiple_sheets
+import cdutils.distribution # type: ignore
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 def main(production_flag: bool=False):
     if production_flag:
@@ -111,7 +114,7 @@ def main(production_flag: bool=False):
     file = files[0]
     assert file.suffix == '.csv', f"Expected an excel file"
 
-    xaa_data = pd.read_csv(file, header=3)
+    xaa_data = pd.read_csv(file)
 
     # %%
     # xaa_data.info()
@@ -126,6 +129,12 @@ def main(production_flag: bool=False):
     # # %%
     # xaa_data['Analyzed Charges (Pre-ECR)'] = xaa_data['Analyzed Charges (Pre-ECR)'].str.replace('[\$,]','',regex=True)
     # xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'] = xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'].str.replace('[\$,]','',regex=True)
+
+    # Rename to match schema from earlier
+    xaa_data = xaa_data.rename(columns={
+        'Analyzed Charges (Pre-ECR)':'Analyzed Charges',
+        'Combined Result for Settlement Period (Post-ECR)':'Combined Result for Settlement Period'
+    })
 
     # %%
     xaa_schema = {
@@ -323,6 +332,41 @@ def main(production_flag: bool=False):
 
     # Format excel
     src.output_to_excel_multiple_sheets.format_excel_file(OUTPUT_PATH)
+
+
+    # Usage
+    # # Distribution
+    recipients = [
+        # "chad.doorley@bcsbmail.com"
+        "Hasan.Ali@bcsbmail.com",
+        "steve.sherman@bcsbmail.com",
+        "Michael.Patacao@bcsbmail.com",
+        "Jeffrey.Pagliuca@bcsbmail.com",
+        "Timothy.Chaves@bcsbmail.com",
+        "Isaura.Tavares@bcsbmail.com",
+        "Taylor.Tierney@bcsbmail.com",
+        "Anderson.Lovos@bcsbmail.com",
+
+    ]
+    bcc_recipients = [
+        "chad.doorley@bcsbmail.com",
+        "businessintelligence@bcsbmail.com"
+    ]
+
+    prev_month = datetime.now() - relativedelta(months=1)
+    result = prev_month.strftime("%B %Y")
+
+    subject = f"Business Deposits + XAA Concentration Report - {result}" 
+    body = "Hi all, \n\nAttached is the Business Deposits + XAA Concentration Report through the most recent month end. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com\n\n"
+    attachment_paths = [OUTPUT_PATH]
+
+    # cdutils.distribution.email_out(
+    #     recipients = recipients, 
+    #     bcc_recipients = bcc_recipients, 
+    #     subject = subject, 
+    #     body = body, 
+    #     attachment_paths = attachment_paths
+    #     )
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")

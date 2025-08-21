@@ -114,7 +114,7 @@ def main(production_flag: bool=False):
     file = files[0]
     assert file.suffix == '.csv', f"Expected an excel file"
 
-    xaa_data = pd.read_csv(file, header=3)
+    xaa_data = pd.read_csv(file)
 
     # %%
     # xaa_data.info()
@@ -129,6 +129,17 @@ def main(production_flag: bool=False):
     # # %%
     # xaa_data['Analyzed Charges (Pre-ECR)'] = xaa_data['Analyzed Charges (Pre-ECR)'].str.replace('[\$,]','',regex=True)
     # xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'] = xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'].str.replace('[\$,]','',regex=True)
+
+    # Rename to match schema from earlier
+    xaa_data = xaa_data.rename(columns={
+        'Analyzed Charges (Pre-ECR)':'Analyzed Charges',
+        'Combined Result for Settlement Period (Post-ECR)':'Combined Result for Settlement Period'
+    })
+    # fix csv formatting of float fields
+    cols_to_adjust = ['Analyzed Charges','Combined Result for Settlement Period']
+
+    for col in cols_to_adjust:
+        xaa_data[col] = xaa_data[col].str.replace(r'[$,]','', regex=True).astype(float)
 
     # %%
     xaa_schema = {
@@ -354,13 +365,13 @@ def main(production_flag: bool=False):
     body = "Hi all, \n\nAttached is the Business Deposits + XAA Concentration Report through the most recent month end. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com\n\n"
     attachment_paths = [OUTPUT_PATH]
 
-    cdutils.distribution.email_out(
-        recipients = recipients, 
-        bcc_recipients = bcc_recipients, 
-        subject = subject, 
-        body = body, 
-        attachment_paths = attachment_paths
-        )
+    # cdutils.distribution.email_out(
+    #     recipients = recipients, 
+    #     bcc_recipients = bcc_recipients, 
+    #     subject = subject, 
+    #     body = body, 
+    #     attachment_paths = attachment_paths
+    #     )
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")
