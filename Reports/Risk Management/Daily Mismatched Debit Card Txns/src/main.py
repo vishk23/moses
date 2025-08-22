@@ -208,18 +208,89 @@ def main():
     # Send main file to deposit ops
     cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, EMAIL_BCC, subject, body, attachment_paths)
 
-    EXCEPTION_FILENAME = "Exceptions " + date_str + ".csv"
+    EXCEPTION_FILENAME = "Exceptions " + date_str + ".txt"
     EXCEPTION_OUTPUT = OUTPUT_DIR / EXCEPTION_FILENAME
-    exceptions.to_csv(EXCEPTION_OUTPUT, index=False)
 
-    # # Distribution
-    subject = f"Exceptions: Daily Transaction Mismatch for Posting - {date_str}" 
-    body = "Hi all, \n\nPlease see the attached exceptions regarding the Daily Transaction Mismatch file for Posting." \
-    "\n\nThis shows the items that have account numbers that don't match active accounts in COCC." \
-    "\n\nPlease reach to BusinessIntelligence@bcsbmail.com if you have any questions or issues."
-    attachment_paths = [EXCEPTION_OUTPUT]
+    # Define the email subject and body, which we may adjust if there are no exceptions.
+    subject = f"Exceptions: Daily Transaction Mismatch for Posting - {date_str}"
+    body = (
+        "Hi all,\n\n"
+        "Please see the attached exceptions regarding the Daily Transaction Mismatch file for Posting.\n\n"
+        "This shows the items that have account numbers that don't match active accounts in COCC.\n\n"
+        "Please reach to BusinessIntelligence@bcsbmail.com if you have any questions or issues."
+    )
 
-    # Send exceptions
+    if exceptions.empty:
+        # If the exceptions DataFrame is empty, create a simple message file and update the email body.
+        report_content = "No transaction mismatch exceptions found for this reporting period."
+        body = "Hi all,\n\nThere were no transaction mismatch exceptions found for today's posting file."
+        print("No exceptions found. A note will be written to the output file.")
+
+    else:
+        # If there are exceptions, build the formatted fixed-width report.
+        df = exceptions.copy() # Work on a copy to avoid SettingWithCopyWarning
+        
+        # Convert all columns to string to measure length accurately
+        df['cardnbr'] = df['cardnbr'].astype(str)
+        df['acctnbr'] = df['acctnbr'].astype(str)
+        # Ensure amount has two decimal places for consistent formatting
+        df['amount'] = df['amount'].apply(lambda x: f"{x:.2f}")
+
+        # --- Calculate column widths ---
+        # Start with header length, then find the max length in each column.
+        # Add padding for space between columns.
+        padding = 2
+        col_widths = {
+            col: max(df[col].str.len().max(), len(col)) + padding
+            for col in df.columns
+        }
+
+        # --- Build the report string line-by-line ---
+        report_lines = []
+        
+        # 1. Create the main header for the report
+        title = " Daily Transaction Mismatch Exceptions Report "
+        total_width = sum(col_widths.values())
+        report_lines.append("=" * total_width)
+        report_lines.append(f"=={title.center(total_width - 4)}==")
+        report_lines.append("=" * total_width)
+        report_lines.append("") # Blank line
+        
+        # 2. Add metadata
+        report_lines.append(f"Report Date: {date_str}")
+        report_lines.append(f"Total Exceptions: {len(df)}")
+        report_lines.append("") # Blank line
+
+        # 3. Create the column headers row
+        header_line = "".join([col.ljust(col_widths[col]) for col in df.columns])
+        report_lines.append(header_line)
+
+        # 4. Create the separator line under the headers
+        separator_line = "".join(["-" * (col_widths[col] - padding)].ljust(col_widths[col]) for col in df.columns)
+        report_lines.append(separator_line)
+
+        # 5. Add each data row, formatted to the correct width
+        for index, row in df.iterrows():
+            data_line = "".join([str(row[col]).ljust(col_widths[col]) for col in df.columns])
+            report_lines.append(data_line)
+        
+        # 6. Add a footer
+        report_lines.append("") # Blank line
+        report_lines.append("--- End of Report ---")
+
+        # Join all lines into a single string for writing
+        report_content = "\n".join(report_lines)
+
+    # --- Write the generated content to the .txt file ---
+    with open(EXCEPTION_OUTPUT, "w", encoding="utf-8") as f:
+        f.write(report_content)
+    print(f"Formatted text exception report saved to {EXCEPTION_OUTPUT}")
+
+
+    # # Distribution (This section now uses the conditionally-set body)
+    attachment_paths = [output_file, EXCEPTION_OUTPUT]
+
+    # Send exceptions email
     cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)
 
 if __name__ == '__main__':
