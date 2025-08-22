@@ -103,9 +103,7 @@ def main():
     deb_or_cred = []
     merchants = list(result['Merchant'])
 
-    # Matching against COCC
-    print("Printing Acctnbrs ------------")
-    print(acctnbrs)
+
 
     for i in range(len(result)):
 
@@ -126,6 +124,26 @@ def main():
 
         merchants[i] += f" ({cardnbrs[i][-4:]})"
 
+    # Matching against COCC
+    temp_df = pd.DataFrame({
+        'cardnbr': cardnbrs,
+        'acctnbr': acctnbrs,
+        'amount': amount,
+        'merchant': merchant
+    }).copy()
+
+    # Make string if not already
+    temp_df['acctnbr'] = temp_df['acctnbr'].astype(str)
+
+    active_accts = cdutils.acct_file_creation.core.query_df_on_date()
+    
+    # Merging
+    merged_df = pd.merge(temp_df, active_accounts, how='outer', on='acctnbr', indicator=True)
+
+    # Exceptions dataframe creation
+    exceptions = merged_df[merged_df['_merge'] == 'left_only'].copy()
+
+    # Write out exceptions here to check if this works
 
     # move txt file to archive
     input_archive_path = INPUT_DIR / Path('./archive') / Path(file_to_move)
