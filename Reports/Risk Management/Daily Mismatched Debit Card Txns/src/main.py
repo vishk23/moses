@@ -291,7 +291,9 @@ def main():
     attachment_paths = [output_file, EXCEPTION_OUTPUT]
 
     # Send exceptions email
-    cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)if __name__ == '__main__':
+    cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)
+
+if __name__ == '__main__':
     print(f"Starting [{__version__}]")
     main()
     print("Complete!")
