@@ -6,6 +6,10 @@ Replace this docstring with a description of your project's purpose and logic.
 
 import src.config
 import src._version
+import cdutils.acct_file_creation.core # type: ignore
+from datetime import datetime
+import pandas as pd
+from pathlib import Path
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -16,6 +20,15 @@ def main():
     print(f"Output directory: {src.config.OUTPUT_DIR}")
     # Add your main project logic here
     # Example: print('Hello, world!')
+    df = cdutils.acct_file_creation.core.query_df_on_date()
+
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    filename = "daily_account_table.parquet"
+    OUTPUT_PATH = src.config.OUTPUT_DIR / filename
+    
+    df.to_parquet(OUTPUT_PATH, index=False)
+    print("Complete!")
 
 if __name__ == "__main__":
     main()

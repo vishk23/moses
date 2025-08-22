@@ -89,8 +89,14 @@ The terminal will display the status of each report as it completes, indicating 
 | Dealer Reserve Recon          | `python testing/run_reports.py --name "Dealer Reserve Recon"` |
 | Daily Mismatched Debit Card Txns | `python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"` |
 
+Enter prod mode:
 ```
-python testing/run_reports.py --name "R360"; python testing/run_reports.py --name "Daily Deposit Update"; python testing/run_reports.py --name "Dealer Reserve Recon"; python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"
+$env:REPORT_ENV='prod'
+```
+
+Run reports:
+```
+python testing/run_reports.py --name "Daily Account Table"; python testing/run_reports.py --name "R360"; python testing/run_reports.py --name "Daily Deposit Update"; python testing/run_reports.py --name "Dealer Reserve Recon"; python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"
 ```
 ### Daily - 11:00 AM
 | Report Name                   | Script Command                                  |
