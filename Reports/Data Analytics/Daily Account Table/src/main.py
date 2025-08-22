@@ -9,6 +9,7 @@ import src._version
 import cdutils.acct_file_creation.core # type: ignore
 from datetime import datetime
 import pandas as pd
+from pathlib import Path
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -21,9 +22,10 @@ def main():
     # Example: print('Hello, world!')
     df = cdutils.acct_file_creation.core.query_df_on_date()
 
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
     filename = "daily_account_table.parquet"
     OUTPUT_PATH = src.config.OUTPUT_DIR / filename
-    OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
     
     df.to_parquet(OUTPUT_PATH, index=False)
     print("Complete!")

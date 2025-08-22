@@ -21,9 +21,12 @@ def main():
     raw_data, daily_deposit_drop_in = src.deposit_file.deposit_dataset_execution()
 
     # Output to excel (raw_data -> Staging)
+    src.config.STAGING_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     staging_path = src.config.STAGING_OUTPUT_DIR / "DailyDeposit_staging.xlsx"
     raw_data.to_excel(staging_path, sheet_name='Sheet1', index=False)
+
     # Output to excel (for the drop-in file)
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     dropin_path = src.config.OUTPUT_DIR / "DailyDeposit.xlsx"
     daily_deposit_drop_in.to_excel(dropin_path, sheet_name='Sheet1', index=False)
 

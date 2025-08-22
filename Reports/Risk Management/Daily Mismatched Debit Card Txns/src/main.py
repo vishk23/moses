@@ -9,11 +9,9 @@ from openpyxl import load_workbook
 
 import os
 import shutil
-import cdutils.acct_file_creation.core # type: ignore
-from datetime import datetime
 import cdutils.distribution # type: ignore
 from src._version import __version__
-from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR, EMAIL_TO, EMAIL_CC, EMAIL_BCC
+from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR, EMAIL_TO, EMAIL_CC, EMAIL_BCC, EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC
 from src.daily_mismatch_txns.api_call import (
     fetch_latest_to_input,
 )
@@ -140,7 +138,8 @@ def main():
     # Make string if not already
     temp_df['acctnbr'] = temp_df['acctnbr'].astype(str)
 
-    active_accts = cdutils.acct_file_creation.core.query_df_on_date()
+    ACTIVE_ACCT_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily Account Table\output\daily_account_table.parquet")
+    active_accts = pd.read_parquet(ACTIVE_ACCT_PATH)
     
     # Merging
     merged_df = pd.merge(temp_df, active_accts, how='outer', on='acctnbr', indicator=True)
@@ -148,9 +147,17 @@ def main():
     # Exceptions dataframe creation
     exceptions = merged_df[merged_df['_merge'] == 'left_only'].copy()
 
-    # Write out exceptions here to check if this works
-    TEMP_OUTPUT = Path(r"C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\bin\exceptions.parquet")
-    exceptions.to_parquet(TEMP_OUTPUT, index=False)
+    # # Write out exceptions here to check if this works
+    # TEMP_OUTPUT = Path(r"C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\bin\exceptions.parquet")
+    # exceptions.to_parquet(TEMP_OUTPUT, index=False)
+
+    # Save for separate distribution
+    exceptions = exceptions[[
+        'cardnbr',
+        'acctnbr',
+        'amount',
+        'merchant'
+    ]].copy()
 
     # move txt file to archive
     input_archive_path = INPUT_DIR / Path('./archive') / Path(file_to_move)
@@ -193,13 +200,27 @@ def main():
 
     # Usage
     # # Distribution
-    subject = f"Daily Transaction Mismatch - {date_str}" 
+    subject = f"Daily Transaction Mismatch for Posting - {date_str}" 
     body = "Hi all, \n\nPlease see the attached Daily Transaction Mismatch file for Posting." \
-    "Please reach to Patrick Quinn (patrick.quinn@bcsbmail.com) or the BI & Analytics Dept. (BusinessIntelligence@bcsbmail.com) if you have any questions or issues."
+    "\n\nPlease reach to Patrick Quinn (patrick.quinn@bcsbmail.com) or BusinessIntelligence@bcsbmail.com if you have any questions or issues."
     attachment_paths = [output_file]
 
+    # Send main file to deposit ops
     cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, EMAIL_BCC, subject, body, attachment_paths)
 
+    EXCEPTION_FILENAME = "Exceptions " + date_str + ".csv"
+    EXCEPTION_OUTPUT = OUTPUT_DIR / EXCEPTION_FILENAME
+    exceptions.to_csv(EXCEPTION_OUTPUT, index=False)
+
+    # # Distribution
+    subject = f"Exceptions: Daily Transaction Mismatch for Posting - {date_str}" 
+    body = "Hi all, \n\nPlease see the attached exceptions regarding the Daily Transaction Mismatch file for Posting." \
+    "\n\nThis shows the items that have account numbers that don't match active accounts in COCC." \
+    "\n\nPlease reach to BusinessIntelligence@bcsbmail.com if you have any questions or issues."
+    attachment_paths = [EXCEPTION_OUTPUT]
+
+    # Send exceptions
+    cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)
 
 if __name__ == '__main__':
     print(f"Starting [{__version__}]")

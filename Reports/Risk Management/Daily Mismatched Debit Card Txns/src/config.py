@@ -25,6 +25,7 @@ BASE_PATH = Path(r"\\00-da1\Home\Share\Line of Business_Shared Services\Risk Man
 INPUT_DIR = BASE_PATH / "input"
 OUTPUT_DIR = BASE_PATH / "output"
 
+
 # Email Recipients
 EMAIL_TO = [
     # "patrick.quinn@bcsbmail.com"
@@ -32,6 +33,13 @@ EMAIL_TO = [
 EMAIL_CC = ["chad.doorley@bcsbmail.com"] if ENV == 'prod' else []
 EMAIL_BCC = [] if ENV == 'prod' else []
 
+# Distribution list #2 for exceptions
+EXCEPTION_EMAIL_TO = [
+    # "patrick.quinn@bcsbmail.com"
+    "chad.doorley@bcsbmail.com"
+] if ENV == 'prod' else []
+EXCEPTION_EMAIL_CC = ["chad.doorley@bcsbmail.com"] if ENV == 'prod' else []
+EXCEPTION_EMAIL_BCC = [] if ENV == 'prod' else []
 
 # Creates directories (idempotent)
 BASE_PATH.mkdir(parents=True, exist_ok=True)
