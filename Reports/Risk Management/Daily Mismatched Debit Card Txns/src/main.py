@@ -266,7 +266,7 @@ def main():
         report_lines.append(header_line)
 
         # 4. Create the separator line under the headers
-        separator_line = "".join(["-" * (col_widths[col] - padding)].ljust(col_widths[col]) for col in df.columns)
+        separator_line = "".join(("-" * (col_widths[col] - padding)).ljust(col_widths[col]) for col in df.columns)
         report_lines.append(separator_line)
 
         # 5. Add each data row, formatted to the correct width
@@ -291,9 +291,7 @@ def main():
     attachment_paths = [output_file, EXCEPTION_OUTPUT]
 
     # Send exceptions email
-    cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)
-
-if __name__ == '__main__':
+    cdutils.distribution.email_out(EXCEPTION_EMAIL_TO, EXCEPTION_EMAIL_CC, EXCEPTION_EMAIL_BCC, subject, body, attachment_paths)if __name__ == '__main__':
     print(f"Starting [{__version__}]")
     main()
     print("Complete!")
