@@ -9,8 +9,9 @@ from openpyxl import load_workbook
 
 import os
 import shutil
+import cdutils.distribution # type: ignore
 from src._version import __version__
-from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR
+from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR, EMAIL_TO, EMAIL_CC, EMAIL_BCC
 from src.daily_mismatch_txns.api_call import (
     fetch_latest_to_input,
 )
@@ -102,6 +103,10 @@ def main():
     deb_or_cred = []
     merchants = list(result['Merchant'])
 
+    # Matching against COCC
+    print("Printing Acctnbrs ------------")
+    print(acctnbrs)
+
     for i in range(len(result)):
 
         # left padding acctnbrs with 0s
@@ -161,20 +166,14 @@ def main():
     wb.save(output_file)
     print(f"Report saved to {output_file}")
 
+    # Usage
+    # # Distribution
+    subject = f"Daily Transaction Mismatch - {date_str}" 
+    body = "Hi all, \n\nPlease see the attached Daily Transaction Mismatch file for Posting." \
+    "Please reach to Patrick Quinn (patrick.quinn@bcsbmail.com) or the BI & Analytics Dept. (BusinessIntelligence@bcsbmail.com) if you have any questions or issues."
+    attachment_paths = [output_file]
 
-
-    # Distribution
-    # recipients = [
-    #     # "chad.doorley@bcsbmail.com",
-    # ]
-    # bcc_recipients = [
-    #     "chad.doorley@bcsbmail.com",
-    #     "businessintelligence@bcsbmail.com"
-    # ]
-    # subject = f"File Name" 
-    # body = "Hi, \n\nAttached is your requested report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
-    # attachment_paths = [OUTPUT_PATH]
-    # cdutils.distribution.email_out(recipients, bcc_recipients, subject, body, attachment_paths)
+    cdutils.distribution.email_out(EMAIL_TO, EMAIL_CC, EMAIL_BCC, subject, body, attachment_paths)
 
 
 if __name__ == '__main__':

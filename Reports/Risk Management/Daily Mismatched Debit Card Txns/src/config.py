@@ -26,8 +26,12 @@ INPUT_DIR = BASE_PATH / "input"
 OUTPUT_DIR = BASE_PATH / "output"
 
 # Email Recipients
-EMAIL_TO = [] if ENV == 'prod' else []
-EMAIL_CC = ["businessintelligence@bcsbmail.com"] if ENV == 'prod' else []
+EMAIL_TO = [
+    # "patrick.quinn@bcsbmail.com"
+] if ENV == 'prod' else []
+EMAIL_CC = ["chad.doorley@bcsbmail.com"] if ENV == 'prod' else []
+EMAIL_BCC = [] if ENV == 'prod' else []
+
 
 # Creates directories (idempotent)
 BASE_PATH.mkdir(parents=True, exist_ok=True)
