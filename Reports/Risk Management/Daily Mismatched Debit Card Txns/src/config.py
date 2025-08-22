@@ -28,15 +28,18 @@ OUTPUT_DIR = BASE_PATH / "output"
 
 # Email Recipients
 EMAIL_TO = [
-    # "patrick.quinn@bcsbmail.com"
+    "deposit.maintenance@bcsbmail.com"
 ] if ENV == 'prod' else []
-EMAIL_CC = ["chad.doorley@bcsbmail.com"] if ENV == 'prod' else []
+EMAIL_CC = [
+    "patrick.quinn@bcsbmail.com",
+    "chad.doorley@bcsbmail.com"
+] if ENV == 'prod' else []
 EMAIL_BCC = [] if ENV == 'prod' else []
 
 # Distribution list #2 for exceptions
 EXCEPTION_EMAIL_TO = [
-    # "patrick.quinn@bcsbmail.com"
-    "chad.doorley@bcsbmail.com"
+    "patrick.quinn@bcsbmail.com",
+    "rebecca.lima@bcsbmail.com"
 ] if ENV == 'prod' else []
 EXCEPTION_EMAIL_CC = ["chad.doorley@bcsbmail.com"] if ENV == 'prod' else []
 EXCEPTION_EMAIL_BCC = [] if ENV == 'prod' else []
