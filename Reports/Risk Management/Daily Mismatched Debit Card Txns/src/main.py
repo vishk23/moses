@@ -9,6 +9,8 @@ from openpyxl import load_workbook
 
 import os
 import shutil
+import cdutils.acct_file_creation.core # type: ignore
+from datetime import datetime
 import cdutils.distribution # type: ignore
 from src._version import __version__
 from src.config import BASE_PATH, INPUT_DIR, OUTPUT_DIR, EMAIL_TO, EMAIL_CC, EMAIL_BCC
@@ -103,7 +105,10 @@ def main():
     deb_or_cred = []
     merchants = list(result['Merchant'])
 
-
+    # Save unadjusted version of account numbers because we pad with leading zeros
+    # Necsesary for later merge against COCC active accounts
+    unadjusted_card = cardnbrs.copy()
+    unadjusted_acctnbr = acctnbrs.copy()
 
     for i in range(len(result)):
 
@@ -126,10 +131,10 @@ def main():
 
     # Matching against COCC
     temp_df = pd.DataFrame({
-        'cardnbr': cardnbrs,
-        'acctnbr': acctnbrs,
+        'cardnbr': unadjusted_card,
+        'acctnbr': unadjusted_acctnbr,
         'amount': amount,
-        'merchant': merchant
+        'merchant': merchants
     }).copy()
 
     # Make string if not already
@@ -138,12 +143,14 @@ def main():
     active_accts = cdutils.acct_file_creation.core.query_df_on_date()
     
     # Merging
-    merged_df = pd.merge(temp_df, active_accounts, how='outer', on='acctnbr', indicator=True)
+    merged_df = pd.merge(temp_df, active_accts, how='outer', on='acctnbr', indicator=True)
 
     # Exceptions dataframe creation
     exceptions = merged_df[merged_df['_merge'] == 'left_only'].copy()
 
     # Write out exceptions here to check if this works
+    TEMP_OUTPUT = Path(r"C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\bin\exceptions.parquet")
+    exceptions.to_parquet(TEMP_OUTPUT, index=False)
 
     # move txt file to archive
     input_archive_path = INPUT_DIR / Path('./archive') / Path(file_to_move)
