@@ -452,3 +452,216 @@ Help: https://docs.oracle.com/error-help/db/ora-01861/
 
 Required fields: 
 Provide the required fields names or description.	Please segregate each year’s data to a separate tab on the Excel workbook and include the following:  Application ID, Account Number, Loan Origination Date, Applicant Last Name, Applicant First Name, Co-Applicant Last Name, Co-Applicant First Name, Applicant Credit Score, Co-Applicant Credit Score, Model Year, Vehicle Mileage, Dealer Name, Amount Financed, Current Balance, Contract Rate, Buy Rate, Loan Paid or Open, and Date Closed when applicable. 
+
+
+Excellent. This is a very common requirement—moving from a summary report to a detailed, multi-tab breakdown for end-users. The iterative approach will work perfectly for this.
+
+Your existing function `query_df_on_date()` is the key. We will use it to build a complete dataset of all loan originations within the 2020-2024 period, apply your specific filter criteria, and then format the output exactly as requested.
+
+Here is the updated and detailed plan.
+
+### High-Level Strategy
+
+The plan remains the same at its core but is adapted for the new output requirements:
+
+1.  **Iterate by Month:** We will loop from Jan 2020 to Dec 2024, calling your `query_df_on_date()` function for the last business day of each month.
+2.  **Collect Originations:** From each monthly snapshot, we'll collect only the loans originated *within that specific month*.
+3.  **Combine & Deduplicate:** All collected monthly originations will be merged into a single, master DataFrame. We'll drop duplicates on `acctnbr` as a safeguard.
+4.  **Apply Complex Filter:** We will apply your specified filter: `Category == 'Indirect'` OR `currmiaccttypcd` is in `['CM15', 'CM16']`.
+5.  **Prepare and Format:** We'll select, rename, and create columns to match the required field list.
+6.  **Export to Multi-Tab Excel:** The final, filtered DataFrame will be split by year, with each year's data written to a separate tab in a single Excel file.
+
+---
+
+### Step-by-Step Implementation
+
+This entire script can be placed in a new file, for example, `create_indirect_loan_report.py`.
+
+#### Step 1: Setup and Date Generation
+
+First, import the necessary libraries and your `query_df_on_date` function. Then, generate the list of monthly dates to iterate over.
+
+```python
+import pandas as pd
+from datetime import datetime
+
+# Import your existing, trusted function from your project structure
+from account_data_adhoc.core import query_df_on_date, get_last_business_day
+
+print("Starting indirect loan report generation...")
+
+# Define the overall date range for the report
+start_date = datetime(2020, 1, 1)
+end_date = datetime(2024, 12, 31)
+
+# Generate a list of all month-end dates to use for our snapshots
+snapshot_dates = pd.date_range(start=start_date, end=end_date, freq='M')
+
+print(f"Generated {len(snapshot_dates)} monthly snapshot dates to process.")
+```
+
+#### Step 2: Iteratively Query and Collect Monthly Originations
+
+Loop through the snapshot dates. In each iteration, call your pipeline, and then isolate the loans that were newly originated in that month.
+
+```python
+monthly_originations_dfs = []
+
+print("Collecting loan originations month by month...")
+
+for month_end_date in snapshot_dates:
+    print(f"--- Processing snapshot for {month_end_date.strftime('%Y-%m')} ---")
+    
+    # Get a valid business day snapshot date using your existing utility
+    snapshot_business_date = datetime.strptime(get_last_business_day(month_end_date), '%Y-%m-%d %H:%M:%S')
+    
+    # Call your function to get the full, cleaned dataframe for that date
+    df_snapshot = query_df_on_date(specified_date=snapshot_business_date)
+    
+    if df_snapshot.empty:
+      print("Snapshot returned empty dataframe, skipping.")
+      continue
+      
+    # Ensure contractdate is a datetime object for comparison
+    df_snapshot['contractdate'] = pd.to_datetime(df_snapshot['contractdate'])
+    
+    # Filter the snapshot to find only loans originated IN THAT SPECIFIC MONTH
+    df_month_originations = df_snapshot[
+        (df_snapshot['contractdate'].dt.year == month_end_date.year) &
+        (df_snapshot['contractdate'].dt.month == month_end_date.month)
+    ].copy()
+    
+    if not df_month_originations.empty:
+        print(f"Found {len(df_month_originations)} loans originated in {month_end_date.strftime('%Y-%m')}.")
+        monthly_originations_dfs.append(df_month_originations)
+
+print("\nFinished collecting all monthly data.")
+```
+
+#### Step 3: Combine, Deduplicate, and Apply Final Filter
+
+Concatenate the list of DataFrames into one, remove any potential duplicates, and then apply your specific business logic to get the final set of indirect loans.
+
+```python
+if not monthly_originations_dfs:
+    print("No loan originations found in the entire date range. Exiting.")
+else:
+    # Combine all monthly dataframes into a single master list
+    all_originations_df = pd.concat(monthly_originations_dfs, ignore_index=True)
+
+    # Safeguard: Drop duplicates based on the unique account number
+    unique_originations_df = all_originations_df.drop_duplicates(subset=['acctnbr'], keep='first')
+    print(f"\nTotal unique loans originated (2020-2024): {len(unique_originations_df)}")
+
+    # Apply the required business rule filter
+    indirect_loans_df = unique_originations_df[
+        (unique_originations_df['Category'] == 'Indirect') |
+        (unique_originations_df['currmiaccttypcd'].isin(['CM15', 'CM16']))
+    ].copy()
+
+    print(f"Found {len(indirect_loans_df)} unique 'Indirect' loans after filtering.")
+```
+
+#### Step 4: Prepare Data for Export (Map and Format)
+
+This is a critical new step. We will create new columns and rename existing ones to match the report specifications.
+
+```python
+if not indirect_loans_df.empty:
+    print("Preparing final data for export...")
+
+    # 1. Derive the 'Loan Paid or Open' status
+    indirect_loans_df['Loan Status'] = 'Open'
+    indirect_loans_df.loc[indirect_loans_df['curracctstatcd'] == 'CLOSE', 'Loan Status'] = 'Paid' # Adjust 'CLOSE' if status code is different
+
+    # 2. Add 'contract_year' for splitting into tabs
+    indirect_loans_df['contract_year'] = indirect_loans_df['contractdate'].dt.year
+
+    # 3. Define the final column structure and rename
+    #    (Placeholders are used for fields not in your repomix's SQL queries)
+    final_columns_map = {
+        'acctnbr': 'Account Number',
+        'contractdate': 'Loan Origination Date',
+        'ownersortname': 'Applicant Last Name', # Needs splitting
+        # Placeholder columns
+        'Applicant First Name': 'N/A',
+        'Co-Applicant Last Name': 'N/A',
+        'Co-Applicant First Name': 'N/A',
+        'Applicant Credit Score': 'N/A',
+        'Co-Applicant Credit Score': 'N/A',
+        'Model Year': 'N/A',
+        'Vehicle Mileage': 'N/A',
+        'Dealer Name': 'N/A',
+        'Buy Rate': 'N/A',
+        # Mapped columns
+        'noteopenamt': 'Amount Financed',
+        'notebal': 'Current Balance',
+        'noteintrate': 'Contract Rate',
+        'Loan Status': 'Loan Paid or Open',
+        'closedate': 'Date Closed'
+    }
+    
+    # Create placeholder columns so the rename works
+    for new_col in final_columns_map.values():
+      if new_col not in indirect_loans_df.columns and new_col not in indirect_loans_df.rename(columns=final_columns_map).columns:
+          indirect_loans_df[new_col] = 'N/A'
+          
+    # TODO: Split 'ownersortname' into First and Last names
+    # For now, we are just renaming it. You'll need to parse this field.
+    
+    # Select and rename columns
+    report_df = indirect_loans_df.rename(columns=final_columns_map)
+    final_report_df = report_df[list(final_columns_map.values())]
+
+```
+
+#### Step 5: Export to Multi-Tab Excel Workbook
+
+Use `pandas.ExcelWriter` to create a single workbook and loop through each year, writing the corresponding data to a new sheet.
+
+```python
+    output_filename = 'indirect_loan_report_by_year_2020-2024.xlsx'
+    
+    with pd.ExcelWriter(output_filename, engine='xlsxwriter') as writer:
+        print(f"\nWriting data to {output_filename}...")
+        
+        # Get the unique years from the data, sorted
+        years_to_export = sorted(final_report_df['contract_year'].unique())
+        
+        for year in years_to_export:
+            sheet_name = str(year)
+            print(f" - Writing tab: {sheet_name}")
+            
+            df_year = final_report_df[final_report_df['contract_year'] == year].copy()
+            
+            # Drop the helper 'contract_year' column before exporting
+            df_year.drop(columns=['contract_year'], inplace=True)
+            
+            df_year.to_excel(writer, sheet_name=sheet_name, index=False)
+
+    print("\nReport generation complete.")
+
+```
+
+### Data Mapping and Missing Fields
+
+**This is important.** Your request includes several fields that are not present in the SQL queries within your `account_data_adhoc/fetch_data.py` file. I have used placeholders in the code above. To get the real data, **you will need to update your SQL queries** to include these fields.
+
+| Required Field | Source Column / Derivation | Action Required |
+| :--- | :--- | :--- |
+| Application ID | N/A | User stated not required. |
+| Account Number | `acctnbr` | **Done.** |
+| Loan Origination Date| `contractdate` | **Done.** |
+| Applicant Last/First Name | `ownersortname` | **Action Needed:** This field needs to be split into first and last names. |
+| Co-Applicant Last/First Name | Not in SQL | **Action Needed:** Must add co-applicant name fields to the query. |
+| Applicant Credit Score | Not in SQL | **Action Needed:** Must add credit score field(s) to the query. |
+| Co-Applicant Credit Score | Not in SQL | **Action Needed:** Must add co-applicant credit score field to the query. |
+| Model Year | Not in SQL | **Action Needed:** Must add model year to the query (likely from a collateral table). |
+| Vehicle Mileage | Not in SQL | **Action Needed:** Must add mileage to the query (likely from a collateral table). |
+| Dealer Name | Not in SQL | **Action Needed:** Must add dealer name to the query (a critical indirect lending field). |
+| Amount Financed | `noteopenamt` | **Done.** |
+| Current Balance | `notebal` | **Done.** |
+| Contract Rate | `noteintrate` | **Done.** |
+| Buy Rate | Not in SQL | **Action Needed:** Must add dealer buy rate to the query. |
+| Loan Paid or Open | Derived from `curracctstatcd` | **Done.** |
+| Date Closed | `closedate` | **Done.** |
