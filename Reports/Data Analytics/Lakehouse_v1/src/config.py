@@ -14,7 +14,7 @@ from pathlib import Path
 
 # Report Info
 REPORT_NAME = "Lakehouse Transformation"
-BUSINESS_LINE = "Data Engineering Team"
+BUSINESS_LINE = "Data Team"
 SCHEDULE = "Daily"
 OWNER = "Chad Doorley"
 
@@ -23,8 +23,16 @@ PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\lakehouse") if ENV == 'prod' else Path(__file__).parent.parent
-ACCOUNT_TABLE = BASE_PATH / "account"
+BASE_PATH = Path(r"C:\Users\w322800\Documents\lakehouse") 
+
+# Bronze
+BRONZE = BASE_PATH / "bronze"
+
+# Silver
+SILVER = BASE_PATH / "silver"
+
+# Gold
+GOLD = BASE_PATH / "gold"
 
 # Email Recipients
 EMAIL_TO = []  # List of primary recipients for production
