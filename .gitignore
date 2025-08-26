@@ -19,6 +19,8 @@ output/
 **/output/
 **/*.zip
 *.zip
+.parquet
+**/*.parquet
 
 .gitconfig
 # Python cache

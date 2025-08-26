@@ -30,6 +30,7 @@ dependencies = [
     "pip>=25.1.1",
     "reportlab>=4.4.3",
     "pyarrow>=21.0.0",
+    "deltalake>=1.1.4",
 ]
 
 [tool.uv.sources]
