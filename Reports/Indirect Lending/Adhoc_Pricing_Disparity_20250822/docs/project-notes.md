@@ -53,3 +53,20 @@ Data I need
 
 ----
 
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[6], line 1
+----> 1 df = src.account_data_adhoc.core.query_df_on_date()
+
+File c:\Users\w322800\Documents\gh\bcsb-prod\Reports\Indirect Lending\Adhoc_Pricing_Disparity_20250822\src\account_data_adhoc\core.py:55, in query_df_on_date(specified_date)
+     52     assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
+     53     specified_date = get_last_business_day(specified_date)
+---> 55 data = src.account_data_adhoc.fetch_data.fetch_data(specified_date)
+     57 # # # Core transformation pipeline
+     58 raw_data = src.account_data_adhoc.core_transform.main_pipeline(data)
+
+TypeError: fetch_data() takes 0 positional arguments but 1 was given
+
+----
+
+Do you by any chance have the data we provided the 3rd party for their analysis so I can tie back to my data. I tried to request meridian link data and was told they would have to open a ticket and it be $15k per year's worth of data which sounds absolutely absurd....
