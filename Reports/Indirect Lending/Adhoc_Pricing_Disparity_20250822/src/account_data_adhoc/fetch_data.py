@@ -6,7 +6,7 @@ Usage:
 
 You need to set your own date that you want to see in effective date embedded in the SQL Query
 """
-
+print("Proof running correct one")
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
 from typing import Optional
