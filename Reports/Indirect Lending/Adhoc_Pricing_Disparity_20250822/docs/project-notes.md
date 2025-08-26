@@ -447,3 +447,8 @@ Help: https://docs.oracle.com/error-help/db/ora-01861/
         (a.EFFDATE = TO_DATE('2025-08-25 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))
     ]
 (Background on this error at: https://sqlalche.me/e/20/4xp6)
+
+----
+
+Required fields: 
+Provide the required fields names or description.	Please segregate each year’s data to a separate tab on the Excel workbook and include the following:  Application ID, Account Number, Loan Origination Date, Applicant Last Name, Applicant First Name, Co-Applicant Last Name, Co-Applicant First Name, Applicant Credit Score, Co-Applicant Credit Score, Model Year, Vehicle Mileage, Dealer Name, Amount Financed, Current Balance, Contract Rate, Buy Rate, Loan Paid or Open, and Date Closed when applicable. 
