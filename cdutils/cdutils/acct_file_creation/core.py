@@ -91,7 +91,7 @@ def query_df_on_date(specified_date: Optional[datetime] = None):
     df
 
     # %%
-    pers = data['wh_pers'].copy()
+    # pers = data['wh_pers'].copy()
 
     # %%
     # df.info()

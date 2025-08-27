@@ -90,19 +90,12 @@ def fetch_data(specified_date: Optional[datetime] = None):
         OSIEXTN.HOUSEHLDACCT a
     """)
 
-    wh_pers = text("""
-    SELECT
-        *
-    FROM
-        OSIBANK.WH_PERS a
-    """)    
 
     queries = [
         {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
         {'key':'wh_loans', 'sql':wh_loans, 'engine':2},
         {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':2},
         {'key':'househldacct', 'sql':househldacct, 'engine':1},
-        {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
 
 
