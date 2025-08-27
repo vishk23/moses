@@ -987,3 +987,202 @@ FROM
   CalculatedValues
 ORDER BY
   acctnbr;
+
+
+----
+import cdutils.database.connect # type: ignore
+from sqlalchemy import text # type: ignore
+from typing import Optional
+from datetime import datetime, timedelta
+import pandas as pd
+
+def fetch_data(specified_date: Optional[datetime] = None):
+    """
+    Main data query
+    """
+    oracle_sql_query = f"""
+    WITH CalculatedValues AS (
+    SELECT
+        a.ACCTNBR,
+        a.EFFDATE,
+        -- Get the first non-null rate by ordering time from oldest to newest
+        FIRST_VALUE(a.NOTEINTRATE IGNORE NULLS) OVER (
+        PARTITION BY a.ACCTNBR
+        ORDER BY a.EFFDATE ASC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS first_noteintrate,
+
+        -- Get the latest tax number by ordering time from oldest to newest
+        LAST_VALUE(a.TAXRPTFORORGNBR) OVER (
+        PARTITION BY a.ACCTNBR 
+        ORDER BY a.EFFDATE ASC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS latest_taxrptfororgnbr,
+
+        -- Get the latest tax number by ordering time from oldest to newest
+        LAST_VALUE(a.TAXRPTFORPERSNBR) OVER (
+        PARTITION BY a.ACCTNBR 
+        ORDER BY a.EFFDATE ASC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS latest_taxrptforpersnbr
+    FROM
+        COCCDM.WH_ACCTCOMMON a -- <<< Replace with your actual table name
+    )
+    SELECT DISTINCT
+    acctnbr,
+    first_noteintrate,
+    latest_taxrptfororgnbr,
+    latest_taxrptforpersnbr
+    FROM
+    CalculatedValues
+    ORDER BY
+    acctnbr
+    """
+
+    queries = [
+        {'key':'oracle_sql_query', 'sql':oracle_sql_query, 'engine':2},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\sqlalchemy\engine\base.py:1415, in Connection.execute(self, statement, parameters, execution_options)
+   1414 try:
+-> 1415     meth = statement._execute_on_connection
+   1416 except AttributeError as err:
+
+AttributeError: 'str' object has no attribute '_execute_on_connection'
+
+The above exception was the direct cause of the following exception:
+
+ObjectNotExecutableError                  Traceback (most recent call last)
+Cell In[30], line 1
+----> 1 data = fetch_data()
+
+Cell In[29], line 55, in fetch_data(specified_date)
+     11 oracle_sql_query = f"""
+     12 WITH CalculatedValues AS (
+     13 SELECT
+   (...)     47 acctnbr
+     48 """
+     50 queries = [
+     51     {'key':'oracle_sql_query', 'sql':oracle_sql_query, 'engine':2},
+     52 ]
+---> 55 data = cdutils.database.connect.retrieve_data(queries)
+     56 return data
+
+File ~\Documents\gh\bcsb-prod\cdutils\cdutils\database\connect.py:162, in retrieve_data(queries)
+    159     else:
+    160         return asyncio.run(run_queries())
+--> 162 data = run_sql_queries(queries)
+    164 return data
+
+File ~\Documents\gh\bcsb-prod\cdutils\cdutils\database\connect.py:158, in retrieve_data.<locals>.run_sql_queries(queries)
+    156 loop = asyncio.get_event_loop()
+    157 if loop.is_running():
+--> 158     return loop.run_until_complete(run_queries())
+    159 else:
+    160     return asyncio.run(run_queries())
+
+File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\nest_asyncio.py:98, in _patch_loop.<locals>.run_until_complete(self, future)
+     95 if not f.done():
+     96     raise RuntimeError(
+     97         'Event loop stopped before Future completed.')
+---> 98 return f.result()
+
+File ~\AppData\Local\Programs\Python\Python311\Lib\asyncio\futures.py:203, in Future.result(self)
+    201 self.__log_traceback = False
+    202 if self._exception is not None:
+--> 203     raise self._exception.with_traceback(self._exception_tb)
+    204 return self._result
+
+File ~\AppData\Local\Programs\Python\Python311\Lib\asyncio\tasks.py:277, in Task.__step(***failed resolving arguments***)
+    273 try:
+    274     if exc is None:
+    275         # We use the `send` method directly, because coroutines
+    276         # don't have `__iter__` and `__next__` methods.
+--> 277         result = coro.send(None)
+    278     else:
+    279         result = coro.throw(exc)
+
+File ~\Documents\gh\bcsb-prod\cdutils\cdutils\database\connect.py:154, in retrieve_data.<locals>.run_sql_queries.<locals>.run_queries()
+    153 async def run_queries():
+--> 154     return await fetch_data(queries)
+
+File ~\Documents\gh\bcsb-prod\cdutils\cdutils\database\connect.py:143, in retrieve_data.<locals>.fetch_data(queries)
+    141 try:
+    142     tasks = {query['key']: asyncio.create_task(db_handler.query(query['sql'], query['engine'])) for query in queries}
+--> 143     results = await asyncio.gather(*tasks.values())
+    144     return {key: df for key, df in zip(tasks.keys(), results)}
+    145 except Exception as e:
+
+File ~\AppData\Local\Programs\Python\Python311\Lib\asyncio\tasks.py:349, in Task.__wakeup(self, future)
+    347 def __wakeup(self, future):
+    348     try:
+--> 349         future.result()
+    350     except BaseException as exc:
+    351         # This may also be a cancellation.
+    352         self.__step(exc)
+
+File ~\AppData\Local\Programs\Python\Python311\Lib\asyncio\tasks.py:277, in Task.__step(***failed resolving arguments***)
+    273 try:
+    274     if exc is None:
+    275         # We use the `send` method directly, because coroutines
+    276         # don't have `__iter__` and `__next__` methods.
+--> 277         result = coro.send(None)
+    278     else:
+    279         result = coro.throw(exc)
+
+File ~\Documents\gh\bcsb-prod\cdutils\cdutils\database\connect.py:122, in retrieve_data.<locals>.DatabaseHandler.query(self, sql_query, engine)
+    119     raise ValueError("Engine must be 1 or 2")
+    121 async with selected_engine.connect() as connection:
+--> 122     result = await connection.execute(sql_query)
+    123     rows = result.fetchall()
+    124     if not rows:
+
+File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:658, in AsyncConnection.execute(self, statement, parameters, execution_options)
+    620 async def execute(
+    621     self,
+    622     statement: Executable,
+   (...)    625     execution_options: Optional[CoreExecuteOptionsParameter] = None,
+    626 ) -> CursorResult[Any]:
+    627     r"""Executes a SQL statement construct and return a buffered
+    628     :class:`_engine.Result`.
+    629 
+   (...)    656 
+    657     """
+--> 658     result = await greenlet_spawn(
+    659         self._proxied.execute,
+    660         statement,
+    661         parameters,
+    662         execution_options=execution_options,
+    663         _require_await=True,
+    664     )
+    665     return await _ensure_sync_result(result, self.execute)
+
+File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:190, in greenlet_spawn(fn, _require_await, *args, **kwargs)
+    185 # runs the function synchronously in gl greenlet. If the execution
+    186 # is interrupted by await_only, context is not dead and result is a
+    187 # coroutine to wait. If the context is dead the function has
+    188 # returned, and its result can be returned.
+    189 switch_occurred = False
+--> 190 result = context.switch(*args, **kwargs)
+    191 while not context.dead:
+    192     switch_occurred = True
+
+File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\sqlalchemy\engine\base.py:1417, in Connection.execute(self, statement, parameters, execution_options)
+   1415     meth = statement._execute_on_connection
+   1416 except AttributeError as err:
+-> 1417     raise exc.ObjectNotExecutableError(statement) from err
+   1418 else:
+   1419     return meth(
+   1420         self,
+   1421         distilled_parameters,
+   1422         execution_options or NO_OPTIONS,
+   1423     )
+
+ObjectNotExecutableError: Not an executable object: '\n    WITH CalculatedValues AS (\n    SELECT\n        a.ACCTNBR,\n        a.EFFDATE,\n        -- Get the first non-null rate by ordering time from oldest to newest\n        FIRST_VALUE(a.NOTEINTRATE IGNORE NULLS) OVER (\n        PARTITION BY a.ACCTNBR\n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS first_noteintrate,\n\n        -- Get the latest tax number by ordering time from oldest to newest\n        LAST_VALUE(a.TAXRPTFORORGNBR) OVER (\n        PARTITION BY a.ACCTNBR \n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS latest_taxrptfororgnbr,\n\n        -- Get the latest tax number by ordering time from oldest to newest\n        LAST_VALUE(a.TAXRPTFORPERSNBR) OVER (\n        PARTITION BY a.ACCTNBR \n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS latest_taxrptforpersnbr\n    FROM\n        COCCDM.WH_ACCTCOMMON a -- <<< Replace with your actual table name\n    )\n    SELECT DISTINCT\n    acctnbr,\n    first_noteintrate,\n    latest_taxrptfororgnbr,\n    latest_taxrptforpersnbr\n    FROM\n    CalculatedValues\n    ORDER BY\n    acctnbr\n    '
