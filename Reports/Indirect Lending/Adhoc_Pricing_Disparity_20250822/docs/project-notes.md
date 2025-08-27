@@ -665,3 +665,85 @@ Use `pandas.ExcelWriter` to create a single workbook and loop through each year,
 | Buy Rate | Not in SQL | **Action Needed:** Must add dealer buy rate to the query. |
 | Loan Paid or Open | Derived from `curracctstatcd` | **Done.** |
 | Date Closed | `closedate` | **Done.** |
+
+
+----
+
+
+# %%
+import pandas as pd
+from pathlib import Path
+
+# %%
+INPUT_PATH = Path(r"C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Indirect Lending\Adhoc_Pricing_Disparity_20250822\output\output.parquet")
+
+# %%
+df = pd.read_parquet(INPUT_PATH)
+
+# %%
+df
+
+# %%
+from deltalake import DeltaTable
+
+# %%
+ACCOUNT_DATA = Path(r"C:\Users\w322800\Documents\lakehouse\silver\account")
+
+# %%
+active_accounts = DeltaTable(ACCOUNT_DATA).to_pandas()
+
+# %%
+active_accounts
+
+# %%
+active_accounts = active_accounts[(active_accounts['Category'].isin(['Indirect'])) | (active_accounts['currmiaccttypcd']).isin(['CM15','CM16'])].copy()
+
+# %%
+df.info()
+
+# %%
+active_accounts_slice = active_accounts[[
+    'acctnbr',
+    'ownersortname',
+    'contractdate',
+    'curracctstatcd',
+    'noteopenamt',
+    'notebal',
+    'noteintrate'
+]].copy()
+
+# %%
+active_accounts_slice = active_accounts_slice.rename(columns={
+    'acctnbr': 'Account Number',
+    'contractdate': 'Loan Origination Date',
+    'ownersortname': 'Applicant Last Name', # Needs splitting
+    'noteopenamt': 'Amount Financed',
+    'notebal': 'Current Balance',
+    'noteintrate': 'Contract Rate',
+}).copy()
+
+# %%
+active_accounts_slice.info()
+
+# %%
+merged_df = pd.merge(df, active_accounts_slice, on='Account Number', how='outer', suffixes=('_df','_active'), indicator=True)
+
+# %%
+merged_df
+
+# %%
+merged_df.info()
+
+# %%
+import numpy as np
+
+# %%
+merged_df['Status'] = np.where(merged_df['_merge'] == 'left_only', 'Closed/Charged Off','Active')
+
+# %%
+
+
+# %%
+
+
+
