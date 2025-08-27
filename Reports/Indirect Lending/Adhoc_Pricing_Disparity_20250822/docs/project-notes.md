@@ -951,4 +951,39 @@ This approach gives you exactly what you asked for: a single, plain SQL query th
 
 ---
 
+WITH CalculatedValues AS (
+  SELECT
+    acctnbr,
+    effdate,
+    -- Get the first non-null rate by ordering time from oldest to newest
+    FIRST_VALUE(noteintrate IGNORE NULLS) OVER (
+      PARTITION BY acctnbr 
+      ORDER BY effdate ASC
+      ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS first_noteintrate,
 
+    -- Get the latest tax number by ordering time from oldest to newest
+    LAST_VALUE(taxrptfororgnbr) OVER (
+      PARTITION BY acctnbr 
+      ORDER BY effdate ASC
+      ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS latest_taxrptfororgnbr,
+
+    -- Get the latest tax number by ordering time from oldest to newest
+    LAST_VALUE(taxrptforpersnbr) OVER (
+      PARTITION BY acctnbr 
+      ORDER BY effdate ASC
+      ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS latest_taxrptforpersnbr
+  FROM
+    YourHistoryTable -- <<< Replace with your actual table name
+)
+SELECT DISTINCT
+  acctnbr,
+  first_noteintrate,
+  latest_taxrptfororgnbr,
+  latest_taxrptforpersnbr
+FROM
+  CalculatedValues
+ORDER BY
+  acctnbr;
