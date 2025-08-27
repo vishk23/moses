@@ -670,6 +670,7 @@ Use `pandas.ExcelWriter` to create a single workbook and loop through each year,
 ----
 
 
+
 # %%
 import pandas as pd
 from pathlib import Path
@@ -747,3 +748,62 @@ merged_df['Status'] = np.where(merged_df['_merge'] == 'left_only', 'Closed/Charg
 
 
 
+
+----
+
+```python
+# %%
+import numpy as np
+
+# Your Status column is perfect. It correctly identifies loans present
+# in the active_accounts table as 'Active'.
+merged_df['Status'] = np.where(merged_df['_merge'] == 'left_only', 'Closed/Charged Off','Active')
+
+# %%
+# Define the base names of the columns that were duplicated during the merge
+cols_to_consolidate = [
+    'Loan Origination Date',
+    'Applicant Last Name',
+    'Amount Financed',
+    'Current Balance',
+    'Contract Rate'
+]
+
+# Consolidate the columns using combine_first
+# This method is ideal for this scenario. It takes values from the first
+# DataFrame (`_active` columns) and fills any missing (NaN) values with
+# data from the second DataFrame (`_df` columns).
+# This perfectly matches your logic: "If it's active, use the active data...
+# otherwise it should be the left dataframe."
+for col in cols_to_consolidate:
+    active_col = f'{col}_active'
+    df_col = f'{col}_df'
+    merged_df[col] = merged_df[active_col].combine_first(merged_df[df_col])
+
+# %%
+# Create a list of the original suffixed columns to drop, plus the merge indicator
+cols_to_drop = [f'{col}_{suffix}' for col in cols_to_consolidate for suffix in ['df', 'active']]
+cols_to_drop.append('_merge')
+
+# Create the final, clean DataFrame
+final_df = merged_df.drop(columns=cols_to_drop)
+
+
+# %%
+# As you noted, the 'Applicant Last Name' came from 'ownersortname'
+# and may need to be split if the format is 'LAST, FIRST'.
+final_df['Applicant Last Name'] = final_df['Applicant Last Name'].str.split(',').str[0].str.strip()
+
+# %%
+# final_df is now your fully consolidated DataFrame
+final_df.info()
+
+# %%
+# Verify the status distribution
+print("\nLoan Status Counts:")
+print(final_df['Status'].value_counts())
+
+# %%
+# Display the head of the final DataFrame
+final_df
+```
