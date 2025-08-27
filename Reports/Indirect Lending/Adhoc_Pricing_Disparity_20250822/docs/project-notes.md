@@ -807,3 +807,144 @@ print(final_df['Status'].value_counts())
 # Display the head of the final DataFrame
 final_df
 ```
+
+---
+
+Understood. That is a very common restriction in production environments. You have read-only access and need a single, executable SQL query that can handle a list of inputs larger than Oracle's 1000-item limit for an `IN` clause.
+
+The standard and most reliable way to solve this is to programmatically generate a single SQL query that breaks your large list of account numbers into multiple smaller `IN` clauses chained together with `OR`.
+
+Here is the complete process.
+
+### The Strategy: "Chunking" with `OR IN`
+
+We will use Python to take your long list of account numbers and build a `WHERE` clause that looks like this:
+
+```sql
+WHERE
+(
+  ACCTNBR IN (1, 2, ..., 999)
+  OR ACCTNBR IN (1000, 1001, ..., 1998)
+  OR ACCTNBR IN (1999, 2000, ..., 2997)
+  -- and so on...
+)
+```
+
+This is valid SQL, bypasses the 1000-item limit, and requires no special database permissions.
+
+### Step 1: Python Code to Generate the Oracle SQL
+
+This script will take your `final_df`, generate the dynamic `WHERE` clause, and then embed it into the full Oracle query.
+
+```python
+# %%
+# --- 1. PREPARE THE ACCOUNT NUMBERS ---
+# Get a list of unique account numbers from your DataFrame
+account_list = final_df['Account Number'].unique().tolist()
+
+# Define the chunk size (must be <= 1000, 999 is safe)
+chunk_size = 999
+
+# %%
+# --- 2. BUILD THE DYNAMIC "OR IN" CLAUSE ---
+
+# Check if there are any accounts to even query
+if not account_list:
+    where_clause = "1 = 2" # A condition that is always false
+else:
+    # This list will hold each "ACCTNBR IN (...)" string
+    in_clauses = []
+    
+    for i in range(0, len(account_list), chunk_size):
+        # Get a slice of the list
+        chunk = account_list[i:i + chunk_size]
+        
+        # Format the chunk into a comma-separated string of numbers
+        # (Assuming account numbers do not need string quotes)
+        chunk_str = ', '.join(map(str, chunk))
+        
+        # Create the IN clause for this chunk
+        in_clauses.append(f"ACCTNBR IN ({chunk_str})")
+    
+    # Join all the individual IN clauses together with "OR"
+    where_clause = " OR ".join(in_clauses)
+
+
+# %%
+# --- 3. CONSTRUCT THE FULL ORACLE SQL QUERY ---
+# This is the same core logic as before, but we are inserting our dynamic WHERE clause.
+
+# Remember to replace YOUR_SCHEMA and ACCT_DATE!
+oracle_sql_query = f"""
+WITH RankedRecords AS (
+    SELECT
+        ACCTNBR,
+        TAXRPTFORORGNBR,
+        TAXRPTFORPERSNBR,
+        NOTEINTRATE,
+        
+        ROW_NUMBER() OVER (PARTITION BY ACCTNBR ORDER BY ACCT_DATE ASC) as RN
+        -- ==> IMPORTANT: Replace ACCT_DATE with your daily snapshot date column!
+        
+    FROM
+        YOUR_SCHEMA.WH_ACCTCOMMON -- ==> IMPORTANT: Replace with your schema!
+    WHERE
+        -- The dynamically generated clause is inserted here
+        ({where_clause})
+)
+SELECT
+    ACCTNBR AS "Account Number",
+    TAXRPTFORORGNBR,
+    TAXRPTFORPERSNBR,
+    NOTEINTRATE AS "First Recorded Rate"
+FROM
+    RankedRecords
+WHERE
+    RN = 1
+"""
+
+# (Optional) You can print the first 500 characters to see what it looks like
+# print(oracle_sql_query[:500])
+
+```
+
+### Step 2: Python Code to Execute the Query and Merge
+
+Now you can pass this long `oracle_sql_query` string directly to pandas to execute against your Oracle database.
+
+```python
+# %%
+# --- 4. EXECUTE THE QUERY AND MERGE THE RESULTS ---
+
+from sqlalchemy import create_engine, text
+import pandas as pd
+
+# Establish database connection (replace with your credentials)
+db_connection_str = 'oracle+oracledb://USER:PASSWORD@YOUR_HOST:1521/?service_name=YOUR_SERVICE_NAME'
+engine = create_engine(db_connection_str)
+
+print("Executing dynamically generated query against Oracle...")
+
+# Use pandas to execute the query and load results directly into a DataFrame
+# This may take some time depending on the size of the list and table
+enrichment_df = pd.read_sql_query(text(oracle_sql_query), con=engine)
+
+print(f"Successfully fetched enrichment data for {len(enrichment_df)} accounts.")
+
+
+# %%
+# --- 5. MERGE THE ENRICHMENT DATA ---
+# This remains the same.
+final_df = pd.merge(
+    final_df,
+    enrichment_df,
+    on='Account Number',
+    how='left'
+)
+
+# %%
+final_df.info()
+final_df.head()
+```
+
+This approach gives you exactly what you asked for: a single, plain SQL query that works within standard Oracle limitations and read-only permissions.
