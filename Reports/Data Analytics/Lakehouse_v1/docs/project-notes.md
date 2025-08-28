@@ -460,3 +460,138 @@ gold_table = gold_table.merge(insurance_link, on=['acctnbr', 'propnbr'], how='le
 # The `gold_table` is now a fully denormalized view ready for analysis.
 # Its grain is (acctnbr, propnbr, intrpolicynbr).
 ```
+
+
+----
+
+Excellent question. You've hit on a fundamental best practice for building reliable data warehouses and data lakehouses.
+
+Adding a load timestamp to every record you write to the Silver and Gold layers is crucial for auditing, debugging, and versioning. Let's create a robust function for this, paying special attention to your requirement of handling pre-existing `effdate` columns.
+
+### The Problem: Business Date vs. Load Date
+
+You correctly identified that an `effdate` from a source system is different from the timestamp when you write to your tables. This is a critical distinction:
+
+*   **Business Effective Date (`source_effdate`):** The date/time when a fact became true in the real world (e.g., when a policy started, when an address was updated). This comes *from the source data*.
+*   **Load Timestamp:** The date/time when your ETL/ELT pipeline processed the record and loaded it into the target table (e.g., your Silver `property` table). This is *metadata you add*.
+
+Overwriting or confusing these two can lead to a loss of valuable information. The best practice is to **name the new column unambiguously** to avoid this conflict. A name like `load_timestamp_utc` is ideal because it's explicit about what it is and its timezone.
+
+### Recommended Function: `add_load_timestamp`
+
+This function adds a new column with a clear name, `load_timestamp_utc`, and preserves any existing `effdate` column. This is the safest and most robust approach.
+
+```python
+import pandas as pd
+from typing import Optional
+
+def add_load_timestamp(
+    df: pd.DataFrame, 
+    col_name: str = "load_timestamp_utc"
+) -> pd.DataFrame:
+    """
+    Adds a column with the current UTC timestamp to a DataFrame.
+
+    This function is idempotent and safe to run on any DataFrame. If the
+    specified column name already exists, it will be overwritten with the
+    new timestamp. It does not affect any other columns.
+
+    Args:
+        df: The pandas DataFrame to modify.
+        col_name: The name for the new timestamp column. 
+                  Defaults to 'load_timestamp_utc'.
+
+    Returns:
+        A new DataFrame with the added timestamp column.
+    """
+    df_copy = df.copy()
+    df_copy[col_name] = pd.Timestamp.now(tz='UTC')
+    return df_copy
+```
+
+---
+
+### How to Use It in Your Workflow
+
+Integrating this into your pipeline is now clean and simple. You would call it right before writing any DataFrame to the Silver or Gold layer.
+
+#### Example 1: DataFrame **without** an existing `effdate`
+
+```python
+# Assume 'silver_property' is your DataFrame ready for writing
+# It does NOT have an 'effdate' column
+print("--- Before adding timestamp ---")
+print(silver_property.head(2))
+
+# Add the load timestamp
+silver_property_final = add_load_timestamp(silver_property)
+
+print("\n--- After adding timestamp ---")
+print(silver_property_final.head(2))
+# You'll see a new 'load_timestamp_utc' column has been added.
+
+# Now write the final DataFrame to Delta Lake
+# write_deltalake(SILVER_PROPERTY_PATH, silver_property_final, ...)
+```
+
+#### Example 2: DataFrame **with** an existing `effdate`
+
+```python
+# Let's create a dummy DataFrame that has a source 'effdate'
+data = {'policy_id': [1, 2], 'effdate': ['2022-01-01', '2023-05-10']}
+some_policy_df = pd.DataFrame(data)
+some_policy_df['effdate'] = pd.to_datetime(some_policy_df['effdate'])
+
+print("--- Before adding timestamp ---")
+print(some_policy_df.head())
+
+# Add the load timestamp
+policy_df_final = add_load_timestamp(some_policy_df)
+
+print("\n--- After adding timestamp ---")
+print(policy_df_final.head())
+# Notice 'effdate' is preserved, and 'load_timestamp_utc' is added.
+```
+
+### Alternative Function: Renaming the Source Column
+
+If you absolutely must name your new load timestamp column `effdate`, you first need to rename the existing one. This function handles that logic.
+
+**Use this approach with caution**, as renaming columns can sometimes break downstream dependencies if they expect the original column name.
+
+```python
+def add_effdate_and_rename_source(
+    df: pd.DataFrame, 
+    source_col_name: str = "effdate",
+    new_load_col_name: str = "effdate",
+    renamed_source_prefix: str = "source_"
+) -> pd.DataFrame:
+    """
+    Adds a load timestamp, renaming any existing column with the same name.
+
+    Args:
+        df: The DataFrame to modify.
+        source_col_name: The name of the column to check for (e.g., 'effdate').
+        new_load_col_name: The name for the new load timestamp column.
+        renamed_source_prefix: The prefix to add to the renamed source column.
+
+    Returns:
+        A new DataFrame with the added timestamp and potentially renamed column.
+    """
+    df_copy = df.copy()
+    
+    # Check if the source column exists
+    if source_col_name in df_copy.columns:
+        renamed_col = f"{renamed_source_prefix}{source_col_name}"
+        print(f"'{source_col_name}' found. Renaming to '{renamed_col}'.")
+        df_copy.rename(columns={source_col_name: renamed_col}, inplace=True)
+        
+    # Add the new load timestamp column
+    df_copy[new_load_col_name] = pd.Timestamp.now(tz='UTC')
+    return df_copy
+
+# --- Example Usage ---
+# policy_df_final = add_effdate_and_rename_source(some_policy_df)
+# print(policy_df_final)
+# Output would have columns: [policy_id, source_effdate, effdate]
+```
