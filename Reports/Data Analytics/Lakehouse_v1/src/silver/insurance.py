@@ -21,6 +21,7 @@ def generate_insurance_table():
     )
 
     insurance_policy = full_insurance_data.drop_duplicates(subset=['intrpolicynbr']).reset_index(drop=True)
+    insurance_policy = insurance_policy.drop(columns=['acctnbr','propnbr']).copy()
 
     link_cols = ['acctnbr', 'propnbr', 'intrpolicynbr']
     acct_prop_insurance_link = full_insurance_data[link_cols].copy()
