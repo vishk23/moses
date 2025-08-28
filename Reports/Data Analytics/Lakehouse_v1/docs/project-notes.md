@@ -242,3 +242,11 @@ write_deltalake(SILVER_LINK_PATH, account_property_link, mode='overwrite', overw
 
 print("\nSuccessfully created and wrote both `property` and `account_property_link` tables.")
 ```
+
+
+---
+
+Building silver table for properties
+
+there is proptypecd and proptypcd
+- proptypecd is incomplete so we'll use the latter as the golden record

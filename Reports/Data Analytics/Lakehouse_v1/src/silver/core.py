@@ -4,8 +4,8 @@ from datetime import datetime
 import pandas as pd
 from pathlib import Path
 from deltalake import write_deltalake
-import src.bronze.fetch_data
 import src.silver.address
+import src.silver.property
 
 def generate_silver_tables():
     # Account
@@ -28,4 +28,15 @@ def generate_silver_tables():
     write_deltalake(ADDRESS_PATH, df, mode='overwrite', schema_mode='merge')
     print("Successfully wrote address data")
 
+    # Address
+    print("Starting property ...")
+    PROPERTY_PATH = src.config.SILVER / "property"
+    PROPERTY_PATH.mkdir(parents=True, exist_ok=True)
+    ACCT_PROP_LINK_PATH = src.config.SILVER / "account_property_link"
+    ACCT_PROP_LINK_PATH.mkdir(parents=True, exist_ok=True)
 
+    acct_prop_link, property = src.silver.property.create_silver_prop_tables()
+
+    write_deltalake(PROPERTY_PATH, property, mode='overwrite', schema_mode='merge')
+    write_deltalake(PROPERTY_PATH, acct_prop_link, mode='overwrite', schema_mode='merge')
+    print("Successfully wrote property data")
