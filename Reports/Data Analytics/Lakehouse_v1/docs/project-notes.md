@@ -595,3 +595,72 @@ def add_effdate_and_rename_source(
 # print(policy_df_final)
 # Output would have columns: [policy_id, source_effdate, effdate]
 ```
+
+----
+
+
+
+2025-08-28 16:17:35 | INFO | === REPORT RUNNER SESSION START [PROD MODE] ===
+2025-08-28 16:17:35 | INFO | DISCOVERY COMPLETE | Found 36 reports | Environment: PROD
+2025-08-28 16:17:35 | INFO | BATCH START | 1 reports | Filter: name = Lakehouse_v1 | Environment: PROD
+2025-08-28 16:17:35 | INFO | START | Lakehouse Transformation | Business Line: Data Analytics | Environment: PROD
+2025-08-28 16:17:35 | INFO | DEBUG | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-28 16:17:35 | INFO | DEBUG | Working directory: Reports\Data Analytics\Lakehouse_v1
+2025-08-28 16:17:35 | INFO | DEBUG | Command: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe -m src.main
+2025-08-28 16:32:40 | ERROR | FAILED | Lakehouse Transformation | Runtime: 15.08 minutes
+2025-08-28 16:32:40 | ERROR | Python executable: C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Scripts\python.exe
+2025-08-28 16:32:40 | ERROR | Working directory: Reports\Data Analytics\Lakehouse_v1
+2025-08-28 16:32:40 | ERROR | Return code: 1
+2025-08-28 16:32:40 | ERROR | STDERR:
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\main.py", line 36, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\main.py", line 31, in main
+    src.silver.core.generate_silver_tables()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\silver\core.py", line 63, in generate_silver_tables
+    insurance, acct_prop_ins_link = src.silver.insurance.generate_insurance_table()
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\silver\insurance.py", line 24, in generate_insurance_table
+    insurance_policy = insurance_policy.drop(columns=['acctnbr','propnbr']).copy()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\frame.py", line 5588, in drop
+    return super().drop(
+           ^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 4807, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 4849, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 7136, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['acctnbr', 'propnbr'] not found in axis"
+2025-08-28 16:32:40 | ERROR | STDOUT:
+Running v1.0.0-prod
+Running Lakehouse Transformation for Data Team
+Schedule: Daily
+Owner: Chad Doorley
+Environment: prod
+Start bronze table generation
+No all-null columns found. Returning original dataframe
+Start account
+Successfully wrote account data
+Starting address ...
+Successfully wrote address data
+Starting property ...
+Coalesced 'rundate' from 'rundate_prop' and 'rundate_prop2'.
+Coalesced 'nbrofunits' from 'nbrofunits_prop' and 'nbrofunits_prop2'.
+Coalesced 'datelastmaint' from 'datelastmaint_prop' and 'datelastmaint_prop2'.
+Coalesced 'load_timestamp_utc' from 'load_timestamp_utc_prop' and 'load_timestamp_utc_prop2'.
+
+Data after coalescing columns:
+Created `account_property_link` table with 85845 unique links.
+Created master `property` table with 85672 unique properties.
+Assertion Passed: `propnbr` is a unique key for the property table.
+No all-null columns found. Returning original dataframe
+Successfully wrote property data
+Starting property ...
+2025-08-28 16:32:40 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 15.08 minutes
+2025-08-28 16:32:40 | INFO | === REPORT RUNNER SESSION END ===
