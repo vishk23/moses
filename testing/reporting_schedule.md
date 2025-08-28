@@ -96,7 +96,7 @@ $env:REPORT_ENV='prod'
 
 Run reports:
 ```
-python testing/run_reports.py --name "Lakehouse_v1"; python testing/run_reports.py --name "R360"; python testing/run_reports.py --name "Daily Deposit Update"; python testing/run_reports.py --name "Dealer Reserve Recon"; python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"
+python testing/run_reports.py --name "R360"; python testing/run_reports.py --name "Lakehouse_v1"; python testing/run_reports.py --name "Daily Deposit Update"; python testing/run_reports.py --name "Dealer Reserve Recon"; python testing/run_reports.py --name "Daily Mismatched Debit Card Txns"
 ```
 ### Daily - 11:00 AM
 | Report Name                   | Script Command                                  |
