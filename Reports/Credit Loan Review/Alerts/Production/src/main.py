@@ -58,20 +58,6 @@ def main(production_flag: bool=False):
     # wh_addr = data['wh_addr'].copy()
     # pers = data['pers'].copy()
 
-    # Caching
-    # src.cdutils.caching.cache_data(Path(r'C:\Users\w322800\Documents\alerts_caching'), data)
-    
-    # # Unpack cached data
-    # acctcommon = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\acctcommon.csv'))
-    # acctloan = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\acctloan.csv'))
-    # loans = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\loans.csv'))
-    # househldacct = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\househldacct.csv'))
-    # acctstatistichist = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\acctstatistichist.csv'))
-    # acctloanlimithist = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\acctloanlimithist.csv'))
-    # allroles = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\allroles.csv'))
-    # pers = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\pers.csv'))
-    # viewperstaxid = pd.read_csv(Path(r'C:\Users\w322800\Documents\alerts_caching\viewperstaxid.csv'))
-
     # Input cleaning
     viewperstaxid_schema = {
     'persnbr': int,

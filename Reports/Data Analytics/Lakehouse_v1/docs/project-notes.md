@@ -7,3 +7,9 @@ This is the way forward
 
 Currently pausing this. Issue with delta-rs and windows path
 - monitor
+
+
+# 2025-08-27
+Added several new tables here
+
+Couple issues on dtypes

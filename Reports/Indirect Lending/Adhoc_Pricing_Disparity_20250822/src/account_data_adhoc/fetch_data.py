@@ -6,7 +6,7 @@ Usage:
 
 You need to set your own date that you want to see in effective date embedded in the SQL Query
 """
-
+print("Proof running correct one")
 import cdutils.database.connect # type: ignore
 from sqlalchemy import text # type: ignore
 from typing import Optional
@@ -17,7 +17,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
     """
     Main data query
     """
-    
+    print(specified_date)
     wh_acctcommon = text(f"""
     SELECT
         a.EFFDATE,
@@ -34,6 +34,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.NOTEBAL,
         a.CONTRACTDATE,
         a.DATEMAT,
+        a.CLOSEDATE,
         a.TAXRPTFORORGNBR,
         a.TAXRPTFORPERSNBR,
         a.LOANOFFICER,
@@ -41,7 +42,7 @@ def fetch_data(specified_date: Optional[datetime] = None):
     FROM
         COCCDM.WH_ACCTCOMMON a
     WHERE
-        (a.CURRACCTSTATCD IN ('ACT','NPFM','DORM')) AND
+        (a.CONTRACTDATE >= TO_DATE('{datetime(2020, 1, 1)}', 'YYYY-MM-DD HH24:MI:SS')) AND
         (a.EFFDATE = TO_DATE('{specified_date}', 'YYYY-MM-DD HH24:MI:SS'))
     """)
 
@@ -90,12 +91,19 @@ def fetch_data(specified_date: Optional[datetime] = None):
         OSIEXTN.HOUSEHLDACCT a
     """)
 
+    wh_pers = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_PERS a
+    """)    
 
     queries = [
         {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
         {'key':'wh_loans', 'sql':wh_loans, 'engine':2},
         {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':2},
         {'key':'househldacct', 'sql':househldacct, 'engine':1},
+        {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
 
 

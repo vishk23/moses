@@ -27,8 +27,8 @@ def main():
     src.bronze.core.generate_bronze_tables()
 
     # == Silver ==
-    # src.config.SILVER.mkdir(parents=True, exist_ok=True)
-    # src.silver.core.generate_silver_tables()
+    src.config.SILVER.mkdir(parents=True, exist_ok=True)
+    src.silver.core.generate_silver_tables()
 
     # == Gold ==
 

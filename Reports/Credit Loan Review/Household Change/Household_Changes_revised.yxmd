@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
-        <Position x="560" y="175" />
+        <Position x="666" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration joinByRecordPos="False">
@@ -68,7 +68,7 @@
     </Node>
     <Node ToolID="7">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
-        <Position x="701" y="177" />
+        <Position x="762" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration joinByRecordPos="False">
@@ -166,8 +166,10 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
       <Properties>
         <Configuration>
           <Passwords />
+          <CachedCosmeticName />
           <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,
-	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR 
+	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,
+	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT 
 from OSIEXTN.HOUSEHLDACCT</File>
           <FormatSpecificOptions>
             <PreSQLOnConfig>True</PreSQLOnConfig>
@@ -186,10 +188,14 @@ from OSIEXTN.HOUSEHLDACCT</File>
 Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
-            <Field description="PrimaryKey" name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+            <Field description="PrimaryKey" name="ACCTNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+            <Field description="PrimaryKey" name="HOUSEHOLDNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+            <Field name="DATELASTMAINT" size="19" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="DateTime" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -218,7 +224,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
     </Node>
     <Node ToolID="11">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="187" y="435" />
+        <Position x="186" y="438" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -240,7 +246,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
-        <Position x="367" y="351" />
+        <Position x="474" y="354" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -283,7 +289,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
     </Node>
     <Node ToolID="14">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="451" y="351" />
+        <Position x="570" y="354" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -314,11 +320,11 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
     </Node>
     <Node ToolID="16">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="556" y="389" />
+        <Position x="666" y="390" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_22112_d9e0c8228abf426f88c902bf22d42a0a_\Engine_22112_95af7398ab8bfc4998089b9c22aa8fde~.yxdb</TempFile>
+          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_26732_cd20b4c55c8946148c3cc80152bb9c00_\Engine_26732_25250c07bf64944f9ea13e8873a1ae4f~.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -342,7 +348,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
     </Node>
     <Node ToolID="17">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="828" y="113" />
+        <Position x="858" y="114" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -441,7 +447,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_22112_d9e0c8228abf426f88c902bf22d42a0a_\Engine_22112_0b78603e48f1574487a800fde2a13c83~.yxdb</TempFile>
+          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_26732_cd20b4c55c8946148c3cc80152bb9c00_\Engine_26732_0fd0d28655ec2545bbec17ba13a7e67e~.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -462,6 +468,42 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
         </Annotation>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="282" y="438" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="DATELASTMAINT" order="Descending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>DATELASTMAINT - Descending</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="378" y="414" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="ACCTNBR" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
     </Node>
     <Node ToolID="23">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
@@ -534,7 +576,7 @@ Query=Sheet1</DefaultAnnotationText>
           <Properties>
             <Configuration>
               <Passwords />
-              <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">\\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`</File>
+              <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">\\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`</File>
               <FormatSpecificOptions>
                 <FirstRowData>False</FirstRowData>
                 <ImportLine>1</ImportLine>
@@ -542,26 +584,23 @@ Query=Sheet1</DefaultAnnotationText>
             </Configuration>
             <Annotation DisplayMode="0">
               <Name />
-              <DefaultAnnotationText>Household_Report_20250602.xlsx
+              <DefaultAnnotationText>Household_Report_20250804.xlsx
 Query=`Sheet1$`</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field name="acctnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="Double" />
-                <Field name="householdnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="Double" />
-                <Field name="ownersortname" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="product" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="loanofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="acctofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="bookbalance" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="noteintrate" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="mjaccttypcd" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="contractdate" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="Date" />
-                <Field name="datemat" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250602.xlsx|||`Sheet1$`" type="Date" />
+                <Field name="acctnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Double" />
+                <Field name="householdnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Double" />
+                <Field name="ownersortname" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="product" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="loanofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="acctofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="bookbalance" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="noteintrate" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="mjaccttypcd" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="contractdate" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Date" />
+                <Field name="datemat" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Date" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -609,15 +648,19 @@ Query=`Sheet1$`</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="11" Connection="Output" />
-      <Destination ToolID="12" Connection="Source" />
+      <Destination ToolID="24" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="12" Connection="Output" />
+      <Destination ToolID="14" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="13" Connection="True" />
       <Destination ToolID="12" Connection="Targets" />
     </Connection>
     <Connection>
-      <Origin ToolID="12" Connection="Output" />
-      <Destination ToolID="14" Connection="Input" />
+      <Origin ToolID="25" Connection="Unique" />
+      <Destination ToolID="12" Connection="Source" />
     </Connection>
     <Connection>
       <Origin ToolID="14" Connection="Output" />
@@ -634,6 +677,10 @@ Query=`Sheet1$`</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="19" Connection="Output" />
       <Destination ToolID="20" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="24" Connection="Output" />
+      <Destination ToolID="25" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="2" Connection="Output" />

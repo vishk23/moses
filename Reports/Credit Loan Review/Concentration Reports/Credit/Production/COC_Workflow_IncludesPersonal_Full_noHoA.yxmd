@@ -59,6 +59,42 @@ Grouped by household number.</Text>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
     </Node>
+    <Node ToolID="675">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="366" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="DATELASTMAINT" order="Descending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>DATELASTMAINT - Descending</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+    <Node ToolID="676">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="450" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="ACCTNBR" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
+    </Node>
     <Node ToolID="493">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
         <Position x="54" y="102" width="301" height="3111" />
@@ -468,8 +504,10 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
           <Properties>
             <Configuration>
               <Passwords />
+              <CachedCosmeticName />
               <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,
-	OSIEXTN.HOUSEHLDACCT.ACCTNBR 
+	OSIEXTN.HOUSEHLDACCT.ACCTNBR,
+	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT 
 from OSIEXTN.HOUSEHLDACCT</File>
               <FormatSpecificOptions>
                 <PreSQLOnConfig>True</PreSQLOnConfig>
@@ -488,10 +526,14 @@ from OSIEXTN.HOUSEHLDACCT</File>
 Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
+            <Dependencies>
+              <Implicit />
+            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field description="PrimaryKey" name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="DATELASTMAINT" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="DateTime" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -643,7 +685,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="471">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="211" y="523" />
+            <Position x="210" y="522" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4213,7 +4255,7 @@ Input11=HOUSEHOLDNBR
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_20328_9230cec96ede4c8387b456c5aeacd5f9_\Engine_14644_4b2e427b1fc047d8975cbb154b25fa22_.yxdb</TempFile>
+              <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_25324_f4403c0d3bae40b3bf5106163c948776_\Engine_16668_e4ad9072a240412ba42bdbaccf42c482_.yxdb</TempFile>
               <TempFileDataProfiling />
               <Layout>
                 <ViewMode>Single</ViewMode>
@@ -5401,6 +5443,18 @@ Query=Sheet1</DefaultAnnotationText>
       <Destination ToolID="659" Connection="Input" />
     </Connection>
     <Connection>
+      <Origin ToolID="675" Connection="Output" />
+      <Destination ToolID="676" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="676" Connection="Unique" />
+      <Destination ToolID="602" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="603" Connection="Output" />
+      <Destination ToolID="602" Connection="Targets" />
+    </Connection>
+    <Connection>
       <Origin ToolID="455" Connection="Output" />
       <Destination ToolID="458" Connection="Input" />
     </Connection>
@@ -5478,11 +5532,7 @@ Query=Sheet1</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="471" Connection="Output" />
-      <Destination ToolID="602" Connection="Source" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="603" Connection="Output" />
-      <Destination ToolID="602" Connection="Targets" />
+      <Destination ToolID="675" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="472" Connection="Output" />

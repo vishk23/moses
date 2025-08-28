@@ -140,3 +140,99 @@ def fetch_db_metadata():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+
+def fetch_prop():
+    """
+    Main data query
+    """
+    # Engine 1
+    wh_prop = text("""
+    SELECT 
+        *
+    FROM 
+        OSIBANK.WH_PROP a
+    """)
+
+    wh_prop2 = text("""
+    SELECT 
+        *
+    FROM 
+        OSIBANK.WH_PROP2 a 
+    """)
+
+    queries = [
+        # {'key':'acctcommon', 'sql':acctcommon, 'engine':2},
+        {'key':'wh_prop', 'sql':wh_prop, 'engine':1},
+        {'key':'wh_prop2', 'sql':wh_prop2, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+def fetch_insurance():
+    """
+    Main data query
+    """
+    acctpropins = text("""
+    SELECT 
+        *
+    FROM 
+        OSIBANK.ACCTPROPINS a
+    """)
+
+    wh_inspolicy = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_INSPOLICY
+    """)
+
+
+    queries = [
+        {'key':'acctpropins', 'sql':acctpropins, 'engine':1},
+        {'key':'wh_inspolicy', 'sql':wh_inspolicy, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+def fetch_account_data():
+    """
+    Main data query
+    """
+    
+    wh_acctcommon = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ACCTCOMMON a
+    """)
+
+    wh_loans = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_LOANS a
+    """)
+
+    wh_acctloan = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ACCTLOAN a
+    """)
+
+    queries = [
+        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':1},
+        {'key':'wh_loans', 'sql':wh_loans, 'engine':1},
+        {'key':'wh_acctloan', 'sql':wh_acctloan, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+

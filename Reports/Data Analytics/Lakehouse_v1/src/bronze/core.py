@@ -5,9 +5,31 @@ import pandas as pd
 from pathlib import Path
 from deltalake import write_deltalake
 
+def cast_all_null_columns_to_string(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Helper function, since parquet cannot store columns with null type
+    """
+    is_all_null = df.isnull().all()
+
+    all_null_cols = is_all_null[is_all_null].index.tolist()
+
+    if not all_null_cols:
+        print("No all-null columns found. Returning original dataframe")
+        return df
+
+    dtype_mapping = {col: 'string' for col in all_null_cols}
+
+    df = df.astype(dtype_mapping)
+    final_df = df.copy()
+
+    return final_df
+
 def generate_bronze_tables():
-    # wh_addr (address)
-    print("Start bronze table generation")
+
+    print("Start bronze table generation") 
+
+    # wh_addr (address) ========================
+
     WH_ADDR_PATH = src.config.BRONZE / "wh_addr"
     WH_ADDR_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -15,10 +37,8 @@ def generate_bronze_tables():
     wh_addr = data['wh_addr'].copy()
 
     write_deltalake(WH_ADDR_PATH, wh_addr, mode='overwrite', schema_mode='merge')
-    print("Successfully wrote wh_addr")
 
-    # wh_allroles
-    print("Start bronze table generation")
+    # wh_allroles ========================
     WH_ALLROLES_PATH = src.config.BRONZE / "wh_allroles"
     WH_ALLROLES_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -27,7 +47,7 @@ def generate_bronze_tables():
 
     write_deltalake(WH_ALLROLES_PATH, wh_allroles, mode='overwrite', schema_mode='merge')
 
-    # Org
+    # Org/Pers ========================
     WH_ORG_PATH = src.config.BRONZE / "wh_org"
     WH_ORG_PATH.mkdir(parents=True, exist_ok=True)
     WH_PERS_PATH = src.config.BRONZE / "wh_pers"
@@ -38,9 +58,9 @@ def generate_bronze_tables():
     wh_pers = data['wh_org'].copy()
 
     write_deltalake(WH_ORG_PATH, wh_org, mode='overwrite', schema_mode='merge')
-    write_deltalake(WH_PERS_PATH, wh_org, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_PERS_PATH, wh_pers, mode='overwrite', schema_mode='merge')
 
-    # DB Metadata Lookup
+    # DB Metadata Lookup ======================== 
     METADATA_PATH1 = src.config.BRONZE / "metadata_lookup_engine1"
     METADATA_PATH1.mkdir(parents=True, exist_ok=True)
     METADATA_PATH2 = src.config.BRONZE / "metadata_lookup_engine2"
@@ -66,3 +86,60 @@ def generate_bronze_tables():
 
     write_deltalake(METADATA_PATH1, lookup_df1, mode='overwrite', schema_mode='merge')
     write_deltalake(METADATA_PATH2, lookup_df2, mode='overwrite', schema_mode='merge')
+
+
+    # Property ========================
+    WH_PROP_PATH = src.config.BRONZE / "wh_prop"
+    WH_PROP_PATH.mkdir(parents=True, exist_ok=True)
+    WH_PROP2_PATH = src.config.BRONZE / "wh_prop2"
+    WH_PROP2_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_prop()
+    wh_prop = data['wh_prop'].copy()
+    wh_prop2 = data['wh_prop2'].copy()
+
+    wh_prop = cast_all_null_columns_to_string(wh_prop)
+    wh_prop2 = cast_all_null_columns_to_string(wh_prop2)
+
+    write_deltalake(WH_PROP_PATH, wh_prop, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_PROP2_PATH, wh_prop2, mode='overwrite', schema_mode='merge')
+
+    # Insurance ======================== 
+    ACCTPROPINS_PATH = src.config.BRONZE / "acctpropins"
+    ACCTPROPINS_PATH.mkdir(parents=True, exist_ok=True)
+    WH_INSPOLICY_PATH = src.config.BRONZE / "wh_inspolicy"
+    WH_INSPOLICY_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_insurance()
+    acctpropins = data['acctpropins'].copy()
+    wh_inspolicy = data['wh_inspolicy'].copy()
+
+    acctpropins = cast_all_null_columns_to_string(acctpropins)
+    wh_inspolicy = cast_all_null_columns_to_string(wh_inspolicy)
+
+    write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='merge')
+
+
+    # Account data ========================
+    WH_ACCTCOMMON_PATH = src.config.BRONZE / "wh_acctcommon"
+    WH_ACCTCOMMON_PATH.mkdir(parents=True, exist_ok=True)
+    WH_ACCTLOAN_PATH = src.config.BRONZE / "wh_acctloan"
+    WH_ACCTLOAN_PATH.mkdir(parents=True, exist_ok=True)
+    WH_LOANS_PATH = src.config.BRONZE / "wh_loans"
+    WH_LOANS_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_account_data()
+    wh_acctcommon = data['wh_acctcommon'].copy()
+    wh_acctloan = data['wh_acctloan'].copy()
+    wh_loans = data['wh_loans'].copy()
+
+    wh_acctcommon = cast_all_null_columns_to_string(wh_acctcommon)
+    wh_acctloan = cast_all_null_columns_to_string(wh_acctloan)
+    wh_loans = cast_all_null_columns_to_string(wh_loans)
+
+    write_deltalake(WH_ACCTCOMMON_PATH, wh_acctcommon, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_ACCTLOAN_PATH, wh_acctloan, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_LOANS_PATH, wh_loans, mode='overwrite', schema_mode='merge')
+
+

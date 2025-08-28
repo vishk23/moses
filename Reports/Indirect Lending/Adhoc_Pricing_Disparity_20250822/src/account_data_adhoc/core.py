@@ -7,9 +7,9 @@ import pandas as pd # type: ignore
 from datetime import datetime, timedelta
 from pandas.tseries.holiday import USFederalHolidayCalendar
 
-import cdutils.acct_file_creation.additional_fields # type: ignore
-import cdutils.acct_file_creation.fetch_data # type: ignore
-import cdutils.acct_file_creation.core_transform # type: ignore
+import src.account_data_adhoc.additional_fields # type: ignore
+import src.account_data_adhoc.fetch_data # type: ignore
+import src.account_data_adhoc.core_transform # type: ignore
 import cdutils.pkey_sqlite # type: ignore
 import cdutils.hhnbr # type: ignore
 import cdutils.loans.calculations # type: ignore
@@ -48,14 +48,16 @@ def query_df_on_date(specified_date: Optional[datetime] = None):
 
     if specified_date is None:
         specified_date = get_last_business_day()
+        print(specified_date)
     else:
         assert isinstance(specified_date, datetime), "Specified date must be a datetime object"
         specified_date = get_last_business_day(specified_date)
-
-    data = cdutils.acct_file_creation.fetch_data.fetch_data(specified_date)
+        print(specified_date)
+        
+    data = src.account_data_adhoc.fetch_data.fetch_data(specified_date)
 
     # # # Core transformation pipeline
-    raw_data = cdutils.acct_file_creation.core_transform.main_pipeline(data)
+    raw_data = src.account_data_adhoc.core_transform.main_pipeline(data)
 
     # Raw data with pkey appended
     raw_data = cdutils.pkey_sqlite.add_pkey(raw_data)
@@ -91,14 +93,14 @@ def query_df_on_date(specified_date: Optional[datetime] = None):
     df
 
     # %%
-    # pers = data['wh_pers'].copy()
+    pers = data['wh_pers'].copy()
 
     # %%
     # df.info()
 
     # %%
 
-    additional_fields = cdutils.acct_file_creation.additional_fields.fetch_data(specified_date)
+    additional_fields = src.account_data_adhoc.additional_fields.fetch_data(specified_date)
 
     # %%
     additional_fields_to_append = additional_fields['wh_acctcommon'].copy()

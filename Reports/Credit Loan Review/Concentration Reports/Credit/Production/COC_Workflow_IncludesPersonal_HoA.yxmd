@@ -59,6 +59,42 @@ Grouped by household number.</Text>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
     </Node>
+    <Node ToolID="675">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="366" y="534" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="DATELASTMAINT" order="Descending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>DATELASTMAINT - Descending</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+    <Node ToolID="676">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="474" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="ACCTNBR" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
+    </Node>
     <Node ToolID="493">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
         <Position x="54" y="102" width="301" height="3111" />
@@ -128,7 +164,7 @@ Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPI,&#xA;	OSIBANK.WH_ACCTLOAN.ESCROWDUE &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPI,&#xA;	OSIBANK.WH_ACCTLOAN.ESCROWDUE &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
                 <Field name="TOTALPI" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPI,&#xA;	OSIBANK.WH_ACCTLOAN.ESCROWDUE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
                 <Field name="ESCROWDUE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPI,&#xA;	OSIBANK.WH_ACCTLOAN.ESCROWDUE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
               </RecordInfo>
@@ -165,7 +201,7 @@ Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.NEXTRATECHG &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.NEXTRATECHG &#xA;from OSIBANK.WH_LOANS" type="Int64" />
                 <Field name="NEXTRATECHG" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.NEXTRATECHG &#xA;from OSIBANK.WH_LOANS" type="DateTime" />
               </RecordInfo>
             </MetaInfo>
@@ -201,7 +237,7 @@ Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="Int64" />
                 <Field name="DATEMAT" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="DateTime" />
               </RecordInfo>
             </MetaInfo>
@@ -300,7 +336,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
                 <Field name="NOTEINTRATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
               </RecordInfo>
             </MetaInfo>
@@ -391,7 +427,7 @@ Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
                 <Field name="RISKRATINGCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="String" />
                 <Field name="CURRDUEDATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="DateTime" />
                 <Field name="CREDITLIMITAMT" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
@@ -444,8 +480,8 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
-                <Field description="PrimaryKey" name="EFFDATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="EFFDATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="DateTime" />
                 <Field name="PRODUCT" size="30" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
                 <Field name="NOTEBAL" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
                 <Field name="CURRACCTSTATCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
@@ -468,8 +504,10 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
           <Properties>
             <Configuration>
               <Passwords />
+              <CachedCosmeticName />
               <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,
-	OSIEXTN.HOUSEHLDACCT.ACCTNBR 
+	OSIEXTN.HOUSEHLDACCT.ACCTNBR,
+	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT 
 from OSIEXTN.HOUSEHLDACCT</File>
               <FormatSpecificOptions>
                 <PreSQLOnConfig>True</PreSQLOnConfig>
@@ -488,10 +526,14 @@ from OSIEXTN.HOUSEHLDACCT</File>
 Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
+            <Dependencies>
+              <Implicit />
+            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="DATELASTMAINT" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="DateTime" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -526,7 +568,7 @@ Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT &#xA;from OSIBANK.WH_LOANS" type="Int64" />
                 <Field name="AVAILBALAMT" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT &#xA;from OSIBANK.WH_LOANS" type="Double" />
               </RecordInfo>
             </MetaInfo>
@@ -562,7 +604,7 @@ Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.COBAL &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.COBAL &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
                 <Field name="COBAL" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.COBAL &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
               </RecordInfo>
             </MetaInfo>
@@ -599,7 +641,7 @@ Query=select OSIBANK.WH_ACCT.NAICS...</DefaultAnnotationText>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="NAICSCD" size="6" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.NAICSCD,&#xA;	OSIBANK.WH_ACCT.ACCTNBR &#xA;from OSIBANK.WH_ACCT" type="String" />
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.NAICSCD,&#xA;	OSIBANK.WH_ACCT.ACCTNBR &#xA;from OSIBANK.WH_ACCT" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.NAICSCD,&#xA;	OSIBANK.WH_ACCT.ACCTNBR &#xA;from OSIBANK.WH_ACCT" type="Int64" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -635,7 +677,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="BOOKBALANCE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -643,7 +685,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="471">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="211" y="523" />
+            <Position x="210" y="522" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -775,7 +817,7 @@ Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
                 <Field name="TOTALPCTSOLD" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
               </RecordInfo>
             </MetaInfo>
@@ -953,7 +995,7 @@ Query=select OSIBANK.DOCREQ.REQNBR...</DefaultAnnotationText>
             </Annotation>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field description="PrimaryKey" name="REQNBR" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="Int64" />
+                <Field name="REQNBR" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="Int64" />
                 <Field name="DOCTYPCD" size="4" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="String" />
                 <Field name="REQPERSNBR" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="Int64" />
                 <Field name="REQORGNBR" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="Int64" />
@@ -5399,6 +5441,18 @@ Query=Sheet1</DefaultAnnotationText>
       <Destination ToolID="659" Connection="Input" />
     </Connection>
     <Connection>
+      <Origin ToolID="675" Connection="Output" />
+      <Destination ToolID="676" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="676" Connection="Unique" />
+      <Destination ToolID="602" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="603" Connection="Output" />
+      <Destination ToolID="602" Connection="Targets" />
+    </Connection>
+    <Connection>
       <Origin ToolID="455" Connection="Output" />
       <Destination ToolID="458" Connection="Input" />
     </Connection>
@@ -5476,11 +5530,7 @@ Query=Sheet1</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="471" Connection="Output" />
-      <Destination ToolID="602" Connection="Source" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="603" Connection="Output" />
-      <Destination ToolID="602" Connection="Targets" />
+      <Destination ToolID="675" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="472" Connection="Output" />
