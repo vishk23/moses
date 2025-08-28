@@ -35,6 +35,8 @@ Most of the data is from account
 Account:
 - acctnbr
 - ownersortname
+- Borrower_name_2 ?
+    - NonTax Signator
 - primary address (cleaned from BKM)
 - primary city
 - primary state
@@ -67,3 +69,33 @@ Insurance:
     - residential/commercial/condo/mobile home/land
     - isn't this collateral type
         - proptypdesc
+
+
+
+----
+# 2025-08-28
+
+Questions for Kelly
+
+On account table, do we only want accounts where there is an active insurance policy?
+
+Commercial (CML/MLN)
+Resi (MTG)
+- HE only in flood zone?
+    - These are a subset of MTG
+
+
+Chad Business
+- 123
+    
+
+L&M track every property end goal
+
+4 types of home equity
+
+Doesn't need PMI
+
+If there is no property, don't include loan
+
+coverageamt is the same for insurable value + replacement cost
+
