@@ -310,3 +310,153 @@ assert wh_inspolicy['intrpolicynbr'].is_unique, "Dupes"
 
 # %%
 # Passes
+
+
+---
+
+You've nailed the analysis again. Your exploration in the notebook reveals the exact relationships, and your proposed strategy is perfectly aligned with the Medallion Architecture principles we've been using.
+
+The key insight is your last `assert`: the combination of `acctnbr` + `propnbr` + `intrpolicynbr` is the unique composite key for the `acctpropins` table. This confirms `acctpropins` is a **three-way linking table** that connects accounts, properties, and insurance policies.
+
+Your strategy is spot-on:
+
+1.  **Join:** Combine `acctpropins` with `wh_inspolicy` to get all available data in one place.
+2.  **Separate:** Split the combined data into two clean Silver tables: a conformed `insurance_policy` dimension table and a linking table.
+3.  **Deduplicate:** Ensure the final `insurance_policy` table has `intrpolicynbr` as its unique primary key.
+
+Let's build this out.
+
+---
+
+### Step-by-Step Implementation
+
+We'll create two new Silver tables:
+
+*   `insurance_policy`: A conformed dimension table where `intrpolicynbr` is the unique primary key, containing all descriptive details of a policy.
+*   `account_property_insurance_link`: A link table containing only the keys (`acctnbr`, `propnbr`, `intrpolicynbr`) to represent the relationships.
+
+```python
+# %% [markdown]
+# ### 1. Setup and Load Bronze Data
+# Assuming setup is done. We'll load the two Bronze tables related to insurance.
+
+# %%
+import pandas as pd
+from deltalake import DeltaTable, write_deltalake
+import src.config
+import os
+
+# Load the source tables
+acctpropins_path = src.config.BRONZE / "acctpropins"
+acctpropins = DeltaTable(acctpropins_path).to_pandas()
+print(f"Loaded {len(acctpropins)} records from acctpropins.")
+
+inspolicy_path = src.config.BRONZE / "wh_inspolicy"
+wh_inspolicy = DeltaTable(inspolicy_path).to_pandas()
+print(f"Loaded {len(wh_inspolicy)} records from wh_inspolicy.")
+
+
+# %% [markdown]
+# ### 2. Join Insurance Data
+# We'll perform a left join from `acctpropins` (the linking table) to `wh_inspolicy` (the details table).
+# This enriches each link with the details of the corresponding policy.
+
+# %%
+# A left join is perfect here. We want to keep every link from `acctpropins`
+# and attach the policy details from `wh_inspolicy`.
+full_insurance_data = pd.merge(
+    acctpropins,
+    wh_inspolicy,
+    on='intrpolicynbr',
+    how='left',
+    suffixes=('_link', '_policy') # Add suffixes in case of any other overlapping column names
+)
+
+print("Joined `acctpropins` and `wh_inspolicy`.")
+print(f"Resulting table has {len(full_insurance_data)} rows.")
+full_insurance_data.info()
+
+
+# %% [markdown]
+# ### 3. Create the Silver Layer Tables
+# Now we'll split the joined data into our two target tables: the conformed dimension and the linking table.
+
+# %%
+# Step 3.1: Create the conformed `insurance_policy` table.
+# This table should only contain information about the policy itself.
+# We start with the full data, then deduplicate to ensure one row per policy.
+
+# Select all columns that are policy-specific. This includes all columns from the original
+# `wh_inspolicy` table plus any that were in `acctpropins` but are attributes of the policy.
+# For this example, let's assume all columns from 'wh_inspolicy' are the master details.
+policy_cols = wh_inspolicy.columns.tolist()
+silver_insurance_policy = full_insurance_data[policy_cols].copy()
+
+# Critical step: Drop duplicates to ensure `intrpolicynbr` is a unique primary key.
+silver_insurance_policy = silver_insurance_policy.drop_duplicates(subset=['intrpolicynbr']).reset_index(drop=True)
+
+print(f"Created `insurance_policy` table with {len(silver_insurance_policy)} unique policies.")
+assert silver_insurance_policy['intrpolicynbr'].is_unique, "Policy Number is not unique!"
+print("Assertion Passed: `intrpolicynbr` is a unique key for the insurance_policy table.")
+
+
+# %%
+# Step 3.2: Create the `account_property_insurance_link` table.
+# This table's only job is to connect the three entities.
+
+link_cols = ['acctnbr', 'propnbr', 'intrpolicynbr']
+account_property_insurance_link = full_insurance_data[link_cols].copy()
+
+# The composite key should already be unique, but it's best practice to confirm.
+account_property_insurance_link = account_property_insurance_link.drop_duplicates().reset_index(drop=True)
+
+print(f"Created `account_property_insurance_link` table with {len(account_property_insurance_link)} unique links.")
+
+
+# %% [markdown]
+# ### 4. Write Both Tables to the Silver Layer
+
+# %%
+# Define paths
+SILVER_INSURANCE_PATH = src.config.SILVER / "insurance_policy"
+SILVER_INSURANCE_LINK_PATH = src.config.SILVER / "account_property_insurance_link"
+os.makedirs(SILVER_INSURANCE_PATH, exist_ok=True)
+os.makedirs(SILVER_INSURANCE_LINK_PATH, exist_ok=True)
+
+# Write the conformed policy dimension table
+print(f"Writing {len(silver_insurance_policy)} records to silver table: {SILVER_INSURANCE_PATH}")
+write_deltalake(SILVER_INSURANCE_PATH, silver_insurance_policy, mode='overwrite', overwrite_schema=True)
+
+# Write the new three-way linking table
+print(f"Writing {len(account_property_insurance_link)} records to silver table: {SILVER_INSURANCE_LINK_PATH}")
+write_deltalake(SILVER_INSURANCE_LINK_PATH, account_property_insurance_link, mode='overwrite', overwrite_schema=True)
+
+print("\nSuccessfully created and wrote both insurance-related silver tables.")
+
+```
+
+### Putting It All Together: A Powerful Gold Table
+
+The beauty of this model is its flexibility. If you wanted to create a Gold-level table showing accounts with their properties and all associated insurance policies, you can now do so with a series of clean joins:
+
+```python
+# This is a conceptual example of how you'd use the new tables
+
+# Load all the necessary Silver tables
+account = DeltaTable(src.config.SILVER / "account").to_pandas()
+prop = DeltaTable(src.config.SILVER / "property").to_pandas()
+account_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
+insurance_policy = DeltaTable(src.config.SILVER / "insurance_policy").to_pandas()
+insurance_link = DeltaTable(src.config.SILVER / "account_property_insurance_link").to_pandas()
+
+# Join accounts to their properties
+gold_table = account.merge(account_prop_link, on='acctnbr', how='left') \
+                    .merge(prop, on='propnbr', how='left')
+
+# Now, join that result with the insurance information
+gold_table = gold_table.merge(insurance_link, on=['acctnbr', 'propnbr'], how='left') \
+                       .merge(insurance_policy, on='intrpolicynbr', how='left')
+
+# The `gold_table` is now a fully denormalized view ready for analysis.
+# Its grain is (acctnbr, propnbr, intrpolicynbr).
+```
