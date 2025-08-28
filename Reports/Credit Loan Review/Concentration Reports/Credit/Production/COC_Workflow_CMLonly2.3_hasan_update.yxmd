@@ -29,7 +29,7 @@ Grouped by household number.</Text>
     </Node>
     <Node ToolID="699">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="102" width="301" height="3111" />
+        <Position x="53" y="102" width="491" height="3111" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -47,7 +47,7 @@ Grouped by household number.</Text>
       <ChildNodes>
         <Node ToolID="660">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="79" y="151" width="48" height="24" />
+            <Position x="78" y="151" width="48" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -94,9 +94,6 @@ from OSIBANK.WH_ACCTLOAN</File>
 Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPI,&#xA;	OSIBANK.WH_ACCTLOAN.ESCROWDUE &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
@@ -134,9 +131,6 @@ from OSIBANK.WH_LOANS</File>
 Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.NEXTRATECHG &#xA;from OSIBANK.WH_LOANS" type="Int64" />
@@ -173,9 +167,6 @@ from OSIBANK.WH_ACCT</File>
 Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="Int64" />
@@ -187,7 +178,7 @@ Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
         </Node>
         <Node ToolID="664">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="235" y="2683" />
+            <Position x="234" y="2683" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -208,7 +199,7 @@ Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
         </Node>
         <Node ToolID="665">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="271" y="2839" />
+            <Position x="270" y="2839" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -229,7 +220,7 @@ Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
         </Node>
         <Node ToolID="666">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="259" y="2947" />
+            <Position x="258" y="2947" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -275,9 +266,6 @@ from OSIBANK.WH_ACCTCOMMON</File>
 Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
@@ -289,7 +277,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="668">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="271" y="3067" />
+            <Position x="270" y="3067" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -337,7 +325,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="670">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="103" y="331" />
+            <Position x="103" y="330" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -369,9 +357,6 @@ from OSIBANK.WH_ACCTLOAN</File>
 Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.CURRDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.LASTREVIEWDATE,&#xA;	OSIBANK.WH_ACCTLOAN.NEXTDUEDATE,&#xA;	OSIBANK.WH_ACCTLOAN.PROPNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
@@ -425,9 +410,6 @@ from OSIBANK.WH_ACCTCOMMON</File>
 Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.EFFDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORORGNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.TAXRPTFORPERSNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
@@ -449,13 +431,15 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="672">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="103" y="499" />
+            <Position x="103" y="498" />
           </GuiSettings>
           <Properties>
             <Configuration>
               <Passwords />
+              <CachedCosmeticName />
               <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,
-	OSIEXTN.HOUSEHLDACCT.ACCTNBR 
+	OSIEXTN.HOUSEHLDACCT.ACCTNBR,
+	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT 
 from OSIEXTN.HOUSEHLDACCT</File>
               <FormatSpecificOptions>
                 <PreSQLOnConfig>True</PreSQLOnConfig>
@@ -479,8 +463,9 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
             </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
-                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="HOUSEHOLDNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
+                <Field name="DATELASTMAINT" source="File: aka:R1625.world|||select OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="DateTime" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
@@ -513,9 +498,6 @@ from OSIBANK.WH_LOANS</File>
 Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT &#xA;from OSIBANK.WH_LOANS" type="Int64" />
@@ -552,9 +534,6 @@ from OSIBANK.WH_ACCTLOAN</File>
 Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.COBAL &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
@@ -591,9 +570,6 @@ from OSIBANK.WH_ACCT</File>
 Query=select OSIBANK.WH_ACCT.NAICS...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="NAICSCD" size="6" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.NAICSCD,&#xA;	OSIBANK.WH_ACCT.ACCTNBR &#xA;from OSIBANK.WH_ACCT" type="String" />
@@ -605,7 +581,7 @@ Query=select OSIBANK.WH_ACCT.NAICS...</DefaultAnnotationText>
         </Node>
         <Node ToolID="676">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="103" y="1339" />
+            <Position x="102" y="1339" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -630,9 +606,6 @@ from OSIBANK.WH_ACCTCOMMON</File>
 Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="BOOKBALANCE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
@@ -644,7 +617,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="677">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="211" y="523" />
+            <Position x="210" y="522" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -665,7 +638,7 @@ Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
         </Node>
         <Node ToolID="678">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="223" y="667" />
+            <Position x="222" y="667" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -774,9 +747,6 @@ from OSIBANK.WH_ACCTLOAN</File>
 Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
@@ -835,9 +805,6 @@ from OSIBANK.WH_ORG</File>
 Query=select OSIBANK.WH_ORG.ORGNBR...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ORGNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ORG.ORGNBR,&#xA;	OSIBANK.WH_ORG.ORGNAME,&#xA;	OSIBANK.WH_ORG.NAICSCD &#xA;from OSIBANK.WH_ORG" type="Int64" />
@@ -872,7 +839,7 @@ Query=select OSIBANK.WH_ORG.ORGNBR...</DefaultAnnotationText>
         </Node>
         <Node ToolID="686">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="103" y="1195" />
+            <Position x="102" y="1195" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -897,9 +864,6 @@ from OSIBANK.WH_PERS</File>
 Query=select OSIBANK.WH_PERS.PERSN...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="PERSNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PERS.PERSNBR,&#xA;	OSIBANK.WH_PERS.NAICSCD &#xA;from OSIBANK.WH_PERS" type="Int64" />
@@ -933,7 +897,7 @@ Query=select OSIBANK.WH_PERS.PERSN...</DefaultAnnotationText>
         </Node>
         <Node ToolID="688">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="91" y="1651" />
+            <Position x="90" y="1651" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -961,9 +925,6 @@ from OSIBANK.DOCREQ</File>
 Query=select OSIBANK.DOCREQ.REQNBR...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="REQNBR" source="File: aka:R1625.world|||select OSIBANK.DOCREQ.REQNBR,&#xA;	OSIBANK.DOCREQ.DOCTYPCD,&#xA;	OSIBANK.DOCREQ.REQPERSNBR,&#xA;	OSIBANK.DOCREQ.REQORGNBR,&#xA;	OSIBANK.DOCREQ.NEXTDUEDATE &#xA;from OSIBANK.DOCREQ" type="Int64" />
@@ -978,7 +939,7 @@ Query=select OSIBANK.DOCREQ.REQNBR...</DefaultAnnotationText>
         </Node>
         <Node ToolID="689">
           <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-            <Position x="91" y="1843" />
+            <Position x="90" y="1843" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -1004,9 +965,6 @@ from OSIBANK.WH_PERSUSERFIELDS</File>
 Query=select OSIBANK.WH_PERSUSERFI...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="PERSUSERFIELDCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_PERSUSERFIELDS.PERSUSERFIELDCD,&#xA;	OSIBANK.WH_PERSUSERFIELDS.PERSNBR,&#xA;	OSIBANK.WH_PERSUSERFIELDS.PERSUSERFIELDVALUE &#xA;from OSIBANK.WH_PERSUSERFIELDS" type="String" />
@@ -1045,9 +1003,6 @@ from OSIBANK.WH_ORGUSERFIELDS</File>
 Query=select OSIBANK.WH_ORGUSERFIE...</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
                 <Field name="ORGNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ORGUSERFIELDS.ORGNBR,&#xA;	OSIBANK.WH_ORGUSERFIELDS.ORGUSERFIELDCD,&#xA;	OSIBANK.WH_ORGUSERFIELDS.ORGUSERFIELDVALUE &#xA;from OSIBANK.WH_ORGUSERFIELDS" type="Int64" />
@@ -1084,7 +1039,7 @@ Query=select OSIBANK.WH_ORGUSERFIE...</DefaultAnnotationText>
         </Node>
         <Node ToolID="692">
           <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-            <Position x="211" y="2143" />
+            <Position x="210" y="2143" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -1221,6 +1176,42 @@ Query=select OSIBANK.WH_ORGUSERFIE...</DefaultAnnotationText>
             </Annotation>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="870">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+            <Position x="354" y="522" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <SortInfo locale="1033">
+                <Field field="DATELASTMAINT" order="Ascending" />
+              </SortInfo>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>DATELASTMAINT - Ascending</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+        </Node>
+        <Node ToolID="871">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+            <Position x="461" y="522" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <UniqueFields>
+                <Field field="ACCTNBR" />
+              </UniqueFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
         </Node>
       </ChildNodes>
     </Node>
@@ -5368,11 +5359,7 @@ Query=Sheet1</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="677" Connection="Output" />
-      <Destination ToolID="808" Connection="Source" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="809" Connection="Output" />
-      <Destination ToolID="808" Connection="Targets" />
+      <Destination ToolID="870" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="678" Connection="Output" />
@@ -5481,6 +5468,18 @@ Query=Sheet1</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="697" Connection="Output" />
       <Destination ToolID="848" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="870" Connection="Output" />
+      <Destination ToolID="871" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="871" Connection="Unique" />
+      <Destination ToolID="808" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="809" Connection="Output" />
+      <Destination ToolID="808" Connection="Targets" />
     </Connection>
     <Connection>
       <Origin ToolID="701" Connection="Output" />

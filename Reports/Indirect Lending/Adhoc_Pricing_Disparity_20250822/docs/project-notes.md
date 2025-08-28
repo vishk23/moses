@@ -1186,3 +1186,18 @@ File c:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\sqlalchemy\
    1423     )
 
 ObjectNotExecutableError: Not an executable object: '\n    WITH CalculatedValues AS (\n    SELECT\n        a.ACCTNBR,\n        a.EFFDATE,\n        -- Get the first non-null rate by ordering time from oldest to newest\n        FIRST_VALUE(a.NOTEINTRATE IGNORE NULLS) OVER (\n        PARTITION BY a.ACCTNBR\n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS first_noteintrate,\n\n        -- Get the latest tax number by ordering time from oldest to newest\n        LAST_VALUE(a.TAXRPTFORORGNBR) OVER (\n        PARTITION BY a.ACCTNBR \n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS latest_taxrptfororgnbr,\n\n        -- Get the latest tax number by ordering time from oldest to newest\n        LAST_VALUE(a.TAXRPTFORPERSNBR) OVER (\n        PARTITION BY a.ACCTNBR \n        ORDER BY a.EFFDATE ASC\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n        ) AS latest_taxrptforpersnbr\n    FROM\n        COCCDM.WH_ACCTCOMMON a -- <<< Replace with your actual table name\n    )\n    SELECT DISTINCT\n    acctnbr,\n    first_noteintrate,\n    latest_taxrptfororgnbr,\n    latest_taxrptforpersnbr\n    FROM\n    CalculatedValues\n    ORDER BY\n    acctnbr\n    '
+
+---
+
+From Tom below, he identified where things are that I was missing from the original report.
+
+
+Hi Chad,
+
+ 
+
+Some of the fields you did not include from Terry’s request are available.  Co-applicant would be nontax owner role.  Applicant credit score is in the ACCTLOAN table.  Co-applicant credit score is a user defined field – CRS2.  Model year is in the PROP2 table.  Dealer name is a user defined field – DLR.  The buy rate can be determined by subtracting the dealer split rate from the contract rate.  The dealer split rate is a user defined field – SPLT.  I hope this helps.
+
+ 
+
+Thank you, Tom
