@@ -27,6 +27,18 @@ BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Mana
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
+# Lakehouse
+LAKEHOUSE_PATH = Path(r"C:\Users\w322800\Documents\lakehouse") 
+
+# Bronze
+BRONZE = LAKEHOUSE_PATH / "bronze"
+
+# Silver
+SILVER = LAKEHOUSE_PATH / "silver"
+
+# Gold
+GOLD = BASE_PATH / "gold"
+
 # Email Recipients
 EMAIL_TO = [] if ENV == 'prod' else [] # List of primary recipients for production
 EMAIL_CC = []  # List of CC recipients for production

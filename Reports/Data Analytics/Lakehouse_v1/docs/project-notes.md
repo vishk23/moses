@@ -250,3 +250,63 @@ Building silver table for properties
 
 there is proptypecd and proptypcd
 - proptypecd is incomplete so we'll use the latter as the golden record
+
+
+----
+
+Need to create silver table for insurance data too
+
+
+# %%
+import src.config
+from deltalake import DeltaTable
+from pathlib import Path
+import pandas as pd
+
+
+# %%
+# TABLE_PATH = src.config.BRONZE / "metadata_lookup_engine1"
+TABLE_PATH = src.config.SILVER / "account"
+
+
+# %%
+account = DeltaTable(TABLE_PATH).to_pandas()
+
+# %%
+account
+
+# %%
+TABLE_PATH = src.config.BRONZE / "acctpropins"
+acctpropins = DeltaTable(TABLE_PATH).to_pandas()
+
+# %%
+acctpropins
+
+# %%
+assert acctpropins['intrpolicynbr'].is_unique, "Dupes"
+
+# %%
+acctpropins['CompositeKey'] = acctpropins['propnbr'].astype(str) + acctpropins['intrpolicynbr'].astype(str)
+
+# %%
+assert acctpropins['CompositeKey'].is_unique, "Dupes"
+
+# %%
+acctpropins['CompositeKey'] = acctpropins['propnbr'].astype(str) + acctpropins['intrpolicynbr'].astype(str) + acctpropins['acctnbr'].astype(str)
+
+# %%
+assert acctpropins['CompositeKey'].is_unique, "Dupes"
+
+# %%
+TABLE_PATH = src.config.BRONZE / "wh_inspolicy"
+wh_inspolicy = DeltaTable(TABLE_PATH).to_pandas()
+
+
+# %%
+wh_inspolicy
+
+# %%
+assert wh_inspolicy['intrpolicynbr'].is_unique, "Dupes"
+
+# %%
+# Passes
