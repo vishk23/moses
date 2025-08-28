@@ -4,27 +4,8 @@ from datetime import datetime
 import pandas as pd
 from pathlib import Path
 from deltalake import write_deltalake
-from src.utils.parquet_io import add_load_timestamp
+from src.utils.parquet_io import add_load_timestamp, cast_all_null_columns_to_string
 import src.bronze.fetch_data
-
-def cast_all_null_columns_to_string(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Helper function, since parquet cannot store columns with null type
-    """
-    is_all_null = df.isnull().all()
-
-    all_null_cols = is_all_null[is_all_null].index.tolist()
-
-    if not all_null_cols:
-        print("No all-null columns found. Returning original dataframe")
-        return df
-
-    dtype_mapping = {col: 'string' for col in all_null_cols}
-
-    df = df.astype(dtype_mapping)
-    final_df = df.copy()
-
-    return final_df
 
 def generate_bronze_tables():
 
@@ -130,7 +111,7 @@ def generate_bronze_tables():
     wh_inspolicy = cast_all_null_columns_to_string(wh_inspolicy)
 
     acctpropins = add_load_timestamp(acctpropins)
-    wh_inspolicy = add_load_timestamp(acctpropins)
+    wh_inspolicy = add_load_timestamp(wh_inspolicy)
 
     write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='merge')

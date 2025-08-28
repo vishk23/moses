@@ -186,7 +186,7 @@ def fetch_insurance():
     SELECT
         *
     FROM
-        OSIBANK.WH_INSPOLICY
+        OSIBANK.WH_INSPOLICY a
     """)
 
 
