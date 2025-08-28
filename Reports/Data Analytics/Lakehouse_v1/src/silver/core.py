@@ -6,6 +6,7 @@ from pathlib import Path
 from deltalake import write_deltalake
 import src.silver.address
 import src.silver.property
+import src.utils.parquet_io
 
 def generate_silver_tables():
     # Account
@@ -28,7 +29,7 @@ def generate_silver_tables():
     write_deltalake(ADDRESS_PATH, df, mode='overwrite', schema_mode='merge')
     print("Successfully wrote address data")
 
-    # Address
+    # Property
     print("Starting property ...")
     PROPERTY_PATH = src.config.SILVER / "property"
     PROPERTY_PATH.mkdir(parents=True, exist_ok=True)
@@ -37,6 +38,10 @@ def generate_silver_tables():
 
     acct_prop_link, property = src.silver.property.create_silver_prop_tables()
 
+    # Handle null columns
+    property = src.utils.parquet_io.cast_all_null_columns_to_string(property)
+    acct_prop_link = src.utils.parquet_io.cast_all_null_columns_to_string(acct_prop_link)
+    
     write_deltalake(PROPERTY_PATH, property, mode='overwrite', schema_mode='merge')
-    write_deltalake(PROPERTY_PATH, acct_prop_link, mode='overwrite', schema_mode='merge')
+    write_deltalake(ACCT_PROP_LINK_PATH, acct_prop_link, mode='overwrite', schema_mode='merge')
     print("Successfully wrote property data")
