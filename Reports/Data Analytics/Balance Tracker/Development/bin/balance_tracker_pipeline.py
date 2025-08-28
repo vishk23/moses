@@ -17,9 +17,6 @@ def main():
     data = src.cdutils.database.fetch_data()
 
 
-    # # Cache data for development
-    # src.cdutils.caching.cache_data(r'C:\Users\w322800\Documents\cre_caching', data)
-    
     # # Unpack data into dataframes
     wh_acctcommon = data['wh_acctcommon'].copy()
     wh_loans = data['wh_loans'].copy()

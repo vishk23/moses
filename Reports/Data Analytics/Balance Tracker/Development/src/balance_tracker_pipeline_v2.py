@@ -18,9 +18,6 @@ def main_pipeline_bt(data: Dict):
     Main data pipeline for the balance tracker. This ties back to the Call Report as a check.
     """
 
-    # # Cache data for development
-    # src.cdutils.caching.cache_data(r'C:\Users\w322800\Documents\cre_caching', data)
-    
     # # Unpack data into dataframes
     wh_acctcommon = data['wh_acctcommon'].copy()
     wh_loans = data['wh_loans'].copy()

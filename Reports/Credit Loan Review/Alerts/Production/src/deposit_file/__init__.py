@@ -16,16 +16,7 @@ def deposit_dataset_execution():
     wh_deposits = data['wh_deposit'].copy()
     historical_acctcommon = data['historical_acctcommon'].copy()
 
-    # # Cache
-    # file_path = Path(r'c:\Users\w322800\Documents\deposit_caching')
-    # src.cdutils.caching.cache_data(file_path, data)
-
-    # # Unpack cached data
-    # acctcommon = pd.read_csv(Path(r'C:\Users\w322800\Documents\deposit_caching\acctcommon.csv'))
-    # acctstatistichist = pd.read_csv(Path(r'C:\Users\w322800\Documents\deposit_caching\acctstatistichist.csv'))
-    # wh_deposits = pd.read_csv(Path(r'C:\Users\w322800\Documents\deposit_caching\wh_deposit.csv'))
-    # historical_acctcommon = pd.read_csv(Path(r'C:\Users\w322800\Documents\deposit_caching\historical_acctcommon.csv'))
-
+  
     three_month_df = src.deposit_file.create_deposit_dataset.filter_on_trailing_months(historical_acctcommon, 3)
     # three_month_df.to_excel(Path('ThreeMonthCheck.xlsx',index=False))
     twelve_month_df = src.deposit_file.create_deposit_dataset.filter_on_trailing_months(historical_acctcommon, 12)
