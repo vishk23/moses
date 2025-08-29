@@ -68,7 +68,10 @@ def main(production_flag: bool=False):
         'CK28', # Investment Business Checking
         'CK33', # Specialty Business Checking
         'CK34', # ICS Shadow - Business - Demand
-        'SV06' # Business Select High Yield
+        'SV06', # Business Select High Yield
+        'CK13',
+        'CK15',
+        'CK41'
     ]
 
     # Filter to only business deposit accounts
