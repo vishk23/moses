@@ -37,4 +37,10 @@ def generate_insurance_table():
     insurance_policy = cast_all_null_columns_to_string(insurance_policy)
     acct_prop_insurance_link = cast_all_null_columns_to_string(acct_prop_insurance_link)
 
+    insurance_policy['intrpolicynbr'] = insurance_policy['intrpolicynbr'].astype(str)
+
+    acct_prop_insurance_link['intrpolicynbr'] = acct_prop_insurance_link['intrpolicynbr'].astype(str)
+    acct_prop_insurance_link['acctnbr'] = acct_prop_insurance_link['acctnbr'].astype(str)
+    acct_prop_insurance_link['propnbr'] = acct_prop_insurance_link['propnbr'].astype(str)
+
     return insurance_policy, acct_prop_insurance_link

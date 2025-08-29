@@ -65,4 +65,5 @@ def generate_address():
     WH_ADDR = src.config.BRONZE / "wh_addr"
     df = DeltaTable(WH_ADDR).to_pandas()
     df_transformed = create_full_street_address(df)
+    df_transformed['addrnbr'] = df_transformed['addrnbr'].astype(str)
     return df_transformed

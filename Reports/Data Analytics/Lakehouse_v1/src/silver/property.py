@@ -30,8 +30,11 @@ def create_silver_prop_tables():
     account_property_link = coalesced_data[['acctnbr', 'propnbr']].copy()
     account_property_link = account_property_link.drop_duplicates().reset_index(drop=True)
 
-    print(f"Created `account_property_link` table with {len(account_property_link)} unique links.")
+    # Convert to string to be consistent
+    account_property_link['acctnbr'] = account_property_link['acctnbr'].astype(str)
+    account_property_link['propnbr'] = account_property_link['propnbr'].astype(str)
 
+    print(f"Created `account_property_link` table with {len(account_property_link)} unique links.")
 
     master_property = coalesced_data.sort_values(by='acctnbr', ascending=False)
     master_property = master_property.drop_duplicates(subset=['propnbr'], keep='first')
@@ -47,6 +50,7 @@ def create_silver_prop_tables():
 
     # This field is present in both wh_prop and wh_prop2, but is incomplete in wh_prop
     master_property = master_property.drop(columns=['proptypecd']).copy()
+    master_property['propnbr'] = master_property['propnbr'].astype(str)
 
     return account_property_link, master_property
 

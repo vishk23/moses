@@ -149,7 +149,7 @@ def generate_bronze_tables():
     ORGADDRUSE_PATH = src.config.BRONZE / "orgaddruse"
     ORGADDRUSE_PATH.mkdir(parents=True, exist_ok=True)
 
-    data = src.bronze.fetch_data.fetch_insurance()
+    data = src.bronze.fetch_data.fetch_addruse_tables()
     persaddruse = data['persaddruse'].copy()
     orgaddruse = data['orgaddruse'].copy()
 
