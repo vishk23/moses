@@ -1,3 +1,3 @@
 # Report Name
-__version__ = "v1.6.0-prod"
+__version__ = "v1.7.0-prod"
 
