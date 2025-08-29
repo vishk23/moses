@@ -186,7 +186,7 @@ def fetch_insurance():
     SELECT
         *
     FROM
-        OSIBANK.WH_INSPOLICY
+        OSIBANK.WH_INSPOLICY a
     """)
 
 
@@ -236,3 +236,30 @@ def fetch_account_data():
     return data
 
 
+def fetch_addruse_tables():
+    """
+    Main data query
+    """
+    persaddruse = text("""
+    SELECT 
+        *
+    FROM 
+        OSIBANK.PERSADDRUSE a
+    """)
+
+    orgaddruse = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.ORGADDRUSE a
+    """)
+
+
+    queries = [
+        {'key':'persaddruse', 'sql':persaddruse, 'engine':1},
+        {'key':'orgaddruse', 'sql':orgaddruse, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

@@ -287,3 +287,11 @@ Daily
 ---
 2025-07-24 (Chad Doorley)
 Will clean up documentation
+
+# 2025-08-28
+For some reason, portfolio key is on the move. I was xx173 and now I'm xx172. not sure how this happened.
+
+Need to revisit this, but now. I am at least happy that I found the issue testing status page for myself.
+
+The distribution method will change with new outlook, so just be aware of that and be ready to pivot to newer solution or something that works.
+

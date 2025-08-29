@@ -4,25 +4,8 @@ from datetime import datetime
 import pandas as pd
 from pathlib import Path
 from deltalake import write_deltalake
-
-def cast_all_null_columns_to_string(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Helper function, since parquet cannot store columns with null type
-    """
-    is_all_null = df.isnull().all()
-
-    all_null_cols = is_all_null[is_all_null].index.tolist()
-
-    if not all_null_cols:
-        print("No all-null columns found. Returning original dataframe")
-        return df
-
-    dtype_mapping = {col: 'string' for col in all_null_cols}
-
-    df = df.astype(dtype_mapping)
-    final_df = df.copy()
-
-    return final_df
+from src.utils.parquet_io import add_load_timestamp, cast_all_null_columns_to_string
+import src.bronze.fetch_data
 
 def generate_bronze_tables():
 
@@ -35,6 +18,7 @@ def generate_bronze_tables():
 
     data = src.bronze.fetch_data.fetch_wh_addr()
     wh_addr = data['wh_addr'].copy()
+    wh_addr = add_load_timestamp(wh_addr)
 
     write_deltalake(WH_ADDR_PATH, wh_addr, mode='overwrite', schema_mode='merge')
 
@@ -44,6 +28,7 @@ def generate_bronze_tables():
 
     data = src.bronze.fetch_data.fetch_wh_allroles()
     wh_allroles = data['wh_allroles'].copy()
+    wh_allroles = add_load_timestamp(wh_allroles)
 
     write_deltalake(WH_ALLROLES_PATH, wh_allroles, mode='overwrite', schema_mode='merge')
 
@@ -55,7 +40,9 @@ def generate_bronze_tables():
 
     data = src.bronze.fetch_data.fetch_org_pers()
     wh_org = data['wh_org'].copy()
-    wh_pers = data['wh_org'].copy()
+    wh_pers = data['wh_pers'].copy()
+    wh_org = add_load_timestamp(wh_org)
+    wh_pers = add_load_timestamp(wh_pers)
 
     write_deltalake(WH_ORG_PATH, wh_org, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_PERS_PATH, wh_pers, mode='overwrite', schema_mode='merge')
@@ -84,6 +71,9 @@ def generate_bronze_tables():
         'data_type'
     ]].copy()
 
+    lookup_df1 = add_load_timestamp(lookup_df1)
+    lookup_df1 = add_load_timestamp(lookup_df1)
+
     write_deltalake(METADATA_PATH1, lookup_df1, mode='overwrite', schema_mode='merge')
     write_deltalake(METADATA_PATH2, lookup_df2, mode='overwrite', schema_mode='merge')
 
@@ -101,6 +91,9 @@ def generate_bronze_tables():
     wh_prop = cast_all_null_columns_to_string(wh_prop)
     wh_prop2 = cast_all_null_columns_to_string(wh_prop2)
 
+    wh_prop = add_load_timestamp(wh_prop)
+    wh_prop2 = add_load_timestamp(wh_prop2)
+
     write_deltalake(WH_PROP_PATH, wh_prop, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_PROP2_PATH, wh_prop2, mode='overwrite', schema_mode='merge')
 
@@ -116,6 +109,9 @@ def generate_bronze_tables():
 
     acctpropins = cast_all_null_columns_to_string(acctpropins)
     wh_inspolicy = cast_all_null_columns_to_string(wh_inspolicy)
+
+    acctpropins = add_load_timestamp(acctpropins)
+    wh_inspolicy = add_load_timestamp(wh_inspolicy)
 
     write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='merge')
@@ -138,8 +134,32 @@ def generate_bronze_tables():
     wh_acctloan = cast_all_null_columns_to_string(wh_acctloan)
     wh_loans = cast_all_null_columns_to_string(wh_loans)
 
+    wh_acctcommon = add_load_timestamp(wh_acctcommon)
+    wh_acctloan = add_load_timestamp(wh_acctloan)
+    wh_loans = add_load_timestamp(wh_loans)
+
     write_deltalake(WH_ACCTCOMMON_PATH, wh_acctcommon, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_ACCTLOAN_PATH, wh_acctloan, mode='overwrite', schema_mode='merge')
     write_deltalake(WH_LOANS_PATH, wh_loans, mode='overwrite', schema_mode='merge')
+
+
+    # ORGADDRUSE/PERSADDRUSE (Address Linking) ======================== 
+    PERSADDRUSE_PATH = src.config.BRONZE / "persaddruse"
+    PERSADDRUSE_PATH.mkdir(parents=True, exist_ok=True)
+    ORGADDRUSE_PATH = src.config.BRONZE / "orgaddruse"
+    ORGADDRUSE_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_addruse_tables()
+    persaddruse = data['persaddruse'].copy()
+    orgaddruse = data['orgaddruse'].copy()
+
+    persaddruse = cast_all_null_columns_to_string(persaddruse)
+    orgaddruse = cast_all_null_columns_to_string(orgaddruse)
+
+    persaddruse = add_load_timestamp(persaddruse)
+    orgaddruse = add_load_timestamp(orgaddruse)
+
+    write_deltalake(PERSADDRUSE_PATH, persaddruse, mode='overwrite', schema_mode='merge')
+    write_deltalake(ORGADDRUSE_PATH, orgaddruse, mode='overwrite', schema_mode='merge')
 
 
