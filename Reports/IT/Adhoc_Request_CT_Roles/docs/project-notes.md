@@ -9,6 +9,10 @@
 
 
 ----
+# CT Role Overview
+Prepared by Chad Doorley
+8/29/2025
+
 ## AA (Administrative Assistant)
 - Provides administrative & loan closing support to lending teams.
 
