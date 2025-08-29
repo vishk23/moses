@@ -40,7 +40,7 @@ def generate_bronze_tables():
 
     data = src.bronze.fetch_data.fetch_org_pers()
     wh_org = data['wh_org'].copy()
-    wh_pers = data['wh_org'].copy()
+    wh_pers = data['wh_pers'].copy()
     wh_org = add_load_timestamp(wh_org)
     wh_pers = add_load_timestamp(wh_pers)
 

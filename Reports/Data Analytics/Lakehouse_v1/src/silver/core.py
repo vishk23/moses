@@ -11,16 +11,16 @@ import src.silver.insurance
 from src.utils.parquet_io import add_load_timestamp
 
 def generate_silver_tables():
-    # # Account
-    # print("Start account")
-    # ACCOUNT_PATH = src.config.SILVER / "account"
-    # ACCOUNT_PATH.mkdir(parents=True, exist_ok=True)
+    # Account
+    print("Start account")
+    ACCOUNT_PATH = src.config.SILVER / "account"
+    ACCOUNT_PATH.mkdir(parents=True, exist_ok=True)
 
-    # df = cdutils.acct_file_creation.core.query_df_on_date()
-    # df = add_load_timestamp(df)
+    df = cdutils.acct_file_creation.core.query_df_on_date()
+    df = add_load_timestamp(df)
 
-    # write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
-    # print("Successfully wrote account data")
+    write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
+    print("Successfully wrote account data")
 
     # Address
     print("Starting address ...")
@@ -30,7 +30,7 @@ def generate_silver_tables():
     df = src.silver.address.generate_address()
     df = add_load_timestamp(df)
 
-    write_deltalake(ADDRESS_PATH, df, mode='overwrite', schema_mode='overwrite')
+    write_deltalake(ADDRESS_PATH, df, mode='overwrite', schema_mode='merge')
     print("Successfully wrote address data")
 
     # Property
@@ -49,8 +49,8 @@ def generate_silver_tables():
     property = add_load_timestamp(property)
     acct_prop_link = add_load_timestamp(acct_prop_link)
     
-    write_deltalake(PROPERTY_PATH, property, mode='overwrite', schema_mode='overwrite')
-    write_deltalake(ACCT_PROP_LINK_PATH, acct_prop_link, mode='overwrite', schema_mode='overwrite')
+    write_deltalake(PROPERTY_PATH, property, mode='overwrite', schema_mode='merge')
+    write_deltalake(ACCT_PROP_LINK_PATH, acct_prop_link, mode='overwrite', schema_mode='merge')
     print("Successfully wrote property data")
 
     # Insurance 
@@ -65,6 +65,6 @@ def generate_silver_tables():
     insurance = add_load_timestamp(insurance)
     acct_prop_ins_link = add_load_timestamp(acct_prop_ins_link)
     
-    write_deltalake(INSURANCE_PATH, insurance, mode='overwrite', schema_mode='overwrite')
-    write_deltalake(ACCT_PROP_INS_LINK_PATH, acct_prop_ins_link, mode='overwrite', schema_mode='overwrite')
+    write_deltalake(INSURANCE_PATH, insurance, mode='overwrite', schema_mode='merge')
+    write_deltalake(ACCT_PROP_INS_LINK_PATH, acct_prop_ins_link, mode='overwrite', schema_mode='merge')
     print("Successfully wrote insurance data")

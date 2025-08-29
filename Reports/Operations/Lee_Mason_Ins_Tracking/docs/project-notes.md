@@ -99,3 +99,18 @@ If there is no property, don't include loan
 
 coverageamt is the same for insurable value + replacement cost
 
+
+----
+# 2025-08-29
+
+HELOCs
+
+MG52
+MG55
+MG48
+MG71
+
+Finished up v2 of this. It's all in notebook
+
+Did pretty deep analysis of this and put together a lot in the data lakehouse for reusable tables in the process.
+
