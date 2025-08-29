@@ -11,3 +11,8 @@ We can take the _merge right only to get XAA only and then join back active acco
 - IOLTA
 - Community checking
 - Some personal stuff.
+
+# 2025-08-29
+Added new minors for business accounts that we missed on first pass
+
+still needs a revamp. This will simplify pulling from directly 

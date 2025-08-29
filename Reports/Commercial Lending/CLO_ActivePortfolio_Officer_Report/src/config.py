@@ -25,6 +25,17 @@ ENV = os.getenv('REPORT_ENV', 'dev')
 BASE_PATH = Path(r"\\00-DA1\Home\Share\Data & Analytics Initiatives\Project Management\Commercial_Lending\CLO_ActivePortfolio_Officer_Report\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
+# Lakehouse
+LAKEHOUSE_PATH = Path(r"C:\Users\w322800\Documents\lakehouse") 
+
+# Bronze
+BRONZE = LAKEHOUSE_PATH / "bronze"
+
+# Silver
+SILVER = LAKEHOUSE_PATH / "silver"
+
+# Gold
+GOLD = BASE_PATH / "gold"
 
 # Email Recipients
 EMAIL_TO = [] if ENV == 'prod' else []

@@ -20,7 +20,7 @@ PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-DA1\Home\Share\Line of Business_Shared Services") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Credit_Loan_Review\NewLoanReport_LR_Credit\Production") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
