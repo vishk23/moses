@@ -143,3 +143,23 @@ def generate_bronze_tables():
     write_deltalake(WH_LOANS_PATH, wh_loans, mode='overwrite', schema_mode='merge')
 
 
+    # ORGADDRUSE/PERSADDRUSE (Address Linking) ======================== 
+    PERSADDRUSE_PATH = src.config.BRONZE / "persaddruse"
+    PERSADDRUSE_PATH.mkdir(parents=True, exist_ok=True)
+    ORGADDRUSE_PATH = src.config.BRONZE / "orgaddruse"
+    ORGADDRUSE_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_insurance()
+    persaddruse = data['persaddruse'].copy()
+    orgaddruse = data['orgaddruse'].copy()
+
+    persaddruse = cast_all_null_columns_to_string(persaddruse)
+    orgaddruse = cast_all_null_columns_to_string(orgaddruse)
+
+    persaddruse = add_load_timestamp(persaddruse)
+    orgaddruse = add_load_timestamp(orgaddruse)
+
+    write_deltalake(PERSADDRUSE_PATH, persaddruse, mode='overwrite', schema_mode='merge')
+    write_deltalake(ORGADDRUSE_PATH, orgaddruse, mode='overwrite', schema_mode='merge')
+
+
