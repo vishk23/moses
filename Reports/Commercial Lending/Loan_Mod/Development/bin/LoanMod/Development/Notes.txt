@@ -1,0 +1,38 @@
+Loan Modification Report
+@ Chad Doorley
+2024-10-02
+For: Hasan Ali
+
+ACCTCOMMON:
+Account number
+Borrower Name
+Loan Officer
+Contract Date
+Maturity Date
+Loan Amount
+
+Unknown:
+Modification Reason (loanmodreasoncd)
+- Add description
+Modification Date (postdate)
+Number of times Modified
+Modification Fee (this is a deferred fee, if applicable) Not all loans have this field.
+Person that completed the modification (this may be challenging)
+
+ACCTLOANMODHIST
+LOANMODREASON
+
+1) 
+OSIBANK	ACCTBALHIST BALAMT
+
+
+Looking for deferred fees and who did the modifications
+Table: ACCTSUBACCT
+BALCATCD: CMDF
+BALTYPCD: FEE
+
+OSIBANK	ACCTBALHIST BALAMT
+- matched to acctnbr/subacctnbr
+
+
+Look at the data2.csv file 

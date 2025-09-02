@@ -49,7 +49,9 @@ def fetch_data():
         a.MAXRATECHANGEDOWN, 
         a.PREPAYCHARGE,
         a.LASTPAYMENTDATE,
-        a.NOTEACCRUEDINT
+        a.NOTEACCRUEDINT,
+        a.CURRDUEDATE,
+        a.NEXTDUEDATE
     FROM 
         COCCDM.WH_ACCTLOAN_ME a
     """)
