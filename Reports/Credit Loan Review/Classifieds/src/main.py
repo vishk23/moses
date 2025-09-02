@@ -429,7 +429,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], f"({int(r['acctnbr'])})"])
 
         # Paid to Zero Balance (fixed condition)
         zeroed = joined[(joined["Net Balance_c"] == 0) & (joined["Net Balance_p"] != 0)]
@@ -439,7 +439,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], f"({int(r['acctnbr'])})"])
 
         # LOC Advance
         loc = joined[joined["Net Balance_c"] > joined["Net Balance_p"]]
@@ -452,36 +452,15 @@ def main():
             for _, r in grouped.iterrows():
                 rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], ""])
 
-        # Get loans from current month with CO and CLS status to identify what happened
-        # These loans existed in prev month but now have different status
-        curr_co_cls = full_curr[full_curr["curracctstatcd"].isin(["CO", "CLS"])]
-        
         # Charged Off Loans - status changed to CO
-        charged_off_accts = curr_co_cls[curr_co_cls["curracctstatcd"] == "CO"]["acctnbr"].tolist()
+        curr_co = full_curr[full_curr["curracctstatcd"] == "CO"]
+        charged_off_accts = curr_co["acctnbr"].tolist()
         charged_off = p[p["acctnbr"].isin(charged_off_accts)]
         if not charged_off.empty:
             rows.append(["Charged Off Loans", "", "", "", ""])
             grouped = group_by_customer(charged_off, "ownersortname", "Net Balance")
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname"], "", -r["Net Balance"], r["acctnbr"]])
-        
-        # Paid Off Loans - status changed to CLS
-        paid_off_accts = curr_co_cls[curr_co_cls["curracctstatcd"] == "CLS"]["acctnbr"].tolist()
-        paid_off = p[p["acctnbr"].isin(paid_off_accts)]
-        if not paid_off.empty:
-            rows.append(["Paid Off Loans", "", "", "", ""])
-            grouped = group_by_customer(paid_off, "ownersortname", "Net Balance")
-            for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname"], "", -r["Net Balance"], r["acctnbr"]])
-        
-        # Other disappearances (loans that completely disappeared, not in current data at all)
-        all_handled = set(charged_off_accts + paid_off_accts)
-        other_disappeared = p[(~p["acctnbr"].isin(full_curr["acctnbr"])) & (~p["acctnbr"].isin(all_handled))]
-        if not other_disappeared.empty:
-            rows.append(["Other Closed Loans", "", "", "", ""])
-            grouped = group_by_customer(other_disappeared, "ownersortname", "Net Balance")
-            for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname"], "", -r["Net Balance"], r["acctnbr"]])
+                rows.append(["", r["ownersortname"], "", -r["Net Balance"], f"({int(r['acctnbr'])})"])
 
         # Partial Charge Offs
         partial = joined[joined["cobal_c"] > joined["cobal_p"]]
@@ -492,7 +471,7 @@ def main():
             ).reset_index()
             grouped["delta"] = -(grouped["cobal_c"] - grouped["cobal_p"])
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], f"({int(r['acctnbr'])})"])
 
         # --- Net Payments & Advances ---
         # Calculate sum of all other reconciliation items (excluding start/end balances and net adjustments)
