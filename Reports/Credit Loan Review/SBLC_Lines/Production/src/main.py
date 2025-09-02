@@ -98,7 +98,8 @@ def main(production_flag: bool=False):
     subject = f"SBLC Lines - Monthly Report" 
     body = "Hi, \n\nAttached is your requested report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
     attachment_paths = [OUTPUT_PATH]
-    cdutils.distribution.email_out(recipients, bcc_recipients, subject, body, attachment_paths)
+    cdutils.distribution.email_out(recipients=recipients, bcc_recipients=bcc_recipients, subject=subject, body=body, attachment_paths=attachment_paths)
+
 
 
 if __name__ == '__main__':
