@@ -429,7 +429,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], f"({int(r['acctnbr'])})"])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], -int(r["acctnbr"])])
 
         # Paid to Zero Balance (fixed condition)
         zeroed = joined[(joined["Net Balance_c"] == 0) & (joined["Net Balance_p"] != 0)]
@@ -439,7 +439,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], f"({int(r['acctnbr'])})"])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], -int(r["acctnbr"])])
 
         # LOC Advance
         loc = joined[joined["Net Balance_c"] > joined["Net Balance_p"]]
@@ -460,7 +460,7 @@ def main():
             rows.append(["Charged Off Loans", "", "", "", ""])
             grouped = group_by_customer(charged_off, "ownersortname", "Net Balance")
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname"], "", -r["Net Balance"], f"({int(r['acctnbr'])})"])
+                rows.append(["", r["ownersortname"], "", -r["Net Balance"], -int(r["acctnbr"])])
 
         # Partial Charge Offs
         partial = joined[joined["cobal_c"] > joined["cobal_p"]]
@@ -471,7 +471,7 @@ def main():
             ).reset_index()
             grouped["delta"] = -(grouped["cobal_c"] - grouped["cobal_p"])
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], f"({int(r['acctnbr'])})"])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], -int(r["acctnbr"])])
 
         # --- Net Payments & Advances ---
         # Calculate sum of all other reconciliation items (excluding start/end balances and net adjustments)
