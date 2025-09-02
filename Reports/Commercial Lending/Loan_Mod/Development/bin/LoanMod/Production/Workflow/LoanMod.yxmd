@@ -1,0 +1,724 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2022.3">
+  <Nodes>
+    <Node ToolID="2">
+      <GuiSettings Plugin="JupyterCode">
+        <Position x="54" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <WorkflowName>h:\chad\projects\loanmod\production\workflow\loanmod.yxmd</WorkflowName>
+          <JupyterProduction>false</JupyterProduction>
+          <vEnvName>designerbasetools_venv</vEnvName>
+          <DefaultVenv>1</DefaultVenv>
+          <productionModeScript>#################################
+"""
+Loan Modification Report
+@ Chad Doorley
+v1.0
+
+This covers loan modifications on act/npfm loans in CML portfolio
+"""
+
+
+#################################
+# List all non-standard packages to be imported by your 
+# script here (only missing packages will be installed)
+# from ayx import Package
+#Package.installPackages(['pandas','numpy'])
+#################################
+# from ayx import Alteryx
+
+
+#################################
+import pandas as pd
+# from pandas.tseries.offsets import MonthEnd
+import numpy as np
+import time
+# from openpyxl import load_workbook
+# from openpyxl.styles import Font, Border, Side, Alignment, NamedStyle
+# from openpyxl.styles.numbers import NumberFormat
+import os
+from datetime import datetime, timedelta, date
+import json
+from sqlalchemy import create_engine, text
+from pydantic import BaseModel, Field
+from typing import List
+
+
+#################################
+def retrieve_data():
+    """
+    Retrieve data from COCC database
+    """
+    class DatabaseHandler:
+        """
+        This class abstracts the connection to the database and allows a clean
+        interface for the developer to use.
+
+        """
+        def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):
+            """
+            Args:
+                tns_admin_path (str): Oracle driver path
+                credentials_path_db1 (str): Database 1 credentials path
+                credentials_path_db1 (str): Databsae 2 credentials path
+            """
+            os.environ['TNS_ADMIN'] = tns_admin_path
+
+            with open(credentials_path_db1) as config_file:
+                config1 = json.load(config_file)
+
+            self.username1 = config1['username']
+            self.password1 = config1['password']
+            self.dsn1 = config1['dsn']
+
+            with open(credentials_path_db2) as config_file:
+                config2 = json.load(config_file)
+
+            self.username2 = config2['username']
+            self.password2 = config2['password']
+            self.dsn2 = config2['dsn']
+
+            self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'
+            self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'
+
+            self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)
+            self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)
+
+        def query(self, sql_query, engine=1):
+            """
+            This allows abstraction of the connection and the class
+            so the developer can query a single table as a dataframe
+
+            Args:
+                sql_query (str): The query to SQL database is passed as a string
+                engine (int): This selects the database. There are two engines:
+                    1 -&gt; R1625
+                    2 -&gt; COCC DataMart
+
+            Returns:
+                df: The SQL query is returned as a pandas DataFrame
+
+            Usage:
+                df = db_handler.query("SELECT * FROM DB.TABLE", engine=1)
+
+                In this example, db_handler = DatabaseHandler(args)
+            """
+            if engine == 1:
+                selected_engine = self.engine1
+            elif engine == 2:
+                selected_engine = self.engine2
+            else:
+                raise ValueError("Engine must be 1 or 2")
+
+            with selected_engine.connect() as connection:
+                df = pd.read_sql(sql_query, connection)
+            return df
+
+    # Database Connection Configuration
+    tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+    credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+    credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+
+    #Last business day
+    with db_handler.engine1.connect() as connection:
+        # Acctcommon
+        acctcommon = text("""
+        SELECT 
+            a.ACCTNBR,
+            a.OWNERNAME,
+            a.LOANOFFICER,
+            a.EFFDATE, 
+            a.MJACCTTYPCD, 
+            a.PRODUCT, 
+            a.CURRMIACCTTYPCD, 
+            a.BOOKBALANCE,
+            a.NOTEBAL,
+            a.NOTEOPENAMT,
+            a.CURRACCTSTATCD, 
+            a.CONTRACTDATE,
+            a.DATEMAT 
+        FROM
+            OSIBANK.WH_ACCTCOMMON a
+        WHERE 
+            a.CURRACCTSTATCD IN ('ACT','NPFM')
+            AND a.MJACCTTYPCD IN ('CML')
+        """)
+        start_time = time.time()
+        acctcommon = pd.read_sql(acctcommon, connection)
+        print(f"ACCTCOMMON took {time.time() - start_time} seconds.")
+        
+        # AcctSubAcct
+        acctsubacct = text("""
+        SELECT 
+            *
+        FROM 
+            OSIBANK.ACCTSUBACCT a
+        WHERE
+            a.BALCATCD = 'CMDF'
+            AND BALTYPCD = 'FEE'
+        """)
+        start_time = time.time()
+        acctsubacct = pd.read_sql(acctsubacct, connection)
+        print(f"acctsubacct took {time.time() - start_time} seconds.")
+        
+        # AcctLoanModHist
+        acctloanmodhist = text("""
+        SELECT
+            *
+        FROM
+            OSIBANK.ACCTLOANMODHIST a
+        """)
+        start_time = time.time()
+        acctloanmodhist = pd.read_sql(acctloanmodhist, connection)
+        print(f"ACCTLOANMODHIST took {time.time() - start_time} seconds.")
+        
+        # AcctLoanReason
+        loanmodreason = text("""
+        SELECT
+            *
+        FROM
+            OSIBANK.LOANMODREASON a
+        """)
+        start_time = time.time()
+        loanmodreason = pd.read_sql(loanmodreason, connection)
+        print(f"LOANMODREASON took {time.time() - start_time} seconds.")
+        
+        
+        # Package up data object
+        data = {
+            'acctcommon': acctcommon,
+            'acctsubacct': acctsubacct,
+            'acctloanmodhist': acctloanmodhist,
+            'loanmodreason': loanmodreason
+        }
+
+        return data
+
+
+
+
+#################################
+
+
+
+#################################
+# Execution
+data = retrieve_data()
+
+
+#################################
+acctcommon = data['acctcommon']
+acctsubacct = data['acctsubacct']
+acctloanmodhist = data['acctloanmodhist']
+loanmodreason = data['loanmodreason']
+
+
+#################################
+#################################
+def create_validation_model(df):
+    """
+    Here we explicitly validate all data types and fields that will be used in this report.
+    """
+    class LoanModReport(BaseModel):
+        acctnbr: int
+        ownername: str
+        loanofficer: str
+        contractdate: date
+        datemat: date
+        bookbalance: float
+        notebal: float
+        noteopenamt: float
+        product: str
+        curracctstatcd: str
+        loanmodnbr: int
+        postdate: date
+        loanmodreasoncd: str
+        loanmodreasondesc: str
+        apprpersnbr: int
+        loanmodbalamt: float
+        canceldate: date
+        loanmodtypcd: str
+        effdate: date
+        
+    
+    class LoanModDataFrame(BaseModel):
+        data: List[LoanModReport]
+    
+    data_dicts = df[[
+        'acctnbr',
+    # need to input here
+    ]].to_dict('records')
+    
+    pydantic_model = LoanModDataFrame(data=[LoanModReport(**row) for row in data_dicts])
+    
+    return pydantic_model
+
+
+#################################
+# Execution
+# validation_model = create_validation_model(df)
+
+
+#################################
+def unpack_validation_model(x):
+    """
+    Post-validation, ready to unpack the model and use data to generate report
+    """
+    temp_dict = x.model_dump()
+    df = pd.DataFrame(temp_dict['data'])
+    return df
+
+
+#################################
+# output_path = r'H:\Chad\Resources\Knowledge Base\lookup_df.csv'
+# lookup_df.to_csv(output_path, index=False)
+
+
+#################################
+merged_df = pd.merge(acctcommon, acctloanmodhist, on='acctnbr', how='inner', indicator=True)
+
+
+#################################
+df = merged_df
+duplicates = df[df.duplicated(subset=['acctnbr'], keep=False)]
+
+if duplicates.empty:
+    print("no duplicates")
+else:
+    print("duplicates")
+
+
+#################################
+loanmodreason = loanmodreason[['loanmodreasoncd','loanmodreasondesc']]
+duplicates = loanmodreason[loanmodreason.duplicated(subset=['loanmodreasoncd'], keep=False)]
+
+# if duplicates.empty:
+#     print("no duplicates")
+# else:
+#     print("unfortunately... duplicates")
+df = pd.merge(df, loanmodreason, on='loanmodreasoncd', how='left')
+df = df[['acctnbr','ownername','loanofficer','contractdate','datemat','bookbalance','notebal','noteopenamt','product','curracctstatcd','loanmodnbr','postdate','loanmodreasoncd','loanmodreasondesc','apprpersnbr','loanmodbalamt','canceldate','loanmodtypcd','effdate_x']]
+df = df.rename(columns={'effdate_x': 'effdate'})
+
+
+#################################
+df = df.reset_index(drop=True)
+
+
+#################################
+df = df.sort_values(by=['acctnbr','loanmodnbr'])
+df
+
+
+#################################
+# Writing base report for Hasan
+file_path = r'H:\Chad\Projects\LoanMod\Production\Output\loanmod_standard.csv'
+df.to_csv(file_path, index=False)
+
+
+#################################
+acctcommon = data['acctcommon']
+acctsubacct = data['acctsubacct']
+acctloanmodhist = data['acctloanmodhist']
+loanmodreason = data['loanmodreason']
+
+
+#################################
+df = pd.merge(acctcommon, acctsubacct, on='acctnbr', how='inner')
+
+
+#################################
+df
+
+
+#################################
+# Check duplicates
+duplicates = df[df.duplicated(subset=['acctnbr'], keep=False)]
+
+if duplicates.empty:
+    print("no duplicates")
+else:
+    print("duplicates")
+
+
+#################################
+temp_df = df[df['acctnbr'] == 151053693]
+
+
+#################################
+temp_df
+
+
+#################################
+df.info()
+
+
+#################################
+temp_df[['subacctnbr']]
+
+
+#################################
+df = pd.merge(df, acctsubacct, on='acctnbr', how='left')
+
+
+#################################
+df
+
+
+#################################
+# Need to bring in processing person to subacct
+# Output both to excel (different sheets)
+
+
+#################################
+def retrieve_data():
+    """
+    Retrieve data from COCC database
+    """
+    class DatabaseHandler:
+        """
+        This class abstracts the connection to the database and allows a clean
+        interface for the developer to use.
+
+        """
+        def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):
+            """
+            Args:
+                tns_admin_path (str): Oracle driver path
+                credentials_path_db1 (str): Database 1 credentials path
+                credentials_path_db1 (str): Databsae 2 credentials path
+            """
+            os.environ['TNS_ADMIN'] = tns_admin_path
+
+            with open(credentials_path_db1) as config_file:
+                config1 = json.load(config_file)
+
+            self.username1 = config1['username']
+            self.password1 = config1['password']
+            self.dsn1 = config1['dsn']
+
+            with open(credentials_path_db2) as config_file:
+                config2 = json.load(config_file)
+
+            self.username2 = config2['username']
+            self.password2 = config2['password']
+            self.dsn2 = config2['dsn']
+
+            self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'
+            self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'
+
+            self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)
+            self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)
+
+        def query(self, sql_query, engine=1):
+            """
+            This allows abstraction of the connection and the class
+            so the developer can query a single table as a dataframe
+
+            Args:
+                sql_query (str): The query to SQL database is passed as a string
+                engine (int): This selects the database. There are two engines:
+                    1 -&gt; R1625
+                    2 -&gt; COCC DataMart
+
+            Returns:
+                df: The SQL query is returned as a pandas DataFrame
+
+            Usage:
+                df = db_handler.query("SELECT * FROM DB.TABLE", engine=1)
+
+                In this example, db_handler = DatabaseHandler(args)
+            """
+            if engine == 1:
+                selected_engine = self.engine1
+            elif engine == 2:
+                selected_engine = self.engine2
+            else:
+                raise ValueError("Engine must be 1 or 2")
+
+            with selected_engine.connect() as connection:
+                df = pd.read_sql(sql_query, connection)
+            return df
+
+    # Database Connection Configuration
+    tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+    credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+    credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+
+    with db_handler.engine1.connect() as connection:
+        # For development only
+        lookup_df = text("""
+        SELECT 
+            *
+        FROM 
+            sys.all_tab_columns col
+        """)
+        start_time = time.time()
+        lookup_df = pd.read_sql(lookup_df, connection)
+        print(f"lookup_df took {time.time() - start_time} seconds.")
+    
+    data = {
+        'lookup_df': lookup_df
+    }
+
+    return data
+
+
+
+
+#################################
+lookup = retrieve_data()
+
+
+#################################
+lookup_df = lookup['lookup_df']
+
+
+#################################
+lookup_df[lookup_df['column_name'].str.contains('actvsubnbr',case=False,na=False)]
+
+
+#################################
+def retrieve_data():
+    """
+    Retrieve data from COCC database
+    """
+    class DatabaseHandler:
+        """
+        This class abstracts the connection to the database and allows a clean
+        interface for the developer to use.
+
+        """
+        def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):
+            """
+            Args:
+                tns_admin_path (str): Oracle driver path
+                credentials_path_db1 (str): Database 1 credentials path
+                credentials_path_db1 (str): Databsae 2 credentials path
+            """
+            os.environ['TNS_ADMIN'] = tns_admin_path
+
+            with open(credentials_path_db1) as config_file:
+                config1 = json.load(config_file)
+
+            self.username1 = config1['username']
+            self.password1 = config1['password']
+            self.dsn1 = config1['dsn']
+
+            with open(credentials_path_db2) as config_file:
+                config2 = json.load(config_file)
+
+            self.username2 = config2['username']
+            self.password2 = config2['password']
+            self.dsn2 = config2['dsn']
+
+            self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'
+            self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'
+
+            self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)
+            self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)
+
+        def query(self, sql_query, engine=1):
+            """
+            This allows abstraction of the connection and the class
+            so the developer can query a single table as a dataframe
+
+            Args:
+                sql_query (str): The query to SQL database is passed as a string
+                engine (int): This selects the database. There are two engines:
+                    1 -&gt; R1625
+                    2 -&gt; COCC DataMart
+
+            Returns:
+                df: The SQL query is returned as a pandas DataFrame
+
+            Usage:
+                df = db_handler.query("SELECT * FROM DB.TABLE", engine=1)
+
+                In this example, db_handler = DatabaseHandler(args)
+            """
+            if engine == 1:
+                selected_engine = self.engine1
+            elif engine == 2:
+                selected_engine = self.engine2
+            else:
+                raise ValueError("Engine must be 1 or 2")
+
+            with selected_engine.connect() as connection:
+                df = pd.read_sql(sql_query, connection)
+            return df
+
+    # Database Connection Configuration
+    tns_admin_path = r'C:\Oracle2\instantclient_21_13\network\admin'
+    credentials_path_db1 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_main.json'
+    credentials_path_db2 = r'\\10.161.85.66\Home\Share\Alteryx_Admin\Configuration\Connection\db_config_datamart.json'
+    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)
+
+    with db_handler.engine1.connect() as connection:
+        # For development only
+        actv = text("""
+        SELECT 
+            *
+        FROM 
+            OSIBANK.ACTV a
+        WHERE
+            a.SUBJACCTNBR IN ('151053693')
+        """)
+        start_time = time.time()
+        actv = pd.read_sql(actv, connection)
+        print(f"actv took {time.time() - start_time} seconds.")
+        
+        # For development only
+        actvsubactv = text("""
+        SELECT 
+            *
+        FROM 
+            OSIBANK.ACTVSUBACTV a
+        WHERE
+            a.NEWVALUE IN ('Commercial Modification FASB F')
+        """)
+        start_time = time.time()
+        actvsubactv = pd.read_sql(actvsubactv, connection)
+        print(f"actvsubactv took {time.time() - start_time} seconds.")
+        
+        # For development only
+        wh_maint = text("""
+        SELECT 
+            *
+        FROM 
+            OSIBANK.WH_MAINT a
+        """)
+        start_time = time.time()
+        wh_maint = pd.read_sql(wh_maint, connection)
+        print(f"wh_maint took {time.time() - start_time} seconds.")
+        
+        
+    
+    
+    data = {
+        'actv': actv,
+        'actvsubactv': actvsubactv,
+        'wh_maint': wh_maint
+    }
+
+    return data
+
+
+
+
+#################################
+data2 = retrieve_data()
+
+
+#################################
+wh_maint = data2['wh_maint']
+
+
+#################################
+wh_maint.info()
+
+
+#################################
+wh_maint
+
+
+#################################
+actv = data2['actv']
+
+
+#################################
+actv.info()
+
+
+#################################
+actv[['nextactvsubnbr']]
+
+
+#################################
+actvsubactv = data2['actvsubactv']
+
+
+#################################
+actvsubactv
+
+
+#################################
+activity_df = pd.merge(actvsubactv, actv, on='actvnbr', how='inner')
+
+
+#################################
+# activity_df
+
+
+#################################
+# activity_df.to_csv(r'H:\Chad\Projects\LoanMod\Development\activity.csv', index=False)
+
+
+#################################
+</productionModeScript>
+          <Port>57403</Port>
+          <JupyterGuidDir>89cd17772d423ba5659f246f1569040b</JupyterGuidDir>
+          <JupyterGuidCopy />
+          <LastExecutedByEngineVersion>*</LastExecutedByEngineVersion>
+          <Notebook><![CDATA[{"cells":[{"cell_type":"markdown","metadata":{"ayx":{"cell_css":"border: 3px solid #357; margin: 4px; background: #fbffff","contents_keyword":"Alteryx.help()","label":"info"}},"source":["Run `Alteryx.help()` for info about useful functions.  \n","i.e., `Alteryx.read(\"#1\")`, `Alteryx.write(df,1)`, `Alteryx.getWorkflowConstant(\"Engine.WorkflowDirectory\")`"]},{"cell_type":"code","execution_count":1,"metadata":{},"outputs":[],"source":["\"\"\"\n","Loan Modification Report\n","@ Chad Doorley\n","v1.0\n","\n","This covers loan modifications on act/npfm loans in CML portfolio\n","\"\"\""]},{"cell_type":"code","execution_count":2,"metadata":{"ayx":{"cell_css":"border: 1px solid #58a; margin: 2px;","contents_keyword":"installPackages","label":"deps"}},"outputs":[],"source":["# List all non-standard packages to be imported by your \n","# script here (only missing packages will be installed)\n","# from ayx import Package\n","#Package.installPackages(['pandas','numpy'])\n","#################################\n","# from ayx import Alteryx"]},{"cell_type":"code","execution_count":3,"metadata":{},"outputs":[],"source":["import pandas as pd\n","# from pandas.tseries.offsets import MonthEnd\n","import numpy as np\n","import time\n","# from openpyxl import load_workbook\n","# from openpyxl.styles import Font, Border, Side, Alignment, NamedStyle\n","# from openpyxl.styles.numbers import NumberFormat\n","import os\n","from datetime import datetime, timedelta, date\n","import json\n","from sqlalchemy import create_engine, text\n","from pydantic import BaseModel, Field\n","from typing import List"]},{"cell_type":"code","execution_count":73,"metadata":{},"outputs":[],"source":["def retrieve_data():\n","    \"\"\"\n","    Retrieve data from COCC database\n","    \"\"\"\n","    class DatabaseHandler:\n","        \"\"\"\n","        This class abstracts the connection to the database and allows a clean\n","        interface for the developer to use.\n","\n","        \"\"\"\n","        def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):\n","            \"\"\"\n","            Args:\n","                tns_admin_path (str): Oracle driver path\n","                credentials_path_db1 (str): Database 1 credentials path\n","                credentials_path_db1 (str): Databsae 2 credentials path\n","            \"\"\"\n","            os.environ['TNS_ADMIN'] = tns_admin_path\n","\n","            with open(credentials_path_db1) as config_file:\n","                config1 = json.load(config_file)\n","\n","            self.username1 = config1['username']\n","            self.password1 = config1['password']\n","            self.dsn1 = config1['dsn']\n","\n","            with open(credentials_path_db2) as config_file:\n","                config2 = json.load(config_file)\n","\n","            self.username2 = config2['username']\n","            self.password2 = config2['password']\n","            self.dsn2 = config2['dsn']\n","\n","            self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'\n","            self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'\n","\n","            self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)\n","            self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)\n","\n","        def query(self, sql_query, engine=1):\n","            \"\"\"\n","            This allows abstraction of the connection and the class\n","            so the developer can query a single table as a dataframe\n","\n","            Args:\n","                sql_query (str): The query to SQL database is passed as a string\n","                engine (int): This selects the database. There are two engines:\n","                    1 -> R1625\n","                    2 -> COCC DataMart\n","\n","            Returns:\n","                df: The SQL query is returned as a pandas DataFrame\n","\n","            Usage:\n","                df = db_handler.query(\"SELECT * FROM DB.TABLE\", engine=1)\n","\n","                In this example, db_handler = DatabaseHandler(args)\n","            \"\"\"\n","            if engine == 1:\n","                selected_engine = self.engine1\n","            elif engine == 2:\n","                selected_engine = self.engine2\n","            else:\n","                raise ValueError(\"Engine must be 1 or 2\")\n","\n","            with selected_engine.connect() as connection:\n","                df = pd.read_sql(sql_query, connection)\n","            return df\n","\n","    # Database Connection Configuration\n","    tns_admin_path = r'C:\\Oracle2\\instantclient_21_13\\network\\admin'\n","    credentials_path_db1 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_main.json'\n","    credentials_path_db2 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_datamart.json'\n","    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)\n","\n","    #Last business day\n","    with db_handler.engine1.connect() as connection:\n","        # Acctcommon\n","        acctcommon = text(\"\"\"\n","        SELECT \n","            a.ACCTNBR,\n","            a.OWNERNAME,\n","            a.LOANOFFICER,\n","            a.EFFDATE, \n","            a.MJACCTTYPCD, \n","            a.PRODUCT, \n","            a.CURRMIACCTTYPCD, \n","            a.BOOKBALANCE,\n","            a.NOTEBAL,\n","            a.NOTEOPENAMT,\n","            a.CURRACCTSTATCD, \n","            a.CONTRACTDATE,\n","            a.DATEMAT \n","        FROM\n","            OSIBANK.WH_ACCTCOMMON a\n","        WHERE \n","            a.CURRACCTSTATCD IN ('ACT','NPFM')\n","            AND a.MJACCTTYPCD IN ('CML')\n","        \"\"\")\n","        start_time = time.time()\n","        acctcommon = pd.read_sql(acctcommon, connection)\n","        print(f\"ACCTCOMMON took {time.time() - start_time} seconds.\")\n","        \n","        # AcctSubAcct\n","        acctsubacct = text(\"\"\"\n","        SELECT \n","            *\n","        FROM \n","            OSIBANK.ACCTSUBACCT a\n","        WHERE\n","            a.BALCATCD = 'CMDF'\n","            AND BALTYPCD = 'FEE'\n","        \"\"\")\n","        start_time = time.time()\n","        acctsubacct = pd.read_sql(acctsubacct, connection)\n","        print(f\"acctsubacct took {time.time() - start_time} seconds.\")\n","        \n","        # AcctLoanModHist\n","        acctloanmodhist = text(\"\"\"\n","        SELECT\n","            *\n","        FROM\n","            OSIBANK.ACCTLOANMODHIST a\n","        \"\"\")\n","        start_time = time.time()\n","        acctloanmodhist = pd.read_sql(acctloanmodhist, connection)\n","        print(f\"ACCTLOANMODHIST took {time.time() - start_time} seconds.\")\n","        \n","        # AcctLoanReason\n","        loanmodreason = text(\"\"\"\n","        SELECT\n","            *\n","        FROM\n","            OSIBANK.LOANMODREASON a\n","        \"\"\")\n","        start_time = time.time()\n","        loanmodreason = pd.read_sql(loanmodreason, connection)\n","        print(f\"LOANMODREASON took {time.time() - start_time} seconds.\")\n","        \n","        \n","        # Package up data object\n","        data = {\n","            'acctcommon': acctcommon,\n","            'acctsubacct': acctsubacct,\n","            'acctloanmodhist': acctloanmodhist,\n","            'loanmodreason': loanmodreason\n","        }\n","\n","        return data\n","\n"]},{"cell_type":"code","execution_count":74,"metadata":{},"outputs":[],"source":["# Execution\n","data = retrieve_data()"]},{"cell_type":"code","execution_count":75,"metadata":{},"outputs":[],"source":["acctcommon = data['acctcommon']\n","acctsubacct = data['acctsubacct']\n","acctloanmodhist = data['acctloanmodhist']\n","loanmodreason = data['loanmodreason']"]},{"cell_type":"code","execution_count":77,"metadata":{},"outputs":[],"source":["# acctcommon[acctcommon['acctnbr'] == 151053693]"]},{"cell_type":"code","execution_count":78,"metadata":{},"outputs":[],"source":["# #################################\n","# def create_validation_model(df):\n","#     \"\"\"\n","#     Here we explicitly validate all data types and fields that will be used in this report.\n","#     \"\"\"\n","#     class LoanModReport(BaseModel):\n","#         acctnbr: int\n","#         ownername: str\n","#         loanofficer: str\n","#         contractdate: date\n","#         datemat: date\n","#         bookbalance: float\n","#         notebal: float\n","#         noteopenamt: float\n","#         product: str\n","#         curracctstatcd: str\n","#         loanmodnbr: int\n","#         postdate: date\n","#         loanmodreasoncd: str\n","#         loanmodreasondesc: str\n","#         apprpersnbr: int\n","#         loanmodbalamt: float\n","#         canceldate: date\n","#         loanmodtypcd: str\n","#         effdate: date\n","        \n","    \n","#     class LoanModDataFrame(BaseModel):\n","#         data: List[LoanModReport]\n","    \n","#     data_dicts = df[[\n","#         'acctnbr',\n","#     # need to input here\n","#     ]].to_dict('records')\n","    \n","#     pydantic_model = LoanModDataFrame(data=[LoanModReport(**row) for row in data_dicts])\n","    \n","#     return pydantic_model\n","\n","\n","# #################################\n","# # Execution\n","# # validation_model = create_validation_model(df)\n","\n","\n","# #################################\n","# def unpack_validation_model(x):\n","#     \"\"\"\n","#     Post-validation, ready to unpack the model and use data to generate report\n","#     \"\"\"\n","#     temp_dict = x.model_dump()\n","#     df = pd.DataFrame(temp_dict['data'])\n","#     return df"]},{"cell_type":"code","execution_count":79,"metadata":{},"outputs":[],"source":["# output_path = r'H:\\Chad\\Resources\\Knowledge Base\\lookup_df.csv'\n","# lookup_df.to_csv(output_path, index=False)"]},{"cell_type":"code","execution_count":80,"metadata":{},"outputs":[],"source":["merged_df = pd.merge(acctcommon, acctloanmodhist, on='acctnbr', how='inner', indicator=True)"]},{"cell_type":"code","execution_count":81,"metadata":{},"outputs":[],"source":["df = merged_df\n","duplicates = df[df.duplicated(subset=['acctnbr'], keep=False)]\n","\n","if duplicates.empty:\n","    print(\"no duplicates\")\n","else:\n","    print(\"duplicates\")"]},{"cell_type":"code","execution_count":82,"metadata":{},"outputs":[],"source":["loanmodreason = loanmodreason[['loanmodreasoncd','loanmodreasondesc']]\n","duplicates = loanmodreason[loanmodreason.duplicated(subset=['loanmodreasoncd'], keep=False)]\n","\n","# if duplicates.empty:\n","#     print(\"no duplicates\")\n","# else:\n","#     print(\"unfortunately... duplicates\")\n","df = pd.merge(df, loanmodreason, on='loanmodreasoncd', how='left')\n","df = df[['acctnbr','ownername','loanofficer','contractdate','datemat','bookbalance','notebal','noteopenamt','product','curracctstatcd','loanmodnbr','postdate','loanmodreasoncd','loanmodreasondesc','apprpersnbr','loanmodbalamt','canceldate','loanmodtypcd','effdate_x']]\n","df = df.rename(columns={'effdate_x': 'effdate'})"]},{"cell_type":"code","execution_count":83,"metadata":{},"outputs":[],"source":["df = df.reset_index(drop=True)"]},{"cell_type":"code","execution_count":84,"metadata":{},"outputs":[],"source":["df = df.sort_values(by=['acctnbr','loanmodnbr'])\n","df"]},{"cell_type":"code","execution_count":85,"metadata":{},"outputs":[],"source":["# Writing base report for Hasan\n","file_path = r'H:\\Chad\\Projects\\LoanMod\\Production\\Output\\loanmod_standard.csv'\n","df.to_csv(file_path, index=False)"]},{"cell_type":"code","execution_count":86,"metadata":{},"outputs":[],"source":["acctcommon = data['acctcommon']\n","acctsubacct = data['acctsubacct']\n","acctloanmodhist = data['acctloanmodhist']\n","loanmodreason = data['loanmodreason']"]},{"cell_type":"code","execution_count":87,"metadata":{},"outputs":[],"source":["df = pd.merge(acctcommon, acctsubacct, on='acctnbr', how='inner')"]},{"cell_type":"code","execution_count":89,"metadata":{},"outputs":[],"source":["df.info()"]},{"cell_type":"code","execution_count":90,"metadata":{},"outputs":[],"source":["df[df['acctnbr'] == 151053693]"]},{"cell_type":"code","execution_count":91,"metadata":{},"outputs":[],"source":["df.info()"]},{"cell_type":"code","execution_count":92,"metadata":{},"outputs":[],"source":["df"]},{"cell_type":"code","execution_count":93,"metadata":{},"outputs":[],"source":["# Check duplicates\n","duplicates = df[df.duplicated(subset=['acctnbr'], keep=False)]\n","\n","if duplicates.empty:\n","    print(\"no duplicates\")\n","else:\n","    print(\"duplicates\")"]},{"cell_type":"code","execution_count":26,"metadata":{},"outputs":[],"source":["# Need to bring in processing person to subacct\n","# Output both to excel (different sheets)"]},{"cell_type":"code","execution_count":27,"metadata":{},"outputs":[],"source":["# def retrieve_data():\n","#     \"\"\"\n","#     Retrieve data from COCC database\n","#     \"\"\"\n","#     class DatabaseHandler:\n","#         \"\"\"\n","#         This class abstracts the connection to the database and allows a clean\n","#         interface for the developer to use.\n","\n","#         \"\"\"\n","#         def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):\n","#             \"\"\"\n","#             Args:\n","#                 tns_admin_path (str): Oracle driver path\n","#                 credentials_path_db1 (str): Database 1 credentials path\n","#                 credentials_path_db1 (str): Databsae 2 credentials path\n","#             \"\"\"\n","#             os.environ['TNS_ADMIN'] = tns_admin_path\n","\n","#             with open(credentials_path_db1) as config_file:\n","#                 config1 = json.load(config_file)\n","\n","#             self.username1 = config1['username']\n","#             self.password1 = config1['password']\n","#             self.dsn1 = config1['dsn']\n","\n","#             with open(credentials_path_db2) as config_file:\n","#                 config2 = json.load(config_file)\n","\n","#             self.username2 = config2['username']\n","#             self.password2 = config2['password']\n","#             self.dsn2 = config2['dsn']\n","\n","#             self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'\n","#             self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'\n","\n","#             self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)\n","#             self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)\n","\n","#         def query(self, sql_query, engine=1):\n","#             \"\"\"\n","#             This allows abstraction of the connection and the class\n","#             so the developer can query a single table as a dataframe\n","\n","#             Args:\n","#                 sql_query (str): The query to SQL database is passed as a string\n","#                 engine (int): This selects the database. There are two engines:\n","#                     1 -> R1625\n","#                     2 -> COCC DataMart\n","\n","#             Returns:\n","#                 df: The SQL query is returned as a pandas DataFrame\n","\n","#             Usage:\n","#                 df = db_handler.query(\"SELECT * FROM DB.TABLE\", engine=1)\n","\n","#                 In this example, db_handler = DatabaseHandler(args)\n","#             \"\"\"\n","#             if engine == 1:\n","#                 selected_engine = self.engine1\n","#             elif engine == 2:\n","#                 selected_engine = self.engine2\n","#             else:\n","#                 raise ValueError(\"Engine must be 1 or 2\")\n","\n","#             with selected_engine.connect() as connection:\n","#                 df = pd.read_sql(sql_query, connection)\n","#             return df\n","\n","#     # Database Connection Configuration\n","#     tns_admin_path = r'C:\\Oracle2\\instantclient_21_13\\network\\admin'\n","#     credentials_path_db1 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_main.json'\n","#     credentials_path_db2 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_datamart.json'\n","#     db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)\n","\n","#     with db_handler.engine1.connect() as connection:\n","#         # For development only\n","#         lookup_df = text(\"\"\"\n","#         SELECT \n","#             *\n","#         FROM \n","#             sys.all_tab_columns col\n","#         \"\"\")\n","#         start_time = time.time()\n","#         lookup_df = pd.read_sql(lookup_df, connection)\n","#         print(f\"lookup_df took {time.time() - start_time} seconds.\")\n","    \n","#     data = {\n","#         'lookup_df': lookup_df\n","#     }\n","\n","#     return data\n","\n"]},{"cell_type":"code","execution_count":28,"metadata":{},"outputs":[],"source":["# lookup = retrieve_data()"]},{"cell_type":"code","execution_count":29,"metadata":{},"outputs":[],"source":["# lookup_df = lookup['lookup_df']"]},{"cell_type":"code","execution_count":30,"metadata":{},"outputs":[],"source":["# lookup_df[lookup_df['column_name'].str.contains('actvsubnbr',case=False,na=False)]"]},{"cell_type":"code","execution_count":122,"metadata":{},"outputs":[],"source":["def retrieve_data():\n","    \"\"\"\n","    Retrieve data from COCC database\n","    \"\"\"\n","    class DatabaseHandler:\n","        \"\"\"\n","        This class abstracts the connection to the database and allows a clean\n","        interface for the developer to use.\n","\n","        \"\"\"\n","        def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):\n","            \"\"\"\n","            Args:\n","                tns_admin_path (str): Oracle driver path\n","                credentials_path_db1 (str): Database 1 credentials path\n","                credentials_path_db1 (str): Databsae 2 credentials path\n","            \"\"\"\n","            os.environ['TNS_ADMIN'] = tns_admin_path\n","\n","            with open(credentials_path_db1) as config_file:\n","                config1 = json.load(config_file)\n","\n","            self.username1 = config1['username']\n","            self.password1 = config1['password']\n","            self.dsn1 = config1['dsn']\n","\n","            with open(credentials_path_db2) as config_file:\n","                config2 = json.load(config_file)\n","\n","            self.username2 = config2['username']\n","            self.password2 = config2['password']\n","            self.dsn2 = config2['dsn']\n","\n","            self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'\n","            self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'\n","\n","            self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)\n","            self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)\n","\n","        def query(self, sql_query, engine=1):\n","            \"\"\"\n","            This allows abstraction of the connection and the class\n","            so the developer can query a single table as a dataframe\n","\n","            Args:\n","                sql_query (str): The query to SQL database is passed as a string\n","                engine (int): This selects the database. There are two engines:\n","                    1 -> R1625\n","                    2 -> COCC DataMart\n","\n","            Returns:\n","                df: The SQL query is returned as a pandas DataFrame\n","\n","            Usage:\n","                df = db_handler.query(\"SELECT * FROM DB.TABLE\", engine=1)\n","\n","                In this example, db_handler = DatabaseHandler(args)\n","            \"\"\"\n","            if engine == 1:\n","                selected_engine = self.engine1\n","            elif engine == 2:\n","                selected_engine = self.engine2\n","            else:\n","                raise ValueError(\"Engine must be 1 or 2\")\n","\n","            with selected_engine.connect() as connection:\n","                df = pd.read_sql(sql_query, connection)\n","            return df\n","\n","    # Database Connection Configuration\n","    tns_admin_path = r'C:\\Oracle2\\instantclient_21_13\\network\\admin'\n","    credentials_path_db1 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_main.json'\n","    credentials_path_db2 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_datamart.json'\n","    db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)\n","\n","    with db_handler.engine1.connect() as connection:\n","        activity = text(\"\"\"\n","        SELECT \n","            a.ACTVNBR, a.RESPPERSNBR, a.SUBJACCTNBR, a.ACTVDATETIME, a.POSTDATE, b.NEWVALUE\n","        FROM \n","            OSIBANK.ACTV a\n","        INNER JOIN\n","            OSIBANK.ACTVSUBACTV b\n","        ON\n","            a.ACTVNBR = b.ACTVNBR\n","        WHERE\n","            b.NEWVALUE LIKE '%Commercial Modification FASB F%'\n","        \"\"\")\n","        start_time = time.time()\n","        activity = pd.read_sql(activity, connection)\n","        print(f\"activity took {time.time() - start_time} seconds.\")\n","        \n","        pers = text(\"\"\"\n","        SELECT \n","            a.PERSNBR, a.PERSSORTNAME\n","        FROM \n","            OSIBANK.WH_PERS a\n","        \"\"\")\n","        start_time = time.time()\n","        pers = pd.read_sql(pers, connection)\n","        print(f\"pers took {time.time() - start_time} seconds.\")\n","        \n","    \n","    data = {\n","        'activity': activity,\n","        'pers': pers\n","    }\n","\n","    return data\n","\n"]},{"cell_type":"code","execution_count":123,"metadata":{},"outputs":[],"source":["activity_data = retrieve_data()"]},{"cell_type":"code","execution_count":124,"metadata":{},"outputs":[],"source":["activity = activity_data['activity']"]},{"cell_type":"code","execution_count":125,"metadata":{},"outputs":[],"source":["activity.info()"]},{"cell_type":"code","execution_count":126,"metadata":{},"outputs":[],"source":["activity = activity.rename(columns={'subjacctnbr': 'acctnbr'})"]},{"cell_type":"code","execution_count":127,"metadata":{"scrolled":true},"outputs":[],"source":["activity"]},{"cell_type":"code","execution_count":128,"metadata":{},"outputs":[],"source":["merged_df = pd.merge(df, activity, on='acctnbr', how='inner')"]},{"cell_type":"code","execution_count":129,"metadata":{},"outputs":[],"source":["merged_df"]},{"cell_type":"code","execution_count":130,"metadata":{},"outputs":[],"source":["pers = activity_data['pers']"]},{"cell_type":"code","execution_count":131,"metadata":{},"outputs":[],"source":["merged_df = pd.merge(merged_df, pers, left_on='resppersnbr', right_on='persnbr', how='left')"]},{"cell_type":"code","execution_count":132,"metadata":{},"outputs":[],"source":["merged_df"]},{"cell_type":"code","execution_count":133,"metadata":{"scrolled":true},"outputs":[],"source":["merged_df.to_csv(r'H:\\Chad\\Projects\\LoanMod\\Production\\Output\\loanmod_activity.csv', index=False)"]},{"cell_type":"code","execution_count":58,"metadata":{},"outputs":[],"source":["# def retrieve_data():\n","#     \"\"\"\n","#     Retrieve data from COCC database\n","#     \"\"\"\n","#     class DatabaseHandler:\n","#         \"\"\"\n","#         This class abstracts the connection to the database and allows a clean\n","#         interface for the developer to use.\n","\n","#         \"\"\"\n","#         def __init__(self, tns_admin_path, credentials_path_db1, credentials_path_db2):\n","#             \"\"\"\n","#             Args:\n","#                 tns_admin_path (str): Oracle driver path\n","#                 credentials_path_db1 (str): Database 1 credentials path\n","#                 credentials_path_db1 (str): Databsae 2 credentials path\n","#             \"\"\"\n","#             os.environ['TNS_ADMIN'] = tns_admin_path\n","\n","#             with open(credentials_path_db1) as config_file:\n","#                 config1 = json.load(config_file)\n","\n","#             self.username1 = config1['username']\n","#             self.password1 = config1['password']\n","#             self.dsn1 = config1['dsn']\n","\n","#             with open(credentials_path_db2) as config_file:\n","#                 config2 = json.load(config_file)\n","\n","#             self.username2 = config2['username']\n","#             self.password2 = config2['password']\n","#             self.dsn2 = config2['dsn']\n","\n","#             self.connection_string1 = f'oracle+cx_oracle://{self.username1}:{self.password1}@{self.dsn1}'\n","#             self.connection_string2 = f'oracle+cx_oracle://{self.username2}:{self.password2}@{self.dsn2}'\n","\n","#             self.engine1 = create_engine(self.connection_string1, max_identifier_length=128)\n","#             self.engine2 = create_engine(self.connection_string2, max_identifier_length=128)\n","\n","#         def query(self, sql_query, engine=1):\n","#             \"\"\"\n","#             This allows abstraction of the connection and the class\n","#             so the developer can query a single table as a dataframe\n","\n","#             Args:\n","#                 sql_query (str): The query to SQL database is passed as a string\n","#                 engine (int): This selects the database. There are two engines:\n","#                     1 -> R1625\n","#                     2 -> COCC DataMart\n","\n","#             Returns:\n","#                 df: The SQL query is returned as a pandas DataFrame\n","\n","#             Usage:\n","#                 df = db_handler.query(\"SELECT * FROM DB.TABLE\", engine=1)\n","\n","#                 In this example, db_handler = DatabaseHandler(args)\n","#             \"\"\"\n","#             if engine == 1:\n","#                 selected_engine = self.engine1\n","#             elif engine == 2:\n","#                 selected_engine = self.engine2\n","#             else:\n","#                 raise ValueError(\"Engine must be 1 or 2\")\n","\n","#             with selected_engine.connect() as connection:\n","#                 df = pd.read_sql(sql_query, connection)\n","#             return df\n","\n","#     # Database Connection Configuration\n","#     tns_admin_path = r'C:\\Oracle2\\instantclient_21_13\\network\\admin'\n","#     credentials_path_db1 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_main.json'\n","#     credentials_path_db2 = r'\\\\10.161.85.66\\Home\\Share\\Alteryx_Admin\\Configuration\\Connection\\db_config_datamart.json'\n","#     db_handler = DatabaseHandler(tns_admin_path, credentials_path_db1, credentials_path_db2)\n","\n","#     with db_handler.engine1.connect() as connection:\n","# #         # For development only\n","# #         actv = text(\"\"\"\n","# #         SELECT \n","# #             *\n","# #         FROM \n","# #             OSIBANK.ACTV a\n","# #         WHERE\n","# #             a.SUBJACCTNBR IN ('151053693')\n","# #         \"\"\")\n","# #         start_time = time.time()\n","# #         actv = pd.read_sql(actv, connection)\n","# #         print(f\"actv took {time.time() - start_time} seconds.\")\n","        \n","#         # For development only\n","#         actvsubactv = text(\"\"\"\n","#         SELECT \n","#             *\n","#         FROM \n","#             OSIBANK.ACTVSUBACTV a\n","#         WHERE\n","#             a.ACTVNBR IN ('100438325')\n","#         \"\"\")\n","#         start_time = time.time()\n","#         actvsubactv = pd.read_sql(actvsubactv, connection)\n","#         print(f\"actvsubactv took {time.time() - start_time} seconds.\")\n","\n","        \n","        \n","    \n","    \n","#     data = {\n","# #         'actv': actv,\n","#         'actvsubactv': actvsubactv\n","#     }\n","\n","#     return data\n","\n"]},{"cell_type":"code","execution_count":59,"metadata":{},"outputs":[],"source":["# data3 = retrieve_data()"]},{"cell_type":"code","execution_count":60,"metadata":{},"outputs":[],"source":["# data3['actvsubactv']"]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]}],"metadata":{"kernelspec":{"display_name":"designerbasetools_venv","language":"python","name":"designerbasetools_venv"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.5"}},"nbformat":4,"nbformat_minor":2}]]></Notebook>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxJupyterPluginEngine.dll" EngineDllEntryPoint="AlteryxJupyter" />
+    </Node>
+  </Nodes>
+  <Connections />
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>LoanMod</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="096309b1-6825-4834-98ff-e15250d7e0c8" />
+      <Telemetry>
+        <PreviousWorkflowId value="3fc43bcf-3747-4936-8f75-9f0aa5785a3b" />
+        <OriginWorkflowId value="3fc43bcf-3747-4936-8f75-9f0aa5785a3b" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

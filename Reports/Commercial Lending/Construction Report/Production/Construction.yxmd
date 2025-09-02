@@ -1,0 +1,2887 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2024.1" RunE2="T">
+  <Nodes>
+    <Node ToolID="94">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="498" y="141" width="96" height="180" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Internal BCSB Construction Report
+
+Developed by: Chad Doorley
+
+Data from COCC, transformed using Alteryx/Python</Text>
+          <Font name="Arial" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="3" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="152">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+        <Position x="3619" y="442" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Mode>Simple</Mode>
+          <Simple>
+            <Operator>=</Operator>
+            <Field>ACCTUSERFIELDCD</Field>
+            <Operands>
+              <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+              <DateType>fixed</DateType>
+              <PeriodDate>2023-11-30 17:05:59</PeriodDate>
+              <PeriodType>
+              </PeriodType>
+              <PeriodCount>0</PeriodCount>
+              <Operand>SBA5</Operand>
+              <StartDate>2023-11-30 17:05:59</StartDate>
+              <EndDate>2023-11-30 17:05:59</EndDate>
+            </Operands>
+          </Simple>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>[ACCTUSERFIELDCD] = "SBA5"</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+    </Node>
+    <Node ToolID="154">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="4686" y="308" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Total Construction Exposure" action="Sum" rename="Sum_Total Construction Exposure" />
+            <SummarizeField field="Book Balance" action="Sum" rename="Sum_Book Balance" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="158">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="4578" y="356" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[Book Balance]+[Net Available]+[Net Collateral Reserve]" field="Total Construction Exposure" size="8" type="Double" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Total Construction Exposure = [Book Balance]+[Net Available]+[Net Collateral Res...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="160">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="4878" y="332" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="ACCTNBR" selected="False" />
+            <SelectField field="Sum_Total Construction Exposure" selected="True" rename="Total Construction Exposure" />
+            <SelectField field="Sum_Book Balance" selected="True" rename="Total Construction Book Balance" />
+            <SelectField field="BCSB Tier 1" selected="True" rename="Total BCSB Tier 1 Capital" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="163">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="3859" y="645" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="166">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="3643" y="609" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="INACTIVEDATE" order="Descending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>INACTIVEDATE - Descending</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+    <Node ToolID="167">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sample.Sample">
+        <Position x="3751" y="609" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Mode>First</Mode>
+          <N>1</N>
+          <GroupFields orderChanged="False">
+            <Field name="ACCTNBR" />
+          </GroupFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>First 1 rows</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSample" />
+    </Node>
+    <Node ToolID="174">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="4891" y="177" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF [INACTIVEDATE] &lt;= [12 Months Out] THEN 1 ELSE 0 ENDIF" field="12 Month Flag" size="1073741823" type="V_WString" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[12 Month Flag = IF [INACTIVEDATE] <= [12 Months Out] THEN 1 ELSE 0 ENDIF
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="175">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+        <Position x="5035" y="201" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Mode>Simple</Mode>
+          <Simple>
+            <Operator>=</Operator>
+            <Field>12 Month Flag</Field>
+            <Operands>
+              <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+              <DateType>fixed</DateType>
+              <PeriodDate>2023-12-15 15:32:37</PeriodDate>
+              <PeriodType>
+              </PeriodType>
+              <PeriodCount>0</PeriodCount>
+              <Operand>1</Operand>
+              <StartDate>2023-12-15 15:32:37</StartDate>
+              <EndDate>2023-12-15 15:32:37</EndDate>
+            </Operands>
+          </Simple>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>[12 Month Flag] = "1"</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+    </Node>
+    <Node ToolID="178">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="4759" y="213" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="DateTimeAdd(DateTimeToday(),12,&quot;months&quot;)" field="12 Months Out" size="10" type="Date" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[12 Months Out = DateTimeAdd(DateTimeToday(),12,"months")
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="181">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BlockUntilDone.BlockUntilDone">
+        <Position x="4482" y="295" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBlockUntilDone" />
+    </Node>
+    <Node ToolID="182">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="5167" y="153" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Credit Limit Amount" action="Sum" rename="Construction Credit Limit Sum" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="183">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="5251" y="153" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="187">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="4578" y="163" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[Available Balance]-[Participated Available]" field="Net Available" size="8" type="Double" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Net Available = [Available Balance]-[Participated Available]
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="188">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="4674" y="151" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="True" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="FDICCATCD" selected="True" />
+            <SelectField field="ACCTNBR" selected="True" />
+            <SelectField field="PRODUCT" selected="True" />
+            <SelectField field="OWNERNAME" selected="True" />
+            <SelectField field="LOANOFFICER" selected="True" />
+            <SelectField field="Contract Date" selected="True" />
+            <SelectField field="Maturity Date" selected="True" />
+            <SelectField field="Original Term" selected="True" />
+            <SelectField field="Remaining Term" selected="True" />
+            <SelectField field="% Sold" selected="True" />
+            <SelectField field="Credit Limit Amount" selected="True" />
+            <SelectField field="Current Balance" selected="True" />
+            <SelectField field="Book Balance" selected="True" />
+            <SelectField field="Available Balance" selected="True" />
+            <SelectField field="Participated Available" selected="True" />
+            <SelectField field="Net Available" selected="True" />
+            <SelectField field="Collateral Reserve Amt" selected="True" />
+            <SelectField field="Participated Collateral Reserve" selected="True" />
+            <SelectField field="Net Collateral Reserve" selected="True" />
+            <SelectField field="Participation Purchased" selected="True" />
+            <SelectField field="Last Advance Date" selected="True" />
+            <SelectField field="Rate Type" selected="True" />
+            <SelectField field="Current Int Rate" selected="True" />
+            <SelectField field="Original Rate" selected="True" />
+            <SelectField field="Next Rate Change Date" selected="True" />
+            <SelectField field="Margin" selected="True" />
+            <SelectField field="Rate Change Frequency" selected="True" />
+            <SelectField field="Index" selected="True" />
+            <SelectField field="RISKRATINGCD" selected="True" />
+            <SelectField field="PROPTYPDESC" selected="True" />
+            <SelectField field="PROPADDR1" selected="True" />
+            <SelectField field="PROPADDR2" selected="True" />
+            <SelectField field="PROPCITY" selected="True" />
+            <SelectField field="PROPSTATE" selected="True" />
+            <SelectField field="PROPZIP" selected="True" />
+            <SelectField field="APRSVALUEAMT" selected="True" />
+            <SelectField field="Appraisal Date" selected="True" />
+            <SelectField field="SBA504" selected="True" />
+            <SelectField field="INACTIVEDATE" selected="True" />
+            <SelectField field="CREDLIMITCLATRESAMT" selected="True" />
+            <SelectField field="CREDLIMITCLATRESEFFDATE" selected="True" />
+            <SelectField field="LOANAGENCYCD" selected="True" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="189">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="4458" y="368" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[Available Balance]-[Participated Available]" field="Net Available" size="8" type="Double" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Net Available = [Available Balance]-[Participated Available]
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="192">
+      <GuiSettings>
+        <Position x="4386" y="368" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="Check Box (135)">False</Value>
+          <Value name="Check Box (136)">False</Value>
+          <Value name="List Box (11)">"Current Balance","Book Balance","Available Balance","Participated Available","Credit Limit Amount"</Value>
+          <Value name="Check Box (84)">False</Value>
+          <Value name="Check Box (117)">True</Value>
+          <Value name="Check Box (15)">True</Value>
+          <Value name="Check Box (109)">False</Value>
+          <Value name="Check Box (122)">False</Value>
+          <Value name="Check Box (53)">False</Value>
+          <Value name="Check Box (58)">False</Value>
+          <Value name="Check Box (70)">False</Value>
+          <Value name="Check Box (77)">False</Value>
+          <Value name="Drop Down (81)">upper</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Cleanse.yxmc" />
+    </Node>
+    <Node ToolID="193">
+      <GuiSettings>
+        <Position x="4482" y="199" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="Check Box (135)">False</Value>
+          <Value name="Check Box (136)">False</Value>
+          <Value name="List Box (11)">"Current Balance","Book Balance","Available Balance","Participated Available","Credit Limit Amount","CREDLIMITCLATRESAMT"</Value>
+          <Value name="Check Box (84)">False</Value>
+          <Value name="Check Box (117)">True</Value>
+          <Value name="Check Box (15)">True</Value>
+          <Value name="Check Box (109)">False</Value>
+          <Value name="Check Box (122)">False</Value>
+          <Value name="Check Box (53)">False</Value>
+          <Value name="Check Box (58)">False</Value>
+          <Value name="Check Box (70)">False</Value>
+          <Value name="Check Box (77)">False</Value>
+          <Value name="Drop Down (81)">upper</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Cleanse.yxmc" />
+    </Node>
+    <Node ToolID="194">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="5322" y="104" width="158" height="180" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Container 194</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="184">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+            <Position x="5347" y="153" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <File MaxRecords="" FileFormat="25">\\00-da1\Home\Share\Line of Business_Shared Services\Commercial Lending\FinishedReports\InternalConstruction\OUTPUT\Construction.xlsx|||ConstructionCreditLimit</File>
+              <Passwords />
+              <Disable>False</Disable>
+              <FormatSpecificOptions>
+                <PreserveFormat>False</PreserveFormat>
+                <UNCLocal>False</UNCLocal>
+                <SkipFieldNames>False</SkipFieldNames>
+                <OutputOption>Overwrite</OutputOption>
+              </FormatSpecificOptions>
+              <MultiFile value="False" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Construction.xlsx
+Query=ConstructionCreditLimit</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="195">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="5117" y="330" width="158" height="180" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Container 195</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="159">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+            <Position x="5142" y="379" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <File MaxRecords="" FileFormat="25">\\00-da1\Home\Share\Line of Business_Shared Services\Commercial Lending\FinishedReports\InternalConstruction\OUTPUT\Construction.xlsx|||Exposure_Tier1</File>
+              <Passwords />
+              <Disable>False</Disable>
+              <FormatSpecificOptions>
+                <PreserveFormat>False</PreserveFormat>
+                <UNCLocal>False</UNCLocal>
+                <SkipFieldNames>False</SkipFieldNames>
+                <OutputOption>Overwrite</OutputOption>
+              </FormatSpecificOptions>
+              <MultiFile value="False" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Construction.xlsx
+Query=Exposure_Tier1</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="162">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="4757" y="379" width="289" height="165" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Actually Total Capital (Needs rename)</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="161">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="4782" y="428" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="439667000" field="BCSB Tier 1" size="8" type="Double" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText><![CDATA[BCSB Tier 1 = 439667000
+]]></DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="142">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="4745" y="54" width="153" height="165" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>OUTPUT</Caption>
+          <Style TextColor="#314c4a" FillColor="#ff8080" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="111">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+            <Position x="4770" y="103" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <File MaxRecords="" FileFormat="25">\\00-da1\Home\Share\Line of Business_Shared Services\Commercial Lending\FinishedReports\InternalConstruction\OUTPUT\Construction.xlsx|||Sheet1</File>
+              <Passwords />
+              <Disable>False</Disable>
+              <FormatSpecificOptions>
+                <PreserveFormat>False</PreserveFormat>
+                <UNCLocal>False</UNCLocal>
+                <SkipFieldNames>False</SkipFieldNames>
+                <OutputOption>Overwrite</OutputOption>
+              </FormatSpecificOptions>
+              <MultiFile value="False" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Construction.xlsx
+Query=Sheet1</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="150">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="2442" y="142" width="2028" height="277" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Container 150</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="109">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="2791" y="191" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="FDICCATCD" selected="True" />
+                <SelectField field="ACCTNBR" selected="True" />
+                <SelectField field="PRODUCT" selected="True" />
+                <SelectField field="OWNERNAME" selected="True" />
+                <SelectField field="LOANOFFICER" selected="True" />
+                <SelectField field="CONTRACTDATE" selected="True" />
+                <SelectField field="DATEMAT" selected="True" />
+                <SelectField field="NOTEOPENAMT" selected="True" />
+                <SelectField field="BOOKBALANCE" selected="True" />
+                <SelectField field="CREDITLIMITAMT" selected="True" />
+                <SelectField field="AVAILBALAMT" selected="True" />
+                <SelectField field="RATETYPCD" selected="True" />
+                <SelectField field="MJACCTTYPCD" selected="True" />
+                <SelectField field="CURRMIACCTTYPCD" selected="True" />
+                <SelectField field="NOTEINTRATE" selected="True" />
+                <SelectField field="NOTENEXTRATECHANGEDATE" selected="True" />
+                <SelectField field="NOTERATECHANGECALPERCD" selected="True" />
+                <SelectField field="TOTALPCTSOLD" selected="True" />
+                <SelectField field="CURRACCTSTATCD" selected="True" />
+                <SelectField field="ORIGDATE" selected="True" />
+                <SelectField field="PROPNBR" selected="True" rename="Collateral ID" />
+                <SelectField field="PROPADDR1" selected="True" />
+                <SelectField field="PROPADDR2" selected="True" />
+                <SelectField field="PROPCITY" selected="True" />
+                <SelectField field="PROPSTATE" selected="True" />
+                <SelectField field="PROPZIP" selected="True" />
+                <SelectField field="APRSVALUEAMT" selected="True" />
+                <SelectField field="APRSDATE" selected="True" />
+                <SelectField field="PROPTYPDESC" selected="True" />
+                <SelectField field="PROPDESC" selected="True" />
+                <SelectField field="CURRTERM" selected="True" />
+                <SelectField field="LOANIDX" selected="True" />
+                <SelectField field="RCF" selected="True" />
+                <SelectField field="ORIGINTRATE" selected="True" />
+                <SelectField field="MARGINFIXED" selected="True" />
+                <SelectField field="AMORTTERM" selected="True" />
+                <SelectField field="LoanType" selected="True" />
+                <SelectField field="OrigTotalLoanAmt" selected="True" />
+                <SelectField field="RateType" selected="True" />
+                <SelectField field="Street Address" selected="True" />
+                <SelectField field="NOTEINTRATE2" selected="False" />
+                <SelectField field="DATEMAT2" selected="False" />
+                <SelectField field="ACCTNBR2" selected="True" />
+                <SelectField field="REMAINTERM" selected="True" />
+                <SelectField field="NOTEBAL" selected="True" />
+                <SelectField field="LASTDISBURSDATE" selected="True" />
+                <SelectField field="RISKRATINGCD" selected="True" />
+                <SelectField field="LOANAGENCYCD" selected="True" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="119">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="2467" y="193" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTNBR</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="CONTRACTDATE" />
+                <Field field="BOOKBALANCE" />
+                <Field field="NOTEINTRATE" />
+                <Field field="NOTENEXTRATECHANGEDATE" />
+                <Field field="NOTERATECHANGECALPERCD" />
+                <Field field="LOANOFFICER" />
+                <Field field="NOTEBAL" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="125">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="2563" y="204" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTNBR</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="AVAILBALAMT" />
+                <Field field="REMAINTERM" />
+                <Field field="LASTDISBURSDATE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="126">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="2659" y="206" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTNBR</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="TOTALPCTSOLD" />
+                <Field field="RISKRATINGCD" />
+                <Field field="LOANAGENCYCD" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="127">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="2875" y="204" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="DateTimeDiff([ORIGDATE],[DATEMAT],'months')*-1" field="OrigMaturityTerm" size="8" type="Double" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText><![CDATA[OrigMaturityTerm = DateTimeDiff([ORIGDATE],[DATEMAT],'months')*-1
+]]></DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="128">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="2983" y="193" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="FDICCATCD" selected="True" />
+                <SelectField field="ACCTNBR" selected="True" />
+                <SelectField field="PRODUCT" selected="True" />
+                <SelectField field="OWNERNAME" selected="True" />
+                <SelectField field="LOANOFFICER" selected="True" />
+                <SelectField field="CONTRACTDATE" selected="True" />
+                <SelectField field="DATEMAT" selected="True" />
+                <SelectField field="OrigMaturityTerm" selected="True" rename="Original Term" />
+                <SelectField field="REMAINTERM" selected="True" rename="Remaining Term" />
+                <SelectField field="TOTALPCTSOLD" selected="True" rename="% Sold" />
+                <SelectField field="LOANAGENCYCD" selected="True" />
+                <SelectField field="NOTEBAL" selected="True" rename="Current Balance" />
+                <SelectField field="BOOKBALANCE" selected="True" rename="Book Balance" />
+                <SelectField field="AVAILBALAMT" selected="True" rename="Available Balance" />
+                <SelectField field="CREDITLIMITAMT" selected="True" rename="Credit Limit Amount" />
+                <SelectField field="LASTDISBURSDATE" selected="True" rename="Last Advance Date" />
+                <SelectField field="NOTEOPENAMT" selected="False" rename="Note Open Amount" />
+                <SelectField field="RATETYPCD" selected="True" rename="Rate Type" />
+                <SelectField field="NOTEINTRATE" selected="True" rename="Current Int Rate" />
+                <SelectField field="ORIGINTRATE" selected="True" rename="Original Rate" />
+                <SelectField field="NOTENEXTRATECHANGEDATE" selected="True" rename="Next Rate Change Date" />
+                <SelectField field="MARGINFIXED" selected="True" rename="Margin" />
+                <SelectField field="RCF" selected="True" rename="Rate Change Frequency" />
+                <SelectField field="LOANIDX" selected="True" rename="Index" />
+                <SelectField field="RISKRATINGCD" selected="True" />
+                <SelectField field="PROPTYPDESC" selected="True" />
+                <SelectField field="PROPADDR1" selected="True" />
+                <SelectField field="PROPADDR2" selected="True" />
+                <SelectField field="PROPCITY" selected="True" />
+                <SelectField field="PROPSTATE" selected="True" />
+                <SelectField field="PROPZIP" selected="True" />
+                <SelectField field="APRSVALUEAMT" selected="True" />
+                <SelectField field="APRSDATE" selected="True" />
+                <SelectField field="MJACCTTYPCD" selected="False" />
+                <SelectField field="CURRMIACCTTYPCD" selected="False" />
+                <SelectField field="NOTERATECHANGECALPERCD" selected="False" />
+                <SelectField field="CURRACCTSTATCD" selected="False" />
+                <SelectField field="ORIGDATE" selected="False" />
+                <SelectField field="Collateral ID" selected="False" />
+                <SelectField field="PROPDESC" selected="False" />
+                <SelectField field="CURRTERM" selected="False" />
+                <SelectField field="AMORTTERM" selected="False" />
+                <SelectField field="LoanType" selected="False" />
+                <SelectField field="OrigTotalLoanAmt" selected="False" />
+                <SelectField field="RateType" selected="False" />
+                <SelectField field="Street Address" selected="False" />
+                <SelectField field="ACCTNBR2" selected="False" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="132">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DateTime.DateTime">
+            <Position x="3067" y="195" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <IsFrom value="True" />
+              <InputFieldName>CONTRACTDATE</InputFieldName>
+              <Language>English</Language>
+              <Format>MM/dd/yyyy</Format>
+              <OutputFieldName>Contract Date</OutputFieldName>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Convert CONTRACTDATE To:
+MM/dd/yyyy</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDateTime" />
+        </Node>
+        <Node ToolID="134">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DateTime.DateTime">
+            <Position x="3199" y="195" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <IsFrom value="True" />
+              <InputFieldName>DATEMAT</InputFieldName>
+              <Language>English</Language>
+              <Format>MM/dd/yyyy</Format>
+              <OutputFieldName>Maturity Date</OutputFieldName>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Convert DATEMAT To:
+MM/dd/yyyy</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDateTime" />
+        </Node>
+        <Node ToolID="135">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DateTime.DateTime">
+            <Position x="3307" y="193" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <IsFrom value="True" />
+              <InputFieldName>Last Advance Date</InputFieldName>
+              <Language>English</Language>
+              <Format>MM/dd/yyyy</Format>
+              <OutputFieldName>Last Advance Date</OutputFieldName>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Convert Last Advance Date To:
+MM/dd/yyyy</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDateTime" />
+        </Node>
+        <Node ToolID="136">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DateTime.DateTime">
+            <Position x="3403" y="195" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <IsFrom value="True" />
+              <InputFieldName>Next Rate Change Date</InputFieldName>
+              <Language>English</Language>
+              <Format>MM/dd/yyyy</Format>
+              <OutputFieldName>Next Rate Change Date</OutputFieldName>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Convert Next Rate Change Date To:
+MM/dd/yyyy</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDateTime" />
+        </Node>
+        <Node ToolID="137">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DateTime.DateTime">
+            <Position x="3511" y="195" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <IsFrom value="True" />
+              <InputFieldName>APRSDATE</InputFieldName>
+              <Language>English</Language>
+              <Format>MM/dd/yyyy</Format>
+              <OutputFieldName>Appraisal Date</OutputFieldName>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Convert APRSDATE To:
+MM/dd/yyyy</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDateTime" />
+        </Node>
+        <Node ToolID="138">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="3619" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="FDICCATCD" selected="True" />
+                <SelectField field="ACCTNBR" selected="True" />
+                <SelectField field="PRODUCT" selected="True" />
+                <SelectField field="OWNERNAME" selected="True" />
+                <SelectField field="LOANOFFICER" selected="True" />
+                <SelectField field="Contract Date" selected="True" />
+                <SelectField field="CONTRACTDATE" selected="False" />
+                <SelectField field="Maturity Date" selected="True" />
+                <SelectField field="DATEMAT" selected="False" />
+                <SelectField field="Original Term" selected="True" />
+                <SelectField field="Remaining Term" selected="True" />
+                <SelectField field="% Sold" selected="True" />
+                <SelectField field="LOANAGENCYCD" selected="True" />
+                <SelectField field="Current Balance" selected="True" />
+                <SelectField field="Book Balance" selected="True" />
+                <SelectField field="Available Balance" selected="True" />
+                <SelectField field="Credit Limit Amount" selected="True" />
+                <SelectField field="Last Advance Date" selected="False" />
+                <SelectField field="Last Advance Date2" selected="True" rename="Last Advance Date" />
+                <SelectField field="Rate Type" selected="True" />
+                <SelectField field="Current Int Rate" selected="True" />
+                <SelectField field="Original Rate" selected="True" />
+                <SelectField field="Next Rate Change Date" selected="False" />
+                <SelectField field="Next Rate Change Date2" selected="True" rename="Next Rate Change Date" />
+                <SelectField field="Margin" selected="True" />
+                <SelectField field="Rate Change Frequency" selected="True" />
+                <SelectField field="Index" selected="True" />
+                <SelectField field="RISKRATINGCD" selected="True" />
+                <SelectField field="PROPTYPDESC" selected="True" />
+                <SelectField field="PROPADDR1" selected="True" />
+                <SelectField field="PROPADDR2" selected="True" />
+                <SelectField field="PROPCITY" selected="True" />
+                <SelectField field="PROPSTATE" selected="True" />
+                <SelectField field="PROPZIP" selected="True" />
+                <SelectField field="APRSVALUEAMT" selected="True" />
+                <SelectField field="APRSDATE" selected="False" />
+                <SelectField field="Appraisal Date" selected="True" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="148">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="3715" y="226" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTUSERFIELDVALUEDESC</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="ACCTUSERFIELDVALUE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="149">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="4003" y="225" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="FDICCATCD" selected="True" />
+                <SelectField field="ACCTUSERFIELDVALUE" selected="True" rename="Participation Purchased" />
+                <SelectField field="ACCTNBR" selected="True" />
+                <SelectField field="PRODUCT" selected="True" />
+                <SelectField field="OWNERNAME" selected="True" />
+                <SelectField field="LOANOFFICER" selected="True" />
+                <SelectField field="Contract Date" selected="True" />
+                <SelectField field="Maturity Date" selected="True" />
+                <SelectField field="Original Term" selected="True" />
+                <SelectField field="Remaining Term" selected="True" />
+                <SelectField field="% Sold" selected="True" />
+                <SelectField field="LOANAGENCYCD" selected="True" />
+                <SelectField field="Current Balance" selected="True" />
+                <SelectField field="Book Balance" selected="True" />
+                <SelectField field="Available Balance" selected="True" />
+                <SelectField field="Credit Limit Amount" selected="True" />
+                <SelectField field="Last Advance Date" selected="True" />
+                <SelectField field="Rate Type" selected="True" />
+                <SelectField field="Current Int Rate" selected="True" />
+                <SelectField field="Original Rate" selected="True" />
+                <SelectField field="Next Rate Change Date" selected="True" />
+                <SelectField field="Margin" selected="True" />
+                <SelectField field="Rate Change Frequency" selected="True" />
+                <SelectField field="Index" selected="True" />
+                <SelectField field="RISKRATINGCD" selected="True" />
+                <SelectField field="PROPTYPDESC" selected="True" />
+                <SelectField field="PROPADDR1" selected="True" />
+                <SelectField field="PROPADDR2" selected="True" />
+                <SelectField field="PROPCITY" selected="True" />
+                <SelectField field="PROPSTATE" selected="True" />
+                <SelectField field="PROPZIP" selected="True" />
+                <SelectField field="APRSVALUEAMT" selected="True" />
+                <SelectField field="Appraisal Date" selected="True" />
+                <SelectField field="ACCTUSERFIELDVALUE2" selected="True" rename="SBA504" />
+                <SelectField field="INACTIVEDATE" selected="True" />
+                <SelectField field="CREDLIMITCLATRESAMT" selected="True" />
+                <SelectField field="CREDLIMITCLATRESEFFDATE" selected="True" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="147">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+            <Position x="3619" y="303" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Mode>Simple</Mode>
+              <Simple>
+                <Operator>=</Operator>
+                <Field>ACCTUSERFIELDCD</Field>
+                <Operands>
+                  <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+                  <DateType>fixed</DateType>
+                  <PeriodDate>2023-11-08 15:50:43</PeriodDate>
+                  <PeriodType>
+                  </PeriodType>
+                  <PeriodCount>0</PeriodCount>
+                  <Operand>PARP</Operand>
+                  <StartDate>2023-11-08 15:50:43</StartDate>
+                  <EndDate>2023-11-08 15:50:43</EndDate>
+                </Operands>
+              </Simple>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>[ACCTUSERFIELDCD] = "PARP"</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+        </Node>
+        <Node ToolID="153">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="3811" y="237" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTUSERFIELDCD</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="ACCTUSERFIELDVALUE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="156">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="4099" y="225" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="[Available Balance]*([% Sold])" field="Participated Available" size="8" type="Double" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText><![CDATA[Participated Available = [Available Balance]*([% Sold])
+]]></DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="139">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BlockUntilDone.BlockUntilDone">
+            <Position x="4386" y="211" />
+          </GuiSettings>
+          <Properties>
+            <Configuration />
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBlockUntilDone" />
+        </Node>
+        <Node ToolID="157">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="4194" y="223" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="FDICCATCD" selected="True" />
+                <SelectField field="Participation Purchased" selected="True" />
+                <SelectField field="ACCTNBR" selected="True" />
+                <SelectField field="PRODUCT" selected="True" />
+                <SelectField field="OWNERNAME" selected="True" />
+                <SelectField field="LOANOFFICER" selected="True" />
+                <SelectField field="Contract Date" selected="True" />
+                <SelectField field="Maturity Date" selected="True" />
+                <SelectField field="Original Term" selected="True" />
+                <SelectField field="Remaining Term" selected="True" />
+                <SelectField field="% Sold" selected="True" />
+                <SelectField field="LOANAGENCYCD" selected="True" />
+                <SelectField field="Current Balance" selected="True" />
+                <SelectField field="Book Balance" selected="True" />
+                <SelectField field="Available Balance" selected="True" />
+                <SelectField field="Participated Available" selected="True" />
+                <SelectField field="Credit Limit Amount" selected="True" />
+                <SelectField field="Last Advance Date" selected="True" />
+                <SelectField field="Rate Type" selected="True" />
+                <SelectField field="Current Int Rate" selected="True" />
+                <SelectField field="Original Rate" selected="True" />
+                <SelectField field="Next Rate Change Date" selected="True" />
+                <SelectField field="Margin" selected="True" />
+                <SelectField field="Rate Change Frequency" selected="True" />
+                <SelectField field="Index" selected="True" />
+                <SelectField field="RISKRATINGCD" selected="True" />
+                <SelectField field="PROPTYPDESC" selected="True" />
+                <SelectField field="PROPADDR1" selected="True" />
+                <SelectField field="PROPADDR2" selected="True" />
+                <SelectField field="PROPCITY" selected="True" />
+                <SelectField field="PROPSTATE" selected="True" />
+                <SelectField field="PROPZIP" selected="True" />
+                <SelectField field="APRSVALUEAMT" selected="True" />
+                <SelectField field="Appraisal Date" selected="True" />
+                <SelectField field="SBA504" selected="True" />
+                <SelectField field="INACTIVEDATE" selected="True" />
+                <SelectField field="CREDLIMITCLATRESAMT" selected="True" rename="Collateral Reserve Amt" />
+                <SelectField field="CREDLIMITCLATRESEFFDATE" selected="False" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="168">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="3907" y="249" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTNBR</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="INACTIVEDATE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="196">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="4278" y="223" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="[Collateral Reserve Amt] * [% Sold]" field="Participated Collateral Reserve" size="8" type="Double" />
+                <FormulaField expression="[Collateral Reserve Amt] - [Participated Collateral Reserve]" field="Net Collateral Reserve" size="8" type="Double" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Participated Collateral Reserve = [Collateral Reserve Amt] * [% Sold]
+Net Collat...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="141">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="4698" y="788" width="143" height="133" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Formatting</Caption>
+          <Style TextColor="#314c4a" FillColor="#ffff80" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="True" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="140">
+          <GuiSettings Plugin="JupyterCode">
+            <Position x="4723" y="837" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <WorkflowName>\\10.161.85.66\home\share\line of business_shared services\commercial credit\finishedreports\internalconstruction\workflow\construction.yxmd</WorkflowName>
+              <JupyterProduction>false</JupyterProduction>
+              <vEnvName>designerbasetools_venv</vEnvName>
+              <DefaultVenv>1</DefaultVenv>
+              <productionModeScript />
+              <Port>50834</Port>
+              <JupyterGuidDir>6450d642b98c609d50dbb3e57a8fe42a</JupyterGuidDir>
+              <JupyterGuidCopy />
+              <LastExecutedByEngineVersion>2022.3.1.450</LastExecutedByEngineVersion>
+              <Notebook><![CDATA[{"cells":[{"cell_type":"markdown","metadata":{"ayx":{"cell_css":"border: 3px solid #357; margin: 4px; background: #fbffff","contents_keyword":"Alteryx.help()","label":"info"}},"source":["Run `Alteryx.help()` for info about useful functions.  \n","i.e., `Alteryx.read(\"#1\")`, `Alteryx.write(df,1)`, `Alteryx.getWorkflowConstant(\"Engine.WorkflowDirectory\")`"]},{"cell_type":"code","execution_count":1,"metadata":{"ayx":{"cell_css":"border: 1px solid #58a; margin: 2px;","contents_keyword":"installPackages","label":"deps"}},"outputs":[],"source":["# List all non-standard packages to be imported by your \n","# script here (only missing packages will be installed)\n","from ayx import Package\n","#Package.installPackages(['pandas','numpy'])"]},{"cell_type":"code","execution_count":2,"metadata":{},"outputs":[],"source":["from ayx import Alteryx\n","\n"]},{"cell_type":"code","execution_count":3,"metadata":{},"outputs":[],"source":["import openpyxl\n","from openpyxl.styles import NamedStyle\n","from openpyxl.worksheet.dimensions import ColumnDimension\n","from openpyxl.styles import PatternFill\n","from openpyxl.utils import get_column_letter\n","import os\n","from pathlib import Path\n","from datetime import datetime\n","\n","file_path = Path(r'\\\\10.161.85.66\\Home\\Share\\Line of Business_Shared Services\\Commercial Credit\\FinishedReports\\InternalConstruction\\OUTPUT\\Construction.xlsx')\n","dir_path = Path(r'\\\\10.161.85.66\\Home\\Share\\Line of Business_Shared Services\\Commercial Credit\\FinishedReports\\InternalConstruction\\OUTPUT')\n","# print(file_path)\n","os.chdir(dir_path)\n","wb = openpyxl.load_workbook(file_path)\n","\n","sheet = wb['Sheet1']\n","# Currency formatting\n","\n","for column in ['K','L','M','N','O','P','Q','R','S','AJ']:\n","    for cell in sheet[column]:\n","        cell.number_format = '$ #,##0.00'\n","        \n","# Rate formatting\n","for column in ['J','W','X','Z']:\n","    for cell in sheet[column]:\n","        cell.number_format = '0.00%'\n","\n","\n","# Autosizing \n","\n","for column_cells in sheet.columns:\n","    new_column_length = max(len(str(cell.value)) for cell in column_cells)\n","    new_column_letter = (get_column_letter(column_cells[0].column))\n","    if new_column_length > 0:\n","        sheet.column_dimensions[new_column_letter].width = new_column_length*1.23\n","\n","# ColumnDimension(sheet, bestFit=True)\n","            \n","            \n","for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row):\n","    for cell in row:\n","        cell.alignment = openpyxl.styles.Alignment(wrap_text=False)\n","\n","# Centering\n","# alignment = openpyxl.styles.Alignment(horizontal=\"center\", vertical=\"center\")\n","\n","# for cell in sheet[1]:\n","#     cell.alignment = alignment\n","\n","# Header color \n","fill = PatternFill(start_color=\"B7E1CD\",end_color=\"B7E1CD\", fill_type=\"solid\")\n","\n","for cell in sheet[1]:\n","    cell.fill = fill\n","        \n","current_date = datetime.now().strftime(\"%m%d%y\")\n","new_filename = current_date + '_Construction.xlsx'\n","wb.save(new_filename)\n","print(\"Complete!\")\n","\n"]}],"metadata":{"kernelspec":{"display_name":"designerbasetools_venv","language":"python","name":"designerbasetools_venv"},"language_info":{"codemirror_mode":{"name":"ipython","version":3},"file_extension":".py","mimetype":"text/x-python","name":"python","nbconvert_exporter":"python","pygments_lexer":"ipython3","version":"3.8.5"}},"nbformat":4,"nbformat_minor":2}]]></Notebook>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxJupyterPluginEngine.dll" EngineDllEntryPoint="AlteryxJupyter" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="93">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="618" y="157" width="1729" height="241" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Main 1</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="46">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+            <Position x="1255" y="218" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Expression>[MJACCTTYPCD]="CML" or [MJACCTTYPCD]="MLN"</Expression>
+              <Mode>Custom</Mode>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>[MJACCTTYPCD]="CML" or [MJACCTTYPCD]="MLN"</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+        </Node>
+        <Node ToolID="48">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="643" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>RCF</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="ORIGDATE" />
+                <Field field="CURRTERM" />
+                <Field field="LOANIDX" />
+                <Field field="RCF" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="51">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="739" y="206" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>FDICCATCD</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="CREDITLIMITAMT" />
+                <Field field="ORIGINTRATE" />
+                <Field field="MARGINFIXED" />
+                <Field field="FDICCATCD" />
+                <Field field="AMORTTERM" />
+                <Field field="CREDLIMITCLATRESAMT" />
+                <Field field="CREDLIMITCLATRESEFFDATE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="55">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="943" y="218" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>PROPNBR</FieldFind>
+              <FieldSearch>PROPNBR</FieldSearch>
+              <ReplaceFoundField>PROPTYPDESC</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="PROPTYPDESC" />
+                <Field field="PROPDESC" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="56">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+            <Position x="1459" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Expression>[CURRMIACCTTYPCD] NOT IN("CI07","CM09","CM01","CM02", "CM66") AND ([CURRACCTSTATCD] ="ACT" OR "NPFM")</Expression>
+              <Mode>Custom</Mode>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>[CURRMIACCTTYPCD] NOT IN("CI07","CM09","CM01","CM02", "CM66") AND ([CURRACCTSTAT...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+        </Node>
+        <Node ToolID="57">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="1663" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="IF [CURRMIACCTTYPCD] IN (&quot;CM07&quot;, &quot;CM08&quot;,&quot;CM79&quot;,&quot;CM81&quot;,&quot;ML02&quot;) or [FDICCATCD] In (&quot;OTCN&quot;, &quot;CNFM&quot;) THEN &quot;Construction&quot; ELSE &quot;Other&quot; ENDIF" field="LoanType" size="1073741823" type="V_WString" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>LoanType = IF [CURRMIACCTTYPCD] IN ("CM07", "CM08","CM79","CM81","ML02") or [FDI...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="58">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="1807" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="IF NOT IsNull([NOTEOPENAMT]) THEN [NOTEOPENAMT] ELSE [CREDITLIMITAMT] ENDIF" field="OrigTotalLoanAmt" size="8" type="Double" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>OrigTotalLoanAmt = IF NOT IsNull([NOTEOPENAMT]) THEN [NOTEOPENAMT] ELSE [CREDITL...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="59">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="1927" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="IF [RATETYPCD] = &quot;FIX&quot; THEN &quot;Fixed&quot; ELSE &quot;Floating&quot; ENDIF" field="RateType" size="1073741823" type="V_WString" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText><![CDATA[RateType = IF [RATETYPCD] = "FIX" THEN "Fixed" ELSE "Floating" ENDIF
+]]></DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="60">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="2035" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField expression="IF NOT IsNull([PROPADDR2]) THEN [PROPADDR1] + &quot; &quot; + [PROPADDR2] ELSE [PROPADDR1] ENDIF" field="Street Address" size="1073741823" type="V_WString" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Street Address = IF NOT IsNull([PROPADDR2]) THEN [PROPADDR1] + " " + [PROPADDR2]...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="61">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+            <Position x="2167" y="219" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Mode>Simple</Mode>
+              <Simple>
+                <Operator>=</Operator>
+                <Field>LoanType</Field>
+                <Operands>
+                  <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+                  <DateType>fixed</DateType>
+                  <PeriodDate>2023-04-10 13:23:07</PeriodDate>
+                  <PeriodType>
+                  </PeriodType>
+                  <PeriodCount>0</PeriodCount>
+                  <Operand>Construction</Operand>
+                  <StartDate>2023-04-10 13:23:07</StartDate>
+                  <EndDate>2023-04-10 13:23:07</EndDate>
+                </Operands>
+              </Simple>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>[LoanType] = "Construction"</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+        </Node>
+        <Node ToolID="62">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="1159" y="219" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Right_ACCTNBR" selected="False" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="65">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="1051" y="218" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>ACCTNBR</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="DATEMAT" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="129">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.FindReplace.FindReplace">
+            <Position x="835" y="217" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FieldFind>ACCTNBR</FieldFind>
+              <FieldSearch>ACCTNBR</FieldSearch>
+              <ReplaceFoundField>PROPADDR1</ReplaceFoundField>
+              <FindMode>FindWhole</FindMode>
+              <NoCase value="False" />
+              <MatchWholeWord value="False" />
+              <ReplaceMode>Append</ReplaceMode>
+              <ReplaceMultipleFound value="True" />
+              <ReplaceAppendFields>
+                <Field field="PROPNBR" />
+                <Field field="PROPADDR1" />
+                <Field field="PROPADDR2" />
+                <Field field="PROPCITY" />
+                <Field field="PROPSTATE" />
+                <Field field="PROPZIP" />
+                <Field field="APRSVALUEAMT" />
+                <Field field="APRSDATE" />
+              </ReplaceAppendFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFindReplace" />
+        </Node>
+        <Node ToolID="118">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="2263" y="207" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="92">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="54" y="142" width="421" height="1693" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Inputs</Caption>
+          <Style TextColor="#314c4a" FillColor="#80ff80" BorderColor="#314c4a" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="41">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="79" y="191" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,
+	OSIBANK.WH_ACCTCOMMON.OWNERNAME,
+	OSIBANK.WH_ACCTCOMMON.PRODUCT,
+	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,
+	OSIBANK.WH_ACCTCOMMON.RATETYPCD,
+	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,
+	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,
+	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,
+	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE 
+from OSIBANK.WH_ACCTCOMMON</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="OWNERNAME" size="128" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="V_String" />
+                <Field name="PRODUCT" size="30" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="NOTEOPENAMT" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
+                <Field name="RATETYPCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="MJACCTTYPCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="CURRMIACCTTYPCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="CURRACCTSTATCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="NOTEINTRATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.OWNERNAME,&#xA;	OSIBANK.WH_ACCTCOMMON.PRODUCT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEOPENAMT,&#xA;	OSIBANK.WH_ACCTCOMMON.RATETYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.MJACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRMIACCTTYPCD,&#xA;	OSIBANK.WH_ACCTCOMMON.CURRACCTSTATCD,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="42">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="89" y="370" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,
+	OSIBANK.WH_LOANS.ORIGDATE,
+	OSIBANK.WH_LOANS.CURRTERM,
+	OSIBANK.WH_LOANS.LOANIDX,
+	OSIBANK.WH_LOANS.RCF 
+from OSIBANK.WH_LOANS</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.ORIGDATE,&#xA;	OSIBANK.WH_LOANS.CURRTERM,&#xA;	OSIBANK.WH_LOANS.LOANIDX,&#xA;	OSIBANK.WH_LOANS.RCF &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="ORIGDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.ORIGDATE,&#xA;	OSIBANK.WH_LOANS.CURRTERM,&#xA;	OSIBANK.WH_LOANS.LOANIDX,&#xA;	OSIBANK.WH_LOANS.RCF &#xA;from OSIBANK.WH_LOANS" type="DateTime" />
+                <Field name="CURRTERM" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.ORIGDATE,&#xA;	OSIBANK.WH_LOANS.CURRTERM,&#xA;	OSIBANK.WH_LOANS.LOANIDX,&#xA;	OSIBANK.WH_LOANS.RCF &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="LOANIDX" size="30" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.ORIGDATE,&#xA;	OSIBANK.WH_LOANS.CURRTERM,&#xA;	OSIBANK.WH_LOANS.LOANIDX,&#xA;	OSIBANK.WH_LOANS.RCF &#xA;from OSIBANK.WH_LOANS" type="String" />
+                <Field name="RCF" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.ORIGDATE,&#xA;	OSIBANK.WH_LOANS.CURRTERM,&#xA;	OSIBANK.WH_LOANS.LOANIDX,&#xA;	OSIBANK.WH_LOANS.RCF &#xA;from OSIBANK.WH_LOANS" type="String" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="43">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="103" y="539" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,
+	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,
+	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,
+	OSIBANK.WH_ACCTLOAN.MARGINFIXED,
+	OSIBANK.WH_ACCTLOAN.FDICCATCD,
+	OSIBANK.WH_ACCTLOAN.AMORTTERM,
+	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,
+	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE 
+from OSIBANK.WH_ACCTLOAN</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="CREDITLIMITAMT" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
+                <Field name="ORIGINTRATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
+                <Field name="MARGINFIXED" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
+                <Field name="FDICCATCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="String" />
+                <Field name="AMORTTERM" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Int32" />
+                <Field name="CREDLIMITCLATRESAMT" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
+                <Field name="CREDLIMITCLATRESEFFDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.CREDITLIMITAMT,&#xA;	OSIBANK.WH_ACCTLOAN.ORIGINTRATE,&#xA;	OSIBANK.WH_ACCTLOAN.MARGINFIXED,&#xA;	OSIBANK.WH_ACCTLOAN.FDICCATCD,&#xA;	OSIBANK.WH_ACCTLOAN.AMORTTERM,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESAMT,&#xA;	OSIBANK.WH_ACCTLOAN.CREDLIMITCLATRESEFFDATE &#xA;from OSIBANK.WH_ACCTLOAN" type="DateTime" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="44">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="114" y="671" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,
+	OSIBANK.WH_PROP.PROPNBR,
+	OSIBANK.WH_PROP.PROPADDR1,
+	OSIBANK.WH_PROP.PROPADDR2,
+	OSIBANK.WH_PROP.PROPCITY,
+	OSIBANK.WH_PROP.PROPSTATE,
+	OSIBANK.WH_PROP.PROPZIP,
+	OSIBANK.WH_PROP.APRSVALUEAMT,
+	OSIBANK.WH_PROP.APRSDATE 
+from OSIBANK.WH_PROP</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_PROP.ACCTN...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="Int64" />
+                <Field name="PROPNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="Int64" />
+                <Field name="PROPADDR1" size="40" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="V_String" />
+                <Field name="PROPADDR2" size="40" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="V_String" />
+                <Field name="PROPCITY" size="40" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="V_String" />
+                <Field name="PROPSTATE" size="2" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="String" />
+                <Field name="PROPZIP" size="10" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="String" />
+                <Field name="APRSVALUEAMT" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="Double" />
+                <Field name="APRSDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_PROP.ACCTNBR,&#xA;	OSIBANK.WH_PROP.PROPNBR,&#xA;	OSIBANK.WH_PROP.PROPADDR1,&#xA;	OSIBANK.WH_PROP.PROPADDR2,&#xA;	OSIBANK.WH_PROP.PROPCITY,&#xA;	OSIBANK.WH_PROP.PROPSTATE,&#xA;	OSIBANK.WH_PROP.PROPZIP,&#xA;	OSIBANK.WH_PROP.APRSVALUEAMT,&#xA;	OSIBANK.WH_PROP.APRSDATE &#xA;from OSIBANK.WH_PROP" type="DateTime" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="45">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="102" y="803" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_PROP2.ACCTNBR,
+	OSIBANK.WH_PROP2.PROPTYPDESC,
+	OSIBANK.WH_PROP2.PROPNBR,
+	OSIBANK.WH_PROP2.PROPDESC 
+from OSIBANK.WH_PROP2</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_PROP2.ACCT...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PROP2.ACCTNBR,&#xA;	OSIBANK.WH_PROP2.PROPTYPDESC,&#xA;	OSIBANK.WH_PROP2.PROPNBR,&#xA;	OSIBANK.WH_PROP2.PROPDESC &#xA;from OSIBANK.WH_PROP2" type="Int64" />
+                <Field name="PROPTYPDESC" size="30" source="File: aka:R1625.world|||select OSIBANK.WH_PROP2.ACCTNBR,&#xA;	OSIBANK.WH_PROP2.PROPTYPDESC,&#xA;	OSIBANK.WH_PROP2.PROPNBR,&#xA;	OSIBANK.WH_PROP2.PROPDESC &#xA;from OSIBANK.WH_PROP2" type="String" />
+                <Field name="PROPNBR" source="File: aka:R1625.world|||select OSIBANK.WH_PROP2.ACCTNBR,&#xA;	OSIBANK.WH_PROP2.PROPTYPDESC,&#xA;	OSIBANK.WH_PROP2.PROPNBR,&#xA;	OSIBANK.WH_PROP2.PROPDESC &#xA;from OSIBANK.WH_PROP2" type="Int64" />
+                <Field name="PROPDESC" size="254" source="File: aka:R1625.world|||select OSIBANK.WH_PROP2.ACCTNBR,&#xA;	OSIBANK.WH_PROP2.PROPTYPDESC,&#xA;	OSIBANK.WH_PROP2.PROPNBR,&#xA;	OSIBANK.WH_PROP2.PROPDESC &#xA;from OSIBANK.WH_PROP2" type="V_String" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="49">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="211" y="202" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="50">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="334" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="52">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="527" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="53">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="657" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="PROPNBR" selected="True" type="V_String" size="21" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="54">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="260" y="791" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="PROPNBR" selected="True" type="V_String" size="21" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="66">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="116" y="959" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,
+	OSIBANK.WH_ACCT.DATEMAT 
+from OSIBANK.WH_ACCT</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="Int64" />
+                <Field name="DATEMAT" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_ACCT.ACCTNBR,&#xA;	OSIBANK.WH_ACCT.DATEMAT &#xA;from OSIBANK.WH_ACCT" type="DateTime" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="67">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="247" y="971" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="117">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="114" y="1120" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,
+	OSIBANK.WH_ACCTCOMMON.ACCTNBR,
+	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,
+	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,
+	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,
+	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,
+	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,
+	OSIBANK.WH_ACCTCOMMON.DATEMAT,
+	OSIBANK.WH_ACCTCOMMON.NOTEBAL 
+from OSIBANK.WH_ACCTCOMMON</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTCOMMON...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field name="CONTRACTDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="Int64" />
+                <Field name="BOOKBALANCE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
+                <Field name="NOTEINTRATE" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
+                <Field name="NOTENEXTRATECHANGEDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+                <Field name="NOTERATECHANGECALPERCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="String" />
+                <Field name="LOANOFFICER" size="50" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="V_String" />
+                <Field name="DATEMAT" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="DateTime" />
+                <Field name="NOTEBAL" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTCOMMON.CONTRACTDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.ACCTNBR,&#xA;	OSIBANK.WH_ACCTCOMMON.BOOKBALANCE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEINTRATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTENEXTRATECHANGEDATE,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTERATECHANGECALPERCD,&#xA;	OSIBANK.WH_ACCTCOMMON.LOANOFFICER,&#xA;	OSIBANK.WH_ACCTCOMMON.DATEMAT,&#xA;	OSIBANK.WH_ACCTCOMMON.NOTEBAL &#xA;from OSIBANK.WH_ACCTCOMMON" type="Double" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="120">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="1107" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="DATEMAT" selected="False" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="121">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="114" y="1251" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,
+	OSIBANK.WH_LOANS.AVAILBALAMT,
+	OSIBANK.WH_LOANS.REMAINTERM,
+	OSIBANK.WH_LOANS.LASTDISBURSDATE 
+from OSIBANK.WH_LOANS</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_LOANS.ACCT...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT,&#xA;	OSIBANK.WH_LOANS.REMAINTERM,&#xA;	OSIBANK.WH_LOANS.LASTDISBURSDATE &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="AVAILBALAMT" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT,&#xA;	OSIBANK.WH_LOANS.REMAINTERM,&#xA;	OSIBANK.WH_LOANS.LASTDISBURSDATE &#xA;from OSIBANK.WH_LOANS" type="Double" />
+                <Field name="REMAINTERM" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT,&#xA;	OSIBANK.WH_LOANS.REMAINTERM,&#xA;	OSIBANK.WH_LOANS.LASTDISBURSDATE &#xA;from OSIBANK.WH_LOANS" type="Int64" />
+                <Field name="LASTDISBURSDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.WH_LOANS.ACCTNBR,&#xA;	OSIBANK.WH_LOANS.AVAILBALAMT,&#xA;	OSIBANK.WH_LOANS.REMAINTERM,&#xA;	OSIBANK.WH_LOANS.LASTDISBURSDATE &#xA;from OSIBANK.WH_LOANS" type="DateTime" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="122">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="115" y="1407" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,
+	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD,
+	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,
+	OSIBANK.WH_ACCTLOAN.LOANAGENCYCD 
+from OSIBANK.WH_ACCTLOAN</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTLOAN.A...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.LOANAGENCYCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Int64" />
+                <Field name="TOTALPCTSOLD" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.LOANAGENCYCD &#xA;from OSIBANK.WH_ACCTLOAN" type="Double" />
+                <Field name="RISKRATINGCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.LOANAGENCYCD &#xA;from OSIBANK.WH_ACCTLOAN" type="String" />
+                <Field name="LOANAGENCYCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTLOAN.ACCTNBR,&#xA;	OSIBANK.WH_ACCTLOAN.TOTALPCTSOLD,&#xA;	OSIBANK.WH_ACCTLOAN.RISKRATINGCD,&#xA;	OSIBANK.WH_ACCTLOAN.LOANAGENCYCD &#xA;from OSIBANK.WH_ACCTLOAN" type="String" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="123">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="221" y="1252" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="25" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="124">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="1407" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="25" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="145">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="102" y="1551" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,
+	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,
+	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,
+	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,
+	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC 
+from OSIBANK.WH_ACCTUSERFIELDS</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.WH_ACCTUSERFI...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC &#xA;from OSIBANK.WH_ACCTUSERFIELDS" type="Int64" />
+                <Field name="ACCTUSERFIELDVALUE" size="254" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC &#xA;from OSIBANK.WH_ACCTUSERFIELDS" type="V_String" />
+                <Field name="ACCTUSERFIELDVALUEDESC" size="254" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC &#xA;from OSIBANK.WH_ACCTUSERFIELDS" type="V_String" />
+                <Field name="ACCTUSERFIELDCD" size="4" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC &#xA;from OSIBANK.WH_ACCTUSERFIELDS" type="String" />
+                <Field name="ACCTUSERFIELDCDDESC" size="100" source="File: aka:R1625.world|||select OSIBANK.WH_ACCTUSERFIELDS.ACCTNBR,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUE,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDVALUEDESC,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCD,&#xA;	OSIBANK.WH_ACCTUSERFIELDS.ACCTUSERFIELDCDDESC &#xA;from OSIBANK.WH_ACCTUSERFIELDS" type="V_String" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="146">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="234" y="1551" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="True" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="24" />
+                <SelectField field="ACCTUSERFIELDCD" selected="True" />
+                <SelectField field="ACCTUSERFIELDVALUE" selected="True" />
+                <SelectField field="ACCTUSERFIELDVALUEDESC" selected="False" />
+                <SelectField field="ACCTUSERFIELDCDDESC" selected="False" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="164">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+            <Position x="223" y="1689" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="ACCTNBR" selected="True" type="V_String" size="21" />
+                <SelectField field="INACTIVEDATE" selected="True" type="Date" size="10" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+        </Node>
+        <Node ToolID="165">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+            <Position x="103" y="1689" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Passwords />
+              <File RecordLimit="" FileFormat="17">aka:R1625.world|||select OSIBANK.ACCTLOANLIMITHIST.ACCTNBR,
+	OSIBANK.ACCTLOANLIMITHIST.INACTIVEDATE 
+from OSIBANK.ACCTLOANLIMITHIST</File>
+              <FormatSpecificOptions>
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <ReadCentroids>False</ReadCentroids>
+                <TableStyle>Quoted</TableStyle>
+                <NoProgress>False</NoProgress>
+                <CacheData>False</CacheData>
+                <PostSQL />
+                <PreSQL />
+                <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+              </FormatSpecificOptions>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>aka:R1625.world
+Query=select OSIBANK.ACCTLOANLIMIT...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+            <MetaInfo connection="Output">
+              <RecordInfo>
+                <Field description="PrimaryKey" name="ACCTNBR" source="File: aka:R1625.world|||select OSIBANK.ACCTLOANLIMITHIST.ACCTNBR,&#xA;	OSIBANK.ACCTLOANLIMITHIST.INACTIVEDATE &#xA;from OSIBANK.ACCTLOANLIMITHIST" type="Int64" />
+                <Field name="INACTIVEDATE" size="19" source="File: aka:R1625.world|||select OSIBANK.ACCTLOANLIMITHIST.ACCTNBR,&#xA;	OSIBANK.ACCTLOANLIMITHIST.INACTIVEDATE &#xA;from OSIBANK.ACCTLOANLIMITHIST" type="DateTime" />
+              </RecordInfo>
+            </MetaInfo>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+        </Node>
+        <Node ToolID="186">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+            <Position x="355" y="657" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Mode>Simple</Mode>
+              <Simple>
+                <Operator>IsNotNull</Operator>
+                <Field>PROPADDR1</Field>
+                <Operands>
+                  <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+                  <DateType>fixed</DateType>
+                  <PeriodDate>2023-12-15 15:45:17</PeriodDate>
+                  <PeriodType>
+                  </PeriodType>
+                  <PeriodCount>0</PeriodCount>
+                  <StartDate>2023-12-15 15:45:17</StartDate>
+                  <EndDate>2023-12-15 15:45:17</EndDate>
+                  <Operand>
+                  </Operand>
+                </Operands>
+              </Simple>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>!IsNull([PROPADDR1])</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+        </Node>
+      </ChildNodes>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="152" Connection="True" />
+      <Destination ToolID="153" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="148" Connection="Output" />
+      <Destination ToolID="153" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="154" Connection="Output" />
+      <Destination ToolID="161" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="158" Connection="Output" />
+      <Destination ToolID="154" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="160" Connection="Output" />
+      <Destination ToolID="159" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="163" Connection="Output" />
+      <Destination ToolID="168" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="153" Connection="Output" />
+      <Destination ToolID="168" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="166" Connection="Output" />
+      <Destination ToolID="167" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="167" Connection="Output" />
+      <Destination ToolID="163" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="174" Connection="Output" />
+      <Destination ToolID="175" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="175" Connection="True" />
+      <Destination ToolID="182" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="178" Connection="Output" />
+      <Destination ToolID="174" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="181" Connection="Output" />
+      <Destination ToolID="178" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="181" Connection="Output2" />
+      <Destination ToolID="192" Connection="Input2" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="182" Connection="Output" />
+      <Destination ToolID="183" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="183" Connection="Output" />
+      <Destination ToolID="184" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="187" Connection="Output" />
+      <Destination ToolID="188" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="188" Connection="Output" />
+      <Destination ToolID="111" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="189" Connection="Output" />
+      <Destination ToolID="158" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="192" Connection="Output26" />
+      <Destination ToolID="189" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="193" Connection="Output26" />
+      <Destination ToolID="187" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="161" Connection="Output" />
+      <Destination ToolID="160" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="109" Connection="Output" />
+      <Destination ToolID="127" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="119" Connection="Output" />
+      <Destination ToolID="125" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="123" Connection="Output" />
+      <Destination ToolID="125" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="125" Connection="Output" />
+      <Destination ToolID="126" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="124" Connection="Output" />
+      <Destination ToolID="126" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="126" Connection="Output" />
+      <Destination ToolID="109" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="127" Connection="Output" />
+      <Destination ToolID="128" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="128" Connection="Output" />
+      <Destination ToolID="132" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="132" Connection="Output" />
+      <Destination ToolID="134" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="134" Connection="Output" />
+      <Destination ToolID="135" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="135" Connection="Output" />
+      <Destination ToolID="136" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="136" Connection="Output" />
+      <Destination ToolID="137" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="137" Connection="Output" />
+      <Destination ToolID="138" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="138" Connection="Output" />
+      <Destination ToolID="148" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="147" Connection="True" />
+      <Destination ToolID="148" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="149" Connection="Output" />
+      <Destination ToolID="156" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="156" Connection="Output" />
+      <Destination ToolID="157" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="139" Connection="Output2" />
+      <Destination ToolID="181" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="139" Connection="Output3" />
+      <Destination ToolID="140" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="139" Connection="Output" />
+      <Destination ToolID="193" Connection="Input2" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="157" Connection="Output" />
+      <Destination ToolID="196" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="168" Connection="Output" />
+      <Destination ToolID="149" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="196" Connection="Output" />
+      <Destination ToolID="139" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="46" Connection="True" />
+      <Destination ToolID="56" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="48" Connection="Output" />
+      <Destination ToolID="51" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="52" Connection="Output" />
+      <Destination ToolID="51" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="51" Connection="Output" />
+      <Destination ToolID="129" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="186" Connection="True" />
+      <Destination ToolID="129" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="55" Connection="Output" />
+      <Destination ToolID="65" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="67" Connection="Output" />
+      <Destination ToolID="65" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="56" Connection="True" />
+      <Destination ToolID="57" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="57" Connection="Output" />
+      <Destination ToolID="58" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="58" Connection="Output" />
+      <Destination ToolID="59" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="59" Connection="Output" />
+      <Destination ToolID="60" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="60" Connection="Output" />
+      <Destination ToolID="61" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="61" Connection="True" />
+      <Destination ToolID="118" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="62" Connection="Output" />
+      <Destination ToolID="46" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="65" Connection="Output" />
+      <Destination ToolID="62" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="129" Connection="Output" />
+      <Destination ToolID="55" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="54" Connection="Output" />
+      <Destination ToolID="55" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="118" Connection="Output" />
+      <Destination ToolID="119" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="120" Connection="Output" />
+      <Destination ToolID="119" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="41" Connection="Output" />
+      <Destination ToolID="49" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="42" Connection="Output" />
+      <Destination ToolID="50" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="52" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="44" Connection="Output" />
+      <Destination ToolID="53" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="45" Connection="Output" />
+      <Destination ToolID="54" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="49" Connection="Output" />
+      <Destination ToolID="48" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="50" Connection="Output" />
+      <Destination ToolID="48" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="53" Connection="Output" />
+      <Destination ToolID="186" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="66" Connection="Output" />
+      <Destination ToolID="67" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="117" Connection="Output" />
+      <Destination ToolID="120" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="121" Connection="Output" />
+      <Destination ToolID="123" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="122" Connection="Output" />
+      <Destination ToolID="124" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="145" Connection="Output" />
+      <Destination ToolID="146" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="146" Connection="Output" />
+      <Destination ToolID="147" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="146" Connection="Output" />
+      <Destination ToolID="152" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="164" Connection="Output" />
+      <Destination ToolID="166" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="165" Connection="Output" />
+      <Destination ToolID="164" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <RunWithE2 value="True" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <IsTemplate value="False" />
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Construction</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="a5b193ff-662e-4d2f-8f4c-368cb32ad332" />
+      <Telemetry>
+        <PreviousWorkflowId value="ceb4b717-c5fd-4e0f-913a-145c15237a15" />
+        <OriginWorkflowId value="2d92cb86-67af-4ab1-ad73-f21fee3fb448" />
+      </Telemetry>
+      <PlatformWorkflowId value="" />
+    </MetaInfo>
+    <Events>
+      <Enabled value="False" />
+      <Event>
+        <Description>After Run: Email to chad.doorley@bcsbmail.com</Description>
+        <When>After</When>
+        <SendMail value="True" />
+        <email_SMTPServer>10.161.85.191</email_SMTPServer>
+        <email_Encryption>None</email_Encryption>
+        <email_Port>25</email_Port>
+        <email_Authentication value="False" />
+        <email_Username />
+        <email_Password />
+        <email_From>NoReply@bcsbmail.com</email_From>
+        <email_To>chad.doorley@bcsbmail.com</email_To>
+        <email_Subject>%AppName%: %Module% - %NumErrors% Errors</email_Subject>
+        <email_Body><![CDATA[User: %User%
+ComputerName: %ComputerName%
+WorkingDir: %WorkingDir%
+Errors: %NumErrors%
+ConversionErrors: %NumConvErrors%
+Warnings: %Warnings%
+
+%OutputLog%
+]]></email_Body>
+        <email_Attachments />
+      </Event>
+    </Events>
+  </Properties>
+</AlteryxDocument>

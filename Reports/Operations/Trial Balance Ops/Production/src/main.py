@@ -32,7 +32,7 @@ def main(production_flag: bool=False):
     raw_data_single.to_excel(OUTPUT_PATH_SINGLE, sheet_name='Sheet1', index=False)
 
     # Output to excel (raw data)
-    OUTPUT_PATH_MULTIPLE = BASE_PATH / Path(f'./output/CML_Trial_Balance_Ops_MultipleProperties{current_date}.xlsx')
+    OUTPUT_PATH_MULTIPLE = BASE_PATH / Path(f'./output/CML_Trial_Balance_Ops_MultipleProperties_{current_date}.xlsx')
     raw_data_multiple.to_excel(OUTPUT_PATH_MULTIPLE, sheet_name='Sheet1', index=False)
 
     # Format excel
@@ -43,7 +43,8 @@ def main(production_flag: bool=False):
     recipients = [
         # "chad.doorley@bcsbmail.com"
         "kelly.abernathy@bcsbmail.com",
-        "Zachary.Cabral@bcsbmail.com"
+        "Zachary.Cabral@bcsbmail.com",
+        "kelly.masefield@bcsbmail.com"
     ]
     bcc_recipients = [
         "chad.doorley@bcsbmail.com",
@@ -54,7 +55,7 @@ def main(production_flag: bool=False):
         OUTPUT_PATH_MULTIPLE
     ]
     subject=f"Trial Balance ME Reports - {current_date}"
-    body = "Hi all, \n\nAttached are the Trial Balance reports. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com\n"
+    body = "Hi all, \n\nAttached are the Trial Balance reports. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com\n\n There is a new version of this coming soon with an expanded list of fields. That will be in place for future runs."
 
     cdutils.distribution.email_out(
         recipients = recipients, 

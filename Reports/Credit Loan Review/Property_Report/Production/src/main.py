@@ -196,7 +196,10 @@ def main(production_flag: bool=False):
     result
     # %%
     # Output to excel (raw data)
-    OUTPUT_PATH = BASE_PATH / Path('./output/cml_property_report.xlsx')
+    OUTPUT_DIR = BASE_PATH / "output"
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    OUTPUT_PATH = OUTPUT_DIR / "cml_property_report.xlsx"
     result.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
 
     # Format excel
@@ -204,10 +207,10 @@ def main(production_flag: bool=False):
 
     # Distribution
     recipients = [
-        # "Sean.Cartwright@bcsbmail.com",
+        "Sean.Cartwright@bcsbmail.com",
         # "Linda.Sternfelt@bcsbmail.com",
         # "Paul.Kocak@bcsbmail.com"
-        "chad.doorley@bcsbmail.com"
+        # "chad.doorley@bcsbmail.com"
     ]
     bcc_recipients = [
         "chad.doorley@bcsbmail.com",
@@ -216,7 +219,7 @@ def main(production_flag: bool=False):
     subject = f"CML Property Report" 
     body = "Hi, \n\nAttached is the Monthly CML Property Report. If you have any questions, please reach out to BusinessIntelligence@bcsbmail.com \n\nThanks!"
     attachment_paths = [OUTPUT_PATH]
-    cdutils.distribution.email_out(recipients, bcc_recipients, subject, body, attachment_paths)
+    cdutils.distribution.email_out(recipients=recipients, bcc_recipients=bcc_recipients, subject=subject, body=body, attachment_paths=attachment_paths)
 
 
 if __name__ == '__main__':
