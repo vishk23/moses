@@ -91,7 +91,7 @@ def fetch_data_for_date(month_end: str = "2025-01-31"):
             a.TAXRPTFORORGNBR,
             a.TAXRPTFORPERSNBR
         FROM COCCDM.WH_ACCTCOMMON a
-        WHERE a.CURRACCTSTATCD IN ('ACT','NPFM')
+        WHERE a.CURRACCTSTATCD IN ('ACT','NPFM','CO','CLS')
         AND a.EFFDATE = {effdate_sql}
     """)
 
@@ -429,7 +429,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], -int(r["acctnbr"])])
 
         # Paid to Zero Balance (fixed condition)
         zeroed = joined[(joined["Net Balance_c"] == 0) & (joined["Net Balance_p"] != 0)]
@@ -439,7 +439,7 @@ def main():
                 {"Net Balance_p": "sum", "acctnbr": "count", "riskratingcd_c": "first"}
             ).reset_index()
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], -r["Net Balance_p"], -int(r["acctnbr"])])
 
         # LOC Advance
         loc = joined[joined["Net Balance_c"] > joined["Net Balance_p"]]
@@ -450,15 +450,17 @@ def main():
             ).reset_index()
             grouped["delta"] = grouped["Net Balance_c"] - grouped["Net Balance_p"]
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], ""])
 
-        # Paid Off / Charged Off
-        paid_off = p[~p["acctnbr"].isin(full_curr["acctnbr"])]
-        if not paid_off.empty:
-            rows.append(["Paid Off/Charged Off Loans", "", "", "", ""])
-            grouped = group_by_customer(paid_off, "ownersortname", "Net Balance")
+        # Charged Off Loans - status changed to CO
+        curr_co = full_curr[full_curr["curracctstatcd"] == "CO"]
+        charged_off_accts = curr_co["acctnbr"].tolist()
+        charged_off = p[p["acctnbr"].isin(charged_off_accts)]
+        if not charged_off.empty:
+            rows.append(["Charged Off Loans", "", "", "", ""])
+            grouped = group_by_customer(charged_off, "ownersortname", "Net Balance")
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname"], "", -r["Net Balance"], r["acctnbr"]])
+                rows.append(["", r["ownersortname"], "", -r["Net Balance"], -int(r["acctnbr"])])
 
         # Partial Charge Offs
         partial = joined[joined["cobal_c"] > joined["cobal_p"]]
@@ -469,7 +471,7 @@ def main():
             ).reset_index()
             grouped["delta"] = -(grouped["cobal_c"] - grouped["cobal_p"])
             for _, r in grouped.iterrows():
-                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], r["acctnbr"]])
+                rows.append(["", r["ownersortname_c"], r["riskratingcd_c"], r["delta"], -int(r["acctnbr"])])
 
         # --- Net Payments & Advances ---
         # Calculate sum of all other reconciliation items (excluding start/end balances and net adjustments)
@@ -530,16 +532,21 @@ def main():
             # --------------------- 1. RECONCILIATION BOXES ---------------------
             for label, (maj, rr) in cats.items():
                 # Include MLN loans with risk rating 4 in Grade 4 Commercial
+                # Filter to only ACT and NPFM loans for the reconciliation categories
                 if label == "4-CML":
                     prev_cat = df_prev[((df_prev["mjaccttypcd"]==maj) | 
                                        ((df_prev["mjaccttypcd"]=="MLN") & (df_prev["riskratingcd"]==rr))) & 
-                                      (df_prev["riskratingcd"]==rr)]
+                                      (df_prev["riskratingcd"]==rr) & 
+                                      (df_prev["curracctstatcd"].isin(["ACT", "NPFM"]))]
                     curr_cat = df_curr[((df_curr["mjaccttypcd"]==maj) | 
                                        ((df_curr["mjaccttypcd"]=="MLN") & (df_curr["riskratingcd"]==rr))) & 
-                                      (df_curr["riskratingcd"]==rr)]
+                                      (df_curr["riskratingcd"]==rr) & 
+                                      (df_curr["curracctstatcd"].isin(["ACT", "NPFM"]))]
                 else:
-                    prev_cat = df_prev[(df_prev["mjaccttypcd"]==maj)&(df_prev["riskratingcd"]==rr)]
-                    curr_cat = df_curr[(df_curr["mjaccttypcd"]==maj)&(df_curr["riskratingcd"]==rr)]
+                    prev_cat = df_prev[(df_prev["mjaccttypcd"]==maj)&(df_prev["riskratingcd"]==rr)&
+                                      (df_prev["curracctstatcd"].isin(["ACT", "NPFM"]))]
+                    curr_cat = df_curr[(df_curr["mjaccttypcd"]==maj)&(df_curr["riskratingcd"]==rr)&
+                                      (df_curr["curracctstatcd"].isin(["ACT", "NPFM"]))]
                 
                 if prev_cat.empty and curr_cat.empty:
                     continue
@@ -582,12 +589,15 @@ def main():
 
             for label, (maj, rr) in cats.items():
                 # Include MLN loans with risk rating 4 in Grade 4 Commercial
+                # Only show ACT and NPFM loans in summary sections
                 if label == "4-CML":
                     df = format_for_export(df_curr[((df_curr["mjaccttypcd"]==maj) | 
                                                    ((df_curr["mjaccttypcd"]=="MLN") & (df_curr["riskratingcd"]==rr))) & 
-                                                  (df_curr["riskratingcd"]==rr)])
+                                                  (df_curr["riskratingcd"]==rr) & 
+                                                  (df_curr["curracctstatcd"].isin(["ACT", "NPFM"]))])
                 else:
-                    df = format_for_export(df_curr[(df_curr["mjaccttypcd"]==maj)&(df_curr["riskratingcd"]==rr)])
+                    df = format_for_export(df_curr[(df_curr["mjaccttypcd"]==maj)&(df_curr["riskratingcd"]==rr)&
+                                                   (df_curr["curracctstatcd"].isin(["ACT", "NPFM"]))])
                 
                 if df.empty: continue
                 if label=="5-MTG":
