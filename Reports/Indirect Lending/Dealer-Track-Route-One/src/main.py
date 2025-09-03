@@ -308,6 +308,7 @@ def main():
     total_dt_vault_original = len(dtvault_df) + len(dtvault_indices_to_drop)
     
     # Calculate all subtotals in Python
+    # Note: We'll need to adjust these after filtering Paper contracts
     routeone_reconciled = len(routeone_resolved)
     routeone_not_reconciled = len(routeone_df)
     routeone_missing = len(unmatched_routeone_econtracts)
@@ -386,9 +387,11 @@ def main():
     # Build final export dict with month/year suffix
     suffix = f"({month_year})"
     
-    # For Route One Vault sheet, filter out Paper contracts (they should go to NOT RECONCILED)
+    # For Route One Vault sheet, filter out Paper contracts and ACC Complete No Retention
+    # Both should go to errors instead of reconciled
     routeone_vault_df = routeone_resolved_df.copy() if not routeone_resolved_df.empty else pd.DataFrame()
     routeone_paper_contracts = pd.DataFrame()
+    routeone_acc_no_retention = pd.DataFrame()
     
     if not routeone_vault_df.empty:
         # Check if column Q (17th column, index 16) exists (contract type column)
@@ -396,9 +399,56 @@ def main():
             # Separate paper contracts from reconciled records
             paper_mask = routeone_vault_df.iloc[:, 16] == 'Paper'
             routeone_paper_contracts = routeone_vault_df[paper_mask].copy()
-            # Keep only E-Contracts in the reconciled sheet
+            
+        # Check if column AG (33rd column, index 32) exists (Contract Status column)
+        if routeone_vault_df.shape[1] > 32:
+            # Separate ACC Complete No Retention contracts
+            acc_no_retention_mask = routeone_vault_df.iloc[:, 32].astype(str).str.contains('ACC Complete No Retention', case=False, na=False)
+            routeone_acc_no_retention = routeone_vault_df[acc_no_retention_mask & ~paper_mask].copy()
+            
+            # Keep only contracts that are not Paper and not ACC Complete No Retention
+            routeone_vault_df = routeone_vault_df[~paper_mask & ~acc_no_retention_mask].copy()
+        else:
+            # If Contract Status column doesn't exist, just filter Paper contracts
             routeone_vault_df = routeone_vault_df[~paper_mask].copy()
-            routeone_vault_df.reset_index(drop=True, inplace=True)
+            
+        routeone_vault_df.reset_index(drop=True, inplace=True)
+    
+    # For DT Vault sheet, filter out Paper contracts (they should go to DT Vault Errors)
+    dt_vault_df = dt_resolved_df.copy() if not dt_resolved_df.empty else pd.DataFrame()
+    dt_paper_contracts = pd.DataFrame()
+    
+    if not dt_vault_df.empty:
+        # Check if column Q (17th column, index 16) exists (X Contract Type column)
+        if dt_vault_df.shape[1] > 16:
+            # Separate paper contracts from reconciled records
+            paper_mask = dt_vault_df.iloc[:, 16] == 'Paper'
+            dt_paper_contracts = dt_vault_df[paper_mask].copy()
+            # Keep only E-Contracts in the reconciled sheet
+            dt_vault_df = dt_vault_df[~paper_mask].copy()
+            dt_vault_df.reset_index(drop=True, inplace=True)
+    
+    # Recalculate counts after filtering Paper contracts and ACC Complete No Retention
+    # Route One counts adjustment
+    if not routeone_paper_contracts.empty:
+        routeone_reconciled -= len(routeone_paper_contracts)
+        routeone_not_reconciled += len(routeone_paper_contracts)
+    
+    # ACC Complete No Retention contracts go to errors
+    if not routeone_acc_no_retention.empty:
+        routeone_reconciled -= len(routeone_acc_no_retention)
+        routeone_errors_count += len(routeone_acc_no_retention)
+    
+    # Recalculate Route One subtotal if any changes were made
+    if not routeone_paper_contracts.empty or not routeone_acc_no_retention.empty:
+        routeone_subtotal = routeone_reconciled + routeone_not_reconciled + routeone_missing + routeone_errors_count
+    
+    # DT counts adjustment - Paper contracts go to errors
+    if not dt_paper_contracts.empty:
+        dt_reconciled -= len(dt_paper_contracts)
+        dt_errors_count += len(dt_paper_contracts)
+        # Recalculate subtotal
+        dt_subtotal = dt_reconciled + dt_not_reconciled + dt_missing + dt_errors_count
     
     # Create structured NOT RECONCILED dataframes with sections
     # For DT Vault NOT RECONCILED - Always show both headers
@@ -701,14 +751,34 @@ def main():
     generic_columns = [f"Column_{i+1}" for i in range(max_cols)]
     routeone_not_reconciled_structured = pd.DataFrame(all_rows, columns=generic_columns)
     
+    # Combine Route One Paper contracts and ACC Complete No Retention with Route One errors
+    routeone_error_combined = routeone_error_df
+    if not routeone_paper_contracts.empty:
+        # Note: Paper contracts go to NOT RECONCILED, not errors, for Route One
+        pass  # Paper contracts are already handled in NOT RECONCILED section
+    if not routeone_acc_no_retention.empty:
+        # ACC Complete No Retention contracts go to errors
+        if not routeone_error_combined.empty:
+            routeone_error_combined = pd.concat([routeone_error_combined, routeone_acc_no_retention], ignore_index=True)
+        else:
+            routeone_error_combined = routeone_acc_no_retention
+    
+    # Combine DT Paper contracts with DT errors
+    dt_error_combined = dt_error_df
+    if not dt_paper_contracts.empty:
+        # Combine paper contracts with existing errors
+        if not dt_error_combined.empty:
+            dt_error_combined = pd.concat([dt_error_combined, dt_paper_contracts], ignore_index=True)
+        else:
+            dt_error_combined = dt_paper_contracts
     
     dfs_to_export = {
         f"Route One Vault {suffix}": routeone_vault_df,
         f"Route One Vault NOT RECONCILED {suffix}": routeone_not_reconciled_structured,
-        f"Route One Vault Errors {suffix}": routeone_error_df,
-        f"DT Vault {suffix}": dt_resolved_df,
+        f"Route One Vault Errors {suffix}": routeone_error_combined,  # Now includes ACC Complete No Retention
+        f"DT Vault {suffix}": dt_vault_df,  # Changed from dt_resolved_df to use filtered version
         f"DT Vault NOT RECONCILED {suffix}": dt_not_reconciled_structured,
-        f"DT Vault Errors {suffix}": dt_error_df,
+        f"DT Vault Errors {suffix}": dt_error_combined,  # Now includes Paper contracts
         f"{month_year} DL Paper contract Report": unmatched_paper_contracts,
     }
 
