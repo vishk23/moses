@@ -28,7 +28,12 @@ def main(production_flag: bool=False):
             '1st Choice Business Checking',
             'Business Checking',
             'Community Checking',
-            'IOLTA Checking'
+            'IOLTA Checking',
+            'Free Business Checking',
+            'Premium Business Checking',
+            'Investment Business Checking',
+            'Interest Business Checking',
+            'Specialty Business Checking'
         ]
     )].copy()
 

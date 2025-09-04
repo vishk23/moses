@@ -45,9 +45,9 @@ def grabData():
                         funding_report['source_sheet'] = sheet_name
 
                         filename_no_commas = filename.replace(",", "")
-                        filename_no_commas = filename.replace(".", "")
+                        filename_no_commas = filename_no_commas.replace(".", "")
 
-                        date_obj = datetime.strptime(filename_no_commas[:-5], "%B %d %Y")
+                        date_obj = datetime.strptime(filename_no_commas[:-4], "%B %d %Y")
                         formatted_date = date_obj.strftime("%m/%d/%Y")
 
                         funding_report['Funded Date'] = formatted_date
