@@ -33,3 +33,39 @@ PDSB
 SWPI
 NDSB
 
+# 2025-09-05
+
+I think it's just PDSB
+- for LOC advances
+
+
+WH_RTXN for the most recent month. That can be a tack on.
+- or we add trailing month worth of transactions. 
+
+Ok so
+
+WH_ACCTCOMMON
+- loan number
+- int rate
+- closing balance (net balance)
+
+WH_ACCTLOAN
+- currduedate (Next Installment Date)
+
+WH_RTXN (Trailing Month)
+- Amount disbursed this period
+- PDSB RTXNTYPCD
+- where RTXNSTATCD = 'C'
+
+
+WH_TOTALPAYMENTSDUE
+- Interest Payment
+- Principal Payment
+
+WH_LOANS
+- intpaidtodate
+- Interest Period To
+
+
+
+

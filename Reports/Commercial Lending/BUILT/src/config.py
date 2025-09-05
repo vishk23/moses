@@ -13,17 +13,17 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "SBA Loans"
-BUSINESS_LINE = "Credit/Loan Review - SBLC"
-SCHEDULE = "Monthly"
-OWNER = "Joan Medeiros"
+REPORT_NAME = "<Project Name>"
+BUSINESS_LINE = "<Business Line or Department>"
+SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
+OWNER = "<Project Owner or Team>"
 
 # Status
 PROD_READY = False
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')
-BASE_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Credit_Loan_Review\SBA_Loans") if ENV == 'prod' else Path(__file__).parent.parent
+BASE_PATH = Path(r"<\\network\path\to\production\folder>") if ENV == 'prod' else Path(__file__).parent.parent
 OUTPUT_DIR = BASE_PATH / "output"
 INPUT_DIR = BASE_PATH / "input"
 
