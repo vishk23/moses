@@ -1,11 +1,3 @@
-"""
-Fetching data module. Aim is import all necessary fields up front, but if needed, you can define another function to be called here.
-
-Usage:
-    import src.cdutils.database
-
-You need to set your own date that you want to see in effective date embedded in the SQL Query
-"""
 
 """
 Fetching data module. Aim is import all necessary fields up front, but if needed, you can define another function to be called here.
@@ -43,7 +35,7 @@ def _get_trailing_month_dates() -> Tuple[datetime.date, datetime.date]:
     return start_of_trailing_month, end_of_trailing_month
 
 
-def fetch_advances():
+def fetch_rtxn():
     """
     Main data query for WH_RTXN.
     
@@ -61,57 +53,38 @@ def fetch_advances():
     FROM
         COCCDM.WH_RTXN a
     WHERE
-        a.RTXNTYPCD = 'PDSB'
-        AND a.RTXNSTATCD = 'C'
+        a.RTXNSTATCD = 'C'
         AND a.RUNDATE BETWEEN TO_DATE(:start_date, 'YYYY-MM-DD') AND TO_DATE(:end_date, 'YYYY-MM-DD')
     """)
 
+    wh_rtxnbal = text("""
+    SELECT
+        a.*
+    FROM
+        COCCDM.WH_RTXNBAL a
+    WHERE
+        a.RUNDATE BETWEEN TO_DATE(:start_date, 'YYYY-MM-DD') AND TO_DATE(:end_date, 'YYYY-MM-DD')
+    """)
+
     queries = [
+        # {
+        #     'key': 'wh_rtxn',
+        #     'sql': wh_rtxn.bindparams(
+        #         start_date=start_date.strftime('%Y-%m-%d'),
+        #         end_date=end_date.strftime('%Y-%m-%d')
+        #     ),
+        #     'engine': 2
+        # },
         {
-            'key': 'wh_rtxn',
-            'sql': wh_rtxn.bindparams(
+            'key': 'wh_rtxnbal',
+            'sql': wh_rtxnbal.bindparams(
                 start_date=start_date.strftime('%Y-%m-%d'),
                 end_date=end_date.strftime('%Y-%m-%d')
             ),
             'engine': 2
-        },
-    ]
+        },    ]
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
 
 
-def fetch_payment_table():
-    """
-    Main data query for WH_TOTALPAYMENTSDUE.
-
-    Filters for data within the trailing month based on RUNDATE.
-    """
-    # Define start & end dates for the trailing month
-    start_date, end_date = _get_trailing_month_dates()
-    
-    # NOTE: Using bind parameters (:start_date, :end_date) is safer than f-strings.
-    wh_totalpaymentsdue = text("""
-    SELECT
-        a.*
-    FROM
-        COCCDM.WH_TOTALPAYMENTSDUE a
-    """)
-#    WHERE
-#        a.RUNDATE BETWEEN TO_DATE(:start_date, 'YYYY-MM-DD') AND TO_DATE(:end_date, 'YYYY-MM-DD')
-
-    queries = [
-        {
-            'key': 'wh_totalpaymentsdue',
-            'sql': wh_totalpaymentsdue,           ),
-            'engine': 2
-        },
-    ]
-
-# 'sql': wh_totalpaymentsdue.bindparams(
- #              start_date=start_date.strftime('%Y-%m-%d'),
- #               end_date=end_date.strftime('%Y-%m-%d')
-
-
-    data = cdutils.database.connect.retrieve_data(queries)
-    return data
