@@ -35,7 +35,7 @@ def _get_trailing_month_dates() -> Tuple[datetime.date, datetime.date]:
     return start_of_trailing_month, end_of_trailing_month
 
 
-def fetch_rtxn():
+def fetch_rtxnbal():
     """
     Main data query for WH_RTXN.
     
