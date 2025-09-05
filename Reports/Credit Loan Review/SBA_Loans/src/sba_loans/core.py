@@ -6,9 +6,9 @@ import src.sba_loans.fetch_data
 
 def main_report_creation():
     # Get Lakehouse tables
-    df = DeltaTable(src.config.SILVER / "account").to_pandas()
-    wh_acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan").to_pandas()
-    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans").to_pandas()
+    df = DeltaTable(src.config.SILVER / "account", version=8).to_pandas()
+    wh_acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan", version=4).to_pandas()
+    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans", version=4).to_pandas()
 
     # Filter to SBA loans and select relevant columns
     df = df[df['product'].str.contains('SBA', case=False, na=False)].copy()
@@ -72,6 +72,8 @@ def main_report_creation():
         'INT': 'Interest Paid'
     })
     df_payments['acctnbr'] = df_payments['acctnbr'].astype(str)
+    df_payments['Principal Paid'] = df_payments['Principal Paid'] * -1
+    df_payments['Interest Paid'] = df_payments['Interest Paid'] * -1
 
     # Ensure the key in the main DataFrame is also a string
     merged_df['acctnbr'] = merged_df['acctnbr'].astype(str)

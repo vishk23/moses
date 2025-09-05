@@ -19,7 +19,7 @@ SCHEDULE = "Monthly"
 OWNER = "Joan Medeiros"
 
 # Status
-PROD_READY = False
+PROD_READY = True 
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')

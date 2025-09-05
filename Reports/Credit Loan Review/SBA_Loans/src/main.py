@@ -6,7 +6,7 @@ Replace this docstring with a description of your project's purpose and logic.
 
 import src.config
 import src._version
-import sba_loans.core
+import src.sba_loans.core
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -16,10 +16,13 @@ def main():
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
 
-    df = sba_loans.core
+    df = src.sba_loans.core.main_report_creation()
 
     OUTPUT_PATH = src.config.OUTPUT_DIR / "SBA_Loans.xlsx"
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    df.to_excel(OUTPUT_PATH, index=False)
+    print("Complete!")
 
 if __name__ == "__main__":
     main()
