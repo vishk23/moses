@@ -7,6 +7,7 @@ Replace this docstring with a description of your project's purpose and logic.
 import src.config
 import src._version
 import src.sba_loans.core
+import src.sba_loans.output_to_excel
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -22,6 +23,7 @@ def main():
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     df.to_excel(OUTPUT_PATH, index=False)
+    src.sba_loans.output_to_excel.export_df_to_excel(final_df, OUTPUT_PATH)
     print("Complete!")
 
 if __name__ == "__main__":
