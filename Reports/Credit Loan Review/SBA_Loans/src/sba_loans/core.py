@@ -6,9 +6,9 @@ import src.sba_loans.fetch_data
 
 def main_report_creation():
     # Get Lakehouse tables
-    df = DeltaTable(src.config.SILVER / "account", version=8).to_pandas()
-    wh_acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan", version=4).to_pandas()
-    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans", version=4).to_pandas()
+    df = DeltaTable(src.config.SILVER / "account").to_pandas()
+    wh_acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan").to_pandas()
+    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans").to_pandas()
 
     # Filter to SBA loans and select relevant columns
     df = df[df['product'].str.contains('SBA', case=False, na=False)].copy()

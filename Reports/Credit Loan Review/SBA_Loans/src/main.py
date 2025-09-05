@@ -23,7 +23,7 @@ def main():
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     df.to_excel(OUTPUT_PATH, index=False)
-    src.sba_loans.output_to_excel.export_df_to_excel(final_df, OUTPUT_PATH)
+    src.sba_loans.output_to_excel.export_df_to_excel(df, OUTPUT_PATH)
     print("Complete!")
 
 if __name__ == "__main__":
