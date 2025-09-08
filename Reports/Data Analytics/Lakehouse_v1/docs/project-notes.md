@@ -1,3 +1,5 @@
+
+
 # 2025-08-25
 
 building off previous system of golden parquet file, just use the delta lake architecture to be the standard layer to store data. Much better with obj storage with ACID transaction support and time travel.
@@ -664,3 +666,17 @@ Successfully wrote property data
 Starting property ...
 2025-08-28 16:32:40 | INFO | BATCH COMPLETE | Total: 1 | Successful: 0 | Failed: 1 | Batch Runtime: 15.08 minutes
 2025-08-28 16:32:40 | INFO | === REPORT RUNNER SESSION END ===
+
+
+# 2025-09-07
+Noticed that fields are being weird when converted directly from oracle DB to parquet. An example is my bronze table. I noticed looking at my noteintrate field on wh_acctcommon
+
+TODO:
+- [ ] Fix datatypes in DeltaTables
+    - noteintrate and certain other fields come out weird without running through a numeric test or something. I think they are objects by default
+    - vishnu might already have solution to this
+
+Or we can just handle. Might be better pattern to read in as is, no manipulations. From there, when building silver and gold tables, we transform and get them ready for use. Data cleaning stage.
+
+
+

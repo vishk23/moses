@@ -165,13 +165,33 @@ def generate_bronze_tables():
 
     # WH_RTXN (OSIBANK) ======================== 
     WH_RTXN_PATH = src.config.BRONZE / "wh_rtxn"
+    WH_RTXNBAL_PATH = src.config.BRONZE / "wh_rtxnbal"
     WH_RTXN_PATH.mkdir(parents=True, exist_ok=True)
+    WH_RTXNBAL_PATH.mkdir(parents=True, exist_ok=True)
 
     data = src.bronze.fetch_data.fetch_rtxn()
     wh_rtxn = data['wh_rtxn'].copy()
+    wh_rtxnbal = data['wh_rtxnbal'].copy()
 
     wh_rtxn = cast_all_null_columns_to_string(wh_rtxn)
+    wh_rtxnbal = cast_all_null_columns_to_string(wh_rtxnbal)
 
     wh_rtxn = add_load_timestamp(wh_rtxn)
+    wh_rtxnbal = add_load_timestamp(wh_rtxnbal)
 
     write_deltalake(WH_RTXN_PATH, wh_rtxn, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_RTXNBAL_PATH, wh_rtxnbal, mode='overwrite', schema_mode='merge')
+
+    # WH_ACCTUSERFIELDS (OSIBANK) ======================== 
+    WH_ACCTUSERFIELDS_PATH = src.config.BRONZE / "wh_acctuserfields"
+    WH_ACCTUSERFIELDS_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_userfields()
+    wh_acctuserfields = data['wh_acctuserfields'].copy()
+
+    wh_acctuserfields = cast_all_null_columns_to_string(wh_acctuserfields)
+
+    wh_acctuserfields = add_load_timestamp(wh_acctuserfields)
+
+    write_deltalake(WH_ACCTUSERFIELDS_PATH, wh_acctuserfields, mode='overwrite', schema_mode='merge')
+
