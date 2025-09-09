@@ -1,0 +1,13 @@
+Links:
+https://clientexperience.getbuilt.com/project-updates
+
+# 2025-09-04
+
+Kickoff meeting with everyone
+
+
+From hasan
+```
+FYI, just so we are on the same page – Tim and I discussed not having all construction loans roll into BUILT.  We will set thresholds for loan that exceed a certain dollar figure.  It could be $1MM or $2MM – I need to review the construction loan portfolio.  We don’t want smaller less complex loans in Built and eat up our CUCV (amount we can put into Built for free).  When the time comes to provide the loan data, I just want to make sure we don’t give them all construction loans.
+```
+

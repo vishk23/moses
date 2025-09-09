@@ -22,20 +22,7 @@ def main(production_flag: bool=False):
 
     acctcommon = acctcommon[~acctcommon['taxrptfororgnbr'].isnull()]
 
-    acctcommon = acctcommon[acctcommon['product'].isin(
-        [
-            'Simple Business Checking',
-            '1st Choice Business Checking',
-            'Business Checking',
-            'Community Checking',
-            'IOLTA Checking',
-            'Free Business Checking',
-            'Premium Business Checking',
-            'Investment Business Checking',
-            'Interest Business Checking',
-            'Specialty Business Checking'
-        ]
-    )].copy()
+    acctcommon = (acctcommon['product'].str.contains('Business',case=False, na=False)) | (acctcommon['product'].str.contains('IOLTA',case=False,na=False)) | (acctcommon['product'].str.contains('Community',case=False,na=False)) | (acctcommon['product'].str.contains('Commercial',case=False,na=False)) | (acctcommon['product'].str.contains('BCSB Internal Holdback Savings',case=False,na=False))
 
     df = acctcommon.copy()
     FILE_PATH = BASE_PATH / Path('./Output/business_deposits_tin_raw_data.xlsx')

@@ -263,3 +263,52 @@ def fetch_addruse_tables():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+def fetch_rtxn():
+    """
+    Main data query
+    """
+
+    wh_rtxn = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_RTXN a
+    """)
+
+    wh_rtxnbal = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_RTXNBAL a
+    """)
+
+    queries = [
+        {'key':'wh_rtxn', 'sql':wh_rtxn, 'engine':1},
+        {'key':'wh_rtxnbal', 'sql':wh_rtxnbal, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+def fetch_userfields():
+    """
+    Main data query
+    """
+
+    wh_acctuserfields = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ACCTUSERFIELDS a
+    """)
+
+
+    queries = [
+        {'key':'wh_acctuserfields', 'sql':wh_acctuserfields, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
