@@ -28,8 +28,11 @@ def main_report_creation():
     # Select and rename relevant columns from wh_acctloan
     wh_acctloan = wh_acctloan[[
         'acctnbr',
-        'currduedate'
+        'currduedate',
+        'sbaacctnbr'
     ]].copy()
+    wh_acctloan['sbaacctnbr'] = wh_acctloan['sbaacctnbr'].astype(str)
+    
     wh_acctloan = wh_acctloan.rename(columns={
         'currduedate': 'Next Installment Due Date (MM/DD/YYYY)'
     }).copy()
@@ -88,7 +91,8 @@ def main_report_creation():
         'acctnbr': 'SBA Loan Number',
         'Advances': 'Amount Disbursed This Period',
         'Interest Paid': 'Interest Payment',
-        'Principal Paid': 'Principal Payment'
+        'Principal Paid': 'Principal Payment',
+        'sbaacctnbr':'SBA Guarantee Account Number'
     }).copy()
     final_df = final_df[[
         'SBA Loan Number',
@@ -101,7 +105,8 @@ def main_report_creation():
         'Closing Balance',
         'product',
         'ownersortname',
-        'curracctstatcd'
+        'curracctstatcd',
+        'SBA Guarantee Account Number'
     ]].copy()
 
     return final_df
