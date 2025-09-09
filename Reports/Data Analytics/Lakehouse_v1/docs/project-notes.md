@@ -680,3 +680,10 @@ Or we can just handle. Might be better pattern to read in as is, no manipulation
 
 
 
+# 2025-09-09
+
+We shouldn't be reading anything from bronze for reporting. I can as one off, but I'll have to go back and fix. I think it makes more sense to really build all the things you'd need from silver tables and then create gold tables from there too.
+- this will be the overarching structure that will eat the old repository structure slowly.
+
+Somethings will be lightweight and sit outside of that. Or maybe not. Maybe it all goes in there.
+
