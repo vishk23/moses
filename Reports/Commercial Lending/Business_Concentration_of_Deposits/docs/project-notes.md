@@ -889,7 +889,444 @@ print("Complete!")
 # %%
 
 
+----
+
+Fixed code:
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import pandas as pd
+import numpy as np
+
+def create_account_summary_alternative(xaa_data, date_col='Cycle End Date', target_previous_month=None):
+    """
+    Summarizes XAA data for the target month and trailing 12 months.
+
+    This version corrects the aggregation logic by first creating boolean mask columns
+    and then applying simple, efficient aggregations.
+    """
+    # 1. Prepare the DataFrame and Date Logic
+    df = xaa_data.copy()
+    df[date_col] = pd.to_datetime(df[date_col])
+    
+    # Determine the target month (previous full month)
+    if target_previous_month is None:
+        # Find the second most recent month-period in the data
+        periods = sorted(df[date_col].dt.to_period('M').unique(), reverse=True)
+        if len(periods) < 2:
+            # Fallback to the most recent month if only one month of data exists
+            target_period = periods[0] if periods else pd.Period.now(freq='M') - 1
+        else:
+            target_period = periods[1]
+    else:
+        target_period = pd.Period(target_previous_month, freq='M')
+    
+    # 2. Create Boolean Mask Columns (The Core Fix)
+    # This is the key change: add the boolean masks as columns to the DataFrame itself.
+    df['is_target_month'] = (df[date_col].dt.to_period('M') == target_period)
+    
+    target_end_date = target_period.to_timestamp(how='end')
+    # The start of the 12-month window is 11 months before the target month
+    cutoff_date = target_end_date - relativedelta(months=11)
+    cutoff_date = cutoff_date.replace(day=1) # Start of that month
+    df['is_trailing_12m'] = (df[date_col] >= cutoff_date) & (df[date_col] <= target_end_date)
+    
+    # 3. Create Conditional Value Columns for Aggregation
+    # Use .where() to nullify values that don't meet the condition.
+    # Aggregation functions like .sum() and .mean() will then ignore these nulls.
+    for col in ['Analyzed Charges', 'Combined Result for Settlement Period', 'Earnings Credit Rate']:
+        df[f'target_{col}'] = df[col].where(df['is_target_month'])
+        df[f'trailing_{col}'] = df[col].where(df['is_trailing_12m'])
+
+    # 4. Perform a Simple, Efficient Aggregation
+    summary = (df
+            .groupby('Debit Account Number')
+            .agg({
+                # Sum the conditional value columns
+                'target_Analyzed Charges': 'sum',
+                'trailing_Analyzed Charges': 'sum',
+                'target_Combined Result for Settlement Period': 'sum',
+                'trailing_Combined Result for Settlement Period': 'sum',
+                
+                # Average the conditional value columns
+                'target_Earnings Credit Rate': 'mean',
+                'trailing_Earnings Credit Rate': 'mean',
+                
+                # Get the first officer name for the group
+                'Primary Officer Name': 'first',
+                'Secondary Officer Name': 'first',
+                'Treasury Officer Name': 'first'
+            })
+            .reset_index())
+    
+    # 5. Flatten and Rename Column Names
+    summary = summary.rename(columns={
+        'Debit Account Number': 'Debit Account Number',
+        'target_Analyzed Charges': 'Latest_Month_Analyzed_Charges',
+        'trailing_Analyzed Charges': 'Trailing_12M_Analyzed_Charges',
+        'target_Combined Result for Settlement Period': 'Latest_Month_Combined_Result',
+        'trailing_Combined Result for Settlement Period': 'Trailing_12M_Combined_Result',
+        'target_Earnings Credit Rate': 'Latest_Month_ECR',
+        'trailing_Earnings Credit Rate': 'Trailing_12M_Avg_ECR',
+        'Primary Officer Name': 'Primary_Officer_Name_XAA',
+        'Secondary Officer Name': 'Secondary_Officer_Name_XAA',
+        'Treasury Officer Name': 'Treasury_Officer_Name_XAA'
+    })
+    
+    # Reorder columns to match the desired output
+    column_order = [
+        'Debit Account Number',
+        'Latest_Month_Analyzed_Charges',
+        'Latest_Month_Combined_Result',
+        'Trailing_12M_Analyzed_Charges',
+        'Trailing_12M_Combined_Result',
+        'Latest_Month_ECR',
+        'Trailing_12M_Avg_ECR',
+        'Primary_Officer_Name_XAA',
+        'Secondary_Officer_Name_XAA',
+        'Treasury_Officer_Name_XAA'
+    ]
+    return summary[column_order]
+
+# You can now call your function as before, and it will work correctly.
+# Make sure your main script runs this corrected version.
+summarized_xaa = create_account_summary_alternative(xaa_data, date_col='Cycle End Date')
 
 
 
+----
+
+Fixed #2:
+
+# %%
+import os
+import sys
+from pathlib import Path
+
+# Navigate to project root (equivalent to cd ..)
+project_dir = Path(__file__).parent.parent if '__file__' in globals() else Path.cwd().parent
+os.chdir(project_dir)
+
+# Add src directory to Python path for imports
+src_dir = project_dir / "src"
+if str(src_dir) not in sys.path:
+    sys.path.insert(0, str(src_dir))
+
+# Set environment for dev testing
+os.environ['REPORT_ENV'] = 'dev'
+
+# %%
+
+"""
+Main Entry Point
+"""
+from pathlib import Path
+
+import pandas as pd  # type: ignore
+
+import cdutils.pkey_sqlite  # type: ignore
+import cdutils.filtering  # type: ignore
+import cdutils.input_cleansing  # type: ignore
+import cdutils.cmo_append  # type: ignore
+import src.add_fields
+import src.core_transform
+import src.output_to_excel
+from src._version import __version__
+import src.output_to_excel_multiple_sheets
+import cdutils.distribution  # type: ignore
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+# Ensure BASE_PATH for output
+try:
+    BASE_PATH
+except NameError:
+    BASE_PATH = Path('.')
+(BASE_PATH / "output").mkdir(parents=True, exist_ok=True)
+
+# %%
+
+# Get staging data from the daily deposit update. View dev section of documentation for more detail
+INPUT_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily_Deposit_Update\Production\output\DailyDeposit_staging.xlsx")
+data = pd.read_excel(INPUT_PATH)
+
+# Add portfolio key
+data = cdutils.pkey_sqlite.add_pkey(data)
+
+# Add int rate
+data = src.add_fields.add_noteintrate(data)
+
+# Custom list of minors (Business Deposits)
+minors = [
+    'CK24',  # 1st Business Checking
+    'CK12',  # Business Checking
+    'CK25',  # Simple Business Checking
+    'CK30',  # Business Elite Money Market
+    'CK19',  # Business Money Market
+    'CK22',  # Business Premium Plus MoneyMkt
+    'CK23',  # Premium Business Checking
+    'CK40',  # Community Assoc Reserve
+    'CD67',  # Commercial Negotiated Rate
+    'CD01',  # 1 Month Business CD
+    'CD07',  # 3 Month Business CD
+    'CD17',  # 6 Month Business CD
+    'CD31',  # 1 Year Business CD
+    'CD35',  # 1 Year Business CD
+    'CD37',  # 18 Month Business CD
+    'CD38',  # 2 Year Business CD
+    'CD50',  # 3 Year Business CD
+    'CD53',  # 4 Year Business CD
+    'CD59',  # 5 Year Business CD
+    'CD76',  # 9 Month Business CD
+    'CD84',  # 15 Month Business CD
+    'CD95',  # Business <12 Month Simple CD
+    'CD96',  # Business >12 Month Simple CD
+    'CK28',  # Investment Business Checking
+    'CK33',  # Specialty Business Checking
+    'CK34',  # ICS Shadow - Business - Demand
+    'SV06',  # Business Select High Yield
+    'CK13',
+    'CK15',
+    'CK41'
+]
+
+# Filter to only business deposit accounts
+data = cdutils.filtering.filter_to_business_deposits(data, minors)
+
+# Add CMO
+data = cdutils.cmo_append.append_cmo(data)
+
+data_schema = {
+    'noteintrate': float
+}
+data = cdutils.input_cleansing.enforce_schema(data, data_schema).copy()
+
+# Exclude BCSB internal accounts
+data = data[~data['ownersortname'].str.contains('BRISTOL COUNTY SAVINGS', case=False, na=False)].copy()
+
+# %%
+
+# Load XAA CSV from ./assets (expect exactly one .csv file)
+ASSETS_PATH = Path('./assets')
+files = [f for f in ASSETS_PATH.iterdir() if f.is_file()]
+assert len(files) == 1, f"Expected exactly 1 file in {ASSETS_PATH}, found {len(files)}."
+file = files[0]
+assert file.suffix == '.csv', f"Expected a csv file"
+xaa_data = pd.read_csv(file)
+
+# Ensure proper datetime on Cycle End Date
+xaa_data['Cycle End Date'] = pd.to_datetime(xaa_data['Cycle End Date'])
+
+# Normalize XAA column names used later
+xaa_data = xaa_data.rename(columns={
+    'Analyzed Charges (Pre-ECR)': 'Analyzed Charges',
+    'Combined Result for Settlement Period (Post-ECR)': 'Combined Result for Settlement Period'
+})
+
+# Fix CSV formatting of float fields if they came in as strings with $ or commas
+for col in ['Analyzed Charges', 'Combined Result for Settlement Period']:
+    if col in xaa_data.columns and xaa_data[col].dtype == 'O':
+        xaa_data[col] = xaa_data[col].str.replace(r'[$,]', '', regex=True)
+
+xaa_schema = {
+    'Analyzed Charges': 'float',
+    'Combined Result for Settlement Period': 'float',
+    'Earnings Credit Rate': 'float',
+    'Debit Account Number': 'str'
+}
+xaa_data = cdutils.input_cleansing.enforce_schema(xaa_data, xaa_schema)
+
+# %%
+
+# ---------- Summarizer that matches your rules ----------
+from typing import Optional, Union
+
+def summarize_xaa_for_latest_and_ttm(
+    xaa_df: pd.DataFrame,
+    *,
+    date_col: str = "Cycle End Date",
+    account_col: str = "Debit Account Number",
+    charges_col: str = "Analyzed Charges",
+    result_col: str = "Combined Result for Settlement Period",
+    ecr_col: str = "Earnings Credit Rate",
+    target_month: Optional[Union[str, pd.Period, pd.Timestamp]] = None,
+    today: Optional[pd.Timestamp] = None,
+) -> pd.DataFrame:
+    """
+    Build per-account summary using:
+      - Latest month: previous month-end on/before 'today', unless 'target_month' is provided (e.g. '2025-08' -> 2025-08-31)
+      - Trailing 12 months: dates within [today - 12 months, today], inclusive
+
+    Returns one row per account with:
+      account_col,
+      Latest_Month_Analyzed_Charges, Latest_Month_Combined_Result, Latest_Month_ECR,
+      Trailing_12M_Analyzed_Charges, Trailing_12M_Combined_Result, Trailing_12M_Avg_ECR,
+      Primary_Officer_Name_XAA, Secondary_Officer_Name_XAA, Treasury_Officer_Name_XAA
+    """
+    df = xaa_df.copy()
+    df[date_col] = pd.to_datetime(df[date_col]).dt.normalize()
+    if today is None:
+        today = pd.Timestamp.today().normalize()
+
+    # Determine target month-end date
+    if target_month is not None:
+        if isinstance(target_month, pd.Timestamp):
+            target_period = target_month.to_period("M")
+        elif isinstance(target_month, pd.Period):
+            target_period = target_month.asfreq("M")
+        else:
+            target_period = pd.Period(str(target_month), freq="M")
+        target_eom = target_period.to_timestamp(how="end").normalize()
+    else:
+        # Most recent end-of-month on or before 'today'
+        target_eom = today if today.is_month_end else (today - pd.offsets.MonthEnd(1)).normalize()
+
+    # Masks
+    target_mask = df[date_col].eq(target_eom)
+    ttm_start = (today - relativedelta(months=12)).normalize()
+    trailing_mask = (df[date_col] >= ttm_start) & (df[date_col] <= today)
+
+    # Coerce numerics robustly
+    def _coerce_numeric(s: pd.Series) -> pd.Series:
+        if s.dtype == "O":
+            s = (s.astype(str)
+                   .str.replace(r"[$,]", "", regex=True)
+                   .replace({"": None}))
+        return pd.to_numeric(s, errors="coerce")
+
+    for col in (charges_col, result_col, ecr_col):
+        if col in df.columns:
+            df[col] = _coerce_numeric(df[col])
+
+    # Officer names per account
+    base = (df.groupby(account_col, as_index=False)
+              .agg(Primary_Officer_Name_XAA=("Primary Officer Name", "first"),
+                   Secondary_Officer_Name_XAA=("Secondary Officer Name", "first"),
+                   Treasury_Officer_Name_XAA=("Treasury Officer Name", "first")))
+
+    # Target month
+    target = (df.loc[target_mask]
+                .groupby(account_col, as_index=False)
+                .agg(Latest_Month_Analyzed_Charges=(charges_col, "sum"),
+                     Latest_Month_Combined_Result=(result_col, "sum"),
+                     Latest_Month_ECR=(ecr_col, "mean")))
+
+    # Trailing 12 months
+    trailing = (df.loc[trailing_mask]
+                  .groupby(account_col, as_index=False)
+                  .agg(Trailing_12M_Analyzed_Charges=(charges_col, "sum"),
+                       Trailing_12M_Combined_Result=(result_col, "sum"),
+                       Trailing_12M_Avg_ECR=(ecr_col, "mean")))
+
+    out = (base
+           .merge(target, on=account_col, how="left")
+           .merge(trailing, on=account_col, how="left"))
+
+    # Fill NaNs
+    for c in ["Latest_Month_Analyzed_Charges",
+              "Latest_Month_Combined_Result",
+              "Trailing_12M_Analyzed_Charges",
+              "Trailing_12M_Combined_Result",
+              "Latest_Month_ECR",
+              "Trailing_12M_Avg_ECR"]:
+        if c in out.columns:
+            out[c] = out[c].fillna(0.0)
+
+    # Order
+    cols = [
+        account_col,
+        "Latest_Month_Analyzed_Charges",
+        "Latest_Month_Combined_Result",
+        "Trailing_12M_Analyzed_Charges",
+        "Trailing_12M_Combined_Result",
+        "Latest_Month_ECR",
+        "Trailing_12M_Avg_ECR",
+        "Primary_Officer_Name_XAA",
+        "Secondary_Officer_Name_XAA",
+        "Treasury_Officer_Name_XAA",
+    ]
+    return out[[c for c in cols if c in out.columns]].copy()
+
+# -------- Use the summarizer (defaults to previous month-end relative to today) --------
+summarized_xaa = summarize_xaa_for_latest_and_ttm(
+    xaa_data,
+    date_col='Cycle End Date',
+    # target_month="2025-08",  # <- optionally pass to force August 2025 (matches 2025-08-31)
+)
+
+# Enforce schema for officer name columns
+summarized_xaa_schema = {
+    'Primary_Officer_Name_XAA': 'str',
+    'Secondary_Officer_Name_XAA': 'str',
+    'Treasury_Officer_Name_XAA': 'str'
+}
+summarized_xaa = cdutils.input_cleansing.enforce_schema(summarized_xaa, summarized_xaa_schema)
+
+# Prepare for merge
+summarized_xaa = summarized_xaa.rename(columns={'Debit Account Number': 'acctnbr'}).copy()
+assert summarized_xaa['acctnbr'].is_unique, "Duplicates in summarized XAA per account."
+
+# Merge with main data
+merged_data = pd.merge(data, summarized_xaa, on='acctnbr', how='left')
+
+# Fill numeric NaNs post-merge
+for item in [
+    'Latest_Month_Analyzed_Charges',
+    'Latest_Month_Combined_Result',
+    'Trailing_12M_Analyzed_Charges',
+    'Trailing_12M_Combined_Result',
+    'Latest_Month_ECR',
+    'Trailing_12M_Avg_ECR',
+]:
+    if item in merged_data.columns:
+        merged_data[item] = merged_data[item].fillna(0.0)
+
+# Sort descending order of notebal
+if 'notebal' in merged_data.columns:
+    merged_data = merged_data.sort_values(by='notebal', ascending=False)
+
+# %%
+
+# Downstream core transform
+formatted_data = src.core_transform.main_pipeline(merged_data)
+
+# Standardize friendly column names
+formatted_data = formatted_data.rename(columns={
+    'portfolio_key': 'Portfolio Key',
+    'product': 'Product',
+    '3Mo_AvgBal': '3Mo Avg Bal',
+    'TTM_AvgBal': 'TTM Avg Bal',
+    'TTM_DAYS_OVERDRAWN': 'TTM Days Overdrawn',
+    'TTM_NSF_COUNT': 'TTM NSF Count'
+}).copy()
+
+# Create summary sheet
+summary_data = formatted_data[~(formatted_data['Portfolio Key'] == "") & (formatted_data['Acct No.'] == "")].copy()
+summary_data = summary_data[[
+    'Portfolio Key',
+    'Borrower Name',
+    'Account Officer',
+    'Cash Management Officer',
+    'Current Balance',
+    'Interest Rate',
+    '3Mo Avg Bal',
+    'TTM Avg Bal',
+    'Year Ago Balance',
+    'TTM Days Overdrawn',
+    'TTM NSF Count',
+    'Current Mo Analyzed Fees (Pre-ECR)',
+    'Current Mo Net Analyzed Fees (Post-ECR)',
+    'TTM Analyzed Fees (Pre-ECR)',
+    'TTM Net Analyzed Fees (Post-ECR)',
+    'Current ECR'
+]].copy()
+
+# Output to excel
+OUTPUT_PATH = BASE_PATH / Path('./output/business_deposits_concentration_with_xaa.xlsx')
+with pd.ExcelWriter(OUTPUT_PATH, engine="openpyxl") as writer:
+    formatted_data.to_excel(writer, sheet_name='Relationship Detail', index=False)
+    summary_data.to_excel(writer, sheet_name='Relationship Summary', index=False)
+    merged_data.to_excel(writer, sheet_name='Unformatted', index=False)
+
+# Format excel
+src.output_to_excel_multiple_sheets.format_excel_file(OUTPUT_PATH)
 
