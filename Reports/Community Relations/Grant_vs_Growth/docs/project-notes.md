@@ -198,3 +198,27 @@ df['Region'] = df['Branch'].map(region_map).fillna(
     np.where(df['Branch'].str.contains(r'Warwick|Providence|Pawtucket|Cumberland|Greenville|FNB-RI', case=False), 'Rhode Island',
     np.where(df['Branch'].str.contains(r'Fall River|Dartmouth|East Freetown|New Bedford|Candleworks|Ashley Blvd', case=False), 'South Coast',
     np.where(df['Branch'].str.contains(r'Attleboro|Franklin|Raynham|Taunton|Rehoboth|County Street|Main Office', case=False), 'Attleboro/Taunton', 'Other'))))
+
+
+--- fix typeerror
+import pandas as pd
+import numpy as np
+
+# Assume you already have: region_map (dict) and df['Branch'] exists
+s = df['Branch']
+
+# 1) Exact-name mapping first
+region = s.map(region_map)
+
+# 2) Regex-based geographic fallback as a Series
+ri = s.str.contains(r'Warwick|Providence|Pawtucket|Cumberland|Greenville|FNB-RI', case=False, na=False)
+sc = s.str.contains(r'Fall River|Dartmouth|East Freetown|New Bedford|Candleworks|Ashley Blvd', case=False, na=False)
+at = s.str.contains(r'Attleboro|Franklin|Raynham|Taunton|Rehoboth|County Street|Main Office', case=False, na=False)
+
+fallback = pd.Series(
+    np.select([ri, sc, at], ['Rhode Island', 'South Coast', 'Attleboro/Taunton'], default='Other'),
+    index=df.index
+)
+
+# 3) Fill unmapped with the Series (allowed), not an ndarray
+df['Region'] = region.fillna(fallback)
