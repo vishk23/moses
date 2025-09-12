@@ -298,3 +298,45 @@ fallback = pd.Series(
 
 # 3) Fill unmapped with the Series (allowed), not an ndarray
 df['Region'] = region.fillna(fallback)
+
+
+----
+Grant
+,2022,2023,2024
+Attleboro/Taunton," $858,427.68 "," $776,439.66 "," $901,899.80 "
+SouthCoast," $1,127,038.61 "," $950,260.36 "," $1,141,995.00 "
+Rhode Island," $314,615.00 "," $356,715.00 "," $579,957.00 "
+Other," $122,500.00 "," $65,800.00 "," $235,265.00 "
+
+
+2020:
+Region Account Type  NetBalance_sum
+0  Attleboro/Taunton      Deposit    1.688611e+09
+1  Attleboro/Taunton         Loan    1.412844e+09
+2              Other         Loan    1.337390e+07
+3       Rhode Island      Deposit    2.248410e+08
+4       Rhode Island         Loan    4.709164e+08
+5        South Coast      Deposit    6.555967e+08
+6        South Coast         Loan    6.455994e+08
+
+2021:
+Region Account Type  NetBalance_sum
+0  Attleboro/Taunton      Deposit    1.688611e+09
+1  Attleboro/Taunton         Loan    1.412844e+09
+2              Other         Loan    1.337390e+07
+3       Rhode Island      Deposit    2.248410e+08
+4       Rhode Island         Loan    4.709164e+08
+5        South Coast      Deposit    6.555967e+08
+6        South Coast         Loan    6.455994e+08
+
+2022:
+Same as above
+
+2023:
+Same as above
+
+2024:
+Same as above
+
+
+
