@@ -150,6 +150,7 @@ region_map = {
     'BCSB - TAUNTON HIGH SCHOOL': 'Attleboro/Taunton',
     'BCSB - MUNI ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
     'BCSB - ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
+    'BCSB - INDIRECT LENDING': 'Attleboro/Taunton'
 
     # ——— South Coast ———
     'BCSB - MUNI FALL RIVER BRANCH': 'South Coast',
@@ -189,12 +190,83 @@ region_map = {
     # ——— Other ———
     'BCSB - RESIDENTIAL MTG - CAPE COD': 'Other',
     # Operational catch-alls (if any are left unmapped in future, they'll fall to 'Other' via the fillna below)
-    'BCSB - INDIRECT LENDING': 'Attleboro/Taunton',  # operational; per your note, treat like Taunton
 }
 
 # Create the Region column from the mapping
 import numpy as np
-df['Region'] = df['Branch'].map(region_map).fillna(
-    np.where(df['Branch'].str.contains(r'Warwick|Providence|Pawtucket|Cumberland|Greenville|FNB-RI', case=False), 'Rhode Island',
-    np.where(df['Branch'].str.contains(r'Fall River|Dartmouth|East Freetown|New Bedford|Candleworks|Ashley Blvd', case=False), 'South Coast',
-    np.where(df['Branch'].str.contains(r'Attleboro|Franklin|Raynham|Taunton|Rehoboth|County Street|Main Office', case=False), 'Attleboro/Taunton', 'Other'))))
+df['Region'] = df['branchname'].map(region_map).fillna(
+    np.where(df['branchname'].str.contains(r'Warwick|Providence|Pawtucket|Cumberland|Greenville|FNB-RI', case=False), 'Rhode Island',
+    np.where(df['branchname'].str.contains(r'Fall River|Dartmouth|East Freetown|New Bedford|Candleworks|Ashley Blvd', case=False), 'South Coast',
+    np.where(df['branchname'].str.contains(r'Attleboro|Franklin|Raynham|Taunton|Rehoboth|County Street|Main Office', case=False), 'Attleboro/Taunton', 'Other'))))
+
+
+# ——— Attleboro/Taunton ———
+- 'BCSB - MUNI MAIN OFFICE': 'Attleboro/Taunton',
+- 'BCSB - MAIN OFFICE': 'Attleboro/Taunton',
+- "BCSB - COMM'L LENDING- TAUNTON": 'Attleboro/Taunton',
+- 'BCSB - MUNI ATTLEBORO BRANCH': 'Attleboro/Taunton',
+- 'BCSB - DEPOSIT OPERATIONS': 'Attleboro/Taunton',
+- 'BCSB - NO ATTLEBORO BRANCH': 'Attleboro/Taunton',
+- 'BRISTOL COUNTY SAVINGS BANK': 'Attleboro/Taunton',
+- "BCSB - COMM'L LENDING - ATTLEBORO": 'Attleboro/Taunton',
+- 'BCSB - BEACON SECURITY CORP': 'Attleboro/Taunton',
+- 'BCSB - ATTLEBORO BRANCH': 'Attleboro/Taunton',
+- 'BCSB - MUNI COUNTY STREET BRANCH': 'Attleboro/Taunton',
+- 'BCSB - REHOBOTH BRANCH': 'Attleboro/Taunton',
+- 'BCSB - MUNI REHOBOTH BRANCH': 'Attleboro/Taunton',
+- 'BCSB - MUNI NO ATTLEBORO BRANCH': 'Attleboro/Taunton',
+- 'BCSB - MUNI RAYNHAM CENTER BRANCH': 'Attleboro/Taunton',
+- 'BCSB - COUNTY STREET BRANCH': 'Attleboro/Taunton',
+- 'BCSB - NORTH RAYNHAM BRANCH': 'Attleboro/Taunton',
+- 'BCSB - RAYNHAM CENTER BRANCH': 'Attleboro/Taunton',
+- "BCSB - COMM'L LENDING - FRANKLIN": 'Attleboro/Taunton',
+- 'BCSB - FRANKLIN BRANCH': 'Attleboro/Taunton',
+- 'BCSB - CONS INST LENDING- TAUNTON': 'Attleboro/Taunton',
+- 'BCSB - RESIDENTIAL MTG - ATTLEBORO': 'Attleboro/Taunton',
+- 'BCSB - RESIDENTIAL MTG- TAUNTON': 'Attleboro/Taunton',
+- 'BCSB - RESIDENTIAL MTG - FRANKLIN': 'Attleboro/Taunton',
+- 'BCSB - CONS INST LENDING - ATTLEBORO': 'Attleboro/Taunton',
+- 'BCSB - SMALL BUSINESS LOAN CENTER': 'Attleboro/Taunton',
+- 'BCSB - CONTACT CENTER': 'Attleboro/Taunton',
+- 'BCSB - TAUNTON HIGH SCHOOL': 'Attleboro/Taunton',
+- 'BCSB - MUNI ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
+- 'BCSB - ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
+- 'BCSB - INDIRECT LENDING': 'Attleboro/Taunton'
+
+# ——— South Coast ———
+- 'BCSB - MUNI FALL RIVER BRANCH': 'South Coast',
+- "BCSB - COMM'L LENDING - FALL RIVER": 'South Coast',
+- "BCSB - COMM'L LENDING - CANDLEWORKS": 'South Coast',
+- "BCSB - COMM'L LENDING - DARTMOUTH": 'South Coast',
+- 'BCSB - MUNI DARTMOUTH BRANCH': 'South Coast',
+- 'BCSB - MUNI NB ASHLEY BLVD BRANCH': 'South Coast',
+- 'BCSB - NB ASHLEY BLVD BRANCH': 'South Coast',
+- 'BCSB - MUNI CANDLEWORKS BRANCH': 'South Coast',
+- 'BCSB - MUNI EAST FREETOWN BRANCH': 'South Coast',
+- 'BCSB - DARTMOUTH BRANCH': 'South Coast',
+- 'BCSB - EAST FREETOWN BRANCH': 'South Coast',
+- 'BCSB - FALL RIVER BRANCH': 'South Coast',
+- 'BCSB - CANDLEWORKS BRANCH': 'South Coast',
+- 'BCSB - RESIDENTIAL MTG - DARTMOUTH': 'South Coast',
+- 'BCSB - RESIDENTIAL MTG - FALL RIVER': 'South Coast',
+- 'BCSB - RESI LENDING - NEW BEDFORD': 'South Coast',
+
+# ——— Rhode Island ———
+- "BCSB - COMM'L LENDING - WARWICK": 'Rhode Island',
+- "BCSB - COMM'L LENDING - PROVIDENCE": 'Rhode Island',
+- "BCSB - COMM'L LENDING - PAWTUCKET": 'Rhode Island',
+- 'BCSB - CUMBERLAND': 'Rhode Island',
+- 'BCSB - PAWTUCKET BRANCH': 'Rhode Island',
+- "BCSB - CMM'L LENDING - FNB-RI": 'Rhode Island',
+- 'BCSB - MUNI PAWTUCKET BRANCH': 'Rhode Island',
+- 'BCSB - RESIDENTIAL MTG - PAWTUCKET': 'Rhode Island',
+- 'BCSB - MUNI GREENVILLE': 'Rhode Island',
+- 'BCSB - GREENVILLE': 'Rhode Island',
+- 'BCSB - RESI LENDING - WARWICK': 'Rhode Island',
+- 'BCSB - CONS INST LENDING - PAWTUCKET': 'Rhode Island',
+- 'BCSB - CONS INST LENDING - FNB-RI': 'Rhode Island',
+- 'BCSB - MUNI CUMBERLAND': 'Rhode Island',
+- 'BCSB - RESIDENTIAL MTG - FNB-RI': 'Rhode Island',
+
+# ——— Other ———
+- 'BCSB - RESIDENTIAL MTG - CAPE COD': 'Other',
