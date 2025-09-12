@@ -733,3 +733,18 @@ Other fixes:
 - The y-axis for the grants (needs to be adjusted to look at the range of the possible values for that individual region over the time period, plus some buffer on either side). For example, if grants go from 600k to 950k for Attleboro/Taunton region, we'd want to show this range somewhere between like 500k and 1200k. Some basic formula to determine this scale to capture the whole range.
 
 
+----
+
+John wants address
+- collateral address to be the trump card
+- if not, it can be the borrower address
+
+Can be done. Becomes a bit more tricky because now you have to take property table (cleaned) - which I'm not sure if I have working with collateral, I have to check.
+- From there, I can take zip codes and convert to region. Other comes into play there.
+
+Single largest piece of collateral
+
+
+This took like all day to do.
+- Looks good though I think
+- Integrate with PBI, as this is all matplotlib right now directly in python.

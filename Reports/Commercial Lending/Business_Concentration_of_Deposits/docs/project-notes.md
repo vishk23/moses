@@ -1,3 +1,12 @@
+Objective:
+Mesh COCC data & XAA data into a centralized business deposit report by relationship.
+
+Usage:
+drop into folder, remote or local
+- Production/ src.main to run
+Production/validation3 notebook is to create xaa_no_match
+
+
 # 2025-08-21
 Fixed this up.
 
@@ -1330,3 +1339,8 @@ with pd.ExcelWriter(OUTPUT_PATH, engine="openpyxl") as writer:
 # Format excel
 src.output_to_excel_multiple_sheets.format_excel_file(OUTPUT_PATH)
 
+# 2025-09-12
+Built reconciliation for xaa no match and sent to steve
+- mostly closed accounts
+
+Might need to get time machine going quickly to be able to get this reporting exactly as needed.
