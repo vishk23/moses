@@ -573,3 +573,83 @@ grouped_df = df.groupby(['Region', 'Account Type']).agg(NetBalance_sum=('Net Bal
 grouped_df
 
 
+----
+
+
+# --- Normalize, Map Regions, and Emit "Other" Review --------------------------
+import re
+import pandas as pd
+
+# 1) Normalize BRANCH names in a new column (keep original for reference)
+def normalize_branch(series: pd.Series) -> pd.Series:
+    s = series.fillna("").astype(str).str.upper()
+
+    # Unify quotes/apostrophes and whitespace/hyphens
+    s = s.str.replace(r"[‘’ʼ´`]", "'", regex=True)           # curly -> straight
+    s = s.str.replace(r"\s*-\s*", " - ", regex=True)         # spaces around hyphen
+    s = s.str.replace(r"\s+", " ", regex=True).str.strip()   # collapse spaces
+
+    # Fix a couple of known variants/typos seen historically
+    s = s.str.replace("CMM'L", "COMM'L", regex=False)
+    s = s.str.replace("COMM’L", "COMM'L", regex=False)
+
+    return s
+
+df["branch_std"] = normalize_branch(df["branchname"])
+
+# 2) Ensure the region map uses UPPERCASE keys (safe even if yours already are)
+region_map_upper = {str(k).upper(): v for k, v in region_map.items()}
+
+# 3) Exact match mapping first
+df["Region"] = df["branch_std"].map(region_map_upper)
+
+# 4) Regex fallback by geography (safety net; exact map above is the source of truth)
+_fallback_patterns = [
+    (r"\b(WARWICK|PROVIDENCE|PAWTUCKET|CUMBERLAND|GREENVILLE|FNB-RI)\b", "Rhode Island"),
+    (r"\b(FALL RIVER|DARTMOUTH|EAST FREETOWN|NEW BEDFORD|CANDLEWORKS|ASHLEY BLVD)\b", "South Coast"),
+    (r"\b(ATTLEBORO|FRANKLIN|RAYNHAM|TAUNTON|REHOBOTH|COUNTY STREET|MAIN OFFICE)\b", "Attleboro/Taunton"),
+]
+
+def fallback_region(name: str) -> str | None:
+    for pat, region in _fallback_patterns:
+        if re.search(pat, name):
+            return region
+    return None
+
+df["Region"] = df["Region"].fillna(df["branch_std"].apply(lambda x: fallback_region(x) or "Other"))
+
+# 5) Optional: fix Region order so it’s stable across runs
+REGION_ORDER = ["Attleboro/Taunton", "South Coast", "Rhode Island", "Other"]
+df["Region"] = pd.Categorical(df["Region"], categories=REGION_ORDER, ordered=True)
+
+# 6) Your aggregation (unchanged)
+grouped_df = (
+    df.groupby(["Region", "Account Type"], observed=True)
+      .agg(NetBalance_sum=("Net Balance", "sum"))
+      .reset_index()
+)
+
+# 7) Always emit a review table for unmapped/“Other”
+other_base = df[df["Region"] == "Other"].copy()
+
+# One row per normalized branch, with examples of original values and totals
+examples = (
+    other_base.groupby("branch_std")["branchname"]
+    .apply(lambda x: sorted(set(x))[:3])  # up to 3 example raw names
+    .reset_index(name="examples")
+)
+
+other_df = (
+    other_base.groupby("branch_std", as_index=False)
+    .agg(
+        n_accounts=("branch_std", "size"),
+        NetBalance_sum=("Net Balance", "sum"),
+    )
+    .merge(examples, on="branch_std", how="left")
+    .sort_values(["n_accounts", "NetBalance_sum"], ascending=[False, False])
+)
+
+# 8) (Nice to have) quick coverage stats for your log
+mapped_rate = (df["Region"] != "Other").mean()
+print(f"Region mapping coverage: {mapped_rate:.1%} of rows; {other_df.shape[0]} unmapped branch_std values.")
+# -----------------------------------------------------------------------------
