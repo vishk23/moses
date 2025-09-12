@@ -302,11 +302,13 @@ df['Region'] = region.fillna(fallback)
 
 ----
 Grant
-,2022,2023,2024
-Attleboro/Taunton," $858,427.68 "," $776,439.66 "," $901,899.80 "
-SouthCoast," $1,127,038.61 "," $950,260.36 "," $1,141,995.00 "
-Rhode Island," $314,615.00 "," $356,715.00 "," $579,957.00 "
-Other," $122,500.00 "," $65,800.00 "," $235,265.00 "
+,2020,2021,2022,2023,2024,,5 Year Totals,
+Attleboro/Taunton," $881,398.00 "," $815,706.67 "," $868,427.68 "," $776,439.66 "," $909,814.80 ",," $4,251,786.81 ",
+SouthCoast," $933,728.84 "," $791,106.23 "," $1,162,538.61 "," $975,260.36 "," $1,183,795.00 ",," $5,046,429.04 ",
+Rhode Island," $261,250.00 "," $244,000.00 "," $314,615.00 "," $356,715.00 "," $636,957.00 ",," $1,813,537.00 ",
+Other," $115,500.00 "," $98,171.76 "," $77,000.00 "," $40,800.00 "," $128,550.00 ",," $460,021.76 ",
+
+
 
 
 2020:
@@ -338,5 +340,236 @@ Same as above
 2024:
 Same as above
 
+
+
+----
+
+array(['BCSB - Muni Main Office', "BCSB - Comm'l Lending- Taunton",
+       'BCSB - No Attleboro Branch',
+       "BCSB - Comm'l Lending - Candleworks", 'BCSB - Main Office',
+       'BCSB - Muni North Raynham Branch', 'BCSB - Muni Attleboro Branch',
+       "BCSB - Comm'l Lending - Fall River",
+       "BCSB - Comm'l Lending - Dartmouth",
+       'BCSB - Muni No Attleboro Branch', 'BCSB - Dartmouth Branch',
+       "BCSB - Comm'l Lending - Pawtucket",
+       "BCSB - Comm'l Lending - Attleboro",
+       'BCSB - Muni Dartmouth Branch', "BCSB - Comm'l Lending - Warwick",
+       'BCSB - Muni Candleworks Branch', 'BCSB - Beacon Security Corp',
+       'BCSB - Muni Fall River Branch', 'BCSB - North Raynham Branch',
+       'BCSB - Raynham Center Branch', 'BCSB - NB Ashley Blvd Branch',
+       'BCSB - Pawtucket Branch', 'BCSB - Fall River Branch',
+       'BCSB - Attleboro Branch', 'BCSB - Muni Pawtucket Branch',
+       'BCSB - Muni NB Ashley Blvd Branch', 'BCSB - Muni Franklin Branch',
+       'BCSB - Muni County Street Branch',
+       "BCSB - Comm'l Lending - Providence", 'BCSB - Candleworks Branch',
+       'BCSB - NB Rockdale Ave Branch',
+       "BCSB - Comm'l Lending - Franklin",
+       'BCSB - Muni Raynham Center Branch', 'BCSB - Franklin Branch',
+       "BCSB - Cmm'l Lending - FNB-RI", 'BCSB - Contact Center',
+       'BCSB - Rehoboth Branch', 'BCSB - Muni Rehoboth Branch',
+       'BCSB - Residential Mtg - Dartmouth', 'BCSB - Greenville',
+       'BCSB - County Street Branch',
+       'BCSB - Residential Mtg - Attleboro', 'BCSB - Muni Greenville',
+       'Bristol County Savings Bank',
+       'BCSB - Residential Mtg - Pawtucket', 'BCSB - Cumberland',
+       'BCSB - Residential Mtg- Taunton',
+       'BCSB - Cons Inst Lending- Taunton',
+       'BCSB - Residential Mtg - Franklin',
+       'BCSB - Resi Lending - Warwick', 'BCSB - East Freetown Branch',
+       'BCSB - Residential Mtg - Fall River',
+       'BCSB - Cons Inst Lending - Dartmouth',
+       'BCSB - Residential Mtg - Cape Cod', 'BCSB - Walmart Branch',
+       'BCSB - Cons Inst Lending - Pawtucket',
+       'BCSB - Cons Inst Lending - Attleboro',
+       'BCSB - Cons Inst Lending - FNB-RI',
+       'BCSB - Residential Mtg - FNB-RI',
+       'BCSB - Cons Inst Lending - Fall River',
+       'BCSB - Muni East Freetown Branch', 'BCSB - Taunton High School',
+       'BCSB - Cons Inst Lending - Franklin',
+       'BCSB - Resi Lending - New Bedford', 'BCSB - Muni Cumberland',
+       'BCSB - Indirect Lending', 'BCSB - Muni Attleboro High School',
+       'BCSB - Deposit Operations', 'BCSB - Attleboro High School',
+       'BCSB - Muni Taunton High School'], dtype=object)
+
+
+# %%
+import os
+import sys
+from pathlib import Path
+
+# Navigate to project root (equivalent to cd ..)
+project_dir = Path(__file__).parent.parent if '__file__' in globals() else Path.cwd().parent
+os.chdir(project_dir)
+
+# Add src directory to Python path for imports
+src_dir = project_dir / "src"
+if str(src_dir) not in sys.path:
+    sys.path.insert(0, str(src_dir))
+
+# Set environment for dev testing
+os.environ['REPORT_ENV'] = 'dev'
+
+# %%
+import src.config
+
+# %%
+import pandas as pd
+from deltalake import DeltaTable
+from pathlib import Path
+
+# %%
+df = DeltaTable(src.config.SILVER / "account").to_pandas()
+
+# %%
+import cdutils.acct_file_creation.core
+from datetime import datetime
+
+# # Specific date
+specified_date = datetime(2020, 12, 31)
+df = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
+
+# %%
+df
+
+# %%
+df['mjaccttypcd'].unique()
+
+# %%
+df = df[df['mjaccttypcd'].isin(['CML','MLN','CNS','MTG','CK','SAV','TD'])].copy()
+
+# %%
+# Create Account Type mapping - Easier to understand, based on our major field
+def map_account_type(acct_code:str):
+    """
+    Map mjaccttypcd to friendly Account Type
+    """
+    mapping = {
+        'CML':'Loan',
+        'MLN':'Loan',
+        'CNS':'Loan',
+        'MTG':'Loan',
+        'CK':'Deposit',
+        'SAV':'Deposit',
+        'TD':'Deposit'
+    }
+    return mapping.get(str(acct_code).upper(), 'Other')
+
+df['Account Type'] = df['mjaccttypcd'].apply(map_account_type)
+
+# %%
+df['branchname'].unique()
+
+# %%
+df
+
+# %%
+region_map = {
+    # ——— Attleboro/Taunton ———
+    'BCSB - MUNI MAIN OFFICE': 'Attleboro/Taunton',
+    'BCSB - MAIN OFFICE': 'Attleboro/Taunton',
+    "BCSB - COMM'L LENDING- TAUNTON": 'Attleboro/Taunton',
+    'BCSB - MUNI ATTLEBORO BRANCH': 'Attleboro/Taunton',
+    'BCSB - DEPOSIT OPERATIONS': 'Attleboro/Taunton',
+    'BCSB - NO ATTLEBORO BRANCH': 'Attleboro/Taunton',
+    'BRISTOL COUNTY SAVINGS BANK': 'Attleboro/Taunton',
+    "BCSB - COMM'L LENDING - ATTLEBORO": 'Attleboro/Taunton',
+    'BCSB - BEACON SECURITY CORP': 'Attleboro/Taunton',
+    'BCSB - ATTLEBORO BRANCH': 'Attleboro/Taunton',
+    'BCSB - MUNI COUNTY STREET BRANCH': 'Attleboro/Taunton',
+    'BCSB - REHOBOTH BRANCH': 'Attleboro/Taunton',
+    'BCSB - MUNI REHOBOTH BRANCH': 'Attleboro/Taunton',
+    'BCSB - MUNI NO ATTLEBORO BRANCH': 'Attleboro/Taunton',
+    'BCSB - MUNI RAYNHAM CENTER BRANCH': 'Attleboro/Taunton',
+    'BCSB - COUNTY STREET BRANCH': 'Attleboro/Taunton',
+    'BCSB - NORTH RAYNHAM BRANCH': 'Attleboro/Taunton',
+    'BCSB - RAYNHAM CENTER BRANCH': 'Attleboro/Taunton',
+    "BCSB - COMM'L LENDING - FRANKLIN": 'Attleboro/Taunton',
+    'BCSB - FRANKLIN BRANCH': 'Attleboro/Taunton',
+    'BCSB - CONS INST LENDING- TAUNTON': 'Attleboro/Taunton',
+    'BCSB - RESIDENTIAL MTG - ATTLEBORO': 'Attleboro/Taunton',
+    'BCSB - RESIDENTIAL MTG- TAUNTON': 'Attleboro/Taunton',
+    'BCSB - RESIDENTIAL MTG - FRANKLIN': 'Attleboro/Taunton',
+    'BCSB - CONS INST LENDING - ATTLEBORO': 'Attleboro/Taunton',
+    'BCSB - SMALL BUSINESS LOAN CENTER': 'Attleboro/Taunton',
+    'BCSB - CONTACT CENTER': 'Attleboro/Taunton',
+    'BCSB - TAUNTON HIGH SCHOOL': 'Attleboro/Taunton',
+    'BCSB - MUNI ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
+    'BCSB - ATTLEBORO HIGH SCHOOL': 'Attleboro/Taunton',
+    'BCSB - INDIRECT LENDING': 'Attleboro/Taunton',
+
+    # ——— South Coast ———
+    'BCSB - MUNI FALL RIVER BRANCH': 'South Coast',
+    "BCSB - COMM'L LENDING - FALL RIVER": 'South Coast',
+    "BCSB - COMM'L LENDING - CANDLEWORKS": 'South Coast',
+    "BCSB - COMM'L LENDING - DARTMOUTH": 'South Coast',
+    'BCSB - MUNI DARTMOUTH BRANCH': 'South Coast',
+    'BCSB - MUNI NB ASHLEY BLVD BRANCH': 'South Coast',
+    'BCSB - NB ASHLEY BLVD BRANCH': 'South Coast',
+    'BCSB - MUNI CANDLEWORKS BRANCH': 'South Coast',
+    'BCSB - MUNI EAST FREETOWN BRANCH': 'South Coast',
+    'BCSB - DARTMOUTH BRANCH': 'South Coast',
+    'BCSB - EAST FREETOWN BRANCH': 'South Coast',
+    'BCSB - FALL RIVER BRANCH': 'South Coast',
+    'BCSB - CANDLEWORKS BRANCH': 'South Coast',
+    'BCSB - RESIDENTIAL MTG - DARTMOUTH': 'South Coast',
+    'BCSB - RESIDENTIAL MTG - FALL RIVER': 'South Coast',
+    'BCSB - RESI LENDING - NEW BEDFORD': 'South Coast',
+
+    # ——— Rhode Island ———
+    "BCSB - COMM'L LENDING - WARWICK": 'Rhode Island',
+    "BCSB - COMM'L LENDING - PROVIDENCE": 'Rhode Island',
+    "BCSB - COMM'L LENDING - PAWTUCKET": 'Rhode Island',
+    'BCSB - CUMBERLAND': 'Rhode Island',
+    'BCSB - PAWTUCKET BRANCH': 'Rhode Island',
+    "BCSB - CMM'L LENDING - FNB-RI": 'Rhode Island',
+    'BCSB - MUNI PAWTUCKET BRANCH': 'Rhode Island',
+    'BCSB - RESIDENTIAL MTG - PAWTUCKET': 'Rhode Island',
+    'BCSB - MUNI GREENVILLE': 'Rhode Island',
+    'BCSB - GREENVILLE': 'Rhode Island',
+    'BCSB - RESI LENDING - WARWICK': 'Rhode Island',
+    'BCSB - CONS INST LENDING - PAWTUCKET': 'Rhode Island',
+    'BCSB - CONS INST LENDING - FNB-RI': 'Rhode Island',
+    'BCSB - MUNI CUMBERLAND': 'Rhode Island',
+    'BCSB - RESIDENTIAL MTG - FNB-RI': 'Rhode Island',
+
+    # ——— Other ———
+    'BCSB - RESIDENTIAL MTG - CAPE COD': 'Other',
+    # Operational catch-alls (if any are left unmapped in future, they'll fall to 'Other' via the fillna below)
+}
+
+
+# %%
+import pandas as pd
+import numpy as np
+
+# Assume you already have: region_map (dict) and df['Branch'] exists
+s = df['branchname']
+
+# 1) Exact-name mapping first
+region = s.map(region_map)
+
+# 2) Regex-based geographic fallback as a Series
+ri = s.str.contains(r'Warwick|Providence|Pawtucket|Cumberland|Greenville|FNB-RI', case=False, na=False)
+sc = s.str.contains(r'Fall River|Dartmouth|East Freetown|New Bedford|Candleworks|Ashley Blvd', case=False, na=False)
+at = s.str.contains(r'Attleboro|Franklin|Raynham|Taunton|Rehoboth|County Street|Main Office', case=False, na=False)
+
+fallback = pd.Series(
+    np.select([ri, sc, at], ['Rhode Island', 'South Coast', 'Attleboro/Taunton'], default='Other'),
+    index=df.index
+)
+
+# 3) Fill unmapped with the Series (allowed), not an ndarray
+df['Region'] = region.fillna(fallback)
+
+
+# %%
+df
+
+# %%
+# Performed 1 aggregation grouped on columns: 'Region', 'Account Type'
+grouped_df = df.groupby(['Region', 'Account Type']).agg(NetBalance_sum=('Net Balance', 'sum')).reset_index()
+
+# %%
+grouped_df
 
 
