@@ -295,3 +295,37 @@ Need to revisit this, but now. I am at least happy that I found the issue testin
 
 The distribution method will change with new outlook, so just be aware of that and be ready to pivot to newer solution or something that works.
 
+# 2025-09-11
+
+Aiming to fix up by Oct 10 for project closeout
+
+My notes that we discussed on the R360 Closure Report today which included renaming the project to Relationship 360, not Phase III and renaming the technical document to remove SYSTEM.
+
+ 
+
+This closure report is all about Traceability to the original plan.
+The Highlights and Lessons Learned should be comprised from feedback from team members, leaders AND the Project Manager.
+This document is reviewed by EPMO Steering Committee, Safety and Soundness auditors and Project Managers new to the company. You cannot assume they know what you are talking about.
+ 
+
+My review comments
+
+I.                    Project Background Criteria and Success Factors:
+
+This should be referring back to the original Business Use Case for this and in the Business Use Case it states that the three phases are as follows which would lead me to believe that the Success Factors for Phase III, which Bill had said was the appropriate name for this, should be the workflow analysis & Maintenance and if you didn’t manage the project to these three Phases as defined below then you should refer back to the original three phases and explain why it didn’t work this way and exactly where we are right now. Otherwise this looks like a Closure Report for the entire standup of Relationship 360 in which case the workflow analysis & maintenance may not be completed (?)
+
+ 
+
+
+
+·                     Milestones should directly reflect back to the Project Charter or Business Use Case Milestone/Deliverable using the same terminology. Enter the target completion date from the Business Use Case under Plan Date and the Actual end date for that phase under the Actual Date. It’s ok if it is way off as long as you can explain the variance. (i.e., staff changes, introduction of feedback from new leadership into Phase I or II, etc.
+
+·                     I assume if there was not cost that Data Meaning or any consultants were not associated with this effort. Is that correct?
+
+·                     Quality management. The people reading this don’t know what an “Edge case” is so you need to explain what you mean.
+
+·                     Project Risks Mitigated. Traceability once again. Refer to the original Risk Section in the Business Use case, list all of the possible risks (in this case only one), what your mitigation plan was and why it did or didn’t work.
+
+·                     Lessons Learned should be that this should have been managed by a professional project manager so that all of this back pedaling didn’t have to take place.
+
+·                     What is the end result of this initiative? In comprehensive narrative of what the result brings to the table? Are leaders more informed about the segments of their households? Can we market to them? How it is being used from a business perspective (not just for commercial)
