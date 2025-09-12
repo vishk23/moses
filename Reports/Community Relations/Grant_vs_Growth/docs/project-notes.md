@@ -719,12 +719,17 @@ Other,Loan,15358963.25
 
 2024:
 Region,Account Type,NetBalance_sum
-Attleboro/Taunton,Deposit,1674127115.5
+Attleboro/Taunton,Deposit,1686588531.68
 Attleboro/Taunton,Loan,1362871747.8799999
 South Coast,Deposit,590446754.03
 South Coast,Loan,659063602.77
 Rhode Island,Deposit,232130668.73
 Rhode Island,Loan,418885502.08
-Other,Deposit,12461416.18
+Other,Deposit,0.0
 Other,Loan,14168398.56
+
+Other fixes:
+- Instead of 4 subplots, we should create each of these as their own PNG.
+- The y-axis for the grants (needs to be adjusted to look at the range of the possible values for that individual region over the time period, plus some buffer on either side). For example, if grants go from 600k to 950k for Attleboro/Taunton region, we'd want to show this range somewhere between like 500k and 1200k. Some basic formula to determine this scale to capture the whole range.
+
 
