@@ -653,3 +653,78 @@ other_df = (
 mapped_rate = (df["Region"] != "Other").mean()
 print(f"Region mapping coverage: {mapped_rate:.1%} of rows; {other_df.shape[0]} unmapped branch_std values.")
 # -----------------------------------------------------------------------------
+
+
+
+Actual data:
+Grant
+,2020,2021,2022,2023,2024,,5 Year Totals,
+Attleboro/Taunton," $881,398.00 "," $815,706.67 "," $868,427.68 "," $776,439.66 "," $909,814.80 ",," $4,251,786.81 ",
+SouthCoast," $933,728.84 "," $791,106.23 "," $1,162,538.61 "," $975,260.36 "," $1,183,795.00 ",," $5,046,429.04 ",
+Rhode Island," $261,250.00 "," $244,000.00 "," $314,615.00 "," $356,715.00 "," $636,957.00 ",," $1,813,537.00 ",
+Other," $115,500.00 "," $98,171.76 "," $77,000.00 "," $40,800.00 "," $128,550.00 ",," $460,021.76 ",
+
+
+
+
+2020:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1608615918.92
+Attleboro/Taunton,Loan,1106631023.65
+South Coast,Deposit,439192149.71999997
+South Coast,Loan,581232890.97
+Rhode Island,Deposit,235707727.13
+Rhode Island,Loan,441419753.47
+Other,Deposit,0.0
+Other,Loan,22018220.13
+
+
+
+2021:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1750593658.56
+Attleboro/Taunton,Loan,1076544087.11
+South Coast,Deposit,486256425.48
+South Coast,Loan,588273517.84
+Rhode Island,Deposit,258077676.75
+Rhode Island,Loan,411824181.72
+Other,Deposit,0.0
+Other,Loan,13998442.81
+
+
+
+2022:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1594936398.93
+Attleboro/Taunton,Loan,1253226462.19
+South Coast,Deposit,552267175.18
+South Coast,Loan,623830340.89
+Rhode Island,Deposit,252917537.29
+Rhode Island,Loan,444093307.37
+Other,Deposit,0.0
+Other,Loan,11570979.59
+
+
+
+2023:
+Attleboro/Taunton,Deposit,1691537612.21
+Attleboro/Taunton,Loan,1284501915.5
+South Coast,Deposit,534343926.29
+South Coast,Loan,640067641.46
+Rhode Island,Deposit,225298440.06
+Rhode Island,Loan,420613579.39
+Other,Deposit,0.0
+Other,Loan,15358963.25
+
+
+2024:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1674127115.5
+Attleboro/Taunton,Loan,1362871747.8799999
+South Coast,Deposit,590446754.03
+South Coast,Loan,659063602.77
+Rhode Island,Deposit,232130668.73
+Rhode Island,Loan,418885502.08
+Other,Deposit,12461416.18
+Other,Loan,14168398.56
+
