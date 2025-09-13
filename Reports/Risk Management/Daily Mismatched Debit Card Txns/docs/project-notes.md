@@ -1,13 +1,16 @@
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\src\main.py", line 298, in <module>
-    main()
-  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\src\main.py", line 269, in main
-    separator_line = "".join(["-" * (col_widths[col] - padding)].ljust(col_widths[col]) for col in df.columns)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Risk Management\Daily Mismatched Debit Card Txns\src\main.py", line 269, in <genexpr>
-    separator_line = "".join(["-" * (col_widths[col] - padding)].ljust(col_widths[col]) for col in df.columns)
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'list' object has no attribute 'ljust'
-2025-08-22 11:41:49 | ERROR | STDOUT:
+Objective:
+Pull from Identifi, parse text file and then identify mismatches
+- Once complete, send to deposit ops
+
+Tasks:
+## 2025-09-10
+- [ ] Investigate multiple account number situation where transcation doesn't show
+
+# 2025-09-10 
+Touched base with PQ today
+acctnbr: 26190931
+- 2 paypal transactions, 1 showed on 9/3/2025 file
+
+Hypothesis, maybe it isn't showing with duplicate account numbers? I don't know if this would be an issue
+
+

@@ -1,3 +1,8 @@
+Usage:
+suppression notebook
+parquet to csv notebook
+send via Mimecast LFS
+
 # 2025-08-18
 
 
@@ -300,3 +305,13 @@ For example, when doing 'df[col].method(value, inplace=True)', try using 'df.met
 
 
   df['combined_street'].replace('', np.nan, inplace=True)
+
+
+# 2025-09-12
+
+Going to memorialize the "usage" section at the top of project notes going forward. I should have objective/why we did these, what it's solving and then a usage section. Or that can be the README. That's fine too. 
+
+The problem is that I have to rerun this and i gave myself 3 notebooks that aren't super clear on what things are doing. 
+
+Looks like it's just suppression_exploration then convert to csv and that goes out.
+
