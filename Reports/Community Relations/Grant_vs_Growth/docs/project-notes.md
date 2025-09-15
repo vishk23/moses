@@ -840,3 +840,66 @@ zip_region_map = {
 # Map; anything not in RI or Bristol County buckets → 'Other'
 df['Region'] = z.map(zip_region_map).fillna('Other')
 ```
+
+
+----
+
+New totals:
+
+2020:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1283329351.36
+Attleboro/Taunton,Loan,561706669.78
+Other,Deposit,335807280.83
+Other,Loan,671630745.35
+Rhode Island,Deposit,274046931.2
+Rhode Island,Loan,531009913.66
+South Coast,Deposit,390332232.38
+South Coast,Loan,386954559.43
+
+2021:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1354851013.02
+Attleboro/Taunton,Loan,508184138.72
+Other,Deposit,412378122.03
+Other,Loan,659102856.73
+Rhode Island,Deposit,297490407.67
+Rhode Island,Loan,537998738.38
+South Coast,Deposit,430208218.07
+South Coast,Loan,385354495.65
+
+2022:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1234648743.59
+Attleboro/Taunton,Loan,527476376.64
+Other,Deposit,385868985.44
+Other,Loan,742140118.51
+Rhode Island,Deposit,272669870.47
+Rhode Island,Loan,629057054.01
+South Coast,Deposit,506933511.9
+South Coast,Loan,434047540.88
+
+
+2023:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1344039693.32
+Attleboro/Taunton,Loan,508956474.41
+Other,Deposit,372391911.03
+Other,Loan,805851622.23
+Rhode Island,Deposit,249830466.05
+Rhode Island,Loan,604175380.77
+South Coast,Deposit,484917908.16
+South Coast,Loan,441558622.19
+
+
+2024:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1293358041.54
+Attleboro/Taunton,Loan,500647400.35
+Other,Deposit,428429855.78
+Other,Loan,851957994.24
+Rhode Island,Deposit,268775299.16
+Rhode Island,Loan,623901471.37
+South Coast,Deposit,518602757.96
+South Coast,Loan,478482385.33
+
