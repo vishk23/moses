@@ -748,3 +748,12 @@ Single largest piece of collateral
 This took like all day to do.
 - Looks good though I think
 - Integrate with PBI, as this is all matplotlib right now directly in python.
+
+
+# 2025-09-15
+Notebook based, have to try to get the collateral address
+- challenging because I don't know if we have prop data going back that far.
+- time travel with property data might be challenging, let's see.
+
+
+
