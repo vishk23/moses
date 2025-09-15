@@ -767,3 +767,76 @@ For each snapshot, we have account data.
 Ok, let's see how this looks after I build it
 
 
+Zip code matching
+
+# Normalize ZIPs to 5 digits (handles ints and ZIP+4)
+z = (
+    df['zipcd']
+      .astype(str)
+      .str.extract(r'(\d{5})', expand=False)
+      .str.zfill(5)
+)
+
+# --- Rhode Island: ALL ZIPs from unitedstateszipcodes.org/ri/ ---
+ri_zips = {
+    '02801','02802','02804','02806','02807','02808','02809','02812','02813','02814',
+    '02815','02816','02817','02818','02822','02823','02824','02825','02826','02827',
+    '02828','02829','02830','02831','02832','02833','02835','02836','02837','02838',
+    '02839','02840','02841','02842','02852','02854','02857','02858','02859','02860',
+    '02861','02862','02863','02864','02865','02871','02872','02873','02874','02875',
+    '02876','02877','02878','02879','02880','02881','02882','02883','02885','02886',
+    '02887','02888','02889','02891','02892','02893','02894','02895','02896','02898',
+    '02901','02902','02903','02904','02905','02906','02907','02908','02909','02910',
+    '02911','02912','02914','02915','02916','02917','02918','02919','02920','02921','02940',
+}
+
+# --- ALL Bristol County, MA ZIPs (from unitedstateszipcodes.org/ma/) ---
+# Includes Standard, PO Box, and Unique.
+bristol_all = {
+    '02031','02048','02334'
+    '02356','02357','02375',
+    '02702','02703','02712','02714','02715','02717','02718','02719',
+    '02720','02721','02722','02723','02724',
+    '02725','02726',
+    '02740','02741','02742','02743','02744','02745','02746','02747','02748',
+    '02760','02761','02763','02764','02766','02767','02768','02769',
+    '02771','02777','02779','02780','02783','02790','02791',
+}
+
+# --- South Coast subset of Bristol County ---
+# Defined as East Freetown & Assonet and everything south of them: Fall River,
+# New Bedford, Dartmouth, Fairhaven, Acushnet, Somerset, Swansea, Westport (+ PO Box/Unique).
+bristol_south_coast = {
+    # Freetown
+    '02702','02717',
+    # Fall River (incl. PO Box)
+    '02720','02721','02722','02723','02724',
+    # Somerset
+    '02725','02726',
+    # Swansea
+    '02777',
+    # New Bedford (incl. PO Boxes)
+    '02740','02741','02742','02744','02745','02746',
+    # Dartmouth (incl. North/South + PO Box)
+    '02747','02748','02714',
+    # Fairhaven
+    '02719',
+    # Acushnet (and overlap ZIP that also covers NB)
+    '02743',
+    # Westport (incl. Westport Point PO Box)
+    '02790','02791',
+}
+
+# --- Attleboro/Taunton subset = remaining Bristol County ZIPs ---
+bristol_attleboro_taunton = bristol_all - bristol_south_coast
+
+# --- Build the mapping dict in priority order ---
+zip_region_map = {
+    **{z: 'Rhode Island'      for z in ri_zips},
+    **{z: 'South Coast'       for z in bristol_south_coast},
+    **{z: 'Attleboro/Taunton' for z in bristol_attleboro_taunton},
+}
+
+# Map; anything not in RI or Bristol County buckets → 'Other'
+df['Region'] = z.map(zip_region_map).fillna('Other')
+```
