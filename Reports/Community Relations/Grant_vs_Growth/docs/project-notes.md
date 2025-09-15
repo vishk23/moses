@@ -755,5 +755,15 @@ Notebook based, have to try to get the collateral address
 - challenging because I don't know if we have prop data going back that far.
 - time travel with property data might be challenging, let's see.
 
+I guess if the property ever existed, it probably isn't being cached. There is an account to property link.
+
+Might be in good shape, assuming we never get rid of properties.
+
+For each snapshot, we have account data.
+- we can look at current prop table and prop link and create this.
+- firt consolidate acct_prop linking to group by acctnbr and get the property with the highest appraisal value amt
+- then we can append to the current daily snapshot, should be fine to use from there 
+
+Ok, let's see how this looks after I build it
 
 
