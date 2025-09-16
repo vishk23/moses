@@ -6,6 +6,8 @@ Replace this docstring with a description of your project's purpose and logic.
 
 import src.config
 import src._version
+import src.deposit_dash_prototype.core
+from deltalake import DeltaTable, write_deltalake
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -14,11 +16,17 @@ def main():
     print(f"Owner: {src.config.OWNER}")
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
-    # Add your main project logic here
-    # Example: print('Hello, world!')
 
-    OUTPUT_PATH = src.config.OUTPUT_DIR / "file_name.parquet"
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    df = src.deposit_dash_prototype.core.main_pipeline()
+    df = add_load_timestamp(df)
+
+    # DeltaTable written and loaded into PowerBI
+    # local C: Drive
+    # PowerBI will point to this
+
+    ACCOUNT_PATH = src.config.BASE_PATH / "account_proto_deriv"
+    ACCOUNT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    write_deltalake(src.config.ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
 
 if __name__ == "__main__":
     main()

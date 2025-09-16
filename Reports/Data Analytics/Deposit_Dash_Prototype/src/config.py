@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "<Project Name>"
+REPORT_NAME = "Deposit Dash Prototype"
 BUSINESS_LINE = "<Business Line or Department>"
 SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
 OWNER = "<Project Owner or Team>"
