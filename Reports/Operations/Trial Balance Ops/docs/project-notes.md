@@ -149,7 +149,7 @@ Above is the requested output
  'Investor Balance', Calculated Field, diff between notebal and bookbal
  'Investor', ?
  'Investor Percentage Sold', totalpctsold, ACCTLOAN
- 'Investor Loan Rate', ?
+ 'Investor Loan Rate', ? # There is an investor table
  'Branch', ACCTCOMMON
  'Loan Officer', ACCTCOMMON
  'Contract Date', ACCTCOMMON
@@ -158,7 +158,8 @@ Above is the requested output
  'Amount Due', ? prob WH_ACCTLOAN
  'Credit Limit', WH_ACCTLOAN
  'Revolving Credit Limit', WH_ACCTLOAN, creditlimitamt
- 'Credit Limit Loan', 
+ 'Credit Limit Loan', LOAN something YN - I think this is in the status page
+    - Yeah it's LOANLIMITYN
  'Loan Funds Held for Reserve', clatresamt
  'Rate Change Frequency', rcf, WH_ACCTLOAN
  'Next Rate Change Date', nextratechg, WH_LOANS?
@@ -217,3 +218,12 @@ A lot is ACCTLOAN.
 Debating whether I build directly from silver table or if I just go from Bronze. I think silver layer has to be the interface into all of this stuff.
 
 It's bronze -> OBT -> downstream analysis. Hard though because there are all sorts of things that we could potentially need, but I think the silver table handles all. Silver table at this current point in time doesn't come from bronze tables though, so need to think a little bit about this.
+
+
+---
+# 2025-09-15
+
+Big time overdue on this. Can't put this on the super hold while I build everything else out. This is something to deliver asap. Why not just build it exactly as you think it would need to function and then from there, you can always refactor and adapt. The optimal solution/perfect data model isn't ready off the shelf to use so might as well just build it exactly to spec and refactor later on
+
+
+
