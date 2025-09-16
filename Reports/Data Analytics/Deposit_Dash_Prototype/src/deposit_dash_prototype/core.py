@@ -10,7 +10,7 @@ from src.utils.parquet_io import add_load_timestamp
 
 def main_pipeline():
 # Main account table
-    df = DeltaTable(src.config.SILVER / "account")
+    df = DeltaTable(src.config.SILVER / "account").to_pandas()
 # Create loans/deposits distinction
     MACRO_TYPE_MAPPING = {
         'CML':'Loan',
@@ -21,6 +21,7 @@ def main_pipeline():
         'SAV':'Deposit',
         'TD':'Deposit'
     }
+
 
     df['Macro Account Type'] = df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
     

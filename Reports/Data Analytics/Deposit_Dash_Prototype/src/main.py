@@ -8,6 +8,7 @@ import src.config
 import src._version
 import src.deposit_dash_prototype.core
 from deltalake import DeltaTable, write_deltalake
+from src.utils.parquet_io import add_load_timestamp
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -24,9 +25,9 @@ def main():
     # local C: Drive
     # PowerBI will point to this
 
-    ACCOUNT_PATH = src.config.BASE_PATH / "account_proto_deriv"
+    ACCOUNT_PATH = src.config.OUTPUT_DIR / "account_proto_deriv"
     ACCOUNT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    write_deltalake(src.config.ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
+    write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
 
 if __name__ == "__main__":
     main()
