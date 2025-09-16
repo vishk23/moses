@@ -21,7 +21,8 @@ def fetch_data(specified_date: Optional[datetime] = None):
         a.ACCTNBR,
         a.BRANCHNAME,
         a.PRIMARYOWNERCITY,
-        a.PRIMARYOWNERSTATE
+        a.PRIMARYOWNERSTATE,
+        a.PRIMARYOWNERZIPCD
     FROM
         COCCDM.WH_ACCTCOMMON a
     WHERE

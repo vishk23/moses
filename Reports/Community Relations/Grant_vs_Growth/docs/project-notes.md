@@ -748,3 +748,158 @@ Single largest piece of collateral
 This took like all day to do.
 - Looks good though I think
 - Integrate with PBI, as this is all matplotlib right now directly in python.
+
+
+# 2025-09-15
+Notebook based, have to try to get the collateral address
+- challenging because I don't know if we have prop data going back that far.
+- time travel with property data might be challenging, let's see.
+
+I guess if the property ever existed, it probably isn't being cached. There is an account to property link.
+
+Might be in good shape, assuming we never get rid of properties.
+
+For each snapshot, we have account data.
+- we can look at current prop table and prop link and create this.
+- firt consolidate acct_prop linking to group by acctnbr and get the property with the highest appraisal value amt
+- then we can append to the current daily snapshot, should be fine to use from there 
+
+Ok, let's see how this looks after I build it
+
+
+Zip code matching
+
+# Normalize ZIPs to 5 digits (handles ints and ZIP+4)
+z = (
+    df['zipcd']
+      .astype(str)
+      .str.extract(r'(\d{5})', expand=False)
+      .str.zfill(5)
+)
+
+# --- Rhode Island: ALL ZIPs from unitedstateszipcodes.org/ri/ ---
+ri_zips = {
+    '02801','02802','02804','02806','02807','02808','02809','02812','02813','02814',
+    '02815','02816','02817','02818','02822','02823','02824','02825','02826','02827',
+    '02828','02829','02830','02831','02832','02833','02835','02836','02837','02838',
+    '02839','02840','02841','02842','02852','02854','02857','02858','02859','02860',
+    '02861','02862','02863','02864','02865','02871','02872','02873','02874','02875',
+    '02876','02877','02878','02879','02880','02881','02882','02883','02885','02886',
+    '02887','02888','02889','02891','02892','02893','02894','02895','02896','02898',
+    '02901','02902','02903','02904','02905','02906','02907','02908','02909','02910',
+    '02911','02912','02914','02915','02916','02917','02918','02919','02920','02921','02940',
+}
+
+# --- ALL Bristol County, MA ZIPs (from unitedstateszipcodes.org/ma/) ---
+# Includes Standard, PO Box, and Unique.
+bristol_all = {
+    '02031','02048','02334'
+    '02356','02357','02375',
+    '02702','02703','02712','02714','02715','02717','02718','02719',
+    '02720','02721','02722','02723','02724',
+    '02725','02726',
+    '02740','02741','02742','02743','02744','02745','02746','02747','02748',
+    '02760','02761','02763','02764','02766','02767','02768','02769',
+    '02771','02777','02779','02780','02783','02790','02791',
+}
+
+# --- South Coast subset of Bristol County ---
+# Defined as East Freetown & Assonet and everything south of them: Fall River,
+# New Bedford, Dartmouth, Fairhaven, Acushnet, Somerset, Swansea, Westport (+ PO Box/Unique).
+bristol_south_coast = {
+    # Freetown
+    '02702','02717',
+    # Fall River (incl. PO Box)
+    '02720','02721','02722','02723','02724',
+    # Somerset
+    '02725','02726',
+    # Swansea
+    '02777',
+    # New Bedford (incl. PO Boxes)
+    '02740','02741','02742','02744','02745','02746',
+    # Dartmouth (incl. North/South + PO Box)
+    '02747','02748','02714',
+    # Fairhaven
+    '02719',
+    # Acushnet (and overlap ZIP that also covers NB)
+    '02743',
+    # Westport (incl. Westport Point PO Box)
+    '02790','02791',
+}
+
+# --- Attleboro/Taunton subset = remaining Bristol County ZIPs ---
+bristol_attleboro_taunton = bristol_all - bristol_south_coast
+
+# --- Build the mapping dict in priority order ---
+zip_region_map = {
+    **{z: 'Rhode Island'      for z in ri_zips},
+    **{z: 'South Coast'       for z in bristol_south_coast},
+    **{z: 'Attleboro/Taunton' for z in bristol_attleboro_taunton},
+}
+
+# Map; anything not in RI or Bristol County buckets → 'Other'
+df['Region'] = z.map(zip_region_map).fillna('Other')
+```
+
+
+----
+
+New totals:
+
+2020:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1283329351.36
+Attleboro/Taunton,Loan,561706669.78
+Other,Deposit,335807280.83
+Other,Loan,671630745.35
+Rhode Island,Deposit,274046931.2
+Rhode Island,Loan,531009913.66
+South Coast,Deposit,390332232.38
+South Coast,Loan,386954559.43
+
+2021:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1354851013.02
+Attleboro/Taunton,Loan,508184138.72
+Other,Deposit,412378122.03
+Other,Loan,659102856.73
+Rhode Island,Deposit,297490407.67
+Rhode Island,Loan,537998738.38
+South Coast,Deposit,430208218.07
+South Coast,Loan,385354495.65
+
+2022:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1234648743.59
+Attleboro/Taunton,Loan,527476376.64
+Other,Deposit,385868985.44
+Other,Loan,742140118.51
+Rhode Island,Deposit,272669870.47
+Rhode Island,Loan,629057054.01
+South Coast,Deposit,506933511.9
+South Coast,Loan,434047540.88
+
+
+2023:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1344039693.32
+Attleboro/Taunton,Loan,508956474.41
+Other,Deposit,372391911.03
+Other,Loan,805851622.23
+Rhode Island,Deposit,249830466.05
+Rhode Island,Loan,604175380.77
+South Coast,Deposit,484917908.16
+South Coast,Loan,441558622.19
+
+
+2024:
+Region,Account Type,NetBalance_sum
+Attleboro/Taunton,Deposit,1293358041.54
+Attleboro/Taunton,Loan,500647400.35
+Other,Deposit,428429855.78
+Other,Loan,851957994.24
+Rhode Island,Deposit,268775299.16
+Rhode Island,Loan,623901471.37
+South Coast,Deposit,518602757.96
+South Coast,Loan,478482385.33
+
