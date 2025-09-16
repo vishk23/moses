@@ -113,8 +113,8 @@ def generate_bronze_tables():
     acctpropins = add_load_timestamp(acctpropins)
     wh_inspolicy = add_load_timestamp(wh_inspolicy)
 
-    write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='merge')
-    write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='merge')
+    write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='overwrite')
+    write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='overwrite')
 
 
     # Account data ========================

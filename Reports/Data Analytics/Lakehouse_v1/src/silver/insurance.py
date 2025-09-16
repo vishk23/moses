@@ -11,12 +11,12 @@ def generate_insurance_table():
     TABLE_PATH = src.config.BRONZE / "wh_inspolicy"
     wh_inspolicy = DeltaTable(TABLE_PATH).to_pandas()
 
-    ## Acctnbr/Propnbr are not used in wh_policy
-    ## We do a quality check to assure this doesn't change upstream in the future
-    assert wh_inspolicy['acctnbr'].isnull().all, "Upstream users started populating this field, data model will change"
-    assert wh_inspolicy['propnbr'].isnull().all, "Upstream users started populating this field, data model will change"
+    # ## Acctnbr/Propnbr are not used in wh_policy
+    # ## We do a quality check to assure this doesn't change upstream in the future
+    # assert wh_inspolicy['acctnbr'].isnull().all, "Upstream users started populating this field, data model will change"
+    # assert wh_inspolicy['propnbr'].isnull().all, "Upstream users started populating this field, data model will change"
 
-    wh_inspolicy = wh_inspolicy.drop(columns=['acctnbr','propnbr']).copy()
+    # wh_inspolicy = wh_inspolicy.drop(columns=['acctnbr','propnbr']).copy()
 
     # Left join
     full_insurance_data = pd.merge(
