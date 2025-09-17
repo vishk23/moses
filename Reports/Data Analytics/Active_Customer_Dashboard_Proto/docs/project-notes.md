@@ -37,4 +37,20 @@ We would just be showing what the customer base looks like as of a certain point
 
 We would actually just have multiple versions and we'd do something like SELECT * to get all snapshots together in 1 table. Maybe nuance in the implementation
 
+# 2025-09-17
 
+# Absent of proper portfolio silver dimension table
+# Separate field for presence of Muni (Y/N)
+# We group by portfolio key and come up with a dimension
+# Example: portfolio key is primary key and then I have a calculated field (agg, probably lambda function)
+    # - Category
+    #     - if taxrptfororgnbr is all null, 'Consumer', if taxrptforpersnbr is all null, 'Business'
+    #     - else, 'Mixed'
+    # - Total loan Balance
+    #     - sum up 'Net Balance' on records (acctnbr) where df['Macro Account Type'] = Loan
+    # - Total deposit Balance
+    #     - sum up 'Net Balance' on records (acctnbr) where df['Macro Account Type'] = Deposit
+    # - Unique Loans
+    #     - nunique Loans (use logic above)
+    # - Unqiue Deposits
+    #     - nunique deposits (use logic above)

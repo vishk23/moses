@@ -131,18 +131,4 @@ def main_pipeline():
 
     return df, portfolio
 
-# Absent of proper portfolio silver dimension table
-# Separate field for presence of Muni (Y/N)
-# We group by portfolio key and come up with a dimension
-# Example: portfolio key is primary key and then I have a calculated field (agg, probably lambda function)
-    - Category
-        - if taxrptfororgnbr is all null, 'Consumer', if taxrptforpersnbr is all null, 'Business'
-        - else, 'Mixed'
-    - Total loan Balance
-        - sum up 'Net Balance' on records (acctnbr) where df['Macro Account Type'] = Loan
-    - Total deposit Balance
-        - sum up 'Net Balance' on records (acctnbr) where df['Macro Account Type'] = Deposit
-    - Unique Loans
-        - nunique Loans (use logic above)
-    - Unqiue Deposits
-        - nunique deposits (use logic above)
+
