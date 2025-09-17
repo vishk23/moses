@@ -54,3 +54,13 @@ We would actually just have multiple versions and we'd do something like SELECT 
     #     - nunique Loans (use logic above)
     # - Unqiue Deposits
     #     - nunique deposits (use logic above)
+
+
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:61: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  loan_bal = g.apply(lambda x: x.loc[x["__is_loan__"], "__net_bal__"].sum(min_count=1)).fillna(0.0)
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:64: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dep_bal = g.apply(lambda x: x.loc[x["__is_deposit__"], "__net_bal__"].sum(min_count=1)).fillna(0.0)
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:68: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True))
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:71: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
