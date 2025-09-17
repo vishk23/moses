@@ -94,8 +94,8 @@ def generate_bronze_tables():
     wh_prop = add_load_timestamp(wh_prop)
     wh_prop2 = add_load_timestamp(wh_prop2)
 
-    write_deltalake(WH_PROP_PATH, wh_prop, mode='merge', schema_mode='merge')
-    write_deltalake(WH_PROP2_PATH, wh_prop2, mode='merge', schema_mode='merge')
+    write_deltalake(WH_PROP_PATH, wh_prop, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_PROP2_PATH, wh_prop2, mode='overwrite', schema_mode='merge')
 
     # Insurance ======================== 
     ACCTPROPINS_PATH = src.config.BRONZE / "acctpropins"
@@ -113,8 +113,8 @@ def generate_bronze_tables():
     acctpropins = add_load_timestamp(acctpropins)
     wh_inspolicy = add_load_timestamp(wh_inspolicy)
 
-    write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='overwrite')
-    write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='overwrite')
+    write_deltalake(ACCTPROPINS_PATH, acctpropins, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_INSPOLICY_PATH, wh_inspolicy, mode='overwrite', schema_mode='merge')
 
 
     # Account data ========================
