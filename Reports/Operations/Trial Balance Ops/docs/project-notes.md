@@ -235,5 +235,5 @@ it's invrorgnbr that ties to wh_org
 
 ties to WH_INVR which has acctnbr as primary key
 
-
-
+- need to include everything except closed loans. Should have cls too
+This is beyond commercial. This is all loans 

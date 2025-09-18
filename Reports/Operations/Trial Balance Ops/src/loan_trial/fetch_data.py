@@ -41,6 +41,7 @@ def fetch_invr():
     """)
 
     queries = [
+        {'key':'wh_invr', 'sql':wh_invr, 'engine':1},
         {'key':'acctgrpinvr', 'sql':acctgrpinvr, 'engine':1},
     ]
 
