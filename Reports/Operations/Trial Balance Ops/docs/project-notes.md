@@ -223,7 +223,4 @@ It's bronze -> OBT -> downstream analysis. Hard though because there are all sor
 ---
 # 2025-09-15
 
-Big time overdue on this. Can't put this on the super hold while I build everything else out. This is something to deliver asap. Why not just build it exactly as you think it would need to function and then from there, you can always refactor and adapt. The optimal solution/perfect data model isn't ready off the shelf to use so might as well just build it exactly to spec and refactor later on
-
-
-
+Big time overdue on this. Can't put this on the super hold while I build everything else out. This is something to deliver asap. Why not just build it exactly as you think it would need to function and then from there, you can always refactor and adapt. The optimal solution/perfect data model isn't ready off the shelf to use so might as well just 
