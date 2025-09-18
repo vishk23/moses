@@ -83,7 +83,9 @@ def main_pipeline():
     merged_df = merged_df.drop(columns=['taxrptfororgnbr']).copy()
     merged_df['Total Accounts'] = merged_df['Unique Deposit Accounts'] + merged_df['Unique Loan Accounts']
 
-    vieworgtaxid = src.neworgs_2025.fetch_data.fetch_data()
+    raw_taxid = src.neworgs_2025.fetch_data.fetch_data()
+
+    vieworgtaxid = raw_taxid['vieworgtaxid'].copy()
 
     assert vieworgtaxid['orgnbr'].is_unique, "Duplicates"
 
