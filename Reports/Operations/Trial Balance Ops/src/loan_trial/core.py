@@ -41,6 +41,13 @@ def main_pipeline():
         'datemat',
         'creditlimitamt',
         'loanlimityn',
+        'creditlimitclatresamt',
+        'nextratechg',
+        'amortterm',
+        'riskratingcd',
+        'fdiccatcd',
+        'fdiccatdesc',
+        'inactivedate',
     ]].copy()
 
     # Get investor data
@@ -81,7 +88,47 @@ def main_pipeline():
     }).copy()
 
     accts = accts.merge(merged_investor, on='acctnbr', how='left')
-    return accts
+
+    # acctloan
+    acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan")
+    acctloan = acctloan[[
+        'acctnbr',
+        'currduedate',
+        'totalpaymentsdue',
+        'totalpidue',
+        'minintrate',
+        'maxintrate',
+        'maxratechangedown',
+        'maxratechangeup',
+        'ratechangerndmethcd',
+        'pmtchangerndmethcd',
+        'marginpct',
+        'marginfixed',
+        'deffeerem',
+        'deffeerate',
+        'defcostrem',
+        'defcostrate'
+    ]]
+    # wh_loans 
+    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans")
+    wh_loans = wh_loans[[
+        'acctnbr',
+        'rcf',
+        'ratechangeleaddays',
+        'totalpidue',
+        'revolveloanyn',
+        
+    ]]
+    # wh_acctcommon 
+    wh_acctcommon = DeltaTable(src.config.BRONZE / "wh_acctcommon")
+    wh_acctcommon = wh_acctcommon[[
+        'acctnbr',
+        'intbase',
+        'intmethcd',
+        'ratetypcd',
+        'daysmethcd',
+        ''
+    ]]    return accts
 
 
     # notenextratechange (WH_ACCTCOMMON)
