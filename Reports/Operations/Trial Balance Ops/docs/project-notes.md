@@ -224,3 +224,16 @@ It's bronze -> OBT -> downstream analysis. Hard though because there are all sor
 # 2025-09-15
 
 Big time overdue on this. Can't put this on the super hold while I build everything else out. This is something to deliver asap. Why not just build it exactly as you think it would need to function and then from there, you can always refactor and adapt. The optimal solution/perfect data model isn't ready off the shelf to use so might as well just 
+
+
+on investor side:
+ACCTGRPINVR
+acctgrpnbr is primary key
+it's invrorgnbr that ties to wh_org
+- this is how you get org name
+- can get balances from here I believe
+
+ties to WH_INVR which has acctnbr as primary key
+
+
+

@@ -15,20 +15,33 @@ from typing import Optional
 # Define fetch data here using cdutils.database.connect
 # There are often fetch_data.py files already in project if migrating
 
-def fetch_data():
+def fetch_invr():
     """
     Main data query
     """
     
-    wh_acctcommon = text(f"""
+    wh_invr = text(f"""
     SELECT
-        *
+        a.ACCTNBR,
+        a.ACCTGRPNBR,
+        a.INVRSTATCD,
+        a.PCTOWNED,
+        a.ORIGINVRRATE,
+        a.CURRINVRRATE
     FROM
-        COCCDM.WH_ACCTCOMMON a
+        OSIBANK.WH_INVR a
+    """)
+    
+    acctgrpinvr = text(f"""
+    SELECT
+        a.ACCTGRPNBR,
+        a.INVRORGNBR
+    FROM
+        OSIBANK.ACCTGRPINVR a
     """)
 
     queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
+        {'key':'acctgrpinvr', 'sql':acctgrpinvr, 'engine':1},
     ]
 
     data = cdutils.database.connect.retrieve_data(queries)
