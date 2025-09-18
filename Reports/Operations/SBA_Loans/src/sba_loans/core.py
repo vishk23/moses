@@ -18,7 +18,7 @@ def main_report_creation():
     wh_addr = orgpersaddr_data['wh_addr'].copy()
 
     # Filter to SBA loans and select relevant columns
-    df = df[df['product'].str.contains('SBA', case=False, na=False)].copy()
+    # df = df[df['product'].str.contains('SBA', case=False, na=False)].copy()
     df = df[[
         'acctnbr',
         'ownersortname',
@@ -28,6 +28,8 @@ def main_report_creation():
         'currmiaccttypcd',
         'curracctstatcd',
         'loanofficer',
+        'taxrptfororgnbr',
+        'taxrptforpersnbr'
     ]].copy()
 
 
@@ -79,7 +81,7 @@ def main_report_creation():
     df = df.merge(orgaddruse, left_on='taxrptfororgnbr', right_on='orgnbr', how='left')
 
     df = df.drop(columns=['taxrptfororgnbr','orgnbr','addrnbr']).copy()
- %%
+
     persaddruse = persaddruse.merge(wh_addr, on='addrnbr', how='inner')
 
     df = df.merge(persaddruse, left_on='taxrptforpersnbr', right_on='persnbr', how='left')
