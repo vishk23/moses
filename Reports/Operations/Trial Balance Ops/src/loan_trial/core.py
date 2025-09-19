@@ -90,7 +90,7 @@ def main_pipeline():
     accts = accts.merge(merged_investor, on='acctnbr', how='left')
 
     # acctloan
-    acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan")
+    acctloan = DeltaTable(src.config.BRONZE / "wh_acctloan").to_pandas()
     acctloan = acctloan[[
         'acctnbr',
         'currduedate',
