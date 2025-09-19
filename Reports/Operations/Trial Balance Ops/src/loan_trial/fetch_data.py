@@ -71,3 +71,45 @@ def fetch_acctsubacct():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+def fetch_wh_acct():
+    """
+    Main data query
+    """
+    
+    wh_acct = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.NAICSCD,
+        a.NAICSDESC
+    FROM
+        OSIBANK.WH_ACCT a
+    """)
+    
+    queries = [
+        {'key':'wh_acct', 'sql':wh_acct, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+
+def fetch_userfields():
+    """Fetch account-level user fields."""
+
+    wh_acctuserfields = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.ACCTUSERFIELDCD,
+        a.ACCTUSERFIELDVALUE,
+        a.ACCTDATELASTMAINT
+    FROM
+        OSIBANK.WH_ACCTUSERFIELDS a
+    """)
+
+    queries = [
+        {'key':'wh_acctuserfields', 'sql':wh_acctuserfields, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
