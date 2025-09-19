@@ -15,20 +15,102 @@ from typing import Optional
 # Define fetch data here using cdutils.database.connect
 # There are often fetch_data.py files already in project if migrating
 
-def fetch_data():
+def fetch_invr():
     """
     Main data query
     """
     
-    wh_acctcommon = text(f"""
+    wh_invr = text(f"""
     SELECT
-        *
+        a.ACCTNBR,
+        a.ACCTGRPNBR,
+        a.INVRSTATCD,
+        a.PCTOWNED,
+        a.ORIGINVRRATE,
+        a.CURRINVRRATE
     FROM
-        COCCDM.WH_ACCTCOMMON a
+        OSIBANK.WH_INVR a
+    """)
+    
+    acctgrpinvr = text(f"""
+    SELECT
+        a.ACCTGRPNBR,
+        a.INVRORGNBR
+    FROM
+        OSIBANK.ACCTGRPINVR a
     """)
 
     queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
+        {'key':'wh_invr', 'sql':wh_invr, 'engine':1},
+        {'key':'acctgrpinvr', 'sql':acctgrpinvr, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+
+
+def fetch_acctsubacct():
+    """
+    Main data query
+    """
+    
+    acctsubacct = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.EFFDATE,
+        a.ESCROWCUSHIONAMT,
+        a.ALTERNATEESCPMTAMT
+    FROM
+        OSIBANK.ACCTSUBACCTCUSHION a
+    """)
+    
+    queries = [
+        {'key':'acctsubacct', 'sql':acctsubacct, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+def fetch_wh_acct():
+    """
+    Main data query
+    """
+    
+    wh_acct = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.NAICSCD,
+        a.NAICSDESC
+    FROM
+        OSIBANK.WH_ACCT a
+    """)
+    
+    queries = [
+        {'key':'wh_acct', 'sql':wh_acct, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+
+def fetch_userfields():
+    """Fetch account-level user fields."""
+
+    wh_acctuserfields = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.ACCTUSERFIELDCD,
+        a.ACCTUSERFIELDVALUE,
+        a.ACCTDATELASTMAINT
+    FROM
+        OSIBANK.WH_ACCTUSERFIELDS a
+    WHERE
+        a.ACCTUSERFIELDCD IN ('HHNU','SCRA','ASST','DTYP')
+    """)
+
+    queries = [
+        {'key':'wh_acctuserfields', 'sql':wh_acctuserfields, 'engine':1},
     ]
 
     data = cdutils.database.connect.retrieve_data(queries)
