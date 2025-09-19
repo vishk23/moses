@@ -68,7 +68,7 @@ def main_pipeline():
     wh_org = cdutils.deduplication.dedupe(dedupe_list).copy()
     wh_org['orgnbr'] = wh_org['orgnbr'].astype(str)
     wh_invr['acctgrpnbr'] = wh_invr['acctgrpnbr'].astype(str)
-    acctgrpinvr['acctgrpnbr'] = wh_invr['acctgrpnbr'].astype(str)
+    acctgrpinvr['acctgrpnbr'] = acctgrpinvr['acctgrpnbr'].astype(str)
     acctgrpinvr['invrorgnbr'] = acctgrpinvr['invrorgnbr'].astype(str)
 
     merged_investor = wh_invr.merge(acctgrpinvr, on='acctgrpnbr', how='left').merge(wh_org, left_on='invrorgnbr', right_on='orgnbr')
@@ -123,12 +123,11 @@ def main_pipeline():
     accts = accts.merge(acctloan, how='left', on='acctnbr')
 
     # wh_loans 
-    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans")
+    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans").to_pandas()
     wh_loans = wh_loans[[
         'acctnbr',
         'rcf',
         'ratechangeleaddays',
-        'totalpidue',
         'revolveloanyn'
     ]].copy()
 
@@ -137,26 +136,25 @@ def main_pipeline():
     accts = accts.merge(wh_loans, how='left', on='acctnbr')
 
     # wh_acctcommon 
-    wh_acctcommon = DeltaTable(src.config.BRONZE / "wh_acctcommon")
+    wh_acctcommon = DeltaTable(src.config.BRONZE / "wh_acctcommon").to_pandas()
     wh_acctcommon = wh_acctcommon[[
         'acctnbr',
         'intbase',
         'intmethcd',
         'ratetypcd',
-        'daysmethcd',
-        'notenextratechange',
+        'daysmethcd'
     ]].copy()
 
     wh_acctcommon['acctnbr'] = wh_acctcommon['acctnbr'].astype(str)
     assert wh_acctcommon['acctnbr'].is_unique, "Duplicates premerge accts & wh_acctcommon"
     accts = accts.merge(wh_acctcommon, how='left', on='acctnbr')
 
-    acctsubacct = src.fetch_data.fetch_acctsubacct()
+    acctsubacct = src.loan_trial.fetch_data.fetch_acctsubacct()
     acctsubacct = acctsubacct['acctsubacct'].copy()
     acctsubacct = acctsubacct.sort_values(by='effdate', ascending=False)
 
     dedupe_list = [
-        {'df':acctsubacct, 'field':'acctsubacct'}
+        {'df':acctsubacct, 'field':'acctnbr'}
     ]
     acctsubacct = cdutils.deduplication.dedupe(dedupe_list).copy()
     acctsubacct = acctsubacct[[

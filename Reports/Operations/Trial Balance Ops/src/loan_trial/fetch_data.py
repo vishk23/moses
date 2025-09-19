@@ -59,7 +59,8 @@ def fetch_acctsubacct():
     SELECT
         a.ACCTNBR,
         a.EFFDATE,
-        a.ESCROWCUSHIONAMT
+        a.ESCROWCUSHIONAMT,
+        a.ALTERNATEESCPMTAMT
     FROM
         OSIBANK.ACCTSUBACCTCUSHION a
     """)
