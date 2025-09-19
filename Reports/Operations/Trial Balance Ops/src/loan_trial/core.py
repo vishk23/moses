@@ -5,7 +5,7 @@ import pandas as pd
 from deltalake import DeltaTable
 import cdutils.deduplication
 import src.loan_trial.fetch_data
-
+import numpy as np
 
 def _extract_latest_user_field(
     user_fields: pd.DataFrame,
@@ -19,7 +19,7 @@ def _extract_latest_user_field(
         return pd.DataFrame(columns=['acctnbr', column_name])
 
     subset = subset.sort_values(
-        by=['acctnbr', 'datelastmaint'],
+        by=['acctnbr', 'acctdatelastmaint'],
         ascending=[True, False]
     ).copy()
     subset = subset.drop_duplicates(subset=['acctnbr'], keep='first')
@@ -56,6 +56,9 @@ def main_pipeline():
         'noteintrate',
         'notebal',
         'bookbalance',
+        'cobal',
+        'Net Balance',
+        'availbalamt',
         'branchname',
         'loanofficer',
         'contractdate',
@@ -69,6 +72,7 @@ def main_pipeline():
         'fdiccatcd',
         'fdiccatdesc',
         'inactivedate',
+        'totalpctsold',
         'taxrptfororgnbr',
         'taxrptforpersnbr'
     ]].copy()
@@ -317,7 +321,7 @@ def main_pipeline():
 
     wh_pers = DeltaTable(src.config.BRONZE / "wh_pers").to_pandas()
     wh_pers = wh_pers[[
-        'orgnbr',
+        'persnbr',
         'allowpromoyn'
     ]].copy()
     dedupe_list = [
@@ -326,9 +330,9 @@ def main_pipeline():
     wh_pers = cdutils.deduplication.dedupe(dedupe_list).copy()
     wh_pers['persnbr'] = wh_pers['persnbr'].astype(str)
 
-    accts = accts.merge(wh_org, left_on='taxrptforpersnbr', right_on='orgnbr').merge(wh_pers, left_on='taxrptforpersnbr', right_on='persnbr')
-    accts['allowpromoyn'] = np.where(accts['allowpromoyn_x'].is_null(), accts['allowpromoyn_y'], accts['allowpromoyn_x'])
-    accts = accts.drop(columns=['allowpromoyn_x','allowpromoyn_y']).copy()
+    accts = accts.merge(wh_org, left_on='taxrptforpersnbr', right_on='orgnbr', how='left').merge(wh_pers, left_on='taxrptforpersnbr', right_on='persnbr', how='left')
+    accts['allowpromoyn'] = np.where(accts['allowpromoyn_x'].isnull(), accts['allowpromoyn_y'], accts['allowpromoyn_x'])
+    accts = accts.drop(columns=['allowpromoyn_x','allowpromoyn_y','taxrptfororgnbr','taxrptforpersnbr','orgnbr','persnbr']).copy()
 
     return accts
 

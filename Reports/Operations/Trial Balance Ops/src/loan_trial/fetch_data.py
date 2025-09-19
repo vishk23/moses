@@ -105,6 +105,8 @@ def fetch_userfields():
         a.ACCTDATELASTMAINT
     FROM
         OSIBANK.WH_ACCTUSERFIELDS a
+    WHERE
+        a.ACCTUSERFIELDCD IN ('HHNU','SCRA','ASST','DTYP')
     """)
 
     queries = [
