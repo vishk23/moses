@@ -47,3 +47,26 @@ def fetch_invr():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+
+
+def fetch_acctsubacct():
+    """
+    Main data query
+    """
+    
+    acctsubacct = text(f"""
+    SELECT
+        a.ACCTNBR,
+        a.EFFDATE,
+        a.ESCROWCUSHIONAMT
+    FROM
+        OSIBANK.ACCTSUBACCTCUSHION a
+    """)
+    
+    queries = [
+        {'key':'acctsubacct', 'sql':acctsubacct, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

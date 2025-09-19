@@ -76,7 +76,7 @@ def main_pipeline():
     dedupe_list = [
         {'df':merged_investor, 'field':'acctnbr'}
     ]
-    merged_investor = cdutils.deduplication.dedupe(dedupe_list)
+    merged_investor = cdutils.deduplication.dedupe(dedupe_list).copy()
     merged_investor = merged_investor.drop(columns=['orgnbr','invrorgnbr','pctowned','acctgrpnbr']).copy()
     merged_investor['acctnbr'] = merged_investor['acctnbr'].astype(str)
     assert merged_investor['acctnbr'].is_unique, "Duplicates exist. Pre-merge of investor data to full df"
@@ -107,8 +107,21 @@ def main_pipeline():
         'deffeerem',
         'deffeerate',
         'defcostrem',
-        'defcostrate'
-    ]]
+        'defcostrate',
+        'escbal',
+        'escrowdue',
+        'escintrate',
+        'escaccruedint',
+        'esccompmth',
+        'creditreporttypcd',
+        'purpcd'
+    ]].copy()
+
+    acctloan['acctnbr'] = acctloan['acctnbr'].astype(str)
+    assert acctloan['acctnbr'].is_unique, "Duplicates premerge accts & acctloan"
+    
+    accts = accts.merge(acctloan, how='left', on='acctnbr')
+
     # wh_loans 
     wh_loans = DeltaTable(src.config.BRONZE / "wh_loans")
     wh_loans = wh_loans[[
@@ -116,9 +129,13 @@ def main_pipeline():
         'rcf',
         'ratechangeleaddays',
         'totalpidue',
-        'revolveloanyn',
-        
-    ]]
+        'revolveloanyn'
+    ]].copy()
+
+    wh_loans['acctnbr'] = wh_loans['acctnbr'].astype(str)
+    assert wh_loans['acctnbr'].is_unique, "Duplicates premerge accts & wh_loans"
+    accts = accts.merge(wh_loans, how='left', on='acctnbr')
+
     # wh_acctcommon 
     wh_acctcommon = DeltaTable(src.config.BRONZE / "wh_acctcommon")
     wh_acctcommon = wh_acctcommon[[
@@ -127,9 +144,98 @@ def main_pipeline():
         'intmethcd',
         'ratetypcd',
         'daysmethcd',
-        ''
-    ]]    return accts
+        'notenextratechange',
+    ]].copy()
 
+    wh_acctcommon['acctnbr'] = wh_acctcommon['acctnbr'].astype(str)
+    assert wh_acctcommon['acctnbr'].is_unique, "Duplicates premerge accts & wh_acctcommon"
+    accts = accts.merge(wh_acctcommon, how='left', on='acctnbr')
+
+    acctsubacct = src.fetch_data.fetch_acctsubacct()
+    acctsubacct = acctsubacct['acctsubacct'].copy()
+    acctsubacct = acctsubacct.sort_values(by='effdate', ascending=False)
+
+    dedupe_list = [
+        {'df':acctsubacct, 'field':'acctsubacct'}
+    ]
+    acctsubacct = cdutils.deduplication.dedupe(dedupe_list).copy()
+    acctsubacct = acctsubacct[[
+        'acctnbr',
+        'escrowcushionamt',
+        'alternateescpmtamt'
+    ]].copy()
+    acctsubacct['acctnbr'] = acctsubacct['acctnbr'].astype(str)
+    assert acctsubacct['acctnbr'].is_unique, "Duplicates premerge accts & acctsubacct"
+    accts = accts.merge(acctsubacct, how='left', on='acctnbr')
+
+    # Prop data
+    property = DeltaTable(src.config.SILVER / "property").to_pandas()
+    property = property[[
+        'propnbr',
+        'aprsvalueamt',
+        'proptypcd',
+        'proptypdesc',
+        'propdesc',
+        'propvalue',
+        'owneroccupiedcd',
+        'owneroccupieddesc',
+        'purchaseprice',
+        'purchasedate',
+        'platbooknbr',
+        'platbookpage',
+        'floodzone',
+        'floodzoneyn'
+    ]].copy()
+
+    # Link
+    account_property_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
+    account_property_link = account_property_link[[
+        'acctnbr',
+        'propnbr'
+    ]].copy()
+
+    property['propnbr'] = property['propnbr'].astype(str)
+    assert property['propnbr'].is_unique, "Duplicates on property premerge with linking table"
+
+    merged_prop = account_property_link.merge(property, how='left', on='propnbr')
+    merged_prop = merged_prop.sort_values(by='aprsvalueamt', ascending=False)
+    dedupe_list = [
+        {'df':merged_prop, 'field':'acctnbr'}
+    ]
+    merged_prop = cdutils.deduplication.dedupe(dedupe_list).copy()
+    #
+    # # Insurance data for escrow
+    # insurance = DeltaTable(src.config.SILVER / "insurance").to_pandas()
+    # insurance = insurance[[
+    #     'intrpolicynbr',
+    #     'escrowyn',
+    # ]].copy()
+    #
+    # insurance = insurance.rename(columns={
+    #     'escrowyn':'Escrow Insurance'
+    # }).copy()
+    #
+    # assert insurance['intrpolicynbr'].is_unique, "Duplicates premerge insurance and acct_prop_ins_link"
+    # acct_prop_ins_link = DeltaTable(src.config.SILVER / "acct_prop_ins_link").to_pandas()
+    # acct_prop_ins_link = acct_prop_ins_link[[
+    #     'propnbr',
+    #     'intrpolicynbr'
+    # ]].copy()
+    # acct_prop_ins_link = acct_prop_ins_link.drop_duplicates().reset_index(drop=True)
+    #
+    # insurance['intrpolicynbr'] = insurance['intrpolicynbr'].astype(str)
+    # acct_prop_ins_link['propnbr'] = acct_prop_ins_link['propnbr'].astype(str)
+    # acct_prop_ins_link['intrpolicynbr'] = acct_prop_ins_link['intrpolicynbr'].astype(str)
+    #
+    # acct_prop_ins_link = acct_prop_ins_link.merge(insurance, how='left', on='intrpolicynbr')
+    # merged_prop = 
+
+    
+    merged_prop['acctnbr'] = merged_prop['acctnbr'].astype(str)
+    assert merged_prop['acctnbr'].is_unique, "Duplicates premerge merged_prop and accts"
+    accts = accts.merge(merged_prop, how='left', on='acctnbr')
+
+    return accts
 
     # notenextratechange (WH_ACCTCOMMON)
     # noteratechangecalpercd (WH_ACCTCOMMON)
