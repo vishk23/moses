@@ -41,7 +41,7 @@ def main_pipeline():
         'datemat',
         'creditlimitamt',
         'loanlimityn',
-        'creditlimitclatresamt',
+        'credlimitclatresamt',
         'nextratechg',
         'amortterm',
         'riskratingcd',
