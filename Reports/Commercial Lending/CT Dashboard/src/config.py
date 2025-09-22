@@ -4,6 +4,20 @@ CT Dashboard Configuration
 Input Files: HTML exports from covenant/tickler tracking system saved as .xls files in assets/ folder
 Output Files: CT_Covenant_Tracking.xlsx and CT_Tickler_Tracking.xlsx in output/ folder  
 Tables: OSIBANK.WH_ACCTCOMMON, WH_ALLROLES, WH_ORG, WH_PERS for officer assignments
+
+Usage:
+- Run from repo
+- Drop files into input folder from Credit Track (3 saved reports)
+- Run python -m src.main from root of project
+
+Recipients:
+- Commercial Portfolio Managers shared mailbox
+- Laura Stack
+
+CC:
+- Laurie Williams
+- Hasan Ali
+- Linda Sternfelt
 """
 
 import os
