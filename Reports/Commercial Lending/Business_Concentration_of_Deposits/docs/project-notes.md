@@ -2,10 +2,7 @@ Objective:
 Mesh COCC data & XAA data into a centralized business deposit report by relationship.
 
 Usage:
-drop into folder, remote or local
-- Production/ src.main to run
-Production/validation3 notebook is to create xaa_no_match
-
+validation_4_working notebook will run everything
 
 # 2025-08-21
 Fixed this up.
