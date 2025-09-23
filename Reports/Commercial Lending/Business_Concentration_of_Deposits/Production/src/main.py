@@ -160,15 +160,15 @@ def main(production_flag: bool=False):
     from datetime import datetime, timedelta
 
 
-    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=none):
+    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=None):
         xaa_data = xaa_data.copy()
         xaa_data[date_col] = pd.to_datetime(xaa_data[date_col])
 
         # pick target month (previous month in the data unless explicitly provided)
-        if target_previous_month is none:
-            periods = sorted(xaa_data[date_col].dt.to_period('m').unique(), reverse=true)
+        if target_previous_month is None:
+            periods = sorted(xaa_data[date_col].dt.to_period('m').unique(), reverse=True)
             if len(periods) < 2:
-                raise valueerror("not enough periods to determine previous month.")
+                raise ValueError("not enough periods to determine previous month.")
             target_period = periods[1]
         else:
             target_period = (pd.period(target_previous_month, freq='m')
