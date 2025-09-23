@@ -703,3 +703,4 @@ _internal.SchemaMismatchError: Schema error: Cannot merge field marginpct from D
 Schema error: Cannot merge field marginpct from Decimal128(7, 6) to Decimal128(5, 4)
 
 Failure this morning with updating lakehouse
+- fixing by overwriting existing schema. Need to handle data types more explicitly. Upstream change can't break my system
