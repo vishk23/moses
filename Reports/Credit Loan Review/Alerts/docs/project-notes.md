@@ -41,3 +41,7 @@ We had a guar with no taxid address that messed up formatting when I was copy/pa
 1082647
 
 Needs maintenance, no taxid or address
+
+---
+
+Got SFTP all set and did transfer, loading in now and will send full detail to Rich/Linda/Paul afterward
