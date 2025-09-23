@@ -159,82 +159,87 @@ def main(production_flag: bool=False):
 
     from datetime import datetime, timedelta
 
-    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=None):
-        # Ensure date column is datetime
+
+    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=none):
         xaa_data = xaa_data.copy()
         xaa_data[date_col] = pd.to_datetime(xaa_data[date_col])
-        
-        # Determine target period (previous month)
-        if target_previous_month is None:
-            periods = sorted(xaa_data[date_col].dt.to_period('M').unique(), reverse=True)
+
+        # pick target month (previous month in the data unless explicitly provided)
+        if target_previous_month is none:
+            periods = sorted(xaa_data[date_col].dt.to_period('m').unique(), reverse=true)
             if len(periods) < 2:
-                raise ValueError("Not enough periods to determine previous month.")
+                raise valueerror("not enough periods to determine previous month.")
             target_period = periods[1]
         else:
-            if isinstance(target_previous_month, str):
-                target_period = pd.Period(target_previous_month, freq='M')
-            elif isinstance(target_previous_month, pd.Period):
-                target_period = target_previous_month
-            else:
-                raise ValueError("target_previous_month must be a string like '2025-08' or a pd.Period.")
-        
-        # Filter for the target (previous) month
-        is_target_month = (xaa_data[date_col].dt.year == target_period.year) & (xaa_data[date_col].dt.month == target_period.month)
-        
-        # Calculate trailing cutoff (12 months before the target month's end)
+            target_period = (pd.period(target_previous_month, freq='m')
+                            if isinstance(target_previous_month, str)
+                            else target_previous_month)
+
+        is_target_month = (
+            (xaa_data[date_col].dt.year == target_period.year) &
+            (xaa_data[date_col].dt.month == target_period.month)
+        )
+
+        # trailing-12-months window inclusive of the target month
         target_end = target_period.to_timestamp(how='end')
         cutoff_date = target_end - relativedelta(months=12) + relativedelta(days=1)
         is_trailing_12m = xaa_data[date_col] >= cutoff_date
-        
-        # Aggregate using conditional sums/filters
-        summary = (xaa_data
-                .groupby('Debit Account Number')
-                .agg({
-                    # Latest month aggregations (filtered to target month)
-                    'Analyzed Charges': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),  # Assuming global scope or pass as kwarg; adjust if needed
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum(),
-                    ],
-                    'Combined Result for Settlement Period': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum()
-                    ],
-                    'Earnings Credit Rate': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].mean(),
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].mean()
-                    ],
-                    'Primary Officer Name': 'first',
-                    'Secondary Officer Name': 'first',
-                    'Treasury Officer Name': 'first'
-                })
-                .reset_index())
-        
-        # Flatten column names
+
+        # helpers that align masks to the group index
+        def sum_where(mask):
+            return lambda s: s.where(mask.loc[s.index]).sum()
+
+        def mean_where(mask):
+            return lambda s: s.where(mask.loc[s.index]).mean()
+
+        summary = (
+            xaa_data
+            .groupby('debit account number')
+            .agg({
+                'analyzed charges': [
+                    sum_where(is_target_month),
+                    sum_where(is_trailing_12m),
+                ],
+                'combined result for settlement period': [
+                    sum_where(is_target_month),
+                    sum_where(is_trailing_12m),
+                ],
+                'earnings credit rate': [
+                    mean_where(is_target_month),
+                    mean_where(is_trailing_12m),
+                ],
+                'primary officer name': 'first',
+                'secondary officer name': 'first',
+                'treasury officer name': 'first',
+            })
+            .reset_index()
+        )
+
+        # flatten columns to your expected names
         summary.columns = [
-            'Debit Account Number',
-            'Latest_Month_Analyzed_Charges',
-            'Trailing_12M_Analyzed_Charges',
-            'Latest_Month_Combined_Result',
-            'Trailing_12M_Combined_Result',
-            'Latest_Month_ECR',
-            'Trailing_12M_Avg_ECR',
-            'Primary_Officer_Name_XAA',
-            'Secondary_Officer_Name_XAA',
-            'Treasury_Officer_Name_XAA'
+            'debit account number',
+            'latest_month_analyzed_charges',
+            'trailing_12m_analyzed_charges',
+            'latest_month_combined_result',
+            'trailing_12m_combined_result',
+            'latest_month_ecr',
+            'trailing_12m_avg_ecr',
+            'primary_officer_name_xaa',
+            'secondary_officer_name_xaa',
+            'treasury_officer_name_xaa',
         ]
-        
-        # Reorder columns
+
         column_order = [
-            'Debit Account Number',
-            'Latest_Month_Analyzed_Charges',
-            'Latest_Month_Combined_Result',
-            'Trailing_12M_Analyzed_Charges',
-            'Trailing_12M_Combined_Result',
-            'Latest_Month_ECR',
-            'Trailing_12M_Avg_ECR',
-            'Primary_Officer_Name_XAA',
-            'Secondary_Officer_Name_XAA',
-            'Treasury_Officer_Name_XAA'
+            'debit account number',
+            'latest_month_analyzed_charges',
+            'latest_month_combined_result',
+            'trailing_12m_analyzed_charges',
+            'trailing_12m_combined_result',
+            'latest_month_ecr',
+            'trailing_12m_avg_ecr',
+            'primary_officer_name_xaa',
+            'secondary_officer_name_xaa',
+            'treasury_officer_name_xaa',
         ]
         return summary[column_order]
 
