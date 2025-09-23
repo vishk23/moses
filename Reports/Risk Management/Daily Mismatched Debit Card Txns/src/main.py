@@ -6,7 +6,9 @@ import numpy as np
 
 from pathlib import Path
 from openpyxl import load_workbook
+from deltalake import DeltaTable
 
+import src.config
 import os
 import shutil
 import cdutils.distribution # type: ignore
@@ -92,6 +94,7 @@ def main():
     result['Date'] = date_str
     result['Source'] = "co_vsus re-run"
     
+    result['Trans Amt'] = result['Trans Amt'].str.replace(",","")
     result['Trans Amt'] = pd.to_numeric(result['Trans Amt'], errors="coerce")
     result['Trans Amt'] = np.where(result['RTXN Typ'] == "PWTH", 0 - result['Trans Amt'], result['Trans Amt'])
     result = result[['Card Nbr', 'Date', 'Source', 'Trans Amt', 'Acct Nbr', 'RTXN Typ', 'RetRefNbr', 'Merchant']]
@@ -121,7 +124,7 @@ def main():
         elif amount[i] > 0:
             deb_or_cred.append("Credit")
         else:
-            raise ValueError("Transaction amount of 0")
+            pass
         
         # appending last 4 digits of card number to the merchant
 
@@ -138,8 +141,8 @@ def main():
     # Make string if not already
     temp_df['acctnbr'] = temp_df['acctnbr'].astype(str)
 
-    ACTIVE_ACCT_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily Account Table\output\daily_account_table.parquet")
-    active_accts = pd.read_parquet(ACTIVE_ACCT_PATH)
+    
+    active_accts = DeltaTable(src.config.SILVER / "account").to_pandas()
     
     # Merging
     merged_df = pd.merge(temp_df, active_accts, how='outer', on='acctnbr', indicator=True)

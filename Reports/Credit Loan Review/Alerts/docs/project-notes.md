@@ -34,3 +34,10 @@ I build this all in permission_recon_pass.ipynb to build xactus extract and we c
 I'll need to load back in via regular methods. Inspect code to see what's going on there.
 
 This will receive a refactor, but running up against deadline so will get it working as regular and make modifications for next cycle.
+
+
+# 2025-09-23
+We had a guar with no taxid address that messed up formatting when I was copy/pasting over to their template
+1082647
+
+Needs maintenance, no taxid or address

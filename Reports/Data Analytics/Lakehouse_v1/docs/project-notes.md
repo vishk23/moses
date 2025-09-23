@@ -687,3 +687,19 @@ We shouldn't be reading anything from bronze for reporting. I can as one off, bu
 
 Somethings will be lightweight and sit outside of that. Or maybe not. Maybe it all goes in there.
 
+# 2025-09-23
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\main.py", line 36, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\main.py", line 27, in main
+    src.bronze.core.generate_bronze_tables()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Lakehouse_v1\src\bronze\core.py", line 98, in generate_bronze_tables
+    write_deltalake(WH_PROP2_PATH, wh_prop2, mode='overwrite', schema_mode='merge')
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\deltalake\writer\writer.py", line 125, in write_deltalake 
+    table._table.write(
+_internal.SchemaMismatchError: Schema error: Cannot merge field marginpct from Decimal128(7, 6) to Decimal128(5, 4)
+Schema error: Cannot merge field marginpct from Decimal128(7, 6) to Decimal128(5, 4)
+
+Failure this morning with updating lakehouse
