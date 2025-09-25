@@ -45,3 +45,26 @@ Needs maintenance, no taxid or address
 ---
 
 Got SFTP all set and did transfer, loading in now and will send full detail to Rich/Linda/Paul afterward
+
+# 2025-09-25
+Meeting went smoothly
+41/74 passed all
+
+We sort in ascending inactive data, ownersortname to ensure we have correct order
+
+Out of 33 reviewed, 6 fail and 7 pushed 1/2 year out
+
+TODO: Look into Malcolm Givens item with cleanup
+TODO: Think about IOLTA not showing up in hhnbr
+TODO: Clean up column names on output
+
+Further integrations:
+- PD RE taxes
+- D&B
+- UCC/secretary of state filings
+    - Rich meeting to review this
+
+Run on whole portfolio, credit score might not scale to everything
+- PFS as limiting factor
+- Wonder if we can adjust loan docs to include language going forward, laser pro
+
