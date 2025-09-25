@@ -704,3 +704,39 @@ Schema error: Cannot merge field marginpct from Decimal128(7, 6) to Decimal128(5
 
 Failure this morning with updating lakehouse
 - fixing by overwriting existing schema. Need to handle data types more explicitly. Upstream change can't break my system
+
+
+# 2025-09-24
+CustomerDim
+
+Objective:
+- provide a clear way 
+
+Fields:
+customer_id: O+orgnbr or P+persnbr
+customer_name: ownersortname
+first_name: only for person
+last_name: only for person
+is_active: boolean
+customer_since: date of first acct opened
+unique_loan_accts: # of loan accts
+unique_deposit_accts: # of deposit accts
+loan_balance: $ net balance for loans
+loan_exposure: $ total loan exposure
+deposit_balance: $ net balance for deposits
+taxid: taxid
+dob: date of birth
+dod: date of death
+age: calculated field, current day - dob
+deceased: boolean, if age >= 110, set to True
+loan_officer: mode of loan officers, else null
+acct_officer: mode of deposit officers, else null
+
+---
+
+AccountDim
+
+Objective:
+- Provide a clear 
+
+product
