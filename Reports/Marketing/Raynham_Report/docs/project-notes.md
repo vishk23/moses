@@ -53,7 +53,7 @@ append address
 Separately, we handle account table
 - create customer_id to match primary key of customer dim
 - branch name will be a filter later on
-- need calculated field from rtxn table (90 day window) to see if transacted at this particular branch
+- need calculated field from rtxn table (90 day#  window) to see if transacted at this particular branch
     - basically becomes a boolean on rtxn table that gets left joined to active account table
 
 This gets joined back to the customer dim table
@@ -61,3 +61,12 @@ This gets joined back to the customer dim table
 
 Ready to share.
 
+# 2025-09-28
+Minor issue. Pulled all orgs/pers and db looks like 100% of records have N for allow promo. So we don't allow promo for anything?
+
+No way to peer into historical view of this. No db access on that.
+
+Regardless, I can still build customer dim and create this, but I don't know if we can send things out. Someone must've done something because this wasn't historically what org and pers tables looked like.
+
+
+Mail restriction tool on COCC is restricted for me. Not sure.
