@@ -36,3 +36,28 @@ age is easy to filter out
 I think safe deposit boxes would have a branch name right?
 
 Businesses are included too.
+
+# 2025-09-26
+
+Will devote some time to working on this today. We will have a customer dimension table as the end goal, which will have certain critiera to show a person or a business.
+
+O+orgnbr or P+persnbr will be the primary key here
+- easy decoding and encoding to get at some of the other tables here.
+
+Mapped out how this works:
+customer dimension table created from wh_org, wh_pers, pers, org
+    - has addrnbr and typical exclusion fields
+
+append address
+
+Separately, we handle account table
+- create customer_id to match primary key of customer dim
+- branch name will be a filter later on
+- need calculated field from rtxn table (90 day window) to see if transacted at this particular branch
+    - basically becomes a boolean on rtxn table that gets left joined to active account table
+
+This gets joined back to the customer dim table
+- filter down, exclusions
+
+Ready to share.
+
