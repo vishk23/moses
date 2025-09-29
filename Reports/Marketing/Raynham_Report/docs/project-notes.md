@@ -68,5 +68,5 @@ No way to peer into historical view of this. No db access on that.
 
 Regardless, I can still build customer dim and create this, but I don't know if we can send things out. Someone must've done something because this wasn't historically what org and pers tables looked like.
 
-
-Mail restriction tool on COCC is restricted for me. Not sure.
+# 2025-09-29
+Not a major factor. Checked with Tom K and this is all set. No issues there.

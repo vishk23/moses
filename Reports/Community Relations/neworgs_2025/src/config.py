@@ -4,22 +4,22 @@ Project Configuration Template
 This file provides a template for configuring a new report or data pipeline project.
 Fill in the placeholders below with your project's specific details.
 
-Input Files: <describe input files or data sources>
-Output Files: <describe output files or datasets>
-Tables: <list relevant database tables or data sources>
+Usage:
+run from monorepo (here) through runner or cd to neworgs_2025/
+python -m src.main
 """
 
 import os
 from pathlib import Path
 
 # Report Info
-REPORT_NAME = "<Project Name>"
-BUSINESS_LINE = "<Business Line or Department>"
-SCHEDULE = "<Schedule: Daily/Weekly/Monthly/Manual>"
-OWNER = "<Project Owner or Team>"
+REPORT_NAME = "New Orgs YTD (2025)"
+BUSINESS_LINE = "Community Relations"
+SCHEDULE = "Weekly (Monday)"
+OWNER = "Jeff Bradley"
 
 # Status
-PROD_READY = False
+PROD_READY = True 
 
 # Environment & Paths
 ENV = os.getenv('REPORT_ENV', 'dev')

@@ -188,9 +188,6 @@ from OSIEXTN.HOUSEHLDACCT</File>
 Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
         <MetaInfo connection="Output">
           <RecordInfo>
             <Field description="PrimaryKey" name="ACCTNBR" source="File: oci:Bristol1625read/__EncPwd1__@10.1.102.65:41625/r1625|||select OSIEXTN.HOUSEHLDACCT.ACCTNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.HOUSEHOLDNBR,&#xA;	OSIEXTN.HOUSEHLDACCT.DATELASTMAINT &#xA;from OSIEXTN.HOUSEHLDACCT" type="Int64" />
@@ -324,7 +321,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_26732_cd20b4c55c8946148c3cc80152bb9c00_\Engine_26732_25250c07bf64944f9ea13e8873a1ae4f~.yxdb</TempFile>
+          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_22972_709741b116444e65bd72da84525bf276_\Engine_22972_ac275e757d09714dac93464425285539~.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -398,26 +395,12 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Mode>Simple</Mode>
-          <Simple>
-            <Operator>=</Operator>
-            <Field>MJACCTTYPCD</Field>
-            <Operands>
-              <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
-              <DateType>fixed</DateType>
-              <PeriodDate>2024-07-26 10:09:02</PeriodDate>
-              <PeriodType>
-              </PeriodType>
-              <PeriodCount>0</PeriodCount>
-              <Operand>CML</Operand>
-              <StartDate>2024-07-26 10:09:02</StartDate>
-              <EndDate>2024-07-26 10:09:02</EndDate>
-            </Operands>
-          </Simple>
+          <Expression>[MJACCTTYPCD] IN ("CML","MLN")</Expression>
+          <Mode>Custom</Mode>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText>[MJACCTTYPCD] = "CML"</DefaultAnnotationText>
+          <DefaultAnnotationText>[MJACCTTYPCD] IN ("CML","MLN")</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>
@@ -447,7 +430,7 @@ Query=select OSIEXTN.HOUSEHLDACCT....</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_26732_cd20b4c55c8946148c3cc80152bb9c00_\Engine_26732_0fd0d28655ec2545bbec17ba13a7e67e~.yxdb</TempFile>
+          <TempFile>C:\Users\w322800\AppData\Local\Temp\Alteryx\Engine_22972_709741b116444e65bd72da84525bf276_\Engine_22972_6525ae4b9776e54583556e94809b0756~.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -576,7 +559,7 @@ Query=Sheet1</DefaultAnnotationText>
           <Properties>
             <Configuration>
               <Passwords />
-              <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">\\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`</File>
+              <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="25">C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`</File>
               <FormatSpecificOptions>
                 <FirstRowData>False</FirstRowData>
                 <ImportLine>1</ImportLine>
@@ -584,23 +567,26 @@ Query=Sheet1</DefaultAnnotationText>
             </Configuration>
             <Annotation DisplayMode="0">
               <Name />
-              <DefaultAnnotationText>Household_Report_20250804.xlsx
+              <DefaultAnnotationText>Household_Report_20250902.xlsx
 Query=`Sheet1$`</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
+            <Dependencies>
+              <Implicit />
+            </Dependencies>
             <MetaInfo connection="Output">
               <RecordInfo>
-                <Field name="acctnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Double" />
-                <Field name="householdnbr" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Double" />
-                <Field name="ownersortname" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="product" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="loanofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="acctofficer" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="bookbalance" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="noteintrate" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="mjaccttypcd" size="255" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="V_String" />
-                <Field name="contractdate" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Date" />
-                <Field name="datemat" source="File: \\00-DA1\Home\Share\Data &amp; Analytics Initiatives\Project Management\Data_Analytics\Household_Report\Production\output\Household_Report_20250804.xlsx|||`Sheet1$`" type="Date" />
+                <Field name="acctnbr" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="Double" />
+                <Field name="householdnbr" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="Double" />
+                <Field name="ownersortname" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="product" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="loanofficer" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="acctofficer" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="bookbalance" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="noteintrate" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="mjaccttypcd" size="255" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="V_String" />
+                <Field name="contractdate" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="Date" />
+                <Field name="datemat" source="File: C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Household_Report\Production\output\Household_Report_20250902.xlsx|||`Sheet1$`" type="Date" />
               </RecordInfo>
             </MetaInfo>
           </Properties>
