@@ -109,6 +109,9 @@ def main(production_flag: bool=False):
         min_deposits = 50000, # Minimum deposits to be eligible to flag deposit decrease
         utilization_limit = .7 # Line Utilization flag for trailing 12 months
     )
+    # Writing output
+    RAW_DATA = BASE_PATH / Path('./Output/raw_data.xlsx')
+    loan_data.to_excel(RAW_DATA, index=False, engine='openpyxl', sheet_name='Sheet1')
 
     # Consolidation of the columns necessary
     final_df = loan_data[['acctnbr','effdate','ownername','product','loanofficer','inactivedate','Net Balance','Net Available','Net Collateral Reserve','cobal','creditlimitamt','Total Exposure_hhgroup','ttm_pd','ttm_pd30','TTM Days Overdrawn','3Mo_AvgBal','TTM_AvgBal','Deposit Change Pct','ttm line utilization','cleanup_provision','riskratingcd','past_due_flag','ttm_overdrafts_flag','deposit_change_flag','ttm_utilization_flag','score_flag','passed_all_flag']]

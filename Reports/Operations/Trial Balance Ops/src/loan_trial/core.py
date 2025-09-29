@@ -3,7 +3,7 @@
 import src.config
 import pandas as pd
 from deltalake import DeltaTable
-import cdutils.deduplication
+import cdutils.deduplication # type: ignore
 import src.loan_trial.fetch_data
 import numpy as np
 

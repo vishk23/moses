@@ -5,6 +5,17 @@ relevant to Nancy Cabral, David Ferreira, and George Mendros.
 Input Files: None (database query)
 Output Files: Portfolio_Report [Month Day Year].xlsx
 Tables: WH_ACCTCOMMON, WH_ACCTLOAN, WH_PROP, WH_PROP2, WH_LOANS, WH_ACCTROLE
+
+Usage:
+- Run from monorepo
+
+Recipients:
+- Dave F
+- Nancy C
+- George M
+
+CC:
+- Joan Medeiros
 """
 
 import os
@@ -30,6 +41,6 @@ EMAIL_TO = [
     "george.mendros@bcsbmail.com",
     "David.Ferreira@bcsbmail.com"
 ] if ENV == 'prod' else []
-EMAIL_CC = ["chad.doorley@bcsbmail.com", "businessintelligence@bcsbmail.com"] if ENV == 'prod' else []
+EMAIL_CC = ["chad.doorley@bcsbmail.com", "businessintelligence@bcsbmail.com","Joan.Medeiros@bcsbmail.com"] if ENV == 'prod' else []
 
 # Creates directories

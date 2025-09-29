@@ -159,104 +159,111 @@ def main(production_flag: bool=False):
 
     from datetime import datetime, timedelta
 
-    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=None):
-        # Ensure date column is datetime
-        xaa_data = xaa_data.copy()
-        xaa_data[date_col] = pd.to_datetime(xaa_data[date_col])
-        
-        # Determine target period (previous month)
+
+
+    def create_account_summary_alternative(xaa_data, date_col='Cycle End Date', target_previous_month=None):
+        """
+        Computes account-level latest-month and trailing-12-month rollups from XAA export,
+        emitting column names that match the rest of the pipeline:
+        - Latest_Month_Analyzed_Charges
+        - Latest_Month_Combined_Result
+        - Trailing_12M_Analyzed_Charges
+        - Trailing_12M_Combined_Result
+        - Latest_Month_ECR
+        - Trailing_12M_Avg_ECR
+        - Primary_Officer_Name_XAA
+        - Secondary_Officer_Name_XAA
+        - Treasury_Officer_Name_XAA
+        - Debit Account Number (kept to rename -> acctnbr later)
+        """
+        xaa = xaa_data.copy()
+
+        # Ensure datetime
+        xaa[date_col] = pd.to_datetime(xaa[date_col])
+
+        # Determine the "target previous month"
         if target_previous_month is None:
-            periods = sorted(xaa_data[date_col].dt.to_period('M').unique(), reverse=True)
+            periods = sorted(xaa[date_col].dt.to_period('M').unique(), reverse=True)
             if len(periods) < 2:
-                raise ValueError("Not enough periods to determine previous month.")
-            target_period = periods[1]
+                raise ValueError("not enough periods to determine previous month.")
+            target_period = periods[1]  # previous month relative to the latest month present
         else:
-            if isinstance(target_previous_month, str):
-                target_period = pd.Period(target_previous_month, freq='M')
-            elif isinstance(target_previous_month, pd.Period):
-                target_period = target_previous_month
-            else:
-                raise ValueError("target_previous_month must be a string like '2025-08' or a pd.Period.")
-        
-        # Filter for the target (previous) month
-        is_target_month = (xaa_data[date_col].dt.year == target_period.year) & (xaa_data[date_col].dt.month == target_period.month)
-        
-        # Calculate trailing cutoff (12 months before the target month's end)
+            target_period = (
+                pd.Period(target_previous_month, freq='M')
+                if isinstance(target_previous_month, str)
+                else target_previous_month
+            )
+
+        is_target_month = (
+            (xaa[date_col].dt.year == target_period.year) &
+            (xaa[date_col].dt.month == target_period.month)
+        )
+
+        # Trailing 12 months window inclusive of target month
         target_end = target_period.to_timestamp(how='end')
         cutoff_date = target_end - relativedelta(months=12) + relativedelta(days=1)
-        is_trailing_12m = xaa_data[date_col] >= cutoff_date
-        
-        # Aggregate using conditional sums/filters
-        summary = (xaa_data
-                .groupby('Debit Account Number')
-                .agg({
-                    # Latest month aggregations (filtered to target month)
-                    'Analyzed Charges': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),  # Assuming global scope or pass as kwarg; adjust if needed
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum(),
-                    ],
-                    'Combined Result for Settlement Period': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum()
-                    ],
-                    'Earnings Credit Rate': [
-                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].mean(),
-                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].mean()
-                    ],
-                    'Primary Officer Name': 'first',
-                    'Secondary Officer Name': 'first',
-                    'Treasury Officer Name': 'first'
-                })
-                .reset_index())
-        
-        # Flatten column names
-        summary.columns = [
-            'Debit Account Number',
-            'Latest_Month_Analyzed_Charges',
-            'Trailing_12M_Analyzed_Charges',
-            'Latest_Month_Combined_Result',
-            'Trailing_12M_Combined_Result',
-            'Latest_Month_ECR',
-            'Trailing_12M_Avg_ECR',
-            'Primary_Officer_Name_XAA',
-            'Secondary_Officer_Name_XAA',
-            'Treasury_Officer_Name_XAA'
-        ]
-        
-        # Reorder columns
-        column_order = [
-            'Debit Account Number',
-            'Latest_Month_Analyzed_Charges',
-            'Latest_Month_Combined_Result',
-            'Trailing_12M_Analyzed_Charges',
-            'Trailing_12M_Combined_Result',
-            'Latest_Month_ECR',
-            'Trailing_12M_Avg_ECR',
-            'Primary_Officer_Name_XAA',
-            'Secondary_Officer_Name_XAA',
-            'Treasury_Officer_Name_XAA'
-        ]
-        return summary[column_order]
+        is_trailing_12m = xaa[date_col] >= cutoff_date
 
-    # %%
+        # Precompute masked series so groupby sums/means are straightforward
+        ac = xaa['Analyzed Charges']
+        cr = xaa['Combined Result for Settlement Period']
+        ecr = xaa['Earnings Credit Rate']
+
+        xaa['__AC_target__'] = ac.where(is_target_month)
+        xaa['__CR_target__'] = cr.where(is_target_month)
+        xaa['__ECR_target__'] = ecr.where(is_target_month)
+
+        xaa['__AC_ttm__'] = ac.where(is_trailing_12m)
+        xaa['__CR_ttm__'] = cr.where(is_trailing_12m)
+        xaa['__ECR_ttm__'] = ecr.where(is_trailing_12m)
+
+        # Officer names: take the first non-null per account
+        def first_non_null(s):
+            s = s.dropna()
+            return s.iloc[0] if not s.empty else None
+
+        g = xaa.groupby('Debit Account Number')
+
+        out = pd.DataFrame({
+            'Latest_Month_Analyzed_Charges': g['__AC_target__'].sum(),
+            'Latest_Month_Combined_Result': g['__CR_target__'].sum(),
+            'Trailing_12M_Analyzed_Charges': g['__AC_ttm__'].sum(),
+            'Trailing_12M_Combined_Result': g['__CR_ttm__'].sum(),
+            'Latest_Month_ECR': g['__ECR_target__'].mean(),
+            'Trailing_12M_Avg_ECR': g['__ECR_ttm__'].mean(),
+            'Primary_Officer_Name_XAA': g['Primary Officer Name'].agg(first_non_null),
+            'Secondary_Officer_Name_XAA': g['Secondary Officer Name'].agg(first_non_null),
+            'Treasury_Officer_Name_XAA': g['Treasury Officer Name'].agg(first_non_null),
+        }).reset_index()  # keep 'Debit Account Number' as a column
+
+        # Keep the account number column up front so the later rename to 'acctnbr' works
+        cols = [
+            'Debit Account Number',
+            'Latest_Month_Analyzed_Charges',
+            'Latest_Month_Combined_Result',
+            'Trailing_12M_Analyzed_Charges',
+            'Trailing_12M_Combined_Result',
+            'Latest_Month_ECR',
+            'Trailing_12M_Avg_ECR',
+            'Primary_Officer_Name_XAA',
+            'Secondary_Officer_Name_XAA',
+            'Treasury_Officer_Name_XAA',
+        ]
+        return out[cols]
+
+
     summarized_xaa = create_account_summary_alternative(xaa_data, date_col='Cycle End Date')
 
-    # %%
+    # Enforce schema for officer name columns that now match expected keys
     summarized_xaa_schema = {
-        'Primary_Officer_Name_XAA':'str',
-        'Secondary_Officer_Name_XAA':'str',        
-        'Treasury_Officer_Name_XAA':'str'
+        'Primary_Officer_Name_XAA': 'str',
+        'Secondary_Officer_Name_XAA': 'str',
+        'Treasury_Officer_Name_XAA': 'str',
     }
     summarized_xaa = cdutils.input_cleansing.enforce_schema(summarized_xaa, summarized_xaa_schema)
 
-    # %%
-
-    # %%
-    summarized_xaa = summarized_xaa.rename(columns={
-        'Debit Account Number':'acctnbr',
-
-    }).copy()
-
+    # Rename account number to the key used downstream
+    summarized_xaa = summarized_xaa.rename(columns={'Debit Account Number': 'acctnbr'}).copy()
     assert summarized_xaa['acctnbr'].is_unique, "Duplicates"
 
 

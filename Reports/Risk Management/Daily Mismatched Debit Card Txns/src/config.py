@@ -25,6 +25,16 @@ BASE_PATH = Path(r"\\00-da1\Home\Share\Line of Business_Shared Services\Risk Man
 INPUT_DIR = BASE_PATH / "input"
 OUTPUT_DIR = BASE_PATH / "output"
 
+# Lakehouse
+LAKEHOUSE_PATH = Path(r"C:\Users\w322800\Documents\lakehouse") 
+# Bronze
+BRONZE = LAKEHOUSE_PATH / "bronze"
+# Silver
+SILVER = LAKEHOUSE_PATH / "silver"
+# Gold
+GOLD = BASE_PATH / "gold"
+
+
 
 # Email Recipients
 EMAIL_TO = [

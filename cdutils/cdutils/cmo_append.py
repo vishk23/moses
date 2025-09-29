@@ -42,7 +42,7 @@ def append_cmo(df: pd.DataFrame) -> pd.DataFrame:
     wh_allroles = data['wh_allroles'].copy()
     wh_pers = data['wh_pers'].copy()
 
-    cmo = wh_allroles[wh_allroles['acctrolecd'] == 'CMO'].copy()
+    cmo = wh_allroles[wh_allroles['acctrolecd'] == 'CMOR'].copy()
 
     if cmo.empty:
         return df

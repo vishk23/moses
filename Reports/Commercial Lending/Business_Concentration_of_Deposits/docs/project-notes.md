@@ -2,10 +2,7 @@ Objective:
 Mesh COCC data & XAA data into a centralized business deposit report by relationship.
 
 Usage:
-drop into folder, remote or local
-- Production/ src.main to run
-Production/validation3 notebook is to create xaa_no_match
-
+validation_4_working notebook will run everything
 
 # 2025-08-21
 Fixed this up.
@@ -1344,3 +1341,577 @@ Built reconciliation for xaa no match and sent to steve
 - mostly closed accounts
 
 Might need to get time machine going quickly to be able to get this reporting exactly as needed.
+
+
+# 2025-09-23
+
+Trying to rerun with Aug data
+
+error:
+Starting [v1.7.0-prod]
+Traceback (most recent call last):
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item 
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item 
+KeyError: 'is_target_month'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 294, in aggregate
+    return self._python_agg_general(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 327, in _python_agg_general
+    result = self._grouper.agg_series(obj, f)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\ops.py", line 864, in 
+agg_series
+    result = self._aggregate_series_pure_python(obj, func)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\ops.py", line 885, in 
+_aggregate_series_pure_python
+    res = func(group)
+          ^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 324, in <lambda>
+    f = lambda x: func(x, *args, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 195, in <lambda>
+    lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),  # Assuming global scope or pass as kwarg; adjust if needed
+                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1184, in __getitem__
+    return self._getitem_tuple(key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1368, in _getitem_tuple
+    return self._getitem_lowerdim(tup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1065, in _getitem_lowerdim
+    section = self._getitem_axis(key, axis=i)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1431, in _getitem_axis
+    return self._get_label(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1381, in _get_label
+    return self.obj.xs(label, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 4306, in xs 
+    return self[key]
+           ~~~~^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\frame.py", line 4107, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'is_target_month'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item 
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item 
+KeyError: 'is_target_month'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 396, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 242, in main
+    summarized_xaa = create_account_summary_alternative(xaa_data, date_col='Cycle End Date')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 192, in create_account_summary_alternative
+    .agg({
+     ^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 1432, in aggregate
+    result = op.agg()
+             ^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 190, in agg   
+    return self.agg_dict_like()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 423, in agg_dict_like
+    return self.agg_or_apply_dict_like(op_name="agg")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 1603, in agg_or_apply_dict_like
+    result_index, result_data = self.compute_dict_like(
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 496, in compute_dict_like
+    results = [
+              ^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 497, in <listcomp>
+    getattr(obj._gotitem(key, ndim=1), op_name)(how, **kwargs)
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 257, in aggregate
+    ret = self._aggregate_multiple_funcs(func, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 362, in _aggregate_multiple_funcs
+    results[key] = self.aggregate(func, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 299, in aggregate
+    result = self._aggregate_named(func, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 461, in _aggregate_named
+    output = func(group, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 195, in <lambda>
+    lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),  # Assuming global scope or pass as kwarg; adjust if needed
+                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1184, in __getitem__
+    return self._getitem_tuple(key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1368, in _getitem_tuple
+    return self._getitem_lowerdim(tup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1065, in _getitem_lowerdim
+    section = self._getitem_axis(key, axis=i)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1431, in _getitem_axis
+    return self._get_label(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1381, in _get_label
+    return self.obj.xs(label, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 4306, in xs
+    return self[key]
+           ~~~~^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\frame.py", line 4107, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexes\base.py", line 3819, in get_loc       
+    raise KeyError(key) from err
+KeyError: 'is_target_month'
+
+Error after i removed the quotations around is_target_month in the lamda function: 
+Starting [v1.7.0-prod]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 396, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 242, in main
+    summarized_xaa = create_account_summary_alternative(xaa_data, date_col='Cycle End Date')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 192, in create_account_summary_alternative
+    .agg({
+     ^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 1432, in aggregate  
+    result = op.agg()
+             ^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 190, in agg
+    return self.agg_dict_like()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 423, in agg_dict_like
+    return self.agg_or_apply_dict_like(op_name="agg")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 1603, in agg_or_apply_dict_like
+    result_index, result_data = self.compute_dict_like(
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 496, in compute_dict_like     
+    results = [
+              ^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\apply.py", line 497, in <listcomp>
+    getattr(obj._gotitem(key, ndim=1), op_name)(how, **kwargs)
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 257, in aggregate   
+    ret = self._aggregate_multiple_funcs(func, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 362, in _aggregate_multiple_funcs
+    results[key] = self.aggregate(func, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 294, in aggregate   
+    return self._python_agg_general(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 327, in _python_agg_general
+    result = self._grouper.agg_series(obj, f)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\ops.py", line 864, in agg_series      
+    result = self._aggregate_series_pure_python(obj, func)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\ops.py", line 885, in _aggregate_series_pure_python
+    res = func(group)
+          ^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\groupby\generic.py", line 324, in <lambda>    
+    f = lambda x: func(x, *args, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\Business_Concentration_of_Deposits\Production\src\main.py", line 195, in <lambda>
+    lambda x: x[xaa_data.loc[x.index, is_target_month]].sum(),  # Assuming global scope or pass as kwarg; adjust if needed        
+                ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1184, in __getitem__       
+    return self._getitem_tuple(key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1377, in _getitem_tuple    
+    return self._getitem_tuple_same_dim(tup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1020, in _getitem_tuple_same_dim
+    retval = getattr(retval, self.name)._getitem_axis(key, axis=i)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1413, in _getitem_axis     
+    return self._getbool_axis(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 1209, in _getbool_axis     
+    key = check_bool_indexer(labels, key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\indexing.py", line 2697, in check_bool_indexer    raise IndexingError(
+pandas.errors.IndexingError: Unalignable boolean Series provided as indexer (index of the boolean Series and of the indexed object do not match).
+
+
+Code:
+
+"""
+Main Entry Point
+"""
+from pathlib import Path
+
+import pandas as pd # type: ignore
+
+import cdutils.pkey_sqlite # type: ignore
+import cdutils.filtering # type: ignore
+import cdutils.input_cleansing # type: ignore
+import cdutils.cmo_append # type: ignore
+import src.add_fields
+import src.core_transform
+import src.output_to_excel
+from src._version import __version__
+import src.output_to_excel_multiple_sheets
+import cdutils.distribution # type: ignore
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
+def main(production_flag: bool=False):
+    if production_flag:
+        BASE_PATH = Path(r'\\00-DA1\Home\Share\Line of Business_Shared Services')
+        assert "prod" in __version__, (f"Cannot run in production mode without 'prod' in the __version__")
+    else:
+        BASE_PATH = Path('.')
+
+
+
+    # %%
+    # Get staging data from the daily deposit update. View dev section of documentation for more detail
+    INPUT_PATH = Path(r"\\00-da1\Home\Share\Data & Analytics Initiatives\Project Management\Data_Analytics\Daily_Deposit_Update\Production\output\DailyDeposit_staging.xlsx")
+    data = pd.read_excel(INPUT_PATH)
+
+    # Add portfolio key
+    data = cdutils.pkey_sqlite.add_pkey(data)
+
+    # Add int rate
+    data = src.add_fields.add_noteintrate(data)
+
+
+    # Custom list of minors (Business Deposits)
+    minors = [
+        'CK24', # 1st Business Checking
+        'CK12', # Business Checking
+        'CK25', # Simple Business Checking
+        'CK30', # Business Elite Money Market
+        'CK19', # Business Money Market
+        'CK22', # Business Premium Plus MoneyMkt
+        'CK23', # Premium Business Checking
+        'CK40', # Community Assoc Reserve
+        'CD67', # Commercial Negotiated Rate
+        'CD01', # 1 Month Business CD
+        'CD07', # 3 Month Business CD
+        'CD17', # 6 Month Business CD
+        'CD31', # 1 Year Business CD
+        'CD35', # 1 Year Business CD
+        'CD37', # 18 Month Business CD
+        'CD38', # 2 Year Business CD
+        'CD50', # 3 Year Business CD
+        'CD53', # 4 Year Business CD
+        'CD59', # 5 Year Business CD
+        'CD76', # 9 Month Business CD
+        'CD84', # 15 Month Business CD
+        'CD95', # Business <12 Month Simple CD
+        'CD96', # Business >12 Month Simple CD
+        'CK28', # Investment Business Checking
+        'CK33', # Specialty Business Checking
+        'CK34', # ICS Shadow - Business - Demand
+        'SV06', # Business Select High Yield
+        'CK13',
+        'CK15',
+        'CK41'
+    ]
+
+    # Filter to only business deposit accounts
+    data = cdutils.filtering.filter_to_business_deposits(data, minors)
+
+
+    # Add CMO
+    data = cdutils.cmo_append.append_cmo(data)
+
+
+    data_schema = {
+        'noteintrate': float
+    }
+
+    data = cdutils.input_cleansing.enforce_schema(data, data_schema).copy()
+
+
+
+
+    # %%
+    # Exclude BCSB internal accounts
+    data = data[~data['ownersortname'].str.contains('BRISTOL COUNTY SAVINGS', case=False, na=False)].copy()
+
+    # %%
+    data
+
+    # %%
+
+
+
+
+
+
+
+    # %%
+    # %%
+    ASSETS_PATH = Path('./assets')
+
+    files = [f for f in ASSETS_PATH.iterdir() if f.is_file()]
+
+    assert len(files) == 1, f"Expected exactly 1 file in {ASSETS_PATH}, found {len(files)}."
+
+    file = files[0]
+    assert file.suffix == '.csv', f"Expected an excel file"
+
+    xaa_data = pd.read_csv(file)
+
+    # %%
+    # xaa_data.info()
+
+    #
+
+    # %%
+
+
+
+
+    # # %%
+    # xaa_data['Analyzed Charges (Pre-ECR)'] = xaa_data['Analyzed Charges (Pre-ECR)'].str.replace('[\$,]','',regex=True)
+    # xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'] = xaa_data['Combined Result for Settlement Period (Post-ECR + Fee-Based Total)'].str.replace('[\$,]','',regex=True)
+
+    # Rename to match schema from earlier
+    xaa_data = xaa_data.rename(columns={
+        'Analyzed Charges (Pre-ECR)':'Analyzed Charges',
+        'Combined Result for Settlement Period (Post-ECR)':'Combined Result for Settlement Period'
+    })
+    # fix csv formatting of float fields
+    cols_to_adjust = ['Analyzed Charges','Combined Result for Settlement Period']
+
+    for col in cols_to_adjust:
+        xaa_data[col] = xaa_data[col].str.replace(r'[$,]','', regex=True).astype(float)
+
+    # %%
+    xaa_schema = {
+        'Analyzed Charges':'float',
+        'Combined Result for Settlement Period':'float',
+        'Earnings Credit Rate':'float',
+        'Debit Account Number':'str'
+    }
+    xaa_data = cdutils.input_cleansing.enforce_schema(xaa_data, xaa_schema)
+
+
+
+    # %%
+
+    from datetime import datetime, timedelta
+
+    def create_account_summary_alternative(xaa_data, date_col='cycle_date', target_previous_month=None):
+        # Ensure date column is datetime
+        xaa_data = xaa_data.copy()
+        xaa_data[date_col] = pd.to_datetime(xaa_data[date_col])
+        
+        # Determine target period (previous month)
+        if target_previous_month is None:
+            periods = sorted(xaa_data[date_col].dt.to_period('M').unique(), reverse=True)
+            if len(periods) < 2:
+                raise ValueError("Not enough periods to determine previous month.")
+            target_period = periods[1]
+        else:
+            if isinstance(target_previous_month, str):
+                target_period = pd.Period(target_previous_month, freq='M')
+            elif isinstance(target_previous_month, pd.Period):
+                target_period = target_previous_month
+            else:
+                raise ValueError("target_previous_month must be a string like '2025-08' or a pd.Period.")
+        
+        # Filter for the target (previous) month
+        is_target_month = (xaa_data[date_col].dt.year == target_period.year) & (xaa_data[date_col].dt.month == target_period.month)
+        
+        # Calculate trailing cutoff (12 months before the target month's end)
+        target_end = target_period.to_timestamp(how='end')
+        cutoff_date = target_end - relativedelta(months=12) + relativedelta(days=1)
+        is_trailing_12m = xaa_data[date_col] >= cutoff_date
+        
+        # Aggregate using conditional sums/filters
+        summary = (xaa_data
+                .groupby('Debit Account Number')
+                .agg({
+                    # Latest month aggregations (filtered to target month)
+                    'Analyzed Charges': [
+                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),  # Assuming global scope or pass as kwarg; adjust if needed
+                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum(),
+                    ],
+                    'Combined Result for Settlement Period': [
+                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].sum(),
+                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].sum()
+                    ],
+                    'Earnings Credit Rate': [
+                        lambda x: x[xaa_data.loc[x.index, 'is_target_month']].mean(),
+                        lambda x: x[xaa_data.loc[x.index, 'is_trailing_12m']].mean()
+                    ],
+                    'Primary Officer Name': 'first',
+                    'Secondary Officer Name': 'first',
+                    'Treasury Officer Name': 'first'
+                })
+                .reset_index())
+        
+        # Flatten column names
+        summary.columns = [
+            'Debit Account Number',
+            'Latest_Month_Analyzed_Charges',
+            'Trailing_12M_Analyzed_Charges',
+            'Latest_Month_Combined_Result',
+            'Trailing_12M_Combined_Result',
+            'Latest_Month_ECR',
+            'Trailing_12M_Avg_ECR',
+            'Primary_Officer_Name_XAA',
+            'Secondary_Officer_Name_XAA',
+            'Treasury_Officer_Name_XAA'
+        ]
+        
+        # Reorder columns
+        column_order = [
+            'Debit Account Number',
+            'Latest_Month_Analyzed_Charges',
+            'Latest_Month_Combined_Result',
+            'Trailing_12M_Analyzed_Charges',
+            'Trailing_12M_Combined_Result',
+            'Latest_Month_ECR',
+            'Trailing_12M_Avg_ECR',
+            'Primary_Officer_Name_XAA',
+            'Secondary_Officer_Name_XAA',
+            'Treasury_Officer_Name_XAA'
+        ]
+        return summary[column_order]
+
+    # %%
+    summarized_xaa = create_account_summary_alternative(xaa_data, date_col='Cycle End Date')
+
+    # %%
+    summarized_xaa_schema = {
+        'Primary_Officer_Name_XAA':'str',
+        'Secondary_Officer_Name_XAA':'str',        
+        'Treasury_Officer_Name_XAA':'str'
+    }
+    summarized_xaa = cdutils.input_cleansing.enforce_schema(summarized_xaa, summarized_xaa_schema)
+
+    # %%
+
+    # %%
+    summarized_xaa = summarized_xaa.rename(columns={
+        'Debit Account Number':'acctnbr',
+
+    }).copy()
+
+    assert summarized_xaa['acctnbr'].is_unique, "Duplicates"
+
+
+
+
+    # %%
+
+
+
+
+
+    # %%
+    # %%
+    merged_data = pd.merge(data, summarized_xaa, on='acctnbr', how='left')
+
+    # %%
+
+    fill_na_column_list = [
+        'Latest_Month_Analyzed_Charges',
+        'Latest_Month_Combined_Result',
+        'Trailing_12M_Analyzed_Charges',
+        'Trailing_12M_Combined_Result',
+        'Latest_Month_ECR',
+        'Trailing_12M_Avg_ECR',
+    ]
+    for item in fill_na_column_list:
+        merged_data[item] = merged_data[item].fillna(0)
+
+
+    # Sort descending order of notebal
+    merged_data = merged_data.sort_values(by='notebal', ascending=False)
+
+    # %%
+    # merged_data.info()
+
+    # %%
+    merged_data
+
+
+
+    # %%
+    # This part doesn't work. Look at noteinrate, gets weird
+
+    # %%
+    formatted_data = src.core_transform.main_pipeline(merged_data)
+
+    # %%
+    formatted_data
+
+    # %%
+    formatted_data = formatted_data.rename(columns={
+        'portfolio_key':'Portfolio Key',
+        'product':'Product',
+        '3Mo_AvgBal':'3Mo Avg Bal',
+        'TTM_AvgBal':'TTM Avg Bal',
+        'TTM_DAYS_OVERDRAWN':'TTM Days Overdrawn',
+        'TTM_NSF_COUNT':'TTM NSF Count'
+    }).copy()
+
+
+    # %%
+    # Create summary sheet
+
+    summary_data = formatted_data[~(formatted_data['Portfolio Key'] == "") & (formatted_data['Acct No.'] == "")].copy()
+    summary_data = summary_data[[
+        'Portfolio Key',
+        'Borrower Name',
+        'Account Officer',
+        'Cash Management Officer',
+        'Current Balance',
+        'Interest Rate',
+        '3Mo Avg Bal',
+        'TTM Avg Bal',
+        'Year Ago Balance',
+        'TTM Days Overdrawn',
+        'TTM NSF Count',
+        'Current Mo Analyzed Fees (Pre-ECR)',
+        'Current Mo Net Analyzed Fees (Post-ECR)',
+        'TTM Analyzed Fees (Pre-ECR)',
+        'TTM Net Analyzed Fees (Post-ECR)',
+        'Current ECR'
+    ]].copy()
+
+
+    # %%
+    # %%
+    # Output to excel (raw data)
+    # BASE_PATH = Path('.')
+    OUTPUT_PATH = BASE_PATH / Path('./output/business_deposits_concentration_with_xaa.xlsx')
+    with pd.ExcelWriter(OUTPUT_PATH, engine="openpyxl") as writer:
+        formatted_data.to_excel(writer, sheet_name='Relationship Detail', index=False)
+        summary_data.to_excel(writer, sheet_name='Relationship Summary', index=False)
+        merged_data.to_excel(writer, sheet_name='Unformatted', index=False)
