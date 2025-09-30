@@ -1,3 +1,10 @@
+Usage:
+cd to YTD_Business_Deposits/Production
+python -m src.main
+Email automatically sends
+
+This needs to have year start date updated every year (switch on first of new year)
+
 # 2025-09-29
 ```sql
 WITH deduped_accounts AS (
