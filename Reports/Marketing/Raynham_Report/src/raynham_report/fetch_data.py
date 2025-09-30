@@ -20,15 +20,22 @@ def fetch_data():
     Main data query
     """
     
-    wh_acctcommon = text(f"""
+    wh_org = text(f"""
     SELECT
         *
     FROM
-        COCCDM.WH_ACCTCOMMON a
+        OSIBANK.WH_ORG a
+    """)
+    wh_pers = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_PERS a
     """)
 
     queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
+        {'key':'wh_org', 'sql':wh_org, 'engine':1},
+        {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
     ]
 
     data = cdutils.database.connect.retrieve_data(queries)
