@@ -70,3 +70,4 @@ Regardless, I can still build customer dim and create this, but I don't know if 
 
 # 2025-09-29
 Not a major factor. Checked with Tom K and this is all set. No issues there.
+- not used as an exclusion at all. This is just the state of the database.
