@@ -1125,12 +1125,12 @@ Query=select OSIBANK.WH_ACCT.ACCTN...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Expression>[ORIGDATE] &gt;= "2025-08-01"</Expression>
+          <Expression>[ORIGDATE] &gt;= "2025-09-01"</Expression>
           <Mode>Custom</Mode>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText>[ORIGDATE] &gt;= "2025-08-01"</DefaultAnnotationText>
+          <DefaultAnnotationText>[ORIGDATE] &gt;= "2025-09-01"</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>
@@ -1680,9 +1680,6 @@ SHIP = if IsNull([SHIP...</DefaultAnnotationText>
 Query=Sheet1</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
         </Node>

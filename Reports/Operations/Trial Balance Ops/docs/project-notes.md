@@ -1,3 +1,10 @@
+Usage:
+Run from monorepo
+cd here
+python -m src.main
+
+distribute manually
+
 Objective:
 The goal is to provide Operations department with an OBT style (one big table), flattened and standardized report with loan data to assist them with their maintenance and current processes.
 

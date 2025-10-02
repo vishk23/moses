@@ -9,6 +9,7 @@ import src.silver.property
 import src.utils.parquet_io
 import src.silver.insurance
 from src.utils.parquet_io import add_load_timestamp
+import cdutils.orig_face_amt.core # type: ignore
 
 def generate_silver_tables():
     # Account
@@ -68,3 +69,16 @@ def generate_silver_tables():
     write_deltalake(INSURANCE_PATH, insurance, mode='overwrite', schema_mode='merge')
     write_deltalake(ACCT_PROP_INS_LINK_PATH, acct_prop_ins_link, mode='overwrite', schema_mode='merge')
     print("Successfully wrote insurance data")
+
+    # Face Value
+    print("Starting face value table generation ...")
+    FACE_VALUE_PATH = src.config.SILVER / "face_value"
+    FACE_VALUE_PATH.mkdir(parents=True, exist_ok=True)
+
+    face_value = cdutils.orig_face_amt.core.query_orig_face_amt()
+    
+    face_value = add_load_timestamp(face_value)
+    
+    write_deltalake(FACE_VALUE_PATH, face_value, mode='overwrite', schema_mode='merge')
+    print("Successfully wrote orig face value data")
+

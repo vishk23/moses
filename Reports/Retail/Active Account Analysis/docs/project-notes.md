@@ -217,3 +217,34 @@ Data columns (total 50 columns):
  49  primaryownerstate       89554 non-null  object        
 dtypes: datetime64[ns](6), float64(22), int64(1), object(21)
 memory usage: 34.2+ MB
+
+
+----
+
+# 2025-10-01
+python -m src.main
+Starting Active Account & Agreement Analysis
+Running v1.0.0-prod
+Environment: prod
+Output directory: \\00-da1\Home\Share\Line of Business_Shared Services\Retail Banking\Active_Account_Agreement_Analysis\output
+Loading active accounts...
+Loaded 89601 active accounts
+Loading base data...
+Loading WH_ORG...
+Loaded 17093 unique organizations
+Loading WH_PERS...
+Loaded 169238 unique persons
+Loading WH_AGREEMENTS...
+Column 'agrmntnbr' not found. Creating it with default None values.
+Column 'agrmntstatcd' not found. Creating it with default None values.
+Found 187856 active agreements out of 406179 total
+Merging in agreement type descriptions...
+Adding owner names...
+Building owner-agreement type matrix...
+Agreement owner matrix saved to: \\00-da1\Home\Share\Line of Business_Shared Services\Retail Banking\Active_Account_Agreement_Analysis\output\Agreements\Agreement Owner Matrix October 1 2025.xlsx
+Filtered active accounts saved to: \\00-da1\Home\Share\Line of Business_Shared Services\Retail Banking\Active_Account_Agreement_Analysis\output\Accounts\Active Accounts October 1 2025.xlsx
+
+Summary:
+- Unique Owners: 60791
+- Agreement Types: ['Business Debit', 'Business Debit Instant Issue', 'Charge Consumer ATM', 'Charge Consumer Debit', 'Charge Instant Issue Consumer', 'Internet Banking', 'Prime T BAW ATM Card', 'Prime T BAW Consumer Debit', 'Prime T Instant Issue Consumer', 'Telephone Banking']
+Complete!

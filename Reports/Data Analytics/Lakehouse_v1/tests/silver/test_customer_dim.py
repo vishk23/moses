@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
 import cdutils.input_cleansing # type: ignore
+import cdutils.customer_dim # type: ignore
 from datetime import datetime
 
 def test_input_cleansing():
@@ -23,13 +24,35 @@ def test_input_cleansing():
 
     assert wh_org['orgnbr'].dtype == 'string'
 
-def test_dedupe_raw_tables():
-    """
-    Testing deduplication logic on raw tables from db
-    """
-    wh_org = pd.DataFrame({
-        'orgnbr':["100", "100", "101", "102"],
-        'adddate':[datetime(2025,1,1), datetime(2024,1,1), datetime(2025,1,1), datetime(2025,1,1)]
-    })
-    
-    # TODO more here.
+class TestPersify:
+    def test_persify_missing_column(self):
+        """
+        Testing imported persify function from cdutils
+        """
+
+        wh_pers = pd.DataFrame({
+            'other_col': [100,101,102]
+        })
+        with pytest.raises(ValueError):
+            cdutils.customer_dim.persify(wh_pers, 'persnbr')
+
+    def test_persify_creates_customer_id(self):
+        """
+        Testing imported persify function from cdutils
+        """
+
+        wh_pers = pd.DataFrame({
+            'persnbr': [100,101,102]
+        })
+
+        expected = pd.DataFrame({
+            'customer_id':['P100','P101','P102']
+        })
+        # Set equivalent types to mimic actual output, string instead of object
+        expected_schema = {
+            'customer_id': 'str'
+        }
+        expected = cdutils.input_cleansing.cast_columns(expected, expected_schema)
+
+        result = cdutils.customer_dim.persify(wh_pers, 'persnbr')
+        pd.testing.assert_frame_equal(result, expected)

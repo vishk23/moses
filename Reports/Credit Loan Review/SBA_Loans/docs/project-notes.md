@@ -1,3 +1,9 @@
+Usage:
+- run from monorepo
+- python -m src.main
+
+distribute manually
+
 # 2025-09-04
 
 Filter df['product'] on below values:
