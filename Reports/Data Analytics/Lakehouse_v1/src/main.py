@@ -22,9 +22,9 @@ def main():
     print(f"Owner: {src.config.OWNER}")
     print(f"Environment: {src.config.ENV}")
 
-    # == Bronze ==
-    src.config.BRONZE.mkdir(parents=True, exist_ok=True)
-    src.bronze.core.generate_bronze_tables()
+    # # == Bronze ==
+    # src.config.BRONZE.mkdir(parents=True, exist_ok=True)
+    # src.bronze.core.generate_bronze_tables()
 
     # == Silver ==
     src.config.SILVER.mkdir(parents=True, exist_ok=True)

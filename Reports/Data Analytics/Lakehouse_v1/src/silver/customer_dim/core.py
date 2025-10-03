@@ -13,6 +13,7 @@ This is the building block to create a centralized view of the customer.
 """
 
 import src.silver.customer_dim.fetch_data
+import cdutils.add_effdate # type: ignore
 import cdutils.deduplication # type: ignore
 import cdutils.customer_dim # type: ignore
 import cdutils.input_cleansing # type: ignore
@@ -89,5 +90,6 @@ def generate_base_customer_dim_table():
 
     # Join with account data to get counts and balances
     
+    customer_dim = cdutils.add_effdate.add_effdate(customer_dim)
 
     return customer_dim
