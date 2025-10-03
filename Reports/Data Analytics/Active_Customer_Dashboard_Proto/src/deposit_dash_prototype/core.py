@@ -108,7 +108,7 @@ def main_pipeline():
     year_end_df = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
 
     # # Prior month end data
-    specified_date = datetime(2025, 8, 31)
+    specified_date = datetime(2025, 9, 30)
     month_end_df = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
 
     year_end_df = year_end_df[[

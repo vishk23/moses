@@ -6,42 +6,57 @@ Usage:
 
 You need to set your own date that you want to see in effective date embedded in the SQL Query
 """
-# this is not needed because we get directly from bronze tables, but can easily be turned on to get directly from DB
-# from local bronze tables, faster testing/iteration is possible
 
 
-# import cdutils.database.connect # type: ignore
-# from sqlalchemy import text # type: ignore
-# from datetime import datetime
-# from typing import Optional
 
-# # Define fetch data here using cdutils.database.connect
-# # There are often fetch_data.py files already in project if migrating
+import cdutils.database.connect # type: ignore
+from sqlalchemy import text # type: ignore
+from datetime import datetime
+from typing import Optional
 
-# def fetch_data():
-#     """
-#     Main data query
-#     """
-    
-#     wh_org = text(f"""
-#     SELECT
-#         *
-#     FROM
-#         OSIBANK.WH_ORG a
-#     """)
+# Define fetch data here using cdutils.database.connect
+# There are often fetch_data.py files already in project if migrating
 
-#     wh_pers = text(f"""
-#     SELECT
-#         *
-#     FROM
-#         OSIBANK.WH_PERS a
-#     """)
+def fetch_data():
+    """
+    Main data query
+    """
+    vieworgtaxid = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.VIEWORGTAXID a
+    """)
 
-#     queries = [
-#         {'key':'wh_org', 'sql':wh_org, 'engine':1},
-#         {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
-#     ]
+    viewperstaxid = text(f"""
+    SELECT
+        *
+    FROM
+        OSIBANK.VIEWPERSTAXID a
+    """)
 
-#     data = cdutils.database.connect.retrieve_data(queries)
-#     return data
+    ## Below two tables are not needed because they are already in bronze layer    
+    # wh_org = text(f"""
+    # SELECT
+    #     *
+    # FROM
+    #     OSIBANK.WH_ORG a
+    # """)
+
+    # wh_pers = text(f"""
+    # SELECT
+    #     *
+    # FROM
+    #     OSIBANK.WH_PERS a
+    # """)
+
+    queries = [
+        {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
+        {'key':'viewperstaxid', 'sql':viewperstaxid, 'engine':1},
+        # {'key':'wh_org', 'sql':wh_org, 'engine':1},
+        # {'key':'wh_pers', 'sql':wh_pers, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
 

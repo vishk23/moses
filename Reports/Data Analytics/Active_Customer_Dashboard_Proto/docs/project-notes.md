@@ -64,3 +64,19 @@ C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_D
   uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True))
 C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:71: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
   uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
+
+
+# 2025-10-02
+
+Refreshing this
+
+Account PowerQuery
+let
+    Source = Folder.Contents(AcctFilePath),
+    ToDelta = DeltaLake.Table(Source),
+    GetVersions = Value.Versions(ToDelta),
+    ActualData = GetVersions{[Version=null]}[Data],
+    #"Filtered Rows" = Table.SelectRows(ActualData, each ([Macro Account Type] <> null)),
+    #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"effdate", type datetime}})
+in
+    #"Changed Type"
