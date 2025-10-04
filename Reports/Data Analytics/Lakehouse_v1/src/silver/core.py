@@ -12,18 +12,50 @@ import src.silver.customer_dim.core
 import src.silver.customer_address_link.core
 from src.utils.parquet_io import add_load_timestamp
 import cdutils.orig_face_amt.core # type: ignore
+import cdutils.customer_dim # type: ignore
 
 def generate_silver_tables():
-    # # Account
-    # print("Start account")
-    # ACCOUNT_PATH = src.config.SILVER / "account"
-    # ACCOUNT_PATH.mkdir(parents=True, exist_ok=True)
+    # Account
+    print("Start account")
+    ACCOUNT_PATH = src.config.SILVER / "account"
+    ACCOUNT_PATH.mkdir(parents=True, exist_ok=True)
 
-    # df = cdutils.acct_file_creation.core.query_df_on_date()
-    # df = add_load_timestamp(df)
+    df = cdutils.acct_file_creation.core.query_df_on_date()
+    # Pull in Active Accounts (create a clean customer_id for joining)
+    # This is only build like this to provide compatability with exisiting reports
+    # built on this table that join directly to taxrptfororgnbr and taxrptforpersnbr
+    accts = df.copy()
+    accts = cdutils.customer_dim.orgify(accts, 'taxrptfororgnbr')
+    accts = accts.rename(columns={'customer_id':'org_id'}).copy()
+    accts = cdutils.customer_dim.persify(accts, 'taxrptforpersnbr')
+    accts['customer_id'] = accts['customer_id'].fillna(accts['org_id'])
+    accts = accts[[
+        'acctnbr',
+        'customer_id'
+    ]].copy()
+    df = df.merge(accts, on='acctnbr', how='left')
+    
+    # Add macro type, Loan/Deposit/Other
+    MACRO_TYPE_MAPPING = {
+        'CML':'Loan',
+        'MLN':'Loan',
+        'CNS':'Loan',
+        'MTG':'Loan',
+        'CK':'Deposit',
+        'SAV':'Deposit',
+        'TD':'Deposit'
+    }
+    df['Macro Account Type'] = df['mjaccttypcd'].map(MACRO_TYPE_MAPPING).fillna('Other')
+    
+    # Set ACH manager products to other, they don't count as loans
+    df.loc[df['currmiaccttypcd'] == 'CI07', 'Macro Account Type'] = 'Other'
 
-    # write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
-    # print("Successfully wrote account data")
+    df = add_load_timestamp(df)
+
+    write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='overwrite')
+    print("Successfully wrote account data")
+
+    
 
     # # Address
     # print("Starting address ...")
@@ -84,16 +116,16 @@ def generate_silver_tables():
     # write_deltalake(FACE_VALUE_PATH, face_value, mode='overwrite', schema_mode='merge')
     # print("Successfully wrote orig face value data")
 
-    # # Customer Dim 
-    # print("Starting customer dim (base) table generation ...")
-    # BASE_CUSTOMER_DIM = src.config.SILVER / "base_customer_dim"
-    # BASE_CUSTOMER_DIM.mkdir(parents=True, exist_ok=True)
+    # Customer Dim 
+    print("Starting customer dim (base) table generation ...")
+    BASE_CUSTOMER_DIM = src.config.SILVER / "base_customer_dim"
+    BASE_CUSTOMER_DIM.mkdir(parents=True, exist_ok=True)
 
-    # base_customer_dim = src.silver.customer_dim.core.generate_base_customer_dim_table()    
-    # base_customer_dim = add_load_timestamp(base_customer_dim)
+    base_customer_dim = src.silver.customer_dim.core.generate_base_customer_dim_table()    
+    base_customer_dim = add_load_timestamp(base_customer_dim)
     
-    # write_deltalake(BASE_CUSTOMER_DIM, base_customer_dim, mode='overwrite', schema_mode='overwrite')
-    # print("Successfully wrote base customer dim")
+    write_deltalake(BASE_CUSTOMER_DIM, base_customer_dim, mode='overwrite', schema_mode='overwrite')
+    print("Successfully wrote base customer dim")
 
     # # Customer Address Link 
     # print("Starting customer address link table generation ...")
@@ -117,13 +149,13 @@ def generate_silver_tables():
     write_deltalake(PERS_DIM, pers_dim, mode='overwrite', schema_mode='overwrite')
     print("Successfully wrote pers dim")
 
-    # # Org Dim
-    # print("Starting org dim table generation ...")
-    # ORG_DIM = src.config.SILVER / "org_dim"
-    # ORG_DIM.mkdir(parents=True, exist_ok=True)
+    # Org Dim
+    print("Starting org dim table generation ...")
+    ORG_DIM = src.config.SILVER / "org_dim"
+    ORG_DIM.mkdir(parents=True, exist_ok=True)
 
-    # org_dim = src.silver.customer_dim.core.generate_org_dim()    
-    # org_dim = add_load_timestamp(org_dim)
+    org_dim = src.silver.customer_dim.core.generate_org_dim()    
+    org_dim = add_load_timestamp(org_dim)
     
-    # write_deltalake(ORG_DIM, org_dim, mode='overwrite', schema_mode='overwrite')
-    # print("Successfully wrote org dim")
+    write_deltalake(ORG_DIM, org_dim, mode='overwrite', schema_mode='overwrite')
+    print("Successfully wrote org dim")

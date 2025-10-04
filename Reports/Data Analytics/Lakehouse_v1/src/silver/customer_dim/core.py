@@ -12,6 +12,7 @@ in PowerBI or other method of data being served.
 This is the building block to create a centralized view of the customer.
 """
 
+from dateutil.relativedelta import relativedelta  # For more precise age calc (optional)
 import src.silver.customer_dim.fetch_data # type: ignore
 import cdutils.add_effdate # type: ignore
 import cdutils.deduplication # type: ignore
@@ -21,6 +22,7 @@ import pandas as pd
 import src.config
 from deltalake import DeltaTable
 import datetime
+import numpy as np
 
 def sort_dedupe_raw(df, dedupe_list):
     if 'adddate' in df.columns:
@@ -31,24 +33,26 @@ def sort_dedupe_raw(df, dedupe_list):
     result = cdutils.deduplication.dedupe(dedupe_list)
     return result
 
+
 def calculate_age(row):
     dob = pd.to_datetime(row['datebirth'], errors='coerce')
-    dod = pd.to_datetime(row['datebirth'], errors='coerce')
+    dod = pd.to_datetime(row['datedeath'], errors='coerce')  
 
     if pd.isna(dob):
-        return None
+        return None  # No birth date: can't compute age
 
-    if not pd.isna(dod):
+    if not pd.isna(dod):  # Valid death date: mark as deceased
         return -1
 
     effdate = pd.to_datetime(row['effdate'], errors='coerce')
-    if pd.isna('effdate') or effdate <= dob:
-        return None
+    if pd.isna(effdate) or effdate <= dob:  
+        return None  # Invalid/missing effdate or effdate before birth: age unknown
 
-    age_days = (effdate - dob).days
-    age_years = age_days // 365.25
+    # More precise age calc (optional: replace approx below)
+    delta = relativedelta(effdate, dob)
+    age_years = delta.years
 
-    # Cap at 125, assume deceased and we never updated database
+    # Cap at 125 (arbitrary but as-per spec; consider logging for data review)
     if age_years >= 125:
         return -1
     else:
@@ -111,8 +115,50 @@ def generate_base_customer_dim_table():
     # Merge
     customer_dim = customer_dim.merge(taxid_concat, on='customer_id', how='left')
 
-    # Join with account data to get counts and balances
-    
+
+
+    # Append loans/deposit statistics as a calculated dimension
+    accts = DeltaTable(src.config.SILVER / "account").to_pandas()
+
+    # Filter and group by customer_id for loans
+    loans_df = accts[accts['Macro Account Type'] == 'Loan']
+    grouped_loans = loans_df.groupby('customer_id', dropna=False).agg(
+        distinct_loans=('acctnbr', 'nunique'),
+        loan_net_balance=('Net Balance', 'sum')
+    ).reset_index()
+
+    # Filter and group by customer_id for deposits
+    deposits_df = accts[accts['Macro Account Type'] == 'Deposit']
+    grouped_deposits = deposits_df.groupby('customer_id', dropna=False).agg(
+        distinct_deposits=('acctnbr', 'nunique'),
+        deposit_balance=('Net Balance', 'sum')
+    ).reset_index()
+
+    # Filter and group by customer_id for other products
+    others_df = accts[accts['Macro Account Type'] == 'Other']
+    grouped_others = others_df.groupby('customer_id', dropna=False).agg(
+        distinct_other_products=('acctnbr', 'nunique'),
+        other_balance=('Net Balance', 'sum')
+    ).reset_index()
+
+    # Merge all grouped DataFrames on customer_id, using outer join to include all customers
+    grouped_df = grouped_loans.merge(grouped_deposits, on='customer_id', how='outer') \
+                            .merge(grouped_others, on='customer_id', how='outer') \
+                            .fillna(0)
+
+    customer_dim = customer_dim.merge(grouped_df, how='left', on='customer_id')
+
+    # Add Active Account Owner flag (Y/N)
+    # If sum of Distinct Loans, Distinct Deposits, Distinct Other = 0, then 'N', else 'Y'
+    customer_dim['Active Account Owner'] = np.where(
+        (customer_dim['distinct_loans'] + customer_dim['distinct_deposits'] + customer_dim['distinct_other_products']) > 0,
+        'Y',
+        'N'
+    )   
+
+    # Linked to Active Account Flag can be added in later using allroles table
+
+    # Add effdate
     customer_dim = cdutils.add_effdate.add_effdate(customer_dim)
 
     return customer_dim
