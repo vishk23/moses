@@ -37,12 +37,9 @@ def filter_distinct_customer_near_branches(accts):
     Requested was within 5 mi of branch, but for simplicity, we match on primary zip codes
     """
     zip_codes = ["02767","02780"]
-    accts_schema = {
-        'zipcd'
-    }
     filtered_df = accts[accts['primaryownerzipcd'].isin(zip_codes)]
     distinct_customers = filtered_df[['customer_id']].drop_duplicates()
-    distinct_customers['eligibility'] = 'Zip Code in Raynham (02767) or Taunton (02767)'
+    distinct_customers['eligibility'] = 'Zip Code in Raynham (02767) or Taunton (02780)'
     return distinct_customers
     
 
@@ -79,14 +76,8 @@ def generate_raynham_report():
 
     # Pull in Active Accounts (create a clean customer_id for joining)
     accts = DeltaTable(src.config.SILVER / "account").to_pandas()
-    accts = cdutils.customer_dim.orgify(accts, 'taxrptfororgnbr')
-    accts = accts.rename(columns={'customer_id':'org_id'}).copy()
-    accts = cdutils.customer_dim.persify(accts, 'taxrptforpersnbr')
-    accts['customer_id'] = accts['customer_id'].fillna(accts['org_id'])
-    accts = accts.drop(columns=['org_id']).copy()
 
     # Assigned to Branch from Accts
-
     assigned = filter_distinct_customers_assigned_to_n_raynham(accts)
 
     # Transacted at Branch in last 90 days
@@ -103,8 +94,12 @@ def generate_raynham_report():
     base_customer_dim = base_customer_dim[[
         'customer_id',
         'customer_type',
-        'customer_name'
+        'customer_name',
+        'Active Account Owner',
+        'loan_net_balance',
+        'deposit_balance'
     ]].copy()
+    base_customer_dim = base_customer_dim[base_customer_dim['Active Account Owner'] == "Y"].copy()
     customer_df = base_customer_dim.merge(concat_df, how='inner', on='customer_id')
 
     # Append primary address
@@ -130,3 +125,40 @@ def generate_raynham_report():
     customer_df = customer_df.merge(address, on='customer_id', how='left')
 
     # Need to do exclusions
+    pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
+    pers_dim = pers_dim[[
+        'customer_id',
+        'age'
+    ]].copy()
+    customer_df = customer_df.merge(pers_dim, on='customer_id', how='left')
+    
+    # Filter out records where age < 18 and customer type = 'Person'
+    customer_df = customer_df[~((customer_df['customer_type'] == 'Person') & (customer_df['age'] < 18))]
+
+    # Append pkey
+    pkey_slice = accts[['customer_id','portfolio_key']].copy()
+    # Assert a customer id is not associated with multiple portfolio keys
+    # There is a Many:1 relationship between customers and portfolio key.
+    
+    customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
+
+
+    # Append pkey
+    pkey_slice = accts[['customer_id', 'portfolio_key']].copy()
+
+    # Assert no customers are associated with multiple portfolio keys
+    portfolio_key_uniques = pkey_slice.groupby('customer_id')['portfolio_key'].nunique()
+    assert (portfolio_key_uniques == 1).all(), "Assertion failed: One or more customers are associated with multiple portfolio keys"
+
+    # Deduplicate pkey_slice to handle potential multiplicity (assuming Many:1 relationship)
+    pkey_slice = pkey_slice.drop_duplicates(subset='customer_id')
+    customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
+
+    # Sort in descending order of deposit balance then loan balance, and drop duplicates on portfolio_key
+    customer_df_portfolio = customer_df.sort_values(['deposit_balance', 'loan_net_balance'], ascending=[False, False]).drop_duplicates(subset=['portfolio_key'])
+
+    # Just inspect output
+    # Set column order
+    # Write out
+    # Done
+
