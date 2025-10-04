@@ -740,3 +740,9 @@ Objective:
 - Provide a clear 
 
 product
+
+
+# 2025-10-04
+Yesterday, added customer dim
+Several improvements to this. Look at silver layer. I'm building out parts in order on the core.py
+

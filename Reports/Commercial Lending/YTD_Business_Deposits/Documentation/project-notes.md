@@ -32,3 +32,13 @@ The `deduped_accounts` CTE uses `ROW_NUMBER()` to assign 1 to the most recent re
 
 Hasan request to get for specific date range
 
+----
+
+# 2025-10-03
+TODO:
+Add new recipients on this
+Sara & Taylor & Steve
+
+And add CMO to the report
+
+Ensure filters match Kelli Brower product list
