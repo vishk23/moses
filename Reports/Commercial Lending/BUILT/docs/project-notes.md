@@ -33,3 +33,20 @@ Chris to send me logic on resi side.
 Met with Hasan/kelly a/Deva to review cml side and process
 - sent through
 
+
+# 2025-10-04
+Need to have extract done by Mon Oct 6
+
+Will get done. Mapped out a bunch of this in my head already, just need to build.
+
+CML
+- hard code 12 acctnbrs
+    - later userfield to specify built
+MTG
+- chris gave me specific instructions on logic
+
+Package into a single file
+loan_type: commercial/resi
+
+Separate pipelines but same schema (mostly), concat together
+
