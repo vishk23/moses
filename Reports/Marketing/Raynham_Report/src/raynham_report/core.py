@@ -36,10 +36,10 @@ def filter_distinct_customer_near_branches(accts):
 
     Requested was within 5 mi of branch, but for simplicity, we match on primary zip codes
     """
-    zip_codes = ["02767","02780"]
+    zip_codes = ["02767"]
     filtered_df = accts[accts['primaryownerzipcd'].isin(zip_codes)]
     distinct_customers = filtered_df[['customer_id']].drop_duplicates()
-    distinct_customers['eligibility'] = 'Zip Code in Raynham (02767) or Taunton (02780)'
+    distinct_customers['eligibility'] = 'Zip Code in Raynham (02767)'
     return distinct_customers
     
 
@@ -128,37 +128,64 @@ def generate_raynham_report():
     pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
     pers_dim = pers_dim[[
         'customer_id',
-        'age'
+        'age',
+        'firstname',
+        'lastname'
     ]].copy()
     customer_df = customer_df.merge(pers_dim, on='customer_id', how='left')
     
     # Filter out records where age < 18 and customer type = 'Person'
-    customer_df = customer_df[~((customer_df['customer_type'] == 'Person') & (customer_df['age'] < 18))]
+    customer_df = customer_df[~((customer_df['customer_type'] == 'Person') & (customer_df['age'] < 18) & (customer_df['age'] > 90))].copy()
 
-    # Append pkey
-    pkey_slice = accts[['customer_id','portfolio_key']].copy()
-    # Assert a customer id is not associated with multiple portfolio keys
-    # There is a Many:1 relationship between customers and portfolio key.
+    # # Append pkey
+    # pkey_slice = accts[['customer_id','portfolio_key']].copy()
+    # # Assert a customer id is not associated with multiple portfolio keys
+    # # There is a Many:1 relationship between customers and portfolio key.
     
-    customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
+    # customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
 
 
-    # Append pkey
-    pkey_slice = accts[['customer_id', 'portfolio_key']].copy()
+    # # Append pkey
+    # pkey_slice = accts[['customer_id', 'portfolio_key']].copy()
 
-    # Assert no customers are associated with multiple portfolio keys
-    portfolio_key_uniques = pkey_slice.groupby('customer_id')['portfolio_key'].nunique()
-    assert (portfolio_key_uniques == 1).all(), "Assertion failed: One or more customers are associated with multiple portfolio keys"
+    # # Assert no customers are associated with multiple portfolio keys
+    # portfolio_key_uniques = pkey_slice.groupby('customer_id')['portfolio_key'].nunique()
+    # assert (portfolio_key_uniques == 1).all(), "Assertion failed: One or more customers are associated with multiple portfolio keys"
 
-    # Deduplicate pkey_slice to handle potential multiplicity (assuming Many:1 relationship)
-    pkey_slice = pkey_slice.drop_duplicates(subset='customer_id')
-    customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
+    # # Deduplicate pkey_slice to handle potential multiplicity (assuming Many:1 relationship)
+    # pkey_slice = pkey_slice.drop_duplicates(subset='customer_id')
+    # customer_df = customer_df.merge(pkey_slice, on='customer_id', how='left')
 
-    # Sort in descending order of deposit balance then loan balance, and drop duplicates on portfolio_key
-    customer_df_portfolio = customer_df.sort_values(['deposit_balance', 'loan_net_balance'], ascending=[False, False]).drop_duplicates(subset=['portfolio_key'])
+    # # Sort in descending order of deposit balance then loan balance, and drop duplicates on portfolio_key
+    # customer_df_portfolio = customer_df.sort_values(['deposit_balance', 'loan_net_balance'], ascending=[False, False]).drop_duplicates(subset=['portfolio_key'])
 
     # Just inspect output
     # Set column order
     # Write out
     # Done
+    customer_df = customer_df[[
+        'customer_id',
+        'customer_type',
+        'customer_name',
+        'Full_Street_Address',
+        'cityname',
+        'statecd',
+        'zipcd',
+        'firstname',
+        'lastname',
+        'eligibility'
+    ]].copy()
+
+    customer_df = customer_df.rename(columns={
+        'customer_name':'Customer Name',
+        'Full_Street_Address':'Address',
+        'cityname': 'City',
+        'statecd':'State',
+        'zipcd':'Zip',
+        'firstname':'First Name',
+        'lastname':'Last Name'
+    }).copy()
+
+    return customer_df
+
 

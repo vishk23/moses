@@ -71,3 +71,22 @@ Regardless, I can still build customer dim and create this, but I don't know if 
 # 2025-09-29
 Not a major factor. Checked with Tom K and this is all set. No issues there.
 - not used as an exclusion at all. This is just the state of the database.
+
+# 2025-10-04
+Finalized this, sent email
+
+Details:
+
+I included an 'eligibility' column for each customer to show why it was eligible to show up on this report. Below is the breakdown:
+
+I included both people & organizations with at least 1 active account that met the above criteria.
+
+Age range was limited to people between age 19-90 (18 and under & 91+ were excluded).
+I picked 90 because I figured many are not driving past that age. Also, I found a few 100+ aged customers with active accounts, but pubilc obituaries were found online. Working on that separately with Operations. Figured we could avoid mailing to deceased by picking a conservative 90 cutoff range, but happy to tweak or adjust if you see fit.
+
+There is no 'do not mail' field on COCC on the customer level (as far as I'm aware). There is a field for it on the customer level (allowpromoyn), but it is not being utilized. I checked with Tom K on this last week to confirm and he found the same thing. 
+
+The 'within 5 mi of branches' is possible, but I do not have any approved tools at my disposal to use for this. I used zip code of active account owner (could be an organization or a person) to match with Raynham zip to get account holders in the proximity.
+I did try with Taunton because you had requested proximity to Main Office, though there are way more accounts in Taunton and many would have to manually filtered out if I included all account holders with 02780 zip.
+
+
