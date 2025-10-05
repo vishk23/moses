@@ -139,7 +139,7 @@ def generate_bronze_tables():
     wh_loans = add_load_timestamp(wh_loans)
 
     write_deltalake(WH_ACCTCOMMON_PATH, wh_acctcommon, mode='overwrite', schema_mode='merge')
-    write_deltalake(WH_ACCTLOAN_PATH, wh_acctloan, mode='overwrite', schema_mode='merge')
+    write_deltalake(WH_ACCTLOAN_PATH, wh_acctloan, mode='overwrite', schema_mode='overwrite')
     write_deltalake(WH_LOANS_PATH, wh_loans, mode='overwrite', schema_mode='merge')
 
 

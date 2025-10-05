@@ -4,8 +4,9 @@ Main Entry Point
 from pathlib import Path
 from typing import List
 from datetime import datetime
-
+from calendar import month_name
 import pandas as pd # type: ignore
+from deltalake import DeltaTable
 
 import src.fetch_data # type: ignore
 import src.core_transform # type: ignore
@@ -14,6 +15,8 @@ import cdutils.hhnbr # type: ignore
 import src.output_to_excel
 import cdutils.loans.calculations # type: ignore
 import cdutils.inactive_date # type: ignore
+import cdutils.append_pm.core # type: ignore
+import cdutils.input_cleansing # type: ignore
 # import cdutils.selo # type: ignore
 from src._version import __version__
 from src.config import BASE_PATH
@@ -47,9 +50,20 @@ def main():
     df['acctnbr'] = df['acctnbr'].astype(int)
     df = pd.merge(df, wh_acctuserfields, on='acctnbr', how='left')
 
+    # dtype casting
+    df_schema = {
+        'acctnbr':'str'
+    }
+    df = cdutils.input_cleansing.cast_columns(df, df_schema)
+
+    # Append portfolio manager
+    pm = cdutils.append_pm.core.append_pm()
+    df = df.merge(pm, how='left', on='acctnbr') 
+
     # Renaming for readability
     names = {
         'loanofficer': 'Responsibility Officer',
+        'persname': 'Portfolio Manager',
         'product': 'Product Name',
         'ownersortname': 'Customer Name',
         'acctnbr': 'Account Number',
@@ -70,7 +84,7 @@ def main():
     df = df.rename(columns=names)
 
     # Grabbing relevant columns
-    df = df[['Responsibility Officer', 'Product Name', 'Customer Name', 'Account Number', 'Account Status', 'Date Opened', 'Original Balance', 'Current Balance', 'Net Balance', 'Available Credit', 'Interest Rate', 'Next Rate Change Date', 'LOC Inactive Date', 'Maturity Date', 'Risk', 'SBA Expiration Date', 'Net Available Credit', 'FDICCATCD']]
+    df = df[['Responsibility Officer', 'Portfolio Manager', 'Product Name', 'Customer Name', 'Account Number', 'Account Status', 'Date Opened', 'Original Balance', 'Current Balance', 'Net Balance', 'Available Credit', 'Interest Rate', 'Next Rate Change Date', 'LOC Inactive Date', 'Maturity Date', 'Risk', 'SBA Expiration Date', 'Net Available Credit', 'FDICCATCD']]
 
     # Set datetime column for SBA exp date
     # df['SBA Expiration Date'] = pd.to_datetime(df['SBA Expiration Date'])
@@ -89,7 +103,7 @@ def main():
         if not group.empty:
             result_rows.append(pd.DataFrame({
                 'Responsibility Officer': f'Subtotal: {officer}', 
-                'Product Name': n,
+                'Portfolio Manager': n,
                 'Original Balance': group['Original Balance'].sum(),
                 'Current Balance': group['Current Balance'].sum(),
                 'Net Balance': group['Net Balance'].sum(),
@@ -105,11 +119,16 @@ def main():
 
     # grabbing date for filename
     today = datetime.today()
-    date = f"{today.strftime('%B')} {today.day} {today.year}"
-    output_string = './output/CLO Active Portfolio ' + date + '.xlsx'
+    current_first_day = today.replace(day=1)
+    prev_year = current_first_day.year - 1 if current_first_day == 1 else current_first_day.year
+    prev_month = 12 if current_first_day.month == 1 else current_first_day.month - 1
+    prev_month_name = month_name[prev_month] + " " + str(prev_year)
+    filename_string = 'CLO Active Portfolio_' + prev_month_name + '.xlsx'
     
     # Output to excel (raw data)
-    OUTPUT_PATH = BASE_PATH / Path(output_string)
+    OUTPUT_DIR = BASE_PATH / "output"
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH = OUTPUT_DIR / filename_string
     # df.to_excel(OUTPUT_PATH, sheet_name='Sheet1', index=False)
 
     # mapping dataframes to sheets in final product
@@ -156,7 +175,7 @@ def main():
                 elif col in percent_columns:
                     worksheet.set_column(i, i, 17, percent_format)
                 else:
-                    max_len = max(df[col].astype(str).map(len).max(), len(col)) + 2
+                    max_len = max(df[col].astype(str).map(len).max(), len(col)) + 4
                     worksheet.set_column(i, i, max_len)
 
 

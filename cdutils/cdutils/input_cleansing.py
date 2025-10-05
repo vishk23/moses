@@ -77,3 +77,32 @@ def enforce_schema(df: pd.DataFrame, schema: dict) -> pd.DataFrame:
             print(f"[ERROR] Conversion failed for column '{column}' to {desired_dtype}: {e}")
     
     return df
+
+
+def cast_columns(df, field_map):
+    """
+    Cast specified columns in a pd DataFrame to a new data type based on field map
+    """
+    df = df.copy()
+
+    for field, target_type in field_map.items():
+        if field not in df.columns:
+            raise ValueError(f"Field '{field}' not found in DataFrame.")
+        
+        if target_type == 'str' or target_type == 'string':
+            if df[field].dtype.kind == 'f':
+                if not (df[field].dropna() % 1 == 0).all():
+                    raise ValueError(f"Cannot convert '{field}' to 'str': column contains float values with non-zero fractional parts (must be .00 for conversion).")
+                df[field] = df[field].astype('Int64').astype('string')
+
+            else:
+                df[field] = df[field].astype('string')
+        elif target_type == 'int':
+            df[field] = df[field].astype('Int64')
+        elif target_type == 'float':
+            df[field] = df[field].asttype('float64')
+        elif target_type == 'datetime':
+            df[field] = pd.to_datetime(df[field])
+        else:
+            raise ValueError(f"Unsupported target type '{target_type}'")
+    return df

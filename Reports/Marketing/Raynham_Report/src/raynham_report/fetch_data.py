@@ -40,3 +40,45 @@ def fetch_data():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+
+
+def fetch_rtxn_data():
+    """
+    Main data query
+    """
+    # transacted = text("""
+    # SELECT
+    #     *
+    # FROM
+    #     COCCDM.WH_RTXN a
+    # WHERE
+    #     a.ORGNBR = 204
+    #     AND a.RTXNSOURCECD = 'ONLI'
+    #     AND a.RUNDATE >= SYSDATE - 90
+    # """)
+    transacted = text("""
+    SELECT
+        DISTINCT a.ACCTNBR
+    FROM
+        COCCDM.WH_RTXN a
+    WHERE
+        a.ORGNBR = 204
+        AND a.RTXNSOURCECD = 'ONLI'
+        AND a.RUNDATE >= SYSDATE - 90
+    """)
+
+    # SELECT
+    #     *
+    # FROM
+    #     OSIBANK.VIEWORGTAXID a
+    # """)
+
+    queries = [
+        {'key':'transacted', 'sql':transacted, 'engine':2},
+        # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

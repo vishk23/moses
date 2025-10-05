@@ -21,45 +21,52 @@ Weekly (Mon)
 
 Monthly (1st of the Month - ME Reporting)
 - Python
-    - SWAP Report
-    - Dealer Reserve Recon Archive (after confirmation from Indirect Dept)
-    - DealerTrack RouteOne Recon
-    - E Contract Summary Report
+    - Balance Tracker YTD
+    - CLO Active Portfolio Report
+    - Loan Trial (Operations)
+    - Delinquency
     - Prime Time Customer Report
     - SBRM Portfolio Report
-    - CLO Active Portfolio Report
+    - [ ] E Contract Summary Report
+        - Error reading some files
     - Acct_Consultant_Engineer Report
-    - Muni Banking Payroll & Vendor
-    - Balance Tracker YTD
+    - SBA Lines
+    - SWAP Report
     - SBLC Lines
     - Deposit Dash (PMs) - Monthly deposit update
     - Deposit Deep Dive for EB
-    - Loan Trial (Operations)
-        - Add kelly M and make adjustments
-    - Delinquency
+    - Muni Banking Payroll & Vendor
     - NonAccrual
     - Classifieds
     - FDM
     - Business Deposits YTD
-    - New Business Checking
-    - New Consumer Checking
     - Property Report for Sean C
     - Loan Mod
         - Needs additional field
-    - HoA Report for PJ
+    - New Business Checking
+    - New Consumer Checking
     - Retail Loan Report (Account & Agreement)
         - Recent one, take inventory
+    - Loan Branch Officer Report
+
+    - Dealer Reserve Recon Archive (after confirmation from Indirect Dept)
+    - DealerTrack RouteOne Recon
+
+- TBD
+    - HoA Report for PJ
+
 - Alteryx
-    - Construction Report
     - New Loan YTD
+    - Construction Report
+    - Muni Statements
     - Concentration of Credit Report (Full - no HoA)
     - Concentration of Credit Report (HoA)
     - Concentration of Credit - Hasan CML only version
     - Weighted Average Risk Rating
+
     - Credit File Review Checklist Report
         - excel file only
-    - Muni Statements
-        - Janet will need to assist in this
+
 
 Monthly (15th of the Month)
 - Business Concentration with XAA
@@ -80,3 +87,6 @@ Breakdown:
 *   **Monthly (1st of the Month):** 33
 *   **Monthly (15th of the Month):** 1
 *   **Monthly (25th of the Month):** 1
+
+
+$env:REPORT_ENV='prod'

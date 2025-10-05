@@ -1,3 +1,10 @@
+Usage:
+cd to YTD_Business_Deposits/Production
+python -m src.main
+Email automatically sends
+
+This needs to have year start date updated every year (switch on first of new year)
+
 # 2025-09-29
 ```sql
 WITH deduped_accounts AS (
@@ -25,3 +32,13 @@ The `deduped_accounts` CTE uses `ROW_NUMBER()` to assign 1 to the most recent re
 
 Hasan request to get for specific date range
 
+----
+
+# 2025-10-03
+TODO:
+Add new recipients on this
+Sara & Taylor & Steve
+
+And add CMO to the report
+
+Ensure filters match Kelli Brower product list

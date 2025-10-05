@@ -6,6 +6,8 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd # type: ignore
 import numpy as np # type: ignore
 from pandas.api.types import is_numeric_dtype
+from deltalake import DeltaTable
+import src.config
 
 import cdutils.input_cleansing # type: ignore
 import cdutils.deduplication # type: ignore
@@ -474,8 +476,22 @@ def final_cml(cml):
     # Other implementation uses loanlimityn
     cml['Terms'] = np.where(cml['loanlimityn'] == 'Y', cml['inactivedate'], cml['datemat'])
 
+    face_value = DeltaTable(src.config.SILVER / "face_value").to_pandas()
+    face_value = face_value[[
+        'acctnbr',
+        'facevalue'
+    ]].copy()
+    # Cast type pre merge
+    cml_schema = {
+        'acctnbr':'str'
+    }
+    cml = cdutils.input_cleansing.cast_columns(cml, cml_schema)
+
+    cml = cml.merge(face_value, on='acctnbr', how='left')
+
+
     # Face calcuation (creditlimitamt else noteopenamt)
-    cml['Face'] = np.where(cml['loanlimityn'] == 'Y', cml['creditlimitamt'], cml['noteopenamt'])
+    cml['Face'] = np.where(cml['facevalue'].isnull(), "Logical Error", cml['facevalue'])
 
     # Drop unneccessary columns
     cml = cml[['contractdate','acctnbr','product','Face','Net Balance','noteintrate','Terms','ownersortname']].copy()
@@ -500,8 +516,22 @@ def final_personal(personal):
     # If its a line of credit type product (HELOC, etc...), use inactive date, otherwise maturity date
     personal['Terms'] = np.where(personal['loanlimityn'] == 'Y', personal['inactivedate'], personal['datemat'])
 
+    face_value = DeltaTable(src.config.SILVER / "face_value").to_pandas()
+    face_value = face_value[[
+        'acctnbr',
+        'facevalue'
+    ]].copy()
+    # Cast type pre merge
+    personal_schema = {
+        'acctnbr':'str'
+    }
+    personal = cdutils.input_cleansing.cast_columns(personal, personal_schema)
+
+    personal = personal.merge(face_value, on='acctnbr', how='left')
+
+
     # Face calcuation (creditlimitamt else noteopenamt)
-    personal['Face'] = np.where(personal['loanlimityn'] == 'Y', personal['creditlimitamt'], personal['noteopenamt'])
+    personal['Face'] = np.where(personal['facevalue'].isnull(), "Logical Error", personal['facevalue'])
 
     # Drop unneccessary columns
     personal = personal[['contractdate','acctnbr','product','Face','Net Balance','noteintrate','datemat','ownersortname']].copy()
