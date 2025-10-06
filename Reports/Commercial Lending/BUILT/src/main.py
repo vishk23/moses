@@ -6,6 +6,7 @@ Replace this docstring with a description of your project's purpose and logic.
 
 import src.config
 import src._version
+import src.built.core
 
 def main():
     print(f"Running {src._version.__version__}")
@@ -14,11 +15,15 @@ def main():
     print(f"Owner: {src.config.OWNER}")
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
-    # Add your main project logic here
-    # Example: print('Hello, world!')
 
-    OUTPUT_PATH = src.config.OUTPUT_DIR / "file_name.parquet"
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    df = src.built.core.generate_built_extract()
+
+    src.config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    file_name = "built_extract.xlsx"
+    OUTPUT_PATH = src.config.OUTPUT_DIR / file_name
+    df.to_excel(OUTPUT_PATH, index=False)
+    print("Complete!")
+
 
 if __name__ == "__main__":
     main()

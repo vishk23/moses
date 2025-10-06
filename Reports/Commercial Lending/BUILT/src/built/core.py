@@ -62,9 +62,28 @@ def fetch_cml():
 
     # Filter to hasan defined acctnbrs for now
     accts = accts[accts['acctnbr'].isin(acctnbrs)].copy()
+    accts['MACRO TYPE'] = 'Commercial'
+    return accts 
+
+def fetch_resi():
+    """
+    Resi piece of BUILT extract
+    """
+    accts = DeltaTable(src.config.SILVER / "account").to_pandas()
+
+    # Filter to Resi Construction loans
+    # TODO: Add in the holdback logic 
+    resi_definite = ["MG01","MG64"]
+    accts = accts[accts['currmiaccttypcd'].isin(resi_definite)]
+
+    accts['MACRO TYPE'] = 'Residential'
+    return accts
+
+def transform(accts):
     accts = accts[[
         'effdate', # Effective date of data
         'acctnbr', # Loan Number
+        'MACRO TYPE', # CML/Resi
         'creditlimitamt', # Loan Amount - this will go to 0 if it switches to Perm
         'loanlimityn', # LOC Type (Y/N)
         'notebal', # Draw Funded to Date
@@ -83,9 +102,43 @@ def fetch_cml():
         # Appraisal info
         # Owner occ
         # Borrower info
-        # They want controlling person for each org I believe
-
+        'customer_id',
+        'ownersortname'
     ]].copy()
+
+    accts = accts.rename(columns={
+        'ownersortname':'Primary Borrower Name'
+    }).copy()
+
+
+    # Append primary address
+    customer_address_link = DeltaTable(src.config.SILVER / "customer_address_link").to_pandas()
+    customer_address_link = customer_address_link[customer_address_link['addrusecd'] == 'PRI'].copy()
+    customer_address_link = customer_address_link[[
+        'customer_id',
+        'addrnbr'
+    ]].copy()
+    customer_address_link_schema = {
+        'addrnbr':'str'
+    }
+    customer_address_link = cdutils.input_cleansing.cast_columns(customer_address_link, customer_address_link_schema)
+
+    address = DeltaTable(src.config.SILVER / "address").to_pandas()
+    address_schema = {
+        'addrnbr':'str'
+    }
+    address = cdutils.input_cleansing.cast_columns(address, address_schema)
+    address = address.drop(columns=['load_timestamp_utc']).copy()
+    address = customer_address_link.merge(address, how='inner', on='addrnbr')
+    address = address.drop(columns=['addrnbr']).copy()
+
+    address = address.rename(columns={
+        'Full_Street_Address':'Primary Borrower Address',
+        'cityname':'Primary Borrower City',
+        'statecd':'Primary Borrower State',
+        'zipcd':'Primary Borrower Zip',
+    }).copy()
+    accts = accts.merge(address, how='left', on='customer_id')
 
     accts_schema = {
         'acctnbr':'str'
@@ -137,6 +190,13 @@ def fetch_cml():
     address = cdutils.input_cleansing.cast_columns(address, address_schema)
 
     address = address.drop(columns='load_timestamp_utc').copy()
+    address = address.rename(columns={
+        'Full_Street_Address':'Property Address',
+        'cityname':'Property City',
+        'statecd':'Property State',
+        'zipcd':'Primary Zip',
+    }).copy()
+
     accts = accts.merge(address, on='addrnbr', how='left')
 
     # Append asset class
@@ -161,56 +221,12 @@ def fetch_cml():
         'Other': ['Commercial - Other','Real Estate - Business','Real Estate - Bus&Bus Assets','Real Estate - Personal & Bus','Real Estate - Pers&Bus Assets','All Business Assets','Bus Assets w/Accts Receivable','UCC - ABA','UCC- Equipment','Assignment of Leases/Rents','General Contractor','Outdoor Dealers','Marketable Securities','SBA Loan','Funeral Home','Savings - Partially Secured','Passbook/Savings Secured']
     }
     accts = add_asset_class(accts, mapping_dict=PROPERTY_TYPE_GROUPS)
+    accts = accts[~(accts['addrnbr'].isnull())].copy()
+
+    return accts
 
     # Participation data can be separate or in there
     # INVR fields maybe, could just leave off for this cycle
-
-    # return accts 
-
-def fetch_resi():
-    """
-    Resi piece of BUILT extract
-    """
-    # TODO: Implement Chris logic 
-    pass
-
-# def transform(df):
-#     """
-#     Core logic/transformations/filtering for BUILT extract
-    
-#     Takes in a df (cml/resi) and needs to produce a standardized schema for the output so we can union
-#     """
-
-#     df = df[[
-#         'effdate', # Effective date of data
-#         'acctnbr', # Loan Number
-#         'creditlimitamt', # Loan Amount - this will go to 0 if it switches to Perm
-#         'loanlimityn', # LOC Type (Y/N)
-#         'notebal', # Draw Funded to Date
-#         'Net Balance', # BCSB Net Balance
-#         # 'contractdate', # Date loan closed. Opted to use orig date below, but check with Hasan/Dawn
-#         'origdate', # Date loan hit core system (Close Date)
-#         'datemat', # Maturity Date (full loan)
-#         'inactivedate', # Inactive Date (LOC type product expires) - For BUILT purposes this would be Maturity Date I believe
-#         # Create calculated field for term (Months) between inactivedate and origdate
-#         'noteintrate', # Interest Rate (Current)
-#         'mjaccttypcd', # Major code
-#         'currmiaccttypcd', # Minor code (1:1 match with product)
-#         'product', # Product Type
-#         # Asset class, calculated from proptypdesc mode with appraised values
-#         # All prop date requested
-#         # Appraisal info
-#         # Owner occ
-#         # Borrower info
-#         # They want controlling person for each org I believe
-#     ]].copy()
-
-
-
-#     # Participation data can be separate or in there
-#     # INVR fields maybe
-
-#     # Make sure acctnbr field is str datatype
 
 
 def generate_built_extract():
@@ -218,6 +234,13 @@ def generate_built_extract():
     Full built extract
     """
     cml = fetch_cml()
-    # resi = fetch_resi()
+    resi = fetch_resi()
+
+    cml = transform(cml)
+    resi = transform(resi)
+
+    concat_df = pd.concat([cml, resi], ignore_index=True)
+    return concat_df
+
 
 
