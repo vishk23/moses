@@ -7,7 +7,14 @@ def add_asset_class(df, mapping_dict):
     """
     Appends a new field 'asset_class' to df based on highest appraised values by property type
     """
+    # Coerce aprsvalueamt to numeric for safety
+    df['aprsvalueamt'] = pd.to_numeric(df['aprsvalueamt'], errors='coerce')
+    
     def get_asset_class(group):
+        # Strip whitespace from proptypdesc for matching
+        group = group.copy()
+        group['proptypdesc'] = group['proptypdesc'].str.strip()
+        
         grouped_sum = group.groupby('proptypdesc')['aprsvalueamt'].sum()
         if grouped_sum.empty or grouped_sum.isna().all():
             return None
@@ -16,7 +23,20 @@ def add_asset_class(df, mapping_dict):
         return asset_type
     
     raw_asset_classes = df.groupby('acctnbr').apply(get_asset_class, include_groups=False).to_dict()
-    df['asset_class'] = df['acctnbr'].map(raw_asset_classes).map(lambda x: mapping_dict.get(x, 'Other') if pd.notna(x) else 'No Data')
+    
+    # Create reverse mapping: proptypdesc -> category
+    reverse_mapping = {}
+    for category, subtypes in mapping_dict.items():
+        for subtype in subtypes:
+            # Strip whitespace here too for consistency
+            reverse_mapping[subtype.strip()] = category
+    
+    # Map acctnbr to proptypdesc, then to category (with fallback 'Other' for unmapped subtypes)
+    df['asset_class'] = (
+        df['acctnbr']
+        .map(raw_asset_classes)
+        .map(lambda x: reverse_mapping.get(x.strip() if pd.notna(x) else None, 'Other') if pd.notna(x) else 'No Data')
+    )
     return df
 
 def fetch_cml():
