@@ -36,7 +36,7 @@ def create_silver_prop_tables():
 
     print(f"Created `account_property_link` table with {len(account_property_link)} unique links.")
 
-    master_property = coalesced_data.sort_values(by='acctnbr', ascending=False)
+    master_property = coalesced_data.sort_values(by=['acctnbr','aprsdate'], ascending=[True, False])
     master_property = master_property.drop_duplicates(subset=['propnbr'], keep='first')
 
     # The property table should not contain the account number, as that link is now separate.
