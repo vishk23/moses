@@ -251,3 +251,125 @@ Key Person life insurance
 security agreement
 stock
 Vessel
+
+
+Collateral_Type	Loan_Number_nunique
+1 Family Residential - Own Occ	2865
+All Business Assets	494
+UCC - ABA	442
+Vehicle - Used	419
+1-4 Fam Res - Non Own Occ	361
+Condominium	316
+Vehicle - New	314
+Real Estate - Business	304
+Assignment of Leases/Rents	172
+UCC Filing / Assignment	157
+Multi Family	137
+2 Family Residential - Own Occ	128
+Real Estate - Bus&Bus Assets	79
+Unsecured	73
+Vehicle - Business	67
+Land - Unimproved	66
+Office- General	63
+Mixed Use (Retail/Residential)	48
+3 Family Residential - Own Occ	47
+Equipment	44
+Industrial	43
+Commercial - Other	42
+UCC- of Future Income	42
+General Retail	40
+Restaurant	35
+Warehouse	32
+Strip Plaza	23
+UCC of Fee Income	21
+UCC- Equipment	21
+Apartment Building	17
+Bus Assets w/Accts Receivable	17
+Manufacturing	16
+Hotel/Motel	16
+Mixed Use (Retail/Office)	15
+Land - Improved	15
+Bus Assets w/Accts Rcvb & Inv	15
+Business Assets w/Equipment	14
+Boat	13
+Office - Medical	13
+Office - Professional	12
+Assignment Licenses/Permits	12
+Passbook/Savings Secured	11
+Gas Station and Convenience St	10
+Certificate of Deposit	10
+Cash Surrender Value Life Ins	10
+Self Storage	9
+Autobody/Gas Station	8
+Parking Lot	8
+Shopping Plaza	8
+4 Family Residential - Own Occ	7
+Day Care	6
+Auto-Truck Repair	6
+Retail - Big Box Store	5
+Real Estate - Personal & Bus	5
+Marketable Securities	5
+UCC- Receivables	5
+Church	4
+Golf Course	4
+Solar Farm	4
+Outdoor Dealers	4
+Real Estate - Pers&Bus Assets	4
+Mortgage - Other	4
+Other	4
+Indoor Recreational	3
+Hospitality/Event Space	3
+Marina	3
+Assign of Developers Rights	3
+Assisted Living	3
+Campground	3
+Seafood Processing Plant	3
+SBA Loan	3
+Funeral Home	3
+Mixed Use (Office/Residential)	3
+Dealership	3
+Accounts Receivable	2
+Assign of Fishing Lic & Permit	2
+Car Wash	2
+General Contractor	2
+Educational Facilities	2
+Outdoor Recreation	2
+Savings - Partially Secured	2
+Classic Auto	1
+Assignment of Tax Credits	1
+Inventory	1
+Dry Cleaner/Laundromat	1
+Mobile Home - New	1
+Lease Hold Mortgage	1
+Margin Related Collateral	1
+Key Person LIfe Insurance	1
+Security Agreement	1
+Stock	1
+UCC - Heat Loan	1
+Vessel	1
+
+Exclude anything with:
+All Business Assets
+UCC
+Assign
+Land
+Vehicle
+Equipment
+Bus Assets w/Acct Receivable
+Bus Assets
+Boat
+Passbook
+Certificate of Deposit
+Cash Life Insurance
+Parking Lot
+Marketable Securities
+Accounts Receivable
+Savings
+Classic Auto
+Inventory
+Mobile Home
+Lease Hold Mortgage
+Key Person life insurance
+security agreement
+stock
+Vessel
