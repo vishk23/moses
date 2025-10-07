@@ -9,6 +9,7 @@ import src.silver.property
 import src.utils.parquet_io
 import src.silver.insurance
 import src.silver.customer_dim.core
+import src.silver.acct_role_link.core
 import src.silver.customer_address_link.core
 from src.utils.parquet_io import add_load_timestamp
 import cdutils.orig_face_amt.core # type: ignore
@@ -159,3 +160,14 @@ def generate_silver_tables():
     
     write_deltalake(ORG_DIM, org_dim, mode='overwrite', schema_mode='overwrite')
     print("Successfully wrote org dim")
+
+    # Account Role Linking Table
+    print("Starting acct role linking table generation ...")
+    ACCT_ROLE_LINK = src.config.SILVER / "acct_role_link"
+    ACCT_ROLE_LINK.mkdir(parents=True, exist_ok=True)
+
+    acct_role_link = src.silver.acct_role_link.core.generate_acct_role_link()    
+    acct_role_link = add_load_timestamp(acct_role_link)
+    
+    write_deltalake(ACCT_ROLE_LINK, acct_role_link, mode='overwrite', schema_mode='overwrite')
+    print("Successfully wrote acct role link")
