@@ -289,3 +289,36 @@ def should_exclude(collateral_type):
 
 # Apply the filter
 filtered_df = df[~df['Collateral_Type'].apply(should_exclude)]
+
+
+# 2025-10-08
+
+Sent v2 to Kelly yesterday
+
+A couple tweaks to make
+- Esrow didn't come through correctly, fix
+    - done
+- If HE minors, line should be one (for prop) if floodzone = 'X', else we null it out, for other MTG and CML fields
+    - 
+- participations bought excluded
+    - ACCTUSERFIELDS
+        - PARP - Purchased/Bought (boolean)
+        - PAPU - Purchased %
+
+FPTS is sold?
+- Should check this
+- separate topic, outside scope here
+    - not as reliable as totalpctsold.
+    - not as well maintained of a field. Some where totalpctsold and no flag
+
+
+Logic for final piece:
+# Filter out HE records where flood zone = 'X'
+heloc_minors = ['MG52','MG55','MG48','MG71']
+
+# if record in cleaned df['currmiaccttypcd'].isin(heloc_minors) and cleaned_df['Flood_Zone'] contains X , or TBD, or B, or C (case insensitive)
+# then drop the record
+
+# Afterward: Next operation is to set anything in floodzone that contains contains X , or TBD, or B, or C (case insensitive) to None
+
+
