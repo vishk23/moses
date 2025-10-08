@@ -321,4 +321,27 @@ heloc_minors = ['MG52','MG55','MG48','MG71']
 
 # Afterward: Next operation is to set anything in floodzone that contains contains X , or TBD, or B, or C (case insensitive) to None
 
+```python
+```
+import pandas as pd
 
+# Assuming cleaned_df is your DataFrame with columns 'currmiaccttypcd' and 'Flood_Zone'
+
+# Define the list of heloc_minors
+heloc_minors = ['MG52', 'MG55', 'MG48', 'MG71']
+
+# Regex pattern to match 'X', 'TBD', 'B', or 'C' case-insensitively as substrings
+flood_zone_pattern = r'(?i)(X|TBD|B|C)'
+
+# Step 1: Drop rows where 'currmiaccttypcd' is in heloc_minors 
+# AND 'Flood_Zone' contains one of the specified strings
+mask_to_drop = (
+    cleaned_df['currmiaccttypcd'].isin(heloc_minors) & 
+    cleaned_df['Flood_Zone'].str.contains(flood_zone_pattern, na=False)
+)
+cleaned_df = cleaned_df[~mask_to_drop]
+
+# Step 2: Set 'Flood_Zone' to None where it contains one of the specified strings
+cleaned_df.loc[cleaned_df['Flood_Zone'].str.contains(flood_zone_pattern, na=False), 'Flood_Zone'] = None
+```
+```
