@@ -322,7 +322,6 @@ heloc_minors = ['MG52','MG55','MG48','MG71']
 # Afterward: Next operation is to set anything in floodzone that contains contains X , or TBD, or B, or C (case insensitive) to None
 
 ```python
-```
 import pandas as pd
 
 # Assuming cleaned_df is your DataFrame with columns 'currmiaccttypcd' and 'Flood_Zone'
@@ -344,4 +343,8 @@ cleaned_df = cleaned_df[~mask_to_drop]
 # Step 2: Set 'Flood_Zone' to None where it contains one of the specified strings
 cleaned_df.loc[cleaned_df['Flood_Zone'].str.contains(flood_zone_pattern, na=False), 'Flood_Zone'] = None
 ```
-```
+
+C:\Users\w322800\AppData\Local\Temp\ipykernel_23660\3142456051.py:13: UserWarning: This pattern is interpreted as a regular expression, and has match groups. To actually get the groups, use str.extract.
+  cleaned_df['Flood_Zone'].str.contains(flood_zone_pattern, na=False)
+C:\Users\w322800\AppData\Local\Temp\ipykernel_23660\3142456051.py:18: UserWarning: This pattern is interpreted as a regular expression, and has match groups. To actually get the groups, use str.extract.
+  cleaned_df.loc[cleaned_df['Flood_Zone'].str.contains(flood_zone_pattern, na=False), 'Flood_Zone'] = None
