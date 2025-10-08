@@ -217,6 +217,10 @@ def generate_pers_dim():
 
     wh_pers = wh_pers.merge(pers, on='customer_id', how='left')
 
+    # Add userfields for Unsubscribe/OptOut
+    # wh_persuserfields = DeltaTable(src.config.BRONZE / "wh_persuserfields").to_pandas()
+    
+
     return wh_pers
 
 def generate_org_dim():
