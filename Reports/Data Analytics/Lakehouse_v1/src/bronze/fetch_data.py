@@ -304,9 +304,25 @@ def fetch_userfields():
         OSIBANK.WH_ACCTUSERFIELDS a
     """)
 
+    wh_orguserfields = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ORGUSERFIELDS a
+    """)
+
+    wh_persuserfields = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_PERSUSERFIELDS a
+    """)
+
 
     queries = [
         {'key':'wh_acctuserfields', 'sql':wh_acctuserfields, 'engine':1},
+        {'key':'wh_orguserfields', 'sql':wh_orguserfields, 'engine':1},
+        {'key':'wh_persuserfields', 'sql':wh_persuserfields, 'engine':1},
     ]
 
 

@@ -244,3 +244,21 @@ ties to WH_INVR which has acctnbr as primary key
 
 - need to include everything except closed loans. Should have cls too
 This is beyond commercial. This is all loans 
+
+
+# 2025-10-08
+Can we please add:
+
+Next payment due date
+
+Last payment date
+
+Accrued interest paid to date
+
+Accrued interest balance
+
+ 
+
+These were on the original trial but appear to be missing now.
+
+Email above from Kelly. THey are in my other report. 

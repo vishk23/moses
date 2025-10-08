@@ -195,3 +195,28 @@ def generate_bronze_tables():
 
     write_deltalake(WH_ACCTUSERFIELDS_PATH, wh_acctuserfields, mode='overwrite', schema_mode='merge')
 
+    # WH_ORGUSERFIELDS (OSIBANK)
+    WH_ORGUSERFIELDS_PATH = src.config.BRONZE / "wh_orguserfields"
+    WH_ORGUSERFIELDS_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_userfields()
+    wh_orguserfields = data['wh_orguserfields'].copy()
+
+    wh_orguserfields = cast_all_null_columns_to_string(wh_orguserfields)
+
+    wh_orguserfields = add_load_timestamp(wh_orguserfields)
+
+    write_deltalake(WH_ORGUSERFIELDS_PATH, wh_orguserfields, mode='overwrite', schema_mode='merge')
+
+    # WH_PERSUSERFIELDS (OSIBANK)
+    WH_PERSUSERFIELDS_PATH = src.config.BRONZE / "wh_persuserfields"
+    WH_PERSUSERFIELDS_PATH.mkdir(parents=True, exist_ok=True)
+
+    data = src.bronze.fetch_data.fetch_userfields()
+    wh_persuserfields = data['wh_persuserfields'].copy()
+
+    wh_persuserfields = cast_all_null_columns_to_string(wh_persuserfields)
+
+    wh_persuserfields = add_load_timestamp(wh_persuserfields)
+
+    write_deltalake(WH_PERSUSERFIELDS_PATH, wh_persuserfields, mode='overwrite', schema_mode='merge')
