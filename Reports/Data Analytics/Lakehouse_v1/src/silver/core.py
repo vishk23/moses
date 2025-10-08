@@ -16,6 +16,7 @@ import cdutils.orig_face_amt.core # type: ignore
 import cdutils.customer_dim # type: ignore
 
 def generate_silver_tables():
+
     # Account
     print("Start account")
     ACCOUNT_PATH = src.config.SILVER / "account"

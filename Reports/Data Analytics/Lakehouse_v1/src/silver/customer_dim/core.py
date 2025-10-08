@@ -218,8 +218,33 @@ def generate_pers_dim():
     wh_pers = wh_pers.merge(pers, on='customer_id', how='left')
 
     # Add userfields for Unsubscribe/OptOut
-    # wh_persuserfields = DeltaTable(src.config.BRONZE / "wh_persuserfields").to_pandas()
+    wh_persuserfields = DeltaTable(src.config.BRONZE / "wh_persuserfields").to_pandas()
+
+    wh_persuserfields = cdutils.customer_dim.persify(wh_persuserfields, 'persnbr')
+
+    # Step 1: Filter to only the relevant persuserfieldcd values
+    df_filtered = wh_persuserfields[wh_persuserfields['persuserfieldcd'].isin(['OPTF', 'OPTB', 'MEMA', 'MSMS'])]
+
+    # Step 2: Pivot the data - index on customer_id, columns on persuserfieldcd, values from persuserfieldvalue
+    # This creates one row per customer_id, with columns for each cd, filled with values or NaN/None where missing
+    df_pivot = df_filtered.pivot(
+        index='customer_id',
+        columns='persuserfieldcd',
+        values='persuserfieldvalue'
+    ).reset_index()  # Reset to make customer_id a regular column again
+
+    # Step 3: Rename the columns to your desired names
+    df_pivot = df_pivot.rename(columns={
+        'MSMS': 'Unsubscribe_SMS_Date',  # Preserves the original value (e.g., a date or string)
+        'MEMA': 'Unsubscribe_Email_Date',  
+        'OPTF': 'Opt_Out_Affiliates',
+        'OPTB': 'OPT_Out_BCSB'  # Preserves the original value (e.g., Y/N)
+    })
+
+    # Optional: If you want to explicitly convert NaN to None (Python None)
+    df_pivot = df_pivot.where(pd.notnull(df_pivot), None)
     
+    wh_pers = wh_pers.merge(df_pivot, on='customer_id', how='left')
 
     return wh_pers
 
@@ -270,5 +295,32 @@ def generate_org_dim():
     org = cdutils.customer_dim.orgify(org, 'orgnbr')
 
     wh_org = wh_org.merge(org, on='customer_id', how='left')
+
+    wh_orguserfields = DeltaTable(src.config.BRONZE / "wh_orguserfields").to_pandas()
+
+    wh_orguserfields = cdutils.customer_dim.orgify(wh_orguserfields, 'orgnbr')
+    # Assuming your DataFrame is named 'df' with columns: org_id, orguserfieldcd, orguserfieldvalue
+    # Step 1: Filter to only the relevant orguserfieldcd values (excluding MSMS)
+    df_filtered = wh_orguserfields[wh_orguserfields['orguserfieldcd'].isin(['OPTF', 'OPTB', 'MEMA'])]
+
+    # Step 2: Pivot the data - index on org_id, columns on orguserfieldcd, values from orguserfieldvalue
+    # This creates one row per org_id, with columns for each cd, filled with values or NaN/None where missing
+    df_pivot = df_filtered.pivot(
+        index='customer_id',
+        columns='orguserfieldcd',
+        values='orguserfieldvalue'
+    ).reset_index()  # Reset to make org_id a regular column again
+
+    # Step 3: Rename the columns to your desired names
+    df_pivot = df_pivot.rename(columns={
+        'MEMA': 'Unsubscribe_Email_Date', 
+        'OPTF': 'Opt_Out_Affiliates',
+        'OPTB': 'OPT_Out_BCSB'  # Preserves the original value (e.g., Y/N)
+    })
+
+    # Optional: If you want to explicitly convert NaN to None (Python None)
+    df_pivot = df_pivot.where(pd.notnull(df_pivot), None)
+
+    wh_org = wh_org.merge(df_pivot, on='customer_id', how='left')
 
     return wh_org
