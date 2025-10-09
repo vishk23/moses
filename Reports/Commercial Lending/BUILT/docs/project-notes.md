@@ -187,3 +187,31 @@ Title Company Admin Office Phone Number
 Title Company Admin Mobile Phone Number
 Title Company Admin Home Phone Number
 Title Company Admin Email
+
+
+----
+
+# 2025-10-09
+BUILT notes
+ACCTLOANLIMITHIST
+- I can take inactive date desc (ignore the top null one)
+
+ctrlpersnbr might hold
+- there is the WH_ORGPERSROLE table that lists all people linked to these organizations
+
+WHP Investments was a wierd case that hasan was discussing. Didn't fully track.
+- earn out. More or a UI/BUILT issue for how they will map this.
+
+Additions I'm going to make include:
+- more fields that hasan sent. Refer to that email
+- if an org, include ctrl persnbr (discussed above)
+- inactivedate changes (orig inactive date)
+    - I can count number of changes per loan number
+
+
+- holdbacks should be included. I don't totally understand how this works
+    - touch base with Chris/Dawn
+
+
+TODO:
+- get all of this to Andy tomorrow

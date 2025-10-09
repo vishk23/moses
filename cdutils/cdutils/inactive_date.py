@@ -6,22 +6,22 @@ from sqlalchemy import text # type: ignore
 import pandas as pd
 
 def fetch_data():
-        """
-        Gets data from COCC
-        """
-        acctloanlimithist = text("""
-        SELECT 
-            *
-        FROM 
-            OSIBANK.ACCTLOANLIMITHIST
-        """)
+    """
+    Gets data from COCC
+    """
+    acctloanlimithist = text("""
+    SELECT 
+        *
+    FROM 
+        OSIBANK.ACCTLOANLIMITHIST
+    """)
 
-        queries = [
-            {'key':'acctloanlimithist', 'sql':acctloanlimithist, 'engine':1},
-        ]
+    queries = [
+        {'key':'acctloanlimithist', 'sql':acctloanlimithist, 'engine':1},
+    ]
 
-        data = cdutils.database.connect.retrieve_data(queries)
-        return data
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
 
 def append_inactive_date(df: pd.DataFrame) -> pd.DataFrame:
     """
