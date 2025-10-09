@@ -2,7 +2,7 @@
 
 ## What is R360?
 
-The R360 (Relationship 360) system provides BCSB with a **360-degree view of customer relationships** across all business lines. It creates standardized customer relationship keys that enable the bank to understand how customers are connected through addresses, ownership structures, and financial relationships.
+The R360 (Relationship 360) key generation workflow provides BCSB with a **360-degree view of customer relationships** across all business lines. It creates standardized customer relationship keys that enable the bank to understand how customers are connected through addresses, ownership structures, and financial relationships.
 
 ## Business Problem Solved
 
