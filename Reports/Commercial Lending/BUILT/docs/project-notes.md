@@ -215,3 +215,32 @@ Additions I'm going to make include:
 
 TODO:
 - get all of this to Andy tomorrow
+
+
+# 2025-10-10
+
+Available Balance
+Net Available Balance (i.e. Available less sold participant portion)
+Participant Available
+% Sold
+% Funded # Exclude, hasan had added this
+Participant Purchased (i.e. who we sold to)
+Last Advance Date (lastdisbursdate done)
+Collateral Reserve Amount (i.e. hold on loan for interest carry, etc.)
+
+Participations section:
+    - ACCTUSERFIELDS
+        - PARP - Purchased/Bought (boolean)
+        - PAPU - Purchased %
+
+GAMEPLAN:
+There are a few pieces, which need to be tackled in this order:
+- Participation section
+    - Break out Balance, Available, Collateral Reserve for BCSB / Participating Banks
+- Inactive Date Extension work
+    - detailed above, we want # of extensions + original extension date
+- Controlling person information
+    - This will be account owner if primary owner is a person not an org
+- Add portfolio manager
+
+

@@ -336,3 +336,12 @@ Rewording this:
 Describe Lessons Learned and what was unexpected
 
 The team gained experience with a drawn-out project and unexpected challenges with upload to COCC (thought this would be the easiest piece). Competing priorities, lack of proper project management, collaboration across teams and timeline overruns all showed up during the course of this project. The team has learned a great deal about how things can drift from anticipated state. On the positive side, deep knowledge into householding algorithms was gained and this has contributed directly to current day improvements in operational reporting and analytics.
+
+# 2025-10-10
+
+Look into why keys are on the move. Wonder if it's a history issue.
+This could be engine 2 issue. Effdate over weekend?
+
+Doubt it, probably something else. 
+
+Should be all lakehouse based.
