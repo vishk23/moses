@@ -507,7 +507,7 @@ def transform(accts):
 
     # Add Participation Type
     accts['Participation Type'] = 'None'
-    accts.loc[accts['totalpctsold'].notna(), 'Participation Type'] = 'Sold'
+    accts.loc[(accts['totalpctsold'].notna()) & (accts['totalpctsold'] > 0), 'Participation Type'] = 'Sold'
     accts.loc[accts['totalpctbought'].notna(), 'Participation Type'] = 'Bought'
 
     # Reorganize columns for better flow
