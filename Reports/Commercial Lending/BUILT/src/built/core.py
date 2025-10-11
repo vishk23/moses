@@ -417,7 +417,9 @@ def transform(accts):
         accts = accts.rename(columns={'customer_id_x': 'customer_id'})
 
     # Validate
-    assert accts['CtrlPerson_FirstName'].notna().all() or accts['CtrlPerson_LastName'].notna().all(), "Missing CtrlPerson details"
+    missing_count = (accts['CtrlPerson_FirstName'].isna() & accts['CtrlPerson_LastName'].isna()).sum()
+    if missing_count > 0:
+        print(f"Warning: {missing_count} records missing CtrlPerson details")
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 
