@@ -358,16 +358,20 @@ def transform(accts):
     raw_data = src.built.fetch_data.fetch_orgpersrole()
     wh_orgpersrole = raw_data['wh_orgpersrole'].copy()
 
-    # Cast persnbr and orgnbr to str for standardization
-    wh_orgpersrole['persnbr'] = wh_orgpersrole['persnbr'].astype(int).astype(str)
-    wh_orgpersrole['orgnbr'] = wh_orgpersrole['orgnbr'].astype(str)
-
-    # Standardize to prefixed customer_ids
-    wh_orgpersrole['org_customer_id'] = 'O' + wh_orgpersrole['orgnbr']
-    wh_orgpersrole['ctrl_person_customer_id'] = 'P' + wh_orgpersrole['persnbr']
-
-    # Filter to controlling roles (assume persrolecd == 'CTRL')
+    # Filter to controlling roles first (assume persrolecd == 'CTRL')
     ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CTRL'].copy()
+
+    # Orgify orgnbr
+    temp_orgs = ctrl_orgpers[['orgnbr']].drop_duplicates()
+    temp_orgs = cdutils.customer_dim.orgify(temp_orgs, 'orgnbr')
+    temp_orgs = temp_orgs.rename(columns={'customer_id': 'org_customer_id'})
+    ctrl_orgpers = ctrl_orgpers.merge(temp_orgs, on='orgnbr', how='left')
+
+    # Persify persnbr
+    temp_pers = ctrl_orgpers[['persnbr']].drop_duplicates()
+    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
+    temp_pers = temp_pers.rename(columns={'customer_id': 'ctrl_person_customer_id'})
+    ctrl_orgpers = ctrl_orgpers.merge(temp_pers, on='persnbr', how='left')
 
     # Select unique org to ctrl person mappings
     ctrl_orgpers = ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']].drop_duplicates()
