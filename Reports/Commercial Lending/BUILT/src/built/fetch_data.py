@@ -33,3 +33,37 @@ def fetch_data():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+def fetch_invr():
+    """
+    Main data query
+    """
+    
+    wh_invr = text("""
+    SELECT
+        a.ACCTNBR,
+        a.ACCTGRPNBR,
+        a.INVRSTATCD,
+        a.PCTOWNED,
+        a.ORIGINVRRATE,
+        a.CURRINVRRATE,
+        a.DATELASTMAINT
+    FROM
+        OSIBANK.WH_INVR a
+    """)
+    
+    acctgrpinvr = text("""
+    SELECT
+        a.ACCTGRPNBR,
+        a.INVRORGNBR
+    FROM
+        OSIBANK.ACCTGRPINVR a
+    """)
+
+    queries = [
+        {'key':'wh_invr', 'sql':wh_invr, 'engine':1},
+        {'key':'acctgrpinvr', 'sql':acctgrpinvr, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

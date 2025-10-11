@@ -2,6 +2,7 @@ import src.config
 from deltalake import DeltaTable
 import pandas as pd
 import cdutils.input_cleansing # type: ignore
+import src.built.fetch_data
 
 def add_asset_class(df, mapping_dict):
     """
@@ -79,6 +80,63 @@ def fetch_resi():
     accts['MACRO TYPE'] = 'Residential'
     return accts
 
+def generate_participation_sold_detail():
+    """
+    Generates the participation sold detail DataFrame.
+    """
+    # Get investor data
+    invr = src.built.fetch_data.fetch_invr()
+    wh_invr = invr['wh_invr'].copy()
+    acctgrpinvr = invr['acctgrpinvr'].copy()
+
+    # Load and process base_customer_dim
+    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").to_pandas()
+    base_customer_dim = base_customer_dim[['customer_id', 'customer_name']].copy()
+
+    # Type conversions
+    wh_invr['acctgrpnbr'] = wh_invr['acctgrpnbr'].astype(str)
+    acctgrpinvr['acctgrpnbr'] = acctgrpinvr['acctgrpnbr'].astype(str)
+
+    # Apply orgify
+    acctgrpinvr = cdutils.customer_dim.orgify(acctgrpinvr, 'invrorgnbr')
+
+    # Assertions (removed in function for production, but can be added if needed)
+    # assert acctgrpinvr['acctgrpnbr'].is_unique, "Dupes"
+
+    # Merges
+    merged_investor = wh_invr.merge(acctgrpinvr, on='acctgrpnbr', how='left').merge(
+        base_customer_dim, on='customer_id', how='left'
+    )
+
+    # Filter for sold status
+    merged_investor = merged_investor[merged_investor['invrstatcd'] == 'SOLD'].copy()
+
+    # Drop column
+    merged_investor = merged_investor.drop(columns=['datelastmaint']).copy()
+
+    # Rename column
+    merged_investor = merged_investor.rename(columns={
+        'customer_name': 'Participant Name'
+    }).copy()
+
+    # Cast columns
+    merged_investor_schema = {
+        'acctnbr': 'str'
+    }
+    merged_investor = cdutils.input_cleansing.cast_columns(merged_investor, merged_investor_schema)
+
+    # Filter to required columns
+    merged_investor = merged_investor[[
+        'acctnbr',
+        'pctowned',
+        'Participant Name'
+    ]].copy()
+
+    # Convert pctowned to numeric
+    merged_investor['pctowned'] = pd.to_numeric(merged_investor['pctowned'])
+
+    return merged_investor
+
 def transform(accts):
     accts = accts[[
         'effdate', # Effective date of data
@@ -125,7 +183,56 @@ def transform(accts):
     accts = accts.merge(wh_loans, on='acctnbr', how='left')
 
     # Participation info
-    # TODO
+    pct_sold_loans = generate_participation_sold_detail()
+
+    # Group by acctnbr
+    grouped_pct_sold_loans = (
+        pct_sold_loans
+        .groupby('acctnbr')
+        .agg(
+            Lead_Participant=('Participant Name', 'first'),  # First 'Participant Name' as Lead Participant
+            Total_Participants=('Participant Name', 'nunique')  # Number of unique 'Participant Name'
+        )
+        .reset_index()  # Reset index to keep acctnbr as a column
+    )
+
+    # Merge with accts on acctnbr using left join
+    accts = accts.merge(grouped_pct_sold_loans, on='acctnbr', how='left')
+
+    # Assert that acctnbr is unique in accts
+    assert accts['acctnbr'].is_unique, "acctnbr is not unique in accts"    
+
+    wh_acctuserfields = DeltaTable(src.config.BRONZE / "wh_acctuserfields").to_pandas()
+    papu = wh_acctuserfields[wh_acctuserfields['acctuserfield'] == 'PAPU'].copy()
+    parp = wh_acctuserfields[wh_acctuserfields['acctuserfield'] == 'PARP'].copy()
+
+    # assert both papu & parp ['acctnbr'].is_unique, "Dupes"
+
+    papu_schema = {
+        'acctnbr':'str'
+    }
+    papu = cdutils.input_cleansing.cast_columns(papu, papu_schema)
+
+    parp_schema = {
+        'acctnbr':'str'
+    }
+    parp = cdutils.input_cleansing.cast_columns(parp, parp_schema)
+
+# Filter down both to just df[['acctnbr','acctuserfieldvalue']]
+    papu = papu[['acctnbr', 'acctuserfieldvalue']].copy()
+    parp = parp[['acctnbr', 'acctuserfieldvalue']].copy()
+
+# Name acctuserfieldvalue accordingly
+    papu = papu.rename(columns={'acctuserfieldvalue': 'totalpctbought'})
+    parp = parp.rename(columns={'acctuserfieldvalue': 'lead_bank'})
+
+# Left join papu to accts on acctnbr, adding totalpctbought
+    accts = accts.merge(papu, on='acctnbr', how='left')
+
+# Left join parp to accts on acctnbr, adding lead_bank
+    accts = accts.merge(parp, on='acctnbr', how='left')   
+    
+
 
     # Inactive date additional fields for # extensions and orig inactivedate
     # TODO
