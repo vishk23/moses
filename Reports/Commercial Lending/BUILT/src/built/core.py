@@ -354,7 +354,46 @@ def transform(accts):
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
 
     # Controlling person section
-    # TODO
+    org_dim = DeltaTable(src.config.SILVER / "org_dim").to_pandas()
+    org_dim = org_dim[['customer_id', 'ctrlpersnbr']].copy()
+    org_dim_schema = {
+        'customer_id': 'str',
+        'ctrlpersnbr': 'str'
+    }
+    org_dim = cdutils.input_cleansing.cast_columns(org_dim, org_dim_schema)
+
+    pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
+    pers_dim = pers_dim[['customer_id', 'firstname', 'lastname', 'busemail', 'workphonenbr']].copy()
+    pers_dim_schema = {
+        'customer_id': 'str'
+    }
+    pers_dim = cdutils.input_cleansing.cast_columns(pers_dim, pers_dim_schema)
+
+    # Merge org_dim to get ctrlpersnbr for orgs
+    accts = accts.merge(org_dim, on='customer_id', how='left')
+
+    # Set ctrl_person_id: for orgs, use ctrlpersnbr; for persons, use customer_id
+    accts['ctrl_person_id'] = accts['customer_id']
+    org_mask = accts['customer_id'].str.startswith('O')
+    accts.loc[org_mask, 'ctrl_person_id'] = accts.loc[org_mask, 'ctrlpersnbr']
+
+    # Drop ctrlpersnbr
+    accts = accts.drop(columns=['ctrlpersnbr'])
+
+    # Prepare ctrl_person data
+    ctrl_person = pers_dim.rename(columns={
+        'firstname': 'CtrlPerson_FirstName',
+        'lastname': 'CtrlPerson_LastName',
+        'busemail': 'CtrlPerson_WorkEmail',
+        'workphonenbr': 'CtrlPerson_WorkPhone'
+    })
+
+    # Merge to get control person details
+    accts = accts.merge(ctrl_person, left_on='ctrl_person_id', right_on='customer_id', how='left')
+
+    # Clean up columns
+    accts = accts.drop(columns=['ctrl_person_id', 'customer_id_y'])
+    accts = accts.rename(columns={'customer_id_x': 'customer_id'})
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 
