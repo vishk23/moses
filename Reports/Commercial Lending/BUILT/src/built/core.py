@@ -242,6 +242,18 @@ def transform(accts):
     mask_pct = accts['totalpctbought'] > 1
     accts.loc[mask_pct, 'totalpctbought'] = accts.loc[mask_pct, 'totalpctbought'] / 100
 
+    # Assert that the base fields are numeric for the calculation
+    fields_to_full = ['creditlimitamt', 'notebal', 'availbalamt', 'credlimitclatresamt']
+    for field in fields_to_full:
+        assert pd.api.types.is_numeric_dtype(accts[field]), f"'{field}' must be numeric"
+
+    # Create Full_ versions of the fields
+    for field in fields_to_full:
+        full_field = f'Full_{field}'
+        accts[full_field] = accts[field]
+        mask_not_null = accts['totalpctbought'].notna()
+        accts.loc[mask_not_null, full_field] = accts.loc[mask_not_null, field] / accts.loc[mask_not_null, 'totalpctbought']
+    
     # Inactive date additional fields for # extensions and orig inactivedate
     # TODO
 
