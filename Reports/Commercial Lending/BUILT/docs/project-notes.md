@@ -598,3 +598,35 @@ memory usage: 961.7+ KB
 
 We actually just want to replace ctrlpersnbr with the persnbr (needs to be 'persified' by cdutils.customer_dim.persify).
 So customer_id in accts could be an organization 'O'+orgnbr and we already have this mostly handled, but we should filter this wh_orgpersrole to where persrolecd = 'CNOW' (controlling owner) which serves the same purpose as ctrl persnbr, but our org isn't maintaining ctrl persnbr so we need to use this other one. We can just link this persnbr (understand how persify works by looking at other examples in this file) to get link to pers_dim and the rest of that controlling person section will be the same. Just a swap out.
+
+---
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\main.py", line 29, in <module>
+    main()
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\main.py", line 19, in main
+    df = src.built.core.generate_built_extract()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\built\core.py", line 505, in generate_built_extract
+    cml = transform(cml)
+          ^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\built\core.py", line 379, in transform
+    accts = accts.merge(temp_pers, on='persnbr', how='left')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\frame.py", line 10859, in merge
+    return merge(
+           ^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 170, in merge
+    op = _MergeOperation(
+         ^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 794, in __init__
+    ) = self._get_merge_keys()
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\reshape\merge.py", line 1298, in _get_merge_keys
+    right_keys.append(right._get_label_or_level_values(rk))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 1914, in _get_label_or_level_values        
+    raise KeyError(key)
+KeyError: 'persnbr'
