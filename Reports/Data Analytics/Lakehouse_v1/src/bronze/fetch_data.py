@@ -362,3 +362,38 @@ def fetch_invr():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+def fetch_phoneview():
+    """
+    Main data query
+    """
+    persphoneview = text("""
+    SELECT
+        a.PERSNBR,
+        a.FULLPHONENBR
+    FROM
+        OSIBANK.PERSPHONEVIEW a
+    WHERE
+        a.PHONEUSECD IN ('PER','BUS')
+    """)  
+
+    orgphoneview = text("""
+    SELECT
+        a.PERSNBR,
+        a.FULLPHONENBR
+    FROM
+        OSIBANK.ORGPHONEVIEW a
+    WHERE
+        a.PHONEUSECD = 'BUS'
+    """)  
+
+
+    queries = [
+        {'key':'persphoneview', 'sql':persphoneview, 'engine':1},
+        {'key':'orgphoneview', 'sql':orgphoneview, 'engine':1},
+        
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

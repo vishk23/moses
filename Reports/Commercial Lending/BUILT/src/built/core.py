@@ -194,8 +194,33 @@ def transform(accts):
         # Owner occ
         # Borrower info
         'customer_id',
-        'ownersortname'
+        'ownersortname',
+        'loanofficer'
     ]].copy()
+
+    # Append project manger
+    pm = DeltaTable(src.config.SILVER / "acct_role_link").to_pandas()
+    pm = pm[pm['acctrolecd'] == 'PTMR'].copy()
+    
+    assert pm['acctnbr'].is_unique, "Duplicates on PM role to acctnbr"
+    pm = pm[[
+        'acctnbr',
+        'customer_id'
+    ]].copy()
+
+    # This says customer dimension, but our employees are stored in customer dim table and have a customer_id
+    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").copy()
+    base_customer_dim = base_customer_dim[[
+        'customer_id',
+        'customer_name'
+    ]].copy()
+
+    pm = pm.merge(base_customer_dim, on='customer_id', how='left')
+    pm = pm.rename(columns={
+        'customer_name':'Portfolio Manager'
+    }).drop(columns=['customer_id']).copy()
+
+    accts = accts.merge(pm, on='acctnbr', how='left')
 
     accts = accts.rename(columns={
         'ownersortname':'Primary Borrower Name'
@@ -328,6 +353,9 @@ def transform(accts):
         'acctnbr':'str'
     }
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
+
+    # Get primary borrower email & phone address
+
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 

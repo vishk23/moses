@@ -316,3 +316,112 @@ def generate_inactive_df(acctloanlimithist):
     # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
 
     # return df
+
+
+Need to create a Participation Type:
+Bought/Sold/None. it will look if totalpctsold is not null = Sold, else if totalpctbought is not null = Bought, else null
+<class 'pandas.core.frame.DataFrame'>
+Index: 20 entries, 0 to 48
+Data columns (total 49 columns):
+ #   Column                    Non-Null Count  Dtype         
+---  ------                    --------------  -----         
+ 0   effdate                   20 non-null     datetime64[us]
+ 1   acctnbr                   20 non-null     string        
+ 2   MACRO TYPE                20 non-null     object        
+ 3   creditlimitamt            20 non-null     float64       
+ 4   loanlimityn               20 non-null     object        
+ 5   notebal                   20 non-null     float64       
+ 6   Net Balance               20 non-null     float64       
+ 7   availbalamt               20 non-null     float64       
+ 8   Net Available             20 non-null     float64       
+ 9   credlimitclatresamt       20 non-null     float64       
+ 10  Net Collateral Reserve    20 non-null     float64       
+ 11  totalpctsold              20 non-null     float64       
+ 12  origdate                  20 non-null     datetime64[us]
+ 13  datemat                   20 non-null     datetime64[us]
+ 14  inactivedate              20 non-null     datetime64[us]
+ 15  noteintrate               20 non-null     float64       
+ 16  mjaccttypcd               20 non-null     object        
+ 17  currmiaccttypcd           20 non-null     object        
+ 18  product                   20 non-null     object        
+ 19  customer_id               20 non-null     object        
+ 20  Primary Borrower Name     20 non-null     object        
+ 21  lastdisbursdate           17 non-null     datetime64[us]
+ 22  Lead_Participant          7 non-null      object        
+ 23  Total_Participants        7 non-null      float64       
+ 24  totalpctbought            5 non-null      float64       
+ 25  lead_bank                 5 non-null      object        
+ 26  Full_creditlimitamt       20 non-null     float64       
+ 27  Full_notebal              20 non-null     float64       
+ 28  Full_availbalamt          20 non-null     float64       
+ 29  Full_credlimitclatresamt  20 non-null     float64       
+ 30  num_extensions            20 non-null     int64         
+ 31  orig_inactive_date        20 non-null     datetime64[ns]
+ 32  Primary Borrower Address  20 non-null     object        
+ 33  Primary Borrower City     20 non-null     object        
+ 34  Primary Borrower State    20 non-null     object        
+ 35  Primary Borrower Zip      20 non-null     object        
+ 36  propnbr                   20 non-null     string        
+ 37  aprsvalueamt              15 non-null     float64       
+ 38  aprsdate                  15 non-null     datetime64[us]
+ 39  proptypdesc               20 non-null     object        
+ 40  addrnbr                   20 non-null     string        
+ 41  owneroccupiedcd           8 non-null      object        
+ 42  owneroccupieddesc         8 non-null      object        
+ 43  nbrofunits                14 non-null     float64       
+ 44  Property Address          20 non-null     object        
+ 45  Property City             20 non-null     object        
+ 46  Property State            20 non-null     object        
+ 47  Primary Zip               20 non-null     object        
+ 48  asset_class               20 non-null     object        
+dtypes: datetime64[ns](1), datetime64[us](6), float64(17), int64(1), object(21), string(3)
+memory usage: 7.8+ KB
+
+
+Also need to get phone & email
+
+PERSPHONEVIEW
+ORGPERSVIEW
+
+We would query & get the raw date then run through cdutils.customer_dim.orgify and persify functions to turn persnbr or orgnbr into customer_id (with O+orgnbr, P+persnbr)
+
+---
+
+Append PM field
+
+
+
+def fetch_phoneview():
+    """
+    Main data query
+    """
+    persphoneview = text("""
+    SELECT
+        a.PERSNBR,
+        a.FULLPHONENBR
+    FROM
+        OSIBANK.PERSPHONEVIEW a
+    WHERE
+        a.PHONEUSECD IN ('PER','BUS')
+    """)  
+
+    orgphoneview = text("""
+    SELECT
+        a.PERSNBR,
+        a.FULLPHONENBR
+    FROM
+        OSIBANK.ORGPHONEVIEW a
+    WHERE
+        a.PHONEUSECD = 'BUS'
+    """)  
+
+
+    queries = [
+        {'key':'persphoneview', 'sql':persphoneview, 'engine':1},
+        {'key':'orgphoneview', 'sql':orgphoneview, 'engine':1},
+        
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

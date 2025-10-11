@@ -226,3 +226,9 @@ def generate_bronze_tables():
 
     # ACCTGRPINVR (OSIBANK)
     # TODO
+
+    # PERSPHONEVIEW
+    # TODO
+
+    # ORGPHONEVIEW
+    # TODO
