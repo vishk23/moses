@@ -21,7 +21,7 @@ def test_generate_inactive_df():
     # Expected output: acctnbr, num_extensions, orig_inactive_date
     expected_data = {
         'acctnbr': ['A1', 'A2', 'A3'],
-        'num_extensions': [2, 1, 1],
+        'num_extensions': [1, 0, 0],
         'orig_inactive_date': [
             pd.to_datetime('2023-01-01'),
             pd.to_datetime('2023-01-01'),
@@ -29,6 +29,7 @@ def test_generate_inactive_df():
         ]
     }
     expected = pd.DataFrame(expected_data)
+    expected['acctnbr'] = expected['acctnbr'].astype(pd.StringDtype())
 
     result = generate_inactive_df(input_df)
     pd.testing.assert_frame_equal(result, expected)

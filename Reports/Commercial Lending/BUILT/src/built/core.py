@@ -158,7 +158,7 @@ def generate_inactive_df(acctloanlimithist):
 
     # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
     result = df.groupby('acctnbr').agg(
-        num_extensions=('inactivedate', 'nunique'),
+        num_extensions=('inactivedate', lambda x: x.nunique() - 1),
         orig_inactive_date=('inactivedate', 'min')
     ).reset_index()
 
