@@ -238,7 +238,7 @@ def generate_bronze_tables():
 
     persphone = add_load_timestamp(persphone)
 
-    write_deltalake(PERSPHONE_PATH, persphone, mode='overwrite', schema_mode='merge')
+    write_deltalake(PERSPHONE_PATH, persphone, mode='overwrite', schema_mode='overwrite')
 
     # ORGPHONE ========================
     ORGPHONE_PATH = src.config.BRONZE / "orgphone"
@@ -250,4 +250,4 @@ def generate_bronze_tables():
 
     orgphone = add_load_timestamp(orgphone)
 
-    write_deltalake(ORGPHONE_PATH, orgphone, mode='overwrite', schema_mode='merge')
+    write_deltalake(ORGPHONE_PATH, orgphone, mode='overwrite', schema_mode='overwrite')

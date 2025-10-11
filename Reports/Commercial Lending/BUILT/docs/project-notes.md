@@ -511,3 +511,34 @@ memory usage: 27.0+ MB
 
 Need to concat areacd + exchange + phonenbr to get phonenbr. We will infer workphonenbr or persphonenbr from phoneusecd
 
+---
+
+accts is the main df. At the spot in src.built.core where I have the TODO for the ctrlperson section, we need to implement the below:
+
+I think we should always have control person:
+- firstname
+- lastname
+- work phone
+- work email
+
+This will be the primary borrower (customer_id already in the accts) if it's a person or it'll be controlling person of an org
+
+accts is main df and it will have customer_id (which is the primary borrower)
+- if it has an O as prefix of customerid it's an Organization
+- if it has an P as prefix, it's a person
+
+The steps to get to this are to identify primary borrower customer_id
+- if org
+    - find ctrlpersnbr and attached the data associated from that pers
+        - can pull in org_dim from src.config.SILVER / "org_dim" and there is ctrlpersnbr to get customer_id of the controlling person
+- if pers already (P as prefix)
+    - that is the ctrlpersnbr already
+
+Going one step lower to actually get the info once we have customer_id of controlling person
+- pers_dim has:
+    - firstname
+    - lastname
+    - busemail
+    - workphonenbr
+
+Ending columns should be clear that this is CtrlPerson (prefix this and make the field names readable)

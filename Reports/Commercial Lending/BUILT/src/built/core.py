@@ -316,8 +316,7 @@ def transform(accts):
     
     
 
-    # Controlling person section
-    # TODO
+
 
 
     # Append primary address
@@ -354,8 +353,8 @@ def transform(accts):
     }
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
 
-    # Get primary borrower email & phone address
-
+    # Controlling person section
+    # TODO
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 
