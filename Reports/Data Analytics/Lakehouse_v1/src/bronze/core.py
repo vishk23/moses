@@ -220,3 +220,9 @@ def generate_bronze_tables():
     wh_persuserfields = add_load_timestamp(wh_persuserfields)
 
     write_deltalake(WH_PERSUSERFIELDS_PATH, wh_persuserfields, mode='overwrite', schema_mode='merge')
+
+    # WH_INVR (OSIBANK)
+    # TODO
+
+    # ACCTGRPINVR (OSIBANK)
+    # TODO
