@@ -8,18 +8,13 @@
   *Tests*: Passed; verified with sample data in notebooks.  
   *Notes*: Updated config in `src/config.py`.
 
-- [ ] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
-  *Tests*: Pending; run after implementation.  
-  *Notes*: Reference `docs/controlling_person_logic.md` for business rules. Subtasks:  
-  - [ ] Define SQL in `fetch_data.py`.  
-  - [ ] Transform in `core.py`.  
-  - [ ] Add tests.
-
 - [x] **Add Portfolio Manager**: Include portfolio manager fields in output DataFrame.  
   *Tests*: Passed; bundle size unchanged.  
   *Notes*: Minor addition to existing pipeline.
 
-**Next Steps**: Prioritize controlling person section. After completion, run full test suite and lint (PEP 8). Update `docs/project-notes.md` with any learnings.
+- [ ] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
+  *Tests*: Pending; run after implementation.  
+  *Notes*: Reference `docs/controlling_person_logic.md` for business rules.
 
 
 Links:
@@ -450,3 +445,36 @@ def fetch_phoneview():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+
+---
+
+Trying to sketch out the best way to add in this controlling person info. 
+
+I think we should always have control person:
+- firstname
+- lastname
+- work phone
+- work email
+
+This will be the primary borrower if it's a person or it'll be controlling person of an org
+
+
+The steps to get to this are to identify primary borrower customer_id
+- if org
+    - find ctrlpersnbr and attached the data associated from that pers
+- if pers
+    - attach data directly to that customer_id
+
+Going one step lower to actually get the info once we have customer_id of controlling person
+- pers_dim has:
+    - firstname
+    - lastname
+    - busemail
+- we can query the persphoneview to get this directly
+    - src.config.BRONZE / "persphoneview"
+
+
+We should primarily update the lakehouse to get everything that we need in there and easy to query.
+
+
