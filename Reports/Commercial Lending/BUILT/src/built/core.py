@@ -362,29 +362,15 @@ def transform(accts):
     wh_orgpersrole['persnbr'] = wh_orgpersrole['persnbr'].astype(str)
     wh_orgpersrole['orgnbr'] = wh_orgpersrole['orgnbr'].astype(str)
 
-    # Orgify orgnbr to 'O' + orgnbr
-    temp_orgs = wh_orgpersrole[['orgnbr']].drop_duplicates().copy()
-    temp_orgs = cdutils.customer_dim.orgify(temp_orgs, 'orgnbr')
-    wh_orgpersrole = wh_orgpersrole.merge(temp_orgs, on='orgnbr', how='left')
-    wh_orgpersrole['org_customer_id'] = wh_orgpersrole['customer_id']
-    wh_orgpersrole = wh_orgpersrole.drop(columns=['customer_id'])
-
-    # Persify persnbr to 'P' + persnbr
-    temp_pers = wh_orgpersrole[['persnbr']].drop_duplicates().copy()
-    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
-    wh_orgpersrole = wh_orgpersrole.merge(temp_pers, on='persnbr', how='left')
-    wh_orgpersrole['ctrl_person_customer_id'] = wh_orgpersrole['customer_id']
-    wh_orgpersrole = wh_orgpersrole.drop(columns=['customer_id'])
+    # Standardize to prefixed customer_ids
+    wh_orgpersrole['org_customer_id'] = 'O' + wh_orgpersrole['orgnbr']
+    wh_orgpersrole['ctrl_person_customer_id'] = 'P' + wh_orgpersrole['persnbr']
 
     # Filter to controlling roles (persroledesc contains 'Controlling')
     ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persroledesc'].str.contains('Controlling', case=False, na=False)].copy()
 
-    # Cast schemas
-    ctrl_orgpers_schema = {
-        'org_customer_id': 'str',
-        'ctrl_person_customer_id': 'str'
-    }
-    ctrl_orgpers = cdutils.input_cleansing.cast_columns(ctrl_orgpers, ctrl_orgpers_schema)
+    # Select unique org to ctrl person mappings
+    ctrl_orgpers = ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']].drop_duplicates()
 
     # Assert uniqueness
     assert ctrl_orgpers['org_customer_id'].is_unique, "Multiple ctrl persons per org"
