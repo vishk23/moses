@@ -146,6 +146,11 @@ def transform(accts):
         'loanlimityn', # LOC Type (Y/N)
         'notebal', # Draw Funded to Date
         'Net Balance', # BCSB Net Balance
+        'availbalamt',
+        'Net Available',
+        'credlimitclatresamt',
+        'Net Collateral Reserve',
+        'totalpctsold',
         # 'contractdate', # Date loan closed. Opted to use orig date below, but check with Hasan/Dawn
         'origdate', # Date loan hit core system (Close Date)
         'datemat', # Maturity Date (full loan)
@@ -203,8 +208,8 @@ def transform(accts):
     assert accts['acctnbr'].is_unique, "acctnbr is not unique in accts"    
 
     wh_acctuserfields = DeltaTable(src.config.BRONZE / "wh_acctuserfields").to_pandas()
-    papu = wh_acctuserfields[wh_acctuserfields['acctuserfield'] == 'PAPU'].copy()
-    parp = wh_acctuserfields[wh_acctuserfields['acctuserfield'] == 'PARP'].copy()
+    papu = wh_acctuserfields[wh_acctuserfields['acctuserfieldcd'] == 'PAPU'].copy()
+    parp = wh_acctuserfields[wh_acctuserfields['acctuserfieldcd'] == 'PARP'].copy()
 
     # assert both papu & parp ['acctnbr'].is_unique, "Dupes"
 
@@ -218,21 +223,21 @@ def transform(accts):
     }
     parp = cdutils.input_cleansing.cast_columns(parp, parp_schema)
 
-# Filter down both to just df[['acctnbr','acctuserfieldvalue']]
+    # Filter down both to just df[['acctnbr','acctuserfieldvalue']]
     papu = papu[['acctnbr', 'acctuserfieldvalue']].copy()
     parp = parp[['acctnbr', 'acctuserfieldvalue']].copy()
 
-# Name acctuserfieldvalue accordingly
+    # Name acctuserfieldvalue accordingly
     papu = papu.rename(columns={'acctuserfieldvalue': 'totalpctbought'})
     parp = parp.rename(columns={'acctuserfieldvalue': 'lead_bank'})
 
-# Left join papu to accts on acctnbr, adding totalpctbought
+    # Left join papu to accts on acctnbr, adding totalpctbought
     accts = accts.merge(papu, on='acctnbr', how='left')
 
-# Left join parp to accts on acctnbr, adding lead_bank
+    # Left join parp to accts on acctnbr, adding lead_bank
     accts = accts.merge(parp, on='acctnbr', how='left')   
     
-# Clean totalpctbought: remove '%' if present, convert to numeric, and divide by 100 if > 1 (assuming >1 means percentage like 44.76 for 44.76%, else leave as 0-1)
+    # Clean totalpctbought: remove '%' if present, convert to numeric, and divide by 100 if > 1 (assuming >1 means percentage like 44.76 for 44.76%, else leave as 0-1)
     accts['totalpctbought'] = pd.to_numeric(accts['totalpctbought'].str.replace('%', ''), errors='coerce')
     mask_pct = accts['totalpctbought'] > 1
     accts.loc[mask_pct, 'totalpctbought'] = accts.loc[mask_pct, 'totalpctbought'] / 100
