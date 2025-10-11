@@ -546,7 +546,7 @@ Ending columns should be clear that this is CtrlPerson (prefix this and make the
 
 ---
 
-Ok so ctrlpersnbr didn't work property. We can insert 
+Ok so ctrlpersnbr didn't work property. Mostly good, but there are just nulls where we actually have contorlling people, we need to get from elsewhere.
 
 Need to get from this table:
 

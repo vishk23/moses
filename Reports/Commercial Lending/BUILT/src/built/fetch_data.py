@@ -63,7 +63,7 @@ def fetch_inactive_date_data():
         a.INACTIVEDATE
     FROM
         OSIBANK.ACCTLOANLIMITHIST a
-    """)    
+    """)
     # vieworgtaxid = text(f"""
     # SELECT
     #     *
@@ -73,10 +73,29 @@ def fetch_inactive_date_data():
 
     queries = [
         {'key':'acctloanlimithist', 'sql':acctloanlimithist, 'engine':1},
-        
+
         # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
     ]
 
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+
+def fetch_orgpersrole():
+    """
+    Fetch controlling person data from WH_ORGPERSROLE
+    """
+    query = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ORGPERSROLE a
+    """)
+
+    queries = [
+        {'key':'wh_orgpersrole', 'sql':query, 'engine':1},
+    ]
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data

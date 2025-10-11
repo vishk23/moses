@@ -354,13 +354,29 @@ def transform(accts):
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
 
     # Controlling person section
-    org_dim = DeltaTable(src.config.SILVER / "org_dim").to_pandas()
-    org_dim = org_dim[['customer_id', 'ctrlpersnbr']].copy()
-    org_dim_schema = {
-        'customer_id': 'str',
-        'ctrlpersnbr': 'str'
-    }
-    org_dim = cdutils.input_cleansing.cast_columns(org_dim, org_dim_schema)
+    # Fetch wh_orgpersrole for controlling owners
+    orgpersrole_data = src.built.fetch_data.fetch_orgpersrole()
+    wh_orgpersrole = orgpersrole_data['wh_orgpersrole'].copy()
+
+    # Filter to controlling owners (CNOW)
+    wh_orgpersrole = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CNOW'].copy()
+
+    # Create mapping from orgnbr to persnbr
+    org_to_pers = wh_orgpersrole.set_index('orgnbr')['persnbr'].to_dict()
+
+    # Extract orgnbr from customer_id for orgs
+    accts['orgnbr'] = accts['customer_id'].str[1:].astype(float).where(accts['customer_id'].str.startswith('O'))
+
+    # Map to persnbr
+    accts['persnbr'] = accts['orgnbr'].map(org_to_pers)
+
+    # Persify persnbr to get person customer_id
+    temp_pers = accts[accts['persnbr'].notna()][['persnbr']].drop_duplicates()
+    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
+    temp_pers = temp_pers.rename(columns={'customer_id': 'ctrl_person_customer_id'})
+
+    # Merge back to accts
+    accts = accts.merge(temp_pers, on='persnbr', how='left')
 
     pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
     pers_dim = pers_dim[['customer_id', 'firstname', 'lastname', 'busemail', 'workphonenbr']].copy()
@@ -369,16 +385,13 @@ def transform(accts):
     }
     pers_dim = cdutils.input_cleansing.cast_columns(pers_dim, pers_dim_schema)
 
-    # Merge org_dim to get ctrlpersnbr for orgs
-    accts = accts.merge(org_dim, on='customer_id', how='left')
-
-    # Set ctrl_person_id: for orgs, use ctrlpersnbr; for persons, use customer_id
+    # Set ctrl_person_id: for orgs with controlling person, use ctrl_person_customer_id; for persons, use customer_id
     accts['ctrl_person_id'] = accts['customer_id']
     org_mask = accts['customer_id'].str.startswith('O')
-    accts.loc[org_mask, 'ctrl_person_id'] = accts.loc[org_mask, 'ctrlpersnbr']
+    accts.loc[org_mask & accts['ctrl_person_customer_id'].notna(), 'ctrl_person_id'] = accts.loc[org_mask & accts['ctrl_person_customer_id'].notna(), 'ctrl_person_customer_id']
 
-    # Drop ctrlpersnbr
-    accts = accts.drop(columns=['ctrlpersnbr'])
+    # Drop temporary columns
+    accts = accts.drop(columns=['orgnbr', 'persnbr', 'ctrl_person_customer_id'])
 
     # Prepare ctrl_person data
     ctrl_person = pers_dim.rename(columns={
