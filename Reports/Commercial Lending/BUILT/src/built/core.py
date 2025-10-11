@@ -359,15 +359,15 @@ def transform(accts):
     wh_orgpersrole = raw_data['wh_orgpersrole'].copy()
 
     # Cast persnbr and orgnbr to str for standardization
-    wh_orgpersrole['persnbr'] = wh_orgpersrole['persnbr'].astype(str)
+    wh_orgpersrole['persnbr'] = wh_orgpersrole['persnbr'].astype(int).astype(str)
     wh_orgpersrole['orgnbr'] = wh_orgpersrole['orgnbr'].astype(str)
 
     # Standardize to prefixed customer_ids
     wh_orgpersrole['org_customer_id'] = 'O' + wh_orgpersrole['orgnbr']
     wh_orgpersrole['ctrl_person_customer_id'] = 'P' + wh_orgpersrole['persnbr']
 
-    # Filter to controlling roles (persroledesc contains 'Controlling')
-    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persroledesc'].str.contains('Controlling', case=False, na=False)].copy()
+    # Filter to controlling roles (assume persrolecd == 'CTRL')
+    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CTRL'].copy()
 
     # Select unique org to ctrl person mappings
     ctrl_orgpers = ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']].drop_duplicates()
