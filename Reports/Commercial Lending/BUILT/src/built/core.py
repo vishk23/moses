@@ -3,6 +3,7 @@ from deltalake import DeltaTable
 import pandas as pd
 import cdutils.input_cleansing # type: ignore
 import src.built.fetch_data
+import cdutils.customer_dim # type: ignore
 
 def add_asset_class(df, mapping_dict):
     """
@@ -136,6 +137,21 @@ def generate_participation_sold_detail():
     merged_investor['pctowned'] = pd.to_numeric(merged_investor['pctowned'])
 
     return merged_investor
+
+def generate_inactive_df(acctloanlimithist):
+    """
+    This takes the ACCTLOANLIMITHIST data as a raw source.
+
+    Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates)
+    """
+    # TODO
+
+    # First drop records where inactivedate is null
+    # make sure inactivedate is datetime
+    # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
+
+    # return df
+    
 
 def transform(accts):
     accts = accts[[

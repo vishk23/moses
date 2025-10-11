@@ -67,3 +67,35 @@ def fetch_invr():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+
+
+# Define fetch data here using cdutils.database.connect
+# There are often fetch_data.py files already in project if migrating
+def fetch_inactive_date_data():
+    """
+    Main data query
+    """
+    acctloanlimithist = text("""
+    SELECT
+        a.ACCTNBR,
+        a.INACTIVEDATE
+    FROM
+        OSIBANK.ACCTLOANLIMITHIST a
+    """)    
+    # vieworgtaxid = text(f"""
+    # SELECT
+    #     *
+    # FROM
+    #     OSIBANK.VIEWORGTAXID a
+    # """)
+
+    queries = [
+        {'key':'acctloanlimithist', 'sql':acctloanlimithist, 'engine':1},
+        
+        # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

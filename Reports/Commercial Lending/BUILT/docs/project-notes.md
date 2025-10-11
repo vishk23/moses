@@ -276,3 +276,43 @@ acctnbr,acctgrpnbr,invrstatcd,pctowned,originvrrate,currinvrrate,customer_id,Par
 The invrstatcd has been filter to only = 'SOLD'.
 
 ---
+
+pct_sold_loans = pct_sold_loans.merge(accts, how='inner', on='acctnbr')
+
+---
+
+Way to explain this:
+totalpctsold
+totalpctbought
+
+if notebal = 100,000
+sold loan (.4)
+- BCSB: 60,000
+- Other bank: 40,000
+
+if bought (.4):
+- BCSB: notebal = 100,000
+- Total loan = 100,000 / .4 = 250,000
+- Other: 150,000
+
+---
+
+Can use this to give them participation info directly if they want it
+- individual names of participating banks
+
+pct_sold_loans = pct_sold_loans.merge(accts, how='inner', on='acctnbr')
+
+
+def generate_inactive_df(acctloanlimithist):
+    """
+    This takes the ACCTLOANLIMITHIST data as a raw source.
+
+    Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates)
+    """
+    # TODO
+
+    # First drop records where inactivedate is null
+    # make sure inactivedate is datetime
+    # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
+
+    # return df
