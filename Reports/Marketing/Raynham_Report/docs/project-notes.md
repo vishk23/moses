@@ -90,3 +90,17 @@ The 'within 5 mi of branches' is possible, but I do not have any approved tools 
 I did try with Taunton because you had requested proximity to Main Office, though there are way more accounts in Taunton and many would have to manually filtered out if I included all account holders with 02780 zip.
 
 
+# 2025-10-08
+Met with Cori today
+
+Things to do:
+- remove age top limit (no ageism)
+- apply exclusions (these are on the pers_dim table):
+    - privacyyn
+    - Opt_BCSB
+    - Opt_Affiliates
+    
+5 mi radius, she is going to check. 
+- Zip code is not preferred for marketing because it can signal preferential marketing
+- radius is preferred methodology
+

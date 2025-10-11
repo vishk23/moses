@@ -110,6 +110,29 @@ def transform(accts):
         'ownersortname':'Primary Borrower Name'
     }).copy()
 
+    # Append last advance date (lastdisbursdate from wh_loans)
+    wh_loans = DeltaTable(src.config.BRONZE / "wh_loans").to_pandas()
+    wh_loans = wh_loans[[
+        'acctnbr',
+        'lastdisbursdate'
+    ]].copy()
+    wh_loans_schema = {
+        'acctnbr':'str',
+    }
+
+    wh_loans = cdutils.input_cleansing.cast_columns(wh_loans, wh_loans_schema)
+
+    accts = accts.merge(wh_loans, on='acctnbr', how='left')
+
+    # Participation info
+    # TODO
+
+    # Inactive date additional fields for # extensions and orig inactivedate
+    # TODO
+
+    # Controlling person section
+    # TODO
+
 
     # Append primary address
     customer_address_link = DeltaTable(src.config.SILVER / "customer_address_link").to_pandas()

@@ -187,3 +187,92 @@ Title Company Admin Office Phone Number
 Title Company Admin Mobile Phone Number
 Title Company Admin Home Phone Number
 Title Company Admin Email
+
+
+----
+
+# 2025-10-09
+BUILT notes
+ACCTLOANLIMITHIST
+- I can take inactive date desc (ignore the top null one)
+
+ctrlpersnbr might hold
+- there is the WH_ORGPERSROLE table that lists all people linked to these organizations
+
+WHP Investments was a wierd case that hasan was discussing. Didn't fully track.
+- earn out. More or a UI/BUILT issue for how they will map this.
+
+Additions I'm going to make include:
+- more fields that hasan sent. Refer to that email
+- if an org, include ctrl persnbr (discussed above)
+- inactivedate changes (orig inactive date)
+    - I can count number of changes per loan number
+
+
+- holdbacks should be included. I don't totally understand how this works
+    - touch base with Chris/Dawn
+
+
+TODO:
+- get all of this to Andy tomorrow
+
+
+# 2025-10-10
+
+Available Balance
+Net Available Balance (i.e. Available less sold participant portion)
+Participant Available
+% Sold
+% Funded # Exclude, hasan had added this
+Participant Purchased (i.e. who we sold to)
+Last Advance Date (lastdisbursdate done)
+Collateral Reserve Amount (i.e. hold on loan for interest carry, etc.)
+
+Participations section:
+    - ACCTUSERFIELDS
+        - PARP - Purchased/Bought (boolean)
+        - PAPU - Purchased %
+
+GAMEPLAN:
+There are a few pieces, which need to be tackled in this order:
+- Participation section
+    - Break out Balance, Available, Collateral Reserve for BCSB / Participating Banks
+- Inactive Date Extension work
+    - detailed above, we want # of extensions + original extension date
+- Controlling person information
+    - This will be account owner if primary owner is a person not an org
+- Add portfolio manager
+
+
+----
+Here is the merged_investor df I have put together. It only applies to the loans that were participated out (sold to other banks).
+
+I need to clean this up and join back to accounts to create a simple complementary df to attach to the extract.
+- this will show when we participate a loan out, who the banks involved are.
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 94 entries, 0 to 93
+Data columns (total 8 columns):
+ #   Column            Non-Null Count  Dtype 
+---  ------            --------------  ----- 
+ 0   acctnbr           94 non-null     string
+ 1   acctgrpnbr        94 non-null     object
+ 2   invrstatcd        94 non-null     object
+ 3   pctowned          94 non-null     object
+ 4   originvrrate      94 non-null     object
+ 5   currinvrrate      94 non-null     object
+ 6   customer_id       94 non-null     object
+ 7   Participant Name  94 non-null     object
+dtypes: object(7), string(1)
+memory usage: 6.0+ KB
+
+merged_investor.describe()
+acctnbr,acctgrpnbr,invrstatcd,pctowned,originvrrate,currinvrrate,customer_id,Participant Name
+94,94,94,94,94,94,94,94
+89,49,3,25,63,62,19,19
+150936915,16138,SOLD,1,0.06,0.06,O1009133,SOUTHSTATE BANK NA
+2,22,56,32,8,5,26,26
+
+The invrstatcd has been filter to only = 'SOLD'.
+
+---

@@ -329,3 +329,19 @@ This should be referring back to the original Business Use Case for this and in 
 ·                     Lessons Learned should be that this should have been managed by a professional project manager so that all of this back pedaling didn’t have to take place.
 
 ·                     What is the end result of this initiative? In comprehensive narrative of what the result brings to the table? Are leaders more informed about the segments of their households? Can we market to them? How it is being used from a business perspective (not just for commercial)
+
+
+Rewording this:
+10.0 Lessons Learned 
+Describe Lessons Learned and what was unexpected
+
+The team gained experience with a drawn-out project and unexpected challenges with upload to COCC (thought this would be the easiest piece). Competing priorities, lack of proper project management, collaboration across teams and timeline overruns all showed up during the course of this project. The team has learned a great deal about how things can drift from anticipated state. On the positive side, deep knowledge into householding algorithms was gained and this has contributed directly to current day improvements in operational reporting and analytics.
+
+# 2025-10-10
+
+Look into why keys are on the move. Wonder if it's a history issue.
+This could be engine 2 issue. Effdate over weekend?
+
+Doubt it, probably something else. 
+
+Should be all lakehouse based.
