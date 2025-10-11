@@ -9,10 +9,10 @@
 - **loanlimityn**: Y/N flag for line of credit type account (should be all Y for construction loans). If they switch to perm loans, this would change to N.
 - **creditlimitamt**: Total credit limit amount
 - **notebal**: Total current balance
-- **Net Balance**: BCSB share after any sold portions 
 - **availbalamt**: Total available amount
+- **credlimitclatresamt**: Total reserved amount from collateral
+- **Net Balance**: BCSB share after any sold portions
 - **Net Available**: Bank's net share still available to draw.
-- **credlimitclatresamt**: Total reserved amount from collateral 
 - **Net Collateral Reserve**: Bank's net reserved from collateral.
 - **Full_creditlimitamt**: Total full loan limit (including any bought/sold shares). For bought loans, this would be the creditlimitamt divided by totalpctbought
 - **Full_notebal**: Total full funded amount (whole loan, not just bank's part).

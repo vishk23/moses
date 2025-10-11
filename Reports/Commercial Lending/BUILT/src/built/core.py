@@ -513,7 +513,7 @@ def transform(accts):
     # Reorganize columns for better flow
     column_order = [
         'effdate', 'acctnbr', 'MACRO TYPE', 'product', 'mjaccttypcd', 'currmiaccttypcd', 'loanlimityn',
-        'creditlimitamt', 'notebal', 'Net Balance', 'availbalamt', 'Net Available', 'credlimitclatresamt', 'Net Collateral Reserve',
+        'creditlimitamt', 'notebal', 'availbalamt', 'credlimitclatresamt', 'Net Balance', 'Net Available', 'Net Collateral Reserve',
         'Full_creditlimitamt', 'Full_notebal', 'Full_availbalamt', 'Full_credlimitclatresamt',
         'Participation Type', 'totalpctsold', 'totalpctbought', 'Lead_Participant', 'Total_Participants', 'lead_bank',
         'origdate', 'datemat', 'Construction Term (Months)', 'inactivedate', 'orig_inactive_date', 'num_extensions', 'lastdisbursdate',
