@@ -90,7 +90,8 @@ def fetch_org_data():
     org = text("""
     SELECT
         a.ORGNBR,
-        a.PARENTORGNBR
+        a.PARENTORGNBR,
+        a.CTRLPERSNBR
     FROM
         OSIBANK.ORG a
     """)    

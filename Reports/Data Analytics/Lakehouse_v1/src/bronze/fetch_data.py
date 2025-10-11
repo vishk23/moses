@@ -370,6 +370,7 @@ def fetch_phoneview():
     persphoneview = text("""
     SELECT
         a.PERSNBR,
+        a.PHONEUSECD,
         a.FULLPHONENBR
     FROM
         OSIBANK.PERSPHONEVIEW a
@@ -380,6 +381,7 @@ def fetch_phoneview():
     orgphoneview = text("""
     SELECT
         a.PERSNBR,
+        a.PHONEUSECD,
         a.FULLPHONENBR
     FROM
         OSIBANK.ORGPHONEVIEW a

@@ -459,6 +459,9 @@ I think we should always have control person:
 
 This will be the primary borrower if it's a person or it'll be controlling person of an org
 
+accts is main df and it will have customer_id (which is the primary borrower)
+- if it has an O as prefix of customerid it's an Organization
+- if it has an P as prefix, it's a person
 
 The steps to get to this are to identify primary borrower customer_id
 - if org

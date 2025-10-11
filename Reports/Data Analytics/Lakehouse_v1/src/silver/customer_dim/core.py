@@ -246,6 +246,19 @@ def generate_pers_dim():
     
     wh_pers = wh_pers.merge(df_pivot, on='customer_id', how='left')
 
+    # Add phone numbers
+    persphoneview = DeltaTable(src.config.BRONZE / "persphoneview").to_pandas()
+
+    # Pivot to get PER and BUS as columns
+    df_pivot_phones = persphoneview.pivot(index='persnbr', columns='phoneuscd', values='fullphonenbr').reset_index()
+    df_pivot_phones = df_pivot_phones.rename(columns={'PER': 'persphonenbr', 'BUS': 'workphonenbr'})
+
+    # Persify
+    df_pivot_phones = cdutils.customer_dim.persify(df_pivot_phones, 'persnbr')
+
+    # Merge
+    wh_pers = wh_pers.merge(df_pivot_phones[['customer_id', 'persphonenbr', 'workphonenbr']], on='customer_id', how='left')
+
     return wh_pers
 
 def generate_org_dim():
@@ -322,5 +335,18 @@ def generate_org_dim():
     df_pivot = df_pivot.where(pd.notnull(df_pivot), None)
 
     wh_org = wh_org.merge(df_pivot, on='customer_id', how='left')
+
+    # Add phone numbers
+    orgphoneview = DeltaTable(src.config.BRONZE / "orgphoneview").to_pandas()
+
+    # Pivot to get BUS as workphonenbr
+    df_pivot_phones = orgphoneview.pivot(index='orgnbr', columns='phoneusecd', values='fullphonenbr').reset_index()
+    df_pivot_phones = df_pivot_phones.rename(columns={'BUS': 'workphonenbr'})
+
+    # Orgify
+    df_pivot_phones = cdutils.customer_dim.orgify(df_pivot_phones, 'orgnbr')
+
+    # Merge
+    wh_org = wh_org.merge(df_pivot_phones[['customer_id', 'workphonenbr']], on='customer_id', how='left')
 
     return wh_org

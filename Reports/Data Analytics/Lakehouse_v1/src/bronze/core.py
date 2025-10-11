@@ -227,8 +227,27 @@ def generate_bronze_tables():
     # ACCTGRPINVR (OSIBANK)
     # TODO
 
-    # PERSPHONEVIEW
-    # TODO
+    # PERSPHONEVIEW ========================
+    PERSPHONEVIEW_PATH = src.config.BRONZE / "persphoneview"
+    PERSPHONEVIEW_PATH.mkdir(parents=True, exist_ok=True)
 
-    # ORGPHONEVIEW
-    # TODO
+    data = src.bronze.fetch_data.fetch_phoneview()
+    persphoneview = data['persphoneview'].copy()
+
+    persphoneview = cast_all_null_columns_to_string(persphoneview)
+
+    persphoneview = add_load_timestamp(persphoneview)
+
+    write_deltalake(PERSPHONEVIEW_PATH, persphoneview, mode='overwrite', schema_mode='merge')
+
+    # ORGPHONEVIEW ========================
+    ORGPHONEVIEW_PATH = src.config.BRONZE / "orgphoneview"
+    ORGPHONEVIEW_PATH.mkdir(parents=True, exist_ok=True)
+
+    orgphoneview = data['orgphoneview'].copy()
+
+    orgphoneview = cast_all_null_columns_to_string(orgphoneview)
+
+    orgphoneview = add_load_timestamp(orgphoneview)
+
+    write_deltalake(ORGPHONEVIEW_PATH, orgphoneview, mode='overwrite', schema_mode='merge')
