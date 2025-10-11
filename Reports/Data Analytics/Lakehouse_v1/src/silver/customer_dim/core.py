@@ -250,7 +250,7 @@ def generate_pers_dim():
     persphoneview = DeltaTable(src.config.BRONZE / "persphoneview").to_pandas()
 
     # Pivot to get PER and BUS as columns
-    df_pivot_phones = persphoneview.pivot(index='persnbr', columns='phoneuscd', values='fullphonenbr').reset_index()
+    df_pivot_phones = persphoneview.pivot(index='persnbr', columns='phoneusecd', values='fullphonenbr').reset_index()
     df_pivot_phones = df_pivot_phones.rename(columns={'PER': 'persphonenbr', 'BUS': 'workphonenbr'})
 
     # Persify

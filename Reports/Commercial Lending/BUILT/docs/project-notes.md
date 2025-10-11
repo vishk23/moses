@@ -481,3 +481,33 @@ Going one step lower to actually get the info once we have customer_id of contro
 We should primarily update the lakehouse to get everything that we need in there and easy to query.
 
 
+----
+
+The new challenge is that I get an error in the pivoting of PER and BUS on pers_dim phone number section because the table was not unique for phone numbers and there was no date last maintained field to sort in descending to figure out what is the up to date field.
+
+We move upstream to get directly from PERSPHONE and ORGPHONE instead of PERSPHONEVIEW and ORGPHONEVIEW.
+
+Context:
+PERSPHONE
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 295406 entries, 0 to 295405
+Data columns (total 12 columns):
+ #   Column                Non-Null Count   Dtype         
+---  ------                --------------   -----         
+ 0   persnbr               295406 non-null  int64         
+ 1   phoneusecd            295406 non-null  object        
+ 2   phoneseq              295406 non-null  int64         
+ 3   areacd                295387 non-null  object        
+ 4   exchange              295363 non-null  object        
+ 5   phonenbr              295363 non-null  object        
+ 6   phoneexten            236 non-null     object        
+ 7   datelastmaint         295406 non-null  datetime64[ns]
+ 8   foreignphonenbr       43 non-null      object        
+ 9   ctrycd                295406 non-null  object        
+ 10  preferredyn           295406 non-null  object        
+ 11  phonelastupdateddate  83563 non-null   datetime64[ns]
+dtypes: datetime64[ns](2), int64(2), object(8)
+memory usage: 27.0+ MB
+
+Need to concat areacd + exchange + phonenbr to get phonenbr. We will infer workphonenbr or persphonenbr from phoneusecd
+

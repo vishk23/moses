@@ -380,7 +380,7 @@ def fetch_phoneview():
 
     orgphoneview = text("""
     SELECT
-        a.PERSNBR,
+        a.ORGNBR,
         a.PHONEUSECD,
         a.FULLPHONENBR
     FROM
