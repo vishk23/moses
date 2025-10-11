@@ -232,7 +232,10 @@ def transform(accts):
 # Left join parp to accts on acctnbr, adding lead_bank
     accts = accts.merge(parp, on='acctnbr', how='left')   
     
-
+# Clean totalpctbought: remove '%' if present, convert to numeric, and divide by 100 if > 1 (assuming >1 means percentage like 44.76 for 44.76%, else leave as 0-1)
+    accts['totalpctbought'] = pd.to_numeric(accts['totalpctbought'].str.replace('%', ''), errors='coerce')
+    mask_pct = accts['totalpctbought'] > 1
+    accts.loc[mask_pct, 'totalpctbought'] = accts.loc[mask_pct, 'totalpctbought'] / 100
 
     # Inactive date additional fields for # extensions and orig inactivedate
     # TODO
