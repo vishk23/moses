@@ -12,10 +12,11 @@
   *Tests*: Passed; bundle size unchanged.  
   *Notes*: Minor addition to existing pipeline.
 
-- [ ] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
+- [x] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
   *Tests*: Pending; run after implementation.  
   *Notes*: Reference `docs/controlling_person_logic.md` for business rules.
 
+- [ ] Escrow Holdback for Resi Loans
 
 Links:
 https://clientexperience.getbuilt.com/project-updates

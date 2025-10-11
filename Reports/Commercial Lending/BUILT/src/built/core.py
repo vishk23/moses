@@ -319,7 +319,7 @@ def transform(accts):
     accts = accts.merge(inactive_df, on='acctnbr', how='left')
 
     # Calculate Construction Term (Months) as difference between origdate and inactivedate in months
-    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['origdate']).dt.days / 30.44).round(1)
+    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['origdate']).dt.days / 30.44).round()
 
 
 

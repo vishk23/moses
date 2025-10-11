@@ -2,7 +2,7 @@
 
 - **effdate**: The date this snapshot of loan data was pulled 
 - **acctnbr**: The unique loan number
-- **MACRO TYPE**: Big category – either "Commercial" for business projects or "Residential" for home builds.
+- **MACRO TYPE**: Commercial/Residential
 - **product**: The specific loan product type (e.g., construction line of credit).
 - **mjaccttypcd**: Broad loan category code 
 - **currmiaccttypcd**: Detailed loan subcategory code (Loan Minor)
