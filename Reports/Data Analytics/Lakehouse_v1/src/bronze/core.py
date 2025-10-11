@@ -227,27 +227,27 @@ def generate_bronze_tables():
     # ACCTGRPINVR (OSIBANK)
     # TODO
 
-    # PERSPHONEVIEW ========================
-    PERSPHONEVIEW_PATH = src.config.BRONZE / "persphoneview"
-    PERSPHONEVIEW_PATH.mkdir(parents=True, exist_ok=True)
+    # PERSPHONE ========================
+    PERSPHONE_PATH = src.config.BRONZE / "persphone"
+    PERSPHONE_PATH.mkdir(parents=True, exist_ok=True)
 
-    data = src.bronze.fetch_data.fetch_phoneview()
-    persphoneview = data['persphoneview'].copy()
+    data = src.bronze.fetch_data.fetch_phone()
+    persphone = data['persphone'].copy()
 
-    persphoneview = cast_all_null_columns_to_string(persphoneview)
+    persphone = cast_all_null_columns_to_string(persphone)
 
-    persphoneview = add_load_timestamp(persphoneview)
+    persphone = add_load_timestamp(persphone)
 
-    write_deltalake(PERSPHONEVIEW_PATH, persphoneview, mode='overwrite', schema_mode='merge')
+    write_deltalake(PERSPHONE_PATH, persphone, mode='overwrite', schema_mode='merge')
 
-    # ORGPHONEVIEW ========================
-    ORGPHONEVIEW_PATH = src.config.BRONZE / "orgphoneview"
-    ORGPHONEVIEW_PATH.mkdir(parents=True, exist_ok=True)
+    # ORGPHONE ========================
+    ORGPHONE_PATH = src.config.BRONZE / "orgphone"
+    ORGPHONE_PATH.mkdir(parents=True, exist_ok=True)
 
-    orgphoneview = data['orgphoneview'].copy()
+    orgphone = data['orgphone'].copy()
 
-    orgphoneview = cast_all_null_columns_to_string(orgphoneview)
+    orgphone = cast_all_null_columns_to_string(orgphone)
 
-    orgphoneview = add_load_timestamp(orgphoneview)
+    orgphone = add_load_timestamp(orgphone)
 
-    write_deltalake(ORGPHONEVIEW_PATH, orgphoneview, mode='overwrite', schema_mode='merge')
+    write_deltalake(ORGPHONE_PATH, orgphone, mode='overwrite', schema_mode='merge')
