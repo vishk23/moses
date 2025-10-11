@@ -319,6 +319,12 @@ def generate_org_dim():
     # Orgify
     org = cdutils.customer_dim.orgify(org, 'orgnbr')
 
+    # Persify ctrlpersnbr
+    if 'ctrlpersnbr' in org.columns:
+        temp_df = org[['ctrlpersnbr']].rename(columns={'ctrlpersnbr': 'persnbr'})
+        temp_df = cdutils.customer_dim.persify(temp_df, 'persnbr')
+        org['ctrlpersnbr'] = temp_df['customer_id']
+
     wh_org = wh_org.merge(org, on='customer_id', how='left')
 
     wh_orguserfields = DeltaTable(src.config.BRONZE / "wh_orguserfields").to_pandas()
