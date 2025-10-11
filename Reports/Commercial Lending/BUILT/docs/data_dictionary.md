@@ -1,40 +1,38 @@
-# BUILT Report Data Guide
+# BUILT Extract Data Dictionary
 
-Here's a straightforward breakdown of what each column in the final report means. Think of this as the key info on construction loans – who borrowed, how much, when it ends, and details on the project or people involved. I pulled this from the code's output structure.
-
-- **effdate**: The date this snapshot of loan data was pulled (like today's report date).
-- **acctnbr**: The unique loan number (your main ID for tracking this loan).
+- **effdate**: The date this snapshot of loan data was pulled 
+- **acctnbr**: The unique loan number
 - **MACRO TYPE**: Big category – either "Commercial" for business projects or "Residential" for home builds.
 - **product**: The specific loan product type (e.g., construction line of credit).
-- **mjaccttypcd**: Broad loan category code (internal bank shorthand for major type).
-- **currmiaccttypcd**: Detailed loan subcategory code (pinpoints the exact product).
-- **loanlimityn**: Yes/No flag if it's a line of credit (Y for flexible draws, N for lump sum).
-- **creditlimitamt**: Total approved loan amount (max you can borrow).
-- **notebal**: Amount drawn and funded so far (what's actually been paid out).
-- **Net Balance**: Bank's share after any sold portions (BCSB's piece of the pie).
-- **availbalamt**: How much you can still draw (total limit minus what's used).
+- **mjaccttypcd**: Broad loan category code 
+- **currmiaccttypcd**: Detailed loan subcategory code (Loan Minor)
+- **loanlimityn**: Y/N flag for line of credit type account (should be all Y for construction loans). If they switch to perm loans, this would change to N.
+- **creditlimitamt**: Total credit limit amount
+- **notebal**: Total current balance
+- **Net Balance**: BCSB share after any sold portions 
+- **availbalamt**: Total available amount
 - **Net Available**: Bank's net share still available to draw.
-- **credlimitclatresamt**: Reserved amount from collateral (held back for safety).
+- **credlimitclatresamt**: Total reserved amount from collateral 
 - **Net Collateral Reserve**: Bank's net reserved from collateral.
-- **Full_creditlimitamt**: Total full loan limit (including any bought/sold shares).
+- **Full_creditlimitamt**: Total full loan limit (including any bought/sold shares). For bought loans, this would be the creditlimitamt divided by totalpctbought
 - **Full_notebal**: Total full funded amount (whole loan, not just bank's part).
 - **Full_availbalamt**: Total full amount still available (entire loan).
 - **Full_credlimitclatresamt**: Total full collateral reserve (whole loan).
 - **Participation Type**: How the loan is shared – "None" (all ours), "Sold" (we sold parts), or "Bought" (we bought into others').
 - **totalpctsold**: Percentage of loan sold to others (e.g., 0.25 for 25%).
 - **totalpctbought**: Percentage we bought from others (e.g., 0.10 for 10%).
-- **Lead_Participant**: Name of the main partner bank if shared.
-- **Total_Participants**: Number of banks sharing this loan.
+- **Lead_Participant**: Name of the largest pct sold partner bank if a participation sold.
+- **Total_Participants**: Number of banks this loan was sold to (only applies to participation sold). We don't track total # of participants on bought loans.
 - **lead_bank**: Lead bank's name or code for participations.
-- **origdate**: When the loan started/officially closed (origination date).
-- **datemat**: Full loan end date (when everything matures).
+- **origdate**: When the loan started/officially closed (origination date). Note we have contract date too, which is when contract was signed, but I have provided the origdate which is when the loan actually appears in our database.
+- **datemat**: Full loan end date (when everything matures, not just construction period).
 - **Construction Term (Months)**: Estimated build time in months (from start to inactive date).
 - **inactivedate**: When construction phase ends (loan converts or expires).
 - **orig_inactive_date**: First time it went inactive (earliest extension point).
-- **num_extensions**: How many times the inactive date was extended (renews - 1).
+- **num_extensions**: How many times the inactive date was extended (count of unique inactive dates - 1, which would be the original).
 - **lastdisbursdate**: Last time money was advanced/disbursed.
 - **noteintrate**: Current interest rate on the loan.
-- **customer_id**: Unique ID for the main borrower.
+- **customer_id**: Unique ID for the main borrower. Store if you can because this will allow a clean join back to our internal reporting.
 - **Primary Borrower Name**: Name of the lead borrower (person or company).
 - **loanofficer**: Your assigned loan officer's name.
 - **Portfolio Manager**: Person overseeing the loan portfolio.
@@ -59,3 +57,6 @@ Here's a straightforward breakdown of what each column in the final report means
 - **Property State**: Project state.
 - **Primary Zip**: Project zip code (main one).
 - **asset_class**: Grouped category for the property (e.g., "Retail" or "Industrial" based on type and value).
+
+---
+Please reach to chad.doorley@bcsbmail.com if you have any questions

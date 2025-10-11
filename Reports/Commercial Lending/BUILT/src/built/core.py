@@ -318,8 +318,8 @@ def transform(accts):
     inactive_df = generate_inactive_df(acctloanlimithist)
     accts = accts.merge(inactive_df, on='acctnbr', how='left')
 
-    # Calculate Construction Term (Months) as difference between inactivedate and datemat in months
-    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['datemat']).dt.days / 30.44).round(1)
+    # Calculate Construction Term (Months) as difference between origdate and inactivedate in months
+    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['origdate']).dt.days / 30.44).round(1)
 
 
 
@@ -541,7 +541,7 @@ def generate_built_extract():
     resi = transform(resi)
 
     concat_df = pd.concat([cml, resi], ignore_index=True)
-    print(concat_df.info(verbose=True))
+    # print(concat_df.info(verbose=True))
     return concat_df
 
 
