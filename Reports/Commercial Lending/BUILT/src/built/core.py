@@ -435,6 +435,11 @@ def transform(accts):
     accts = add_asset_class(accts, mapping_dict=PROPERTY_TYPE_GROUPS)
     accts = accts[~(accts['addrnbr'].isnull())].copy()
 
+    # Add Participation Type
+    accts['Participation Type'] = 'None'
+    accts.loc[accts['totalpctsold'].notna(), 'Participation Type'] = 'Sold'
+    accts.loc[accts['totalpctbought'].notna(), 'Participation Type'] = 'Bought'
+
     return accts
 
     # Participation data can be separate or in there

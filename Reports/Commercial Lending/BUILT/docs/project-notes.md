@@ -377,6 +377,11 @@ Data columns (total 49 columns):
 dtypes: datetime64[ns](1), datetime64[us](6), float64(17), int64(1), object(21), string(3)
 memory usage: 7.8+ KB
 
+---
+
+Append PM field
+
+---
 
 Also need to get phone & email
 
@@ -384,10 +389,6 @@ PERSPHONEVIEW
 ORGPERSVIEW
 
 We would query & get the raw date then run through cdutils.customer_dim.orgify and persify functions to turn persnbr or orgnbr into customer_id (with O+orgnbr, P+persnbr)
-
----
-
-Append PM field
 
 
 
