@@ -630,3 +630,68 @@ Traceback (most recent call last):
   File "C:\Users\w322800\Documents\gh\bcsb-prod\.venv\Lib\site-packages\pandas\core\generic.py", line 1914, in _get_label_or_level_values        
     raise KeyError(key)
 KeyError: 'persnbr'
+
+Final output df:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 39 entries, 0 to 38
+Data columns (total 56 columns):
+ #   Column                    Non-Null Count  Dtype
+---  ------                    --------------  -----
+ 0   effdate                   39 non-null     datetime64[us]
+ 1   acctnbr                   39 non-null     string        
+ 2   MACRO TYPE                39 non-null     object        
+ 3   creditlimitamt            39 non-null     float64       
+ 4   loanlimityn               39 non-null     object        
+ 5   notebal                   39 non-null     float64
+ 6   Net Balance               39 non-null     float64
+ 7   availbalamt               39 non-null     float64
+ 8   Net Available             39 non-null     float64
+ 9   credlimitclatresamt       39 non-null     float64
+ 10  Net Collateral Reserve    39 non-null     float64
+ 11  totalpctsold              39 non-null     float64
+ 12  origdate                  39 non-null     datetime64[us]
+ 13  datemat                   39 non-null     datetime64[us]
+ 14  inactivedate              39 non-null     datetime64[us]
+ 15  noteintrate               39 non-null     float64
+ 16  mjaccttypcd               39 non-null     object
+ 17  currmiaccttypcd           39 non-null     object
+ 18  product                   39 non-null     object
+ 19  customer_id               39 non-null     object
+ 20  Primary Borrower Name     39 non-null     object
+ 21  loanofficer               39 non-null     object
+ 22  Portfolio Manager         20 non-null     object
+ 23  lastdisbursdate           32 non-null     datetime64[us]
+ 24  Lead_Participant          7 non-null      object
+ 25  Total_Participants        7 non-null      float64
+ 26  totalpctbought            5 non-null      float64
+ 27  lead_bank                 5 non-null      object
+ 28  Full_creditlimitamt       39 non-null     float64
+ 29  Full_notebal              39 non-null     float64
+ 30  Full_availbalamt          39 non-null     float64
+ 31  Full_credlimitclatresamt  39 non-null     float64
+ 32  num_extensions            39 non-null     int64
+ 33  orig_inactive_date        39 non-null     datetime64[ns]
+ 34  Primary Borrower Address  39 non-null     object
+ 35  Primary Borrower City     39 non-null     object
+ 36  Primary Borrower State    39 non-null     object
+ 37  Primary Borrower Zip      39 non-null     object
+ 38  CtrlPerson_FirstName      35 non-null     object
+ 39  CtrlPerson_LastName       35 non-null     object
+ 40  CtrlPerson_WorkEmail      2 non-null      object
+ 41  CtrlPerson_WorkPhone      28 non-null     object
+ 42  propnbr                   39 non-null     string
+ 43  aprsvalueamt              34 non-null     float64
+ 44  aprsdate                  34 non-null     datetime64[us]
+ 45  proptypdesc               39 non-null     object
+ 46  addrnbr                   39 non-null     string
+ 47  owneroccupiedcd           27 non-null     object
+ 48  owneroccupieddesc         27 non-null     object
+ 49  nbrofunits                33 non-null     float64
+ 50  Property Address          39 non-null     object
+ 51  Property City             39 non-null     object
+ 52  Property State            39 non-null     object
+ 53  Primary Zip               39 non-null     object
+ 54  asset_class               39 non-null     object
+ 55  Participation Type        39 non-null     object
+dtypes: datetime64[ns](1), datetime64[us](6), float64(17), int64(1), object(28), string(3)
+memory usage: 17.2+ KB

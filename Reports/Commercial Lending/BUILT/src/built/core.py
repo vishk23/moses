@@ -358,24 +358,18 @@ def transform(accts):
     raw_data = src.built.fetch_data.fetch_orgpersrole()
     wh_orgpersrole = raw_data['wh_orgpersrole'].copy()
 
-    # Filter to controlling roles first (assume persrolecd == 'CTRL')
-    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CTRL'].copy()
+    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CNOW'].copy()
 
     # Orgify orgnbr
-    temp_orgs = ctrl_orgpers[['orgnbr']].drop_duplicates()
-    temp_orgs = cdutils.customer_dim.orgify(temp_orgs, 'orgnbr')
-    temp_orgs = temp_orgs.rename(columns={'customer_id': 'org_customer_id'})
-    ctrl_orgpers = ctrl_orgpers.merge(temp_orgs, on='orgnbr', how='left')
+    ctrl_orgpers = cdutils.customer_dim.orgify(ctrl_orgpers, 'orgnbr')
+    ctrl_orgpers['org_customer_id'] = ctrl_orgpers['customer_id']
+    ctrl_orgpers = cdutils.customer_dim.persify(ctrl_orgpers, 'persnbr')
+    ctrl_orgpers = ctrl_orgpers.rename(columns={
+        'customer_id':'ctrl_person_customer_id'
+    }).copy()
 
-    # Persify persnbr
-    temp_pers = ctrl_orgpers[['persnbr']].drop_duplicates()
-    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
-    temp_pers = temp_pers.rename(columns={'customer_id': 'ctrl_person_customer_id'})
-    ctrl_orgpers = ctrl_orgpers.merge(temp_pers, on='persnbr', how='left')
-
-    # Select unique org to ctrl person mappings
-    ctrl_orgpers = ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']].drop_duplicates()
-
+    ctrl_orgpers = ctrl_orgpers.sort_values(by='datelastmaint', ascending=False)
+    ctrl_orgpers = ctrl_orgpers.drop_duplicates(subset=['org_customer_id']).copy()
     # Assert uniqueness
     assert ctrl_orgpers['org_customer_id'].is_unique, "Multiple ctrl persons per org"
 
@@ -523,6 +517,7 @@ def generate_built_extract():
     resi = transform(resi)
 
     concat_df = pd.concat([cml, resi], ignore_index=True)
+    print(concat_df.info(verbose=True))
     return concat_df
 
 
