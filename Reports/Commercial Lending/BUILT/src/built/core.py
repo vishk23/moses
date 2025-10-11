@@ -142,11 +142,17 @@ def generate_inactive_df(acctloanlimithist):
     """
     This takes the ACCTLOANLIMITHIST data as a raw source.
 
-    Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates)
+    Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates - 1) # TODO
     """
+
+
     # First drop records where inactivedate is null
     df = acctloanlimithist.dropna(subset=['inactivedate']).copy()
 
+    df_schema = {
+        'acctnbr':'str'
+    }
+    df = cdutils.input_cleansing.cast_columns(df, df_schema)
     # Make sure inactivedate is datetime
     df['inactivedate'] = pd.to_datetime(df['inactivedate'])
 
@@ -277,7 +283,13 @@ def transform(accts):
         accts.loc[mask_not_null, full_field] = accts.loc[mask_not_null, field] / accts.loc[mask_not_null, 'totalpctbought']
     
     # Inactive date additional fields for # extensions and orig inactivedate
-    # TODO
+    raw_data = src.built.fetch_data.fetch_inactive_date_data()
+    acctloanlimithist = raw_data['acctloanlimithist'].copy()
+
+    inactive_df = generate_inactive_df(acctloanlimithist)
+    accts = accts.merge(inactive_df, on='acctnbr', how='left')
+    
+    
 
     # Controlling person section
     # TODO
