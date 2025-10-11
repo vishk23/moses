@@ -542,3 +542,59 @@ Going one step lower to actually get the info once we have customer_id of contro
     - workphonenbr
 
 Ending columns should be clear that this is CtrlPerson (prefix this and make the field names readable)
+
+
+---
+
+Ok so ctrlpersnbr didn't work property. We can insert 
+
+Need to get from this table:
+
+import cdutils.database.connect # type: ignore
+from sqlalchemy import text # type: ignore
+from datetime import datetime
+from typing import Optional
+
+# Define fetch data here using cdutils.database.connect
+# There are often fetch_data.py files already in project if migrating
+def fetch_data():
+    """
+    Main data query
+    """
+    query = text("""
+    SELECT
+        *
+    FROM
+        OSIBANK.WH_ORGPERSROLE a
+    """)    
+
+    queries = [
+        {'key':'query', 'sql':query, 'engine':1},
+        
+        # {'key':'vieworgtaxid', 'sql':vieworgtaxid, 'engine':1},
+    ]
+
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data
+
+wh_orgpersrole
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 13675 entries, 0 to 13674
+Data columns (total 9 columns):
+ #   Column         Non-Null Count  Dtype         
+---  ------         --------------  -----         
+ 0   orgnbr         13675 non-null  int64         
+ 1   rundate        13675 non-null  datetime64[ns]
+ 2   persrolecd     13500 non-null  object        
+ 3   persnbr        13500 non-null  float64       
+ 4   persroledesc   13500 non-null  object        
+ 5   orgrolecd      175 non-null    object        
+ 6   subjorgnbr     175 non-null    float64       
+ 7   orgroledesc    175 non-null    object        
+ 8   datelastmaint  13675 non-null  datetime64[ns]
+dtypes: datetime64[ns](2), float64(2), int64(1), object(4)
+memory usage: 961.7+ KB
+
+We actually just want to replace ctrlpersnbr with the persnbr (needs to be 'persified' by cdutils.customer_dim.persify).
+So customer_id in accts could be an organization 'O'+orgnbr and we already have this mostly handled, but we should filter this wh_orgpersrole to where persrolecd = 'CNOW' (controlling owner) which serves the same purpose as ctrl persnbr, but our org isn't maintaining ctrl persnbr so we need to use this other one. We can just link this persnbr (understand how persify works by looking at other examples in this file) to get link to pers_dim and the rest of that controlling person section will be the same. Just a swap out.

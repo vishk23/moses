@@ -209,7 +209,7 @@ def transform(accts):
     ]].copy()
 
     # This says customer dimension, but our employees are stored in customer dim table and have a customer_id
-    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").copy()
+    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").to_pandas()
     base_customer_dim = base_customer_dim[[
         'customer_id',
         'customer_name'
@@ -480,8 +480,6 @@ def transform(accts):
 
     return accts
 
-    # Participation data can be separate or in there
-    # INVR fields maybe, could just leave off for this cycle
 
 
 def generate_built_extract():

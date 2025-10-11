@@ -15,25 +15,6 @@ from typing import Optional
 # Define fetch data here using cdutils.database.connect
 # There are often fetch_data.py files already in project if migrating
 
-def fetch_data():
-    """
-    Main data query
-    """
-    
-    wh_acctcommon = text(f"""
-    SELECT
-        *
-    FROM
-        COCCDM.WH_ACCTCOMMON a
-    """)
-
-    queries = [
-        {'key':'wh_acctcommon', 'sql':wh_acctcommon, 'engine':2},
-    ]
-
-    data = cdutils.database.connect.retrieve_data(queries)
-    return data
-
 def fetch_invr():
     """
     Main data query
