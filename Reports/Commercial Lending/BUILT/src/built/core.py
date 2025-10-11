@@ -198,6 +198,10 @@ def transform(accts):
         'loanofficer'
     ]].copy()
 
+    # Convert date columns to datetime
+    accts['datemat'] = pd.to_datetime(accts['datemat'], errors='coerce')
+    accts['inactivedate'] = pd.to_datetime(accts['inactivedate'], errors='coerce')
+
     # Append project manger
     pm = DeltaTable(src.config.SILVER / "acct_role_link").to_pandas()
     pm = pm[pm['acctrolecd'] == 'PTMR'].copy()
@@ -313,8 +317,12 @@ def transform(accts):
 
     inactive_df = generate_inactive_df(acctloanlimithist)
     accts = accts.merge(inactive_df, on='acctnbr', how='left')
-    
-    
+
+    # Calculate Construction Term (Months) as difference between inactivedate and datemat in months
+    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['datemat']).dt.days / 30.44).round(1)
+
+
+
 
 
 
@@ -501,6 +509,22 @@ def transform(accts):
     accts['Participation Type'] = 'None'
     accts.loc[accts['totalpctsold'].notna(), 'Participation Type'] = 'Sold'
     accts.loc[accts['totalpctbought'].notna(), 'Participation Type'] = 'Bought'
+
+    # Reorganize columns for better flow
+    column_order = [
+        'effdate', 'acctnbr', 'MACRO TYPE', 'product', 'mjaccttypcd', 'currmiaccttypcd', 'loanlimityn',
+        'creditlimitamt', 'notebal', 'Net Balance', 'availbalamt', 'Net Available', 'credlimitclatresamt', 'Net Collateral Reserve',
+        'Full_creditlimitamt', 'Full_notebal', 'Full_availbalamt', 'Full_credlimitclatresamt',
+        'Participation Type', 'totalpctsold', 'totalpctbought', 'Lead_Participant', 'Total_Participants', 'lead_bank',
+        'origdate', 'datemat', 'Construction Term (Months)', 'inactivedate', 'orig_inactive_date', 'num_extensions', 'lastdisbursdate',
+        'noteintrate',
+        'customer_id', 'Primary Borrower Name', 'loanofficer', 'Portfolio Manager',
+        'Primary Borrower Address', 'Primary Borrower City', 'Primary Borrower State', 'Primary Borrower Zip',
+        'CtrlPerson_FirstName', 'CtrlPerson_LastName', 'CtrlPerson_WorkEmail', 'CtrlPerson_WorkPhone',
+        'propnbr', 'aprsvalueamt', 'aprsdate', 'proptypdesc', 'addrnbr', 'owneroccupiedcd', 'owneroccupieddesc', 'nbrofunits',
+        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class'
+    ]
+    accts = accts[column_order]
 
     return accts
 
