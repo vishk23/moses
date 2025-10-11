@@ -354,36 +354,56 @@ def transform(accts):
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
 
     # Controlling person section
-    # Fetch org_dim for controlling persons
-    org_dim = DeltaTable(src.config.SILVER / "org_dim").to_pandas()
-    org_dim = org_dim[['orgnbr', 'ctrlpersnbr']].copy()
-    org_dim_schema = {
-        'orgnbr': 'str',
-        'ctrlpersnbr': 'str'
+    # Fetch wh_orgpersrole
+    raw_data = src.built.fetch_data.fetch_orgpersrole()
+    wh_orgpersrole = raw_data['wh_orgpersrole'].copy()
+
+    # Cast persnbr and orgnbr to str for standardization
+    wh_orgpersrole['persnbr'] = wh_orgpersrole['persnbr'].astype(str)
+    wh_orgpersrole['orgnbr'] = wh_orgpersrole['orgnbr'].astype(str)
+
+    # Orgify orgnbr to 'O' + orgnbr
+    temp_orgs = wh_orgpersrole[['orgnbr']].drop_duplicates().copy()
+    temp_orgs = cdutils.customer_dim.orgify(temp_orgs, 'orgnbr')
+    wh_orgpersrole = wh_orgpersrole.merge(temp_orgs, on='orgnbr', how='left')
+    wh_orgpersrole['org_customer_id'] = wh_orgpersrole['customer_id']
+    wh_orgpersrole = wh_orgpersrole.drop(columns=['customer_id'])
+
+    # Persify persnbr to 'P' + persnbr
+    temp_pers = wh_orgpersrole[['persnbr']].drop_duplicates().copy()
+    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
+    wh_orgpersrole = wh_orgpersrole.merge(temp_pers, on='persnbr', how='left')
+    wh_orgpersrole['ctrl_person_customer_id'] = wh_orgpersrole['customer_id']
+    wh_orgpersrole = wh_orgpersrole.drop(columns=['customer_id'])
+
+    # Filter to controlling roles (persroledesc contains 'Controlling')
+    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persroledesc'].str.contains('Controlling', case=False, na=False)].copy()
+
+    # Cast schemas
+    ctrl_orgpers_schema = {
+        'org_customer_id': 'str',
+        'ctrl_person_customer_id': 'str'
     }
-    org_dim = cdutils.input_cleansing.cast_columns(org_dim, org_dim_schema)
+    ctrl_orgpers = cdutils.input_cleansing.cast_columns(ctrl_orgpers, ctrl_orgpers_schema)
+
+    # Assert uniqueness
+    assert ctrl_orgpers['org_customer_id'].is_unique, "Multiple ctrl persons per org"
 
     # Identify orgs
     accts['is_org'] = accts['customer_id'].str.startswith('O')
-    accts['orgnbr'] = accts['customer_id'].str[1:].where(accts['is_org'])
 
-    # Merge to get ctrlpersnbr for orgs
-    accts = accts.merge(org_dim, on='orgnbr', how='left')
+    # Merge
+    accts = accts.merge(ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']],
+                        left_on='customer_id', right_on='org_customer_id', how='left')
 
-    # Persify ctrlpersnbr for orgs
-    temp_orgs = accts[accts['is_org'] & accts['ctrlpersnbr'].notna()][['ctrlpersnbr']].drop_duplicates()
-    temp_orgs = cdutils.customer_dim.persify(temp_orgs, 'ctrlpersnbr')
-    temp_orgs = temp_orgs.rename(columns={'customer_id': 'ctrl_person_customer_id'})
+    # Set final
+    accts['final_ctrl_person_customer_id'] = accts['customer_id']
+    accts.loc[accts['is_org'] & accts['ctrl_person_customer_id'].notna(),
+              'final_ctrl_person_customer_id'] = accts.loc[accts['is_org'] & accts['ctrl_person_customer_id'].notna(),
+                                                           'ctrl_person_customer_id']
 
-    # Merge back ctrl_person_customer_id
-    accts = accts.merge(temp_orgs, on='ctrlpersnbr', how='left')
-
-    # Set ctrl_person_customer_id: for orgs use the persified, for persons use customer_id
-    accts['ctrl_person_customer_id'] = accts['customer_id']
-    accts.loc[accts['is_org'] & accts['ctrl_person_customer_id_y'].notna(), 'ctrl_person_customer_id'] = accts.loc[accts['is_org'] & accts['ctrl_person_customer_id_y'].notna(), 'ctrl_person_customer_id_y']
-
-    # Drop temporary columns
-    accts = accts.drop(columns=['is_org', 'orgnbr', 'ctrlpersnbr', 'ctrl_person_customer_id_y'])
+    # Drop temps
+    accts = accts.drop(columns=['is_org', 'org_customer_id', 'ctrl_person_customer_id'])
 
     # Fetch pers_dim
     pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
@@ -393,20 +413,25 @@ def transform(accts):
     }
     pers_dim = cdutils.input_cleansing.cast_columns(pers_dim, pers_dim_schema)
 
-    # Prepare ctrl_person data
-    ctrl_person = pers_dim.rename(columns={
+    # Rename
+    ctrl_person_details = pers_dim.rename(columns={
         'firstname': 'CtrlPerson_FirstName',
         'lastname': 'CtrlPerson_LastName',
         'busemail': 'CtrlPerson_WorkEmail',
         'workphonenbr': 'CtrlPerson_WorkPhone'
     })
 
-    # Merge to get control person details
-    accts = accts.merge(ctrl_person, left_on='ctrl_person_customer_id', right_on='customer_id', how='left')
+    # Merge
+    accts = accts.merge(ctrl_person_details, left_on='final_ctrl_person_customer_id',
+                        right_on='customer_id', how='left')
 
-    # Clean up columns
-    accts = accts.drop(columns=['ctrl_person_customer_id', 'customer_id_y'])
-    accts = accts.rename(columns={'customer_id_x': 'customer_id'})
+    # Clean up
+    accts = accts.drop(columns=['final_ctrl_person_customer_id', 'customer_id_y'])
+    if 'customer_id_x' in accts.columns:
+        accts = accts.rename(columns={'customer_id_x': 'customer_id'})
+
+    # Validate
+    assert accts['CtrlPerson_FirstName'].notna().all() or accts['CtrlPerson_LastName'].notna().all(), "Missing CtrlPerson details"
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 
