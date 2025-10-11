@@ -144,13 +144,19 @@ def generate_inactive_df(acctloanlimithist):
 
     Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates)
     """
-    # TODO
-
     # First drop records where inactivedate is null
-    # make sure inactivedate is datetime
-    # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
+    df = acctloanlimithist.dropna(subset=['inactivedate']).copy()
 
-    # return df
+    # Make sure inactivedate is datetime
+    df['inactivedate'] = pd.to_datetime(df['inactivedate'])
+
+    # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
+    result = df.groupby('acctnbr').agg(
+        num_extensions=('inactivedate', 'nunique'),
+        orig_inactive_date=('inactivedate', 'min')
+    ).reset_index()
+
+    return result
     
 
 def transform(accts):
