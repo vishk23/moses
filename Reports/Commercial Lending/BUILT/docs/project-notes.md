@@ -1,3 +1,27 @@
+**Overview**: Track implementation of key sections for the BUILT report generation in `src/core.py` and related files. Update status as tasks progress; run tests via `python -m pytest tests/ -v` after changes.
+
+- [x] **Participation Section**: Implement logic for participation data extraction and validation.  
+  *Tests*: Passed all unit tests in `tests/test_core.py`.  
+  *Notes*: Integrated with `fetch_data.py`; no issues.
+
+- [x] **Inactive Date Section**: Add handling for inactive dates in asset filtering.  
+  *Tests*: Passed; verified with sample data in notebooks.  
+  *Notes*: Updated config in `src/config.py`.
+
+- [ ] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
+  *Tests*: Pending; run after implementation.  
+  *Notes*: Reference `docs/controlling_person_logic.md` for business rules. Subtasks:  
+  - [ ] Define SQL in `fetch_data.py`.  
+  - [ ] Transform in `core.py`.  
+  - [ ] Add tests.
+
+- [x] **Add Portfolio Manager**: Include portfolio manager fields in output DataFrame.  
+  *Tests*: Passed; bundle size unchanged.  
+  *Notes*: Minor addition to existing pipeline.
+
+**Next Steps**: Prioritize controlling person section. After completion, run full test suite and lint (PEP 8). Update `docs/project-notes.md` with any learnings.
+
+
 Links:
 https://clientexperience.getbuilt.com/project-updates
 
@@ -270,10 +294,10 @@ merged_investor.describe()
 acctnbr,acctgrpnbr,invrstatcd,pctowned,originvrrate,currinvrrate,customer_id,Participant Name
 94,94,94,94,94,94,94,94
 89,49,3,25,63,62,19,19
-150936915,16138,SOLD,1,0.06,0.06,O1009133,SOUTHSTATE BANK NA
+150936915,16138,SOLD,0.06,0.06,O1009133,SOUTHSTATE BANK NA
 2,22,56,32,8,5,26,26
 
-The invrstatcd has been filter to only = 'SOLD'.
+ The invrstatcd has been filter to only = 'SOLD'.
 
 ---
 
