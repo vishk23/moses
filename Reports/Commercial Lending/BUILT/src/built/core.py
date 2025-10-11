@@ -354,44 +354,44 @@ def transform(accts):
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
 
     # Controlling person section
-    # Fetch wh_orgpersrole for controlling owners
-    orgpersrole_data = src.built.fetch_data.fetch_orgpersrole()
-    wh_orgpersrole = orgpersrole_data['wh_orgpersrole'].copy()
+    # Fetch org_dim for controlling persons
+    org_dim = DeltaTable(src.config.SILVER / "org_dim").to_pandas()
+    org_dim = org_dim[['orgnbr', 'ctrlpersnbr']].copy()
+    org_dim_schema = {
+        'orgnbr': 'str',
+        'ctrlpersnbr': 'str'
+    }
+    org_dim = cdutils.input_cleansing.cast_columns(org_dim, org_dim_schema)
 
-    # Filter to controlling owners (CNOW)
-    wh_orgpersrole = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CNOW'].copy()
+    # Identify orgs
+    accts['is_org'] = accts['customer_id'].str.startswith('O')
+    accts['orgnbr'] = accts['customer_id'].str[1:].where(accts['is_org'])
 
-    # Create mapping from orgnbr to persnbr
-    org_to_pers = wh_orgpersrole.set_index('orgnbr')['persnbr'].to_dict()
+    # Merge to get ctrlpersnbr for orgs
+    accts = accts.merge(org_dim, on='orgnbr', how='left')
 
-    # Extract orgnbr from customer_id for orgs
-    accts['orgnbr'] = accts['customer_id'].str[1:].astype(float).where(accts['customer_id'].str.startswith('O'))
+    # Persify ctrlpersnbr for orgs
+    temp_orgs = accts[accts['is_org'] & accts['ctrlpersnbr'].notna()][['ctrlpersnbr']].drop_duplicates()
+    temp_orgs = cdutils.customer_dim.persify(temp_orgs, 'ctrlpersnbr')
+    temp_orgs = temp_orgs.rename(columns={'customer_id': 'ctrl_person_customer_id'})
 
-    # Map to persnbr
-    accts['persnbr'] = accts['orgnbr'].map(org_to_pers)
+    # Merge back ctrl_person_customer_id
+    accts = accts.merge(temp_orgs, on='ctrlpersnbr', how='left')
 
-    # Persify persnbr to get person customer_id
-    temp_pers = accts[accts['persnbr'].notna()][['persnbr']].drop_duplicates()
-    temp_pers = cdutils.customer_dim.persify(temp_pers, 'persnbr')
-    temp_pers = temp_pers.rename(columns={'customer_id': 'ctrl_person_customer_id'})
+    # Set ctrl_person_customer_id: for orgs use the persified, for persons use customer_id
+    accts['ctrl_person_customer_id'] = accts['customer_id']
+    accts.loc[accts['is_org'] & accts['ctrl_person_customer_id_y'].notna(), 'ctrl_person_customer_id'] = accts.loc[accts['is_org'] & accts['ctrl_person_customer_id_y'].notna(), 'ctrl_person_customer_id_y']
 
-    # Merge back to accts
-    accts = accts.merge(temp_pers, on='persnbr', how='left')
+    # Drop temporary columns
+    accts = accts.drop(columns=['is_org', 'orgnbr', 'ctrlpersnbr', 'ctrl_person_customer_id_y'])
 
+    # Fetch pers_dim
     pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
     pers_dim = pers_dim[['customer_id', 'firstname', 'lastname', 'busemail', 'workphonenbr']].copy()
     pers_dim_schema = {
         'customer_id': 'str'
     }
     pers_dim = cdutils.input_cleansing.cast_columns(pers_dim, pers_dim_schema)
-
-    # Set ctrl_person_id: for orgs with controlling person, use ctrl_person_customer_id; for persons, use customer_id
-    accts['ctrl_person_id'] = accts['customer_id']
-    org_mask = accts['customer_id'].str.startswith('O')
-    accts.loc[org_mask & accts['ctrl_person_customer_id'].notna(), 'ctrl_person_id'] = accts.loc[org_mask & accts['ctrl_person_customer_id'].notna(), 'ctrl_person_customer_id']
-
-    # Drop temporary columns
-    accts = accts.drop(columns=['orgnbr', 'persnbr', 'ctrl_person_customer_id'])
 
     # Prepare ctrl_person data
     ctrl_person = pers_dim.rename(columns={
@@ -402,10 +402,10 @@ def transform(accts):
     })
 
     # Merge to get control person details
-    accts = accts.merge(ctrl_person, left_on='ctrl_person_id', right_on='customer_id', how='left')
+    accts = accts.merge(ctrl_person, left_on='ctrl_person_customer_id', right_on='customer_id', how='left')
 
     # Clean up columns
-    accts = accts.drop(columns=['ctrl_person_id', 'customer_id_y'])
+    accts = accts.drop(columns=['ctrl_person_customer_id', 'customer_id_y'])
     accts = accts.rename(columns={'customer_id_x': 'customer_id'})
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
