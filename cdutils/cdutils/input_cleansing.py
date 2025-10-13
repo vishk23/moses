@@ -100,7 +100,7 @@ def cast_columns(df, field_map):
         elif target_type == 'int':
             df[field] = df[field].astype('Int64')
         elif target_type == 'float':
-            df[field] = df[field].asttype('float64')
+            df[field] = df[field].astype('float64')
         elif target_type == 'datetime':
             df[field] = pd.to_datetime(df[field])
         else:

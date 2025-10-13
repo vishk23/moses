@@ -65,6 +65,9 @@ def fetch_cml():
     # Filter to hasan defined acctnbrs for now
     accts = accts[accts['acctnbr'].isin(acctnbrs)].copy()
     accts['MACRO TYPE'] = 'Commercial'
+    accts['holdback_flag'] = None
+    accts['holdback_amt'] = None
+
     return accts 
 
 def fetch_resi():
@@ -79,7 +82,7 @@ def fetch_resi():
     holdbacks = holdbacks[holdbacks['balamt'] > 0][['acctnbr', 'balamt']].copy()
     holdbacks['holdback_flag'] = 'Y'
     holdbacks = holdbacks.rename(columns={'balamt': 'holdback_amt'})
-    holdback_schema = {'acctnbr': 'str'}
+    holdback_schema = {'acctnbr': 'str', 'holdback_amt':'float'}
     holdbacks = cdutils.input_cleansing.cast_columns(holdbacks, holdback_schema)
     accts = accts.merge(holdbacks, on='acctnbr', how='left')
 
@@ -524,7 +527,7 @@ def transform(accts):
 
     # Reorganize columns for better flow
     column_order = [
-        'effdate', 'acctnbr', 'MACRO TYPE', 'product', 'mjaccttypcd', 'currmiaccttypcd', 'loanlimityn',
+        'effdate', 'acctnbr', 'MACRO TYPE', 'product', 'mjaccttypcd', 'currmiaccttypcd','holdback_flag','holdback_amt','loanlimityn',
         'creditlimitamt', 'notebal', 'availbalamt', 'credlimitclatresamt', 'Net Balance', 'Net Available', 'Net Collateral Reserve',
         'Full_creditlimitamt', 'Full_notebal', 'Full_availbalamt', 'Full_credlimitclatresamt',
         'Participation Type', 'totalpctsold', 'totalpctbought', 'Lead_Participant', 'Total_Participants', 'lead_bank',
