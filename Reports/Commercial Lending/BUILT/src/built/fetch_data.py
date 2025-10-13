@@ -99,3 +99,38 @@ def fetch_orgpersrole():
 
     data = cdutils.database.connect.retrieve_data(queries)
     return data
+
+def fetch_holdbacks():
+    """
+    Fetch latest balamt for holdback subaccounts (BALCATCD='HOLD') from ACCTSUBACCT and ACCTBALHIST.
+    """
+    query = text("""
+    SELECT
+        acctnbr,
+        subacctnbr,
+        balcatcd,
+        balamt
+    FROM (
+        SELECT
+            a.acctnbr,
+            a.subacctnbr,
+            a.balcatcd,
+            h.balamt,
+            h.effdate,
+            ROW_NUMBER() OVER (PARTITION BY a.acctnbr, a.subacctnbr ORDER BY h.effdate DESC) AS rn
+        FROM
+            OSIBANK.ACCTSUBACCT a
+        INNER JOIN
+            OSIBANK.ACCTBALHIST h ON a.acctnbr = h.acctnbr AND a.subacctnbr = h.subacctnbr
+        WHERE
+            a.BALCATCD = 'HOLD'
+    )
+    WHERE rn = 1
+    """)
+
+    queries = [
+        {'key':'holdbacks', 'sql':query, 'engine':1},
+    ]
+
+    data = cdutils.database.connect.retrieve_data(queries)
+    return data

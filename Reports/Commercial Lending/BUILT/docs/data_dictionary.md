@@ -6,6 +6,8 @@
 - **product**: The specific loan product type (e.g., construction line of credit).
 - **mjaccttypcd**: Broad loan category code 
 - **currmiaccttypcd**: Detailed loan subcategory code (Loan Minor)
+- **holdback_flag**: Y/N flag indicating if the account has holdback amounts (Y if holdback_amt > 0)
+- **holdback_amt**: The holdback balance amount for the account (only populated if holdback_flag = 'Y')
 - **loanlimityn**: Y/N flag for line of credit type account (should be all Y for construction loans). If they switch to perm loans, this would change to N.
 - **creditlimitamt**: Total credit limit amount
 - **notebal**: Total current balance
