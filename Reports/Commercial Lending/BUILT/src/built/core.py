@@ -197,6 +197,8 @@ def transform(accts):
         'noteintrate', # Interest Rate (Current)
         'mjaccttypcd', # Major code
         'currmiaccttypcd', # Minor code (1:1 match with product)
+        'holdback_flag', # Holdback flag (Y if holdback_amt > 0)
+        'holdback_amt', # Holdback amount
         'product', # Product Type
         # Asset class, calculated from proptypdesc mode with appraised values
         # All prop date requested
