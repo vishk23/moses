@@ -246,6 +246,31 @@ def generate_pers_dim():
     
     wh_pers = wh_pers.merge(df_pivot, on='customer_id', how='left')
 
+    # Add phone numbers
+    persphone = DeltaTable(src.config.BRONZE / "persphone").to_pandas()
+
+    # Concat to get full phone number
+    persphone['fullphonenbr'] = persphone['areacd'].astype(str) + persphone['exchange'].astype(str) + persphone['phonenbr'].astype(str)
+
+    # Filter to PER and BUS
+    persphone = persphone[persphone['phoneusecd'].isin(['PER', 'BUS'])]
+
+    # Sort by datelastmaint descending to get latest
+    persphone = persphone.sort_values(['persnbr', 'phoneusecd', 'datelastmaint'], ascending=[True, True, False])
+
+    # Drop duplicates, keeping the first (latest)
+    persphone = persphone.drop_duplicates(subset=['persnbr', 'phoneusecd'], keep='first')
+
+    # Pivot to get PER and BUS as columns
+    df_pivot_phones = persphone.pivot(index='persnbr', columns='phoneusecd', values='fullphonenbr').reset_index()
+    df_pivot_phones = df_pivot_phones.rename(columns={'PER': 'persphonenbr', 'BUS': 'workphonenbr'})
+
+    # Persify
+    df_pivot_phones = cdutils.customer_dim.persify(df_pivot_phones, 'persnbr')
+
+    # Merge
+    wh_pers = wh_pers.merge(df_pivot_phones[['customer_id', 'persphonenbr', 'workphonenbr']], on='customer_id', how='left')
+
     return wh_pers
 
 def generate_org_dim():
@@ -294,6 +319,12 @@ def generate_org_dim():
     # Orgify
     org = cdutils.customer_dim.orgify(org, 'orgnbr')
 
+    # Persify ctrlpersnbr
+    if 'ctrlpersnbr' in org.columns:
+        temp_df = org[['ctrlpersnbr']].rename(columns={'ctrlpersnbr': 'persnbr'})
+        temp_df = cdutils.customer_dim.persify(temp_df, 'persnbr')
+        org['ctrlpersnbr'] = temp_df['customer_id']
+
     wh_org = wh_org.merge(org, on='customer_id', how='left')
 
     wh_orguserfields = DeltaTable(src.config.BRONZE / "wh_orguserfields").to_pandas()
@@ -322,5 +353,30 @@ def generate_org_dim():
     df_pivot = df_pivot.where(pd.notnull(df_pivot), None)
 
     wh_org = wh_org.merge(df_pivot, on='customer_id', how='left')
+
+    # Add phone numbers
+    orgphone = DeltaTable(src.config.BRONZE / "orgphone").to_pandas()
+
+    # Concat to get full phone number
+    orgphone['fullphonenbr'] = orgphone['areacd'].astype(str) + orgphone['exchange'].astype(str) + orgphone['phonenbr'].astype(str)
+
+    # Filter to BUS
+    orgphone = orgphone[orgphone['phoneusecd'] == 'BUS']
+
+    # Sort by datelastmaint descending to get latest
+    orgphone = orgphone.sort_values(['orgnbr', 'phoneusecd', 'datelastmaint'], ascending=[True, True, False])
+
+    # Drop duplicates, keeping the first (latest)
+    orgphone = orgphone.drop_duplicates(subset=['orgnbr', 'phoneusecd'], keep='first')
+
+    # Pivot to get BUS as workphonenbr
+    df_pivot_phones = orgphone.pivot(index='orgnbr', columns='phoneusecd', values='fullphonenbr').reset_index()
+    df_pivot_phones = df_pivot_phones.rename(columns={'BUS': 'workphonenbr'})
+
+    # Orgify
+    df_pivot_phones = cdutils.customer_dim.orgify(df_pivot_phones, 'orgnbr')
+
+    # Merge
+    wh_org = wh_org.merge(df_pivot_phones[['customer_id', 'workphonenbr']], on='customer_id', how='left')
 
     return wh_org

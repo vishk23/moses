@@ -2,6 +2,8 @@ import src.config
 from deltalake import DeltaTable
 import pandas as pd
 import cdutils.input_cleansing # type: ignore
+import src.built.fetch_data
+import cdutils.customer_dim # type: ignore
 
 def add_asset_class(df, mapping_dict):
     """
@@ -63,6 +65,9 @@ def fetch_cml():
     # Filter to hasan defined acctnbrs for now
     accts = accts[accts['acctnbr'].isin(acctnbrs)].copy()
     accts['MACRO TYPE'] = 'Commercial'
+    accts['holdback_flag'] = None
+    accts['holdback_amt'] = None
+
     return accts 
 
 def fetch_resi():
@@ -71,13 +76,107 @@ def fetch_resi():
     """
     accts = DeltaTable(src.config.SILVER / "account").to_pandas()
 
-    # Filter to Resi Construction loans
-    # TODO: Add in the holdback logic 
+    # Fetch and process holdbacks
+    raw_holdbacks = src.built.fetch_data.fetch_holdbacks()
+    holdbacks = raw_holdbacks['holdbacks'].copy()
+    holdbacks = holdbacks[holdbacks['balamt'] > 0][['acctnbr', 'balamt']].copy()
+    holdbacks['holdback_flag'] = 'Y'
+    holdbacks = holdbacks.rename(columns={'balamt': 'holdback_amt'})
+    holdback_schema = {'acctnbr': 'str', 'holdback_amt':'float'}
+    holdbacks = cdutils.input_cleansing.cast_columns(holdbacks, holdback_schema)
+    accts = accts.merge(holdbacks, on='acctnbr', how='left')
+
+    # Filter to Resi Construction loans with holdback logic
     resi_definite = ["MG01","MG64"]
-    accts = accts[accts['currmiaccttypcd'].isin(resi_definite)]
+    mask = accts['currmiaccttypcd'].isin(resi_definite) | ((accts['mjaccttypcd'] == 'MTG') & (accts['holdback_amt'] > 0))
+    accts = accts[mask].copy()
 
     accts['MACRO TYPE'] = 'Residential'
     return accts
+
+def generate_participation_sold_detail():
+    """
+    Generates the participation sold detail DataFrame.
+    """
+    # Get investor data
+    invr = src.built.fetch_data.fetch_invr()
+    wh_invr = invr['wh_invr'].copy()
+    acctgrpinvr = invr['acctgrpinvr'].copy()
+
+    # Load and process base_customer_dim
+    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").to_pandas()
+    base_customer_dim = base_customer_dim[['customer_id', 'customer_name']].copy()
+
+    # Type conversions
+    wh_invr['acctgrpnbr'] = wh_invr['acctgrpnbr'].astype(str)
+    acctgrpinvr['acctgrpnbr'] = acctgrpinvr['acctgrpnbr'].astype(str)
+
+    # Apply orgify
+    acctgrpinvr = cdutils.customer_dim.orgify(acctgrpinvr, 'invrorgnbr')
+
+    # Assertions (removed in function for production, but can be added if needed)
+    # assert acctgrpinvr['acctgrpnbr'].is_unique, "Dupes"
+
+    # Merges
+    merged_investor = wh_invr.merge(acctgrpinvr, on='acctgrpnbr', how='left').merge(
+        base_customer_dim, on='customer_id', how='left'
+    )
+
+    # Filter for sold status
+    merged_investor = merged_investor[merged_investor['invrstatcd'] == 'SOLD'].copy()
+
+    # Drop column
+    merged_investor = merged_investor.drop(columns=['datelastmaint']).copy()
+
+    # Rename column
+    merged_investor = merged_investor.rename(columns={
+        'customer_name': 'Participant Name'
+    }).copy()
+
+    # Cast columns
+    merged_investor_schema = {
+        'acctnbr': 'str'
+    }
+    merged_investor = cdutils.input_cleansing.cast_columns(merged_investor, merged_investor_schema)
+
+    # Filter to required columns
+    merged_investor = merged_investor[[
+        'acctnbr',
+        'pctowned',
+        'Participant Name'
+    ]].copy()
+
+    # Convert pctowned to numeric
+    merged_investor['pctowned'] = pd.to_numeric(merged_investor['pctowned'])
+
+    return merged_investor
+
+def generate_inactive_df(acctloanlimithist):
+    """
+    This takes the ACCTLOANLIMITHIST data as a raw source.
+
+    Transforms and produces a df with 1 acctnbr per row with # of extensions (number of unique inactive dates - 1) # TODO
+    """
+
+
+    # First drop records where inactivedate is null
+    df = acctloanlimithist.dropna(subset=['inactivedate']).copy()
+
+    df_schema = {
+        'acctnbr':'str'
+    }
+    df = cdutils.input_cleansing.cast_columns(df, df_schema)
+    # Make sure inactivedate is datetime
+    df['inactivedate'] = pd.to_datetime(df['inactivedate'])
+
+    # Group by acctnbr and create count nunique of inactive dates and also orig_inactive date (which would be the earliest in chronological)
+    result = df.groupby('acctnbr').agg(
+        num_extensions=('inactivedate', lambda x: x.nunique() - 1),
+        orig_inactive_date=('inactivedate', 'min')
+    ).reset_index()
+
+    return result
+    
 
 def transform(accts):
     accts = accts[[
@@ -88,6 +187,11 @@ def transform(accts):
         'loanlimityn', # LOC Type (Y/N)
         'notebal', # Draw Funded to Date
         'Net Balance', # BCSB Net Balance
+        'availbalamt',
+        'Net Available',
+        'credlimitclatresamt',
+        'Net Collateral Reserve',
+        'totalpctsold',
         # 'contractdate', # Date loan closed. Opted to use orig date below, but check with Hasan/Dawn
         'origdate', # Date loan hit core system (Close Date)
         'datemat', # Maturity Date (full loan)
@@ -96,6 +200,8 @@ def transform(accts):
         'noteintrate', # Interest Rate (Current)
         'mjaccttypcd', # Major code
         'currmiaccttypcd', # Minor code (1:1 match with product)
+        'holdback_flag', # Holdback flag (Y if holdback_amt > 0)
+        'holdback_amt', # Holdback amount
         'product', # Product Type
         # Asset class, calculated from proptypdesc mode with appraised values
         # All prop date requested
@@ -103,8 +209,37 @@ def transform(accts):
         # Owner occ
         # Borrower info
         'customer_id',
-        'ownersortname'
+        'ownersortname',
+        'loanofficer'
     ]].copy()
+
+    # Convert date columns to datetime
+    accts['datemat'] = pd.to_datetime(accts['datemat'], errors='coerce')
+    accts['inactivedate'] = pd.to_datetime(accts['inactivedate'], errors='coerce')
+
+    # Append project manger
+    pm = DeltaTable(src.config.SILVER / "acct_role_link").to_pandas()
+    pm = pm[pm['acctrolecd'] == 'PTMR'].copy()
+    
+    assert pm['acctnbr'].is_unique, "Duplicates on PM role to acctnbr"
+    pm = pm[[
+        'acctnbr',
+        'customer_id'
+    ]].copy()
+
+    # This says customer dimension, but our employees are stored in customer dim table and have a customer_id
+    base_customer_dim = DeltaTable(src.config.SILVER / "base_customer_dim").to_pandas()
+    base_customer_dim = base_customer_dim[[
+        'customer_id',
+        'customer_name'
+    ]].copy()
+
+    pm = pm.merge(base_customer_dim, on='customer_id', how='left')
+    pm = pm.rename(columns={
+        'customer_name':'Portfolio Manager'
+    }).drop(columns=['customer_id']).copy()
+
+    accts = accts.merge(pm, on='acctnbr', how='left')
 
     accts = accts.rename(columns={
         'ownersortname':'Primary Borrower Name'
@@ -125,13 +260,86 @@ def transform(accts):
     accts = accts.merge(wh_loans, on='acctnbr', how='left')
 
     # Participation info
-    # TODO
+    pct_sold_loans = generate_participation_sold_detail()
 
+    # Group by acctnbr
+    grouped_pct_sold_loans = (
+        pct_sold_loans
+        .groupby('acctnbr')
+        .agg(
+            Lead_Participant=('Participant Name', 'first'),  # First 'Participant Name' as Lead Participant
+            Total_Participants=('Participant Name', 'nunique')  # Number of unique 'Participant Name'
+        )
+        .reset_index()  # Reset index to keep acctnbr as a column
+    )
+
+    # Merge with accts on acctnbr using left join
+    accts = accts.merge(grouped_pct_sold_loans, on='acctnbr', how='left')
+
+    # Assert that acctnbr is unique in accts
+    assert accts['acctnbr'].is_unique, "acctnbr is not unique in accts"    
+
+    wh_acctuserfields = DeltaTable(src.config.BRONZE / "wh_acctuserfields").to_pandas()
+    papu = wh_acctuserfields[wh_acctuserfields['acctuserfieldcd'] == 'PAPU'].copy()
+    parp = wh_acctuserfields[wh_acctuserfields['acctuserfieldcd'] == 'PARP'].copy()
+
+    # assert both papu & parp ['acctnbr'].is_unique, "Dupes"
+
+    papu_schema = {
+        'acctnbr':'str'
+    }
+    papu = cdutils.input_cleansing.cast_columns(papu, papu_schema)
+
+    parp_schema = {
+        'acctnbr':'str'
+    }
+    parp = cdutils.input_cleansing.cast_columns(parp, parp_schema)
+
+    # Filter down both to just df[['acctnbr','acctuserfieldvalue']]
+    papu = papu[['acctnbr', 'acctuserfieldvalue']].copy()
+    parp = parp[['acctnbr', 'acctuserfieldvalue']].copy()
+
+    # Name acctuserfieldvalue accordingly
+    papu = papu.rename(columns={'acctuserfieldvalue': 'totalpctbought'})
+    parp = parp.rename(columns={'acctuserfieldvalue': 'lead_bank'})
+
+    # Left join papu to accts on acctnbr, adding totalpctbought
+    accts = accts.merge(papu, on='acctnbr', how='left')
+
+    # Left join parp to accts on acctnbr, adding lead_bank
+    accts = accts.merge(parp, on='acctnbr', how='left')   
+    
+    # Clean totalpctbought: remove '%' if present, convert to numeric, and divide by 100 if > 1 (assuming >1 means percentage like 44.76 for 44.76%, else leave as 0-1)
+    accts['totalpctbought'] = pd.to_numeric(accts['totalpctbought'].str.replace('%', ''), errors='coerce')
+    mask_pct = accts['totalpctbought'] > 1
+    accts.loc[mask_pct, 'totalpctbought'] = accts.loc[mask_pct, 'totalpctbought'] / 100
+
+    # Assert that the base fields are numeric for the calculation
+    fields_to_full = ['creditlimitamt', 'notebal', 'availbalamt', 'credlimitclatresamt']
+    for field in fields_to_full:
+        assert pd.api.types.is_numeric_dtype(accts[field]), f"'{field}' must be numeric"
+
+    # Create Full_ versions of the fields
+    for field in fields_to_full:
+        full_field = f'Full_{field}'
+        accts[full_field] = accts[field]
+        mask_not_null = accts['totalpctbought'].notna()
+        accts.loc[mask_not_null, full_field] = accts.loc[mask_not_null, field] / accts.loc[mask_not_null, 'totalpctbought']
+    
     # Inactive date additional fields for # extensions and orig inactivedate
-    # TODO
+    raw_data = src.built.fetch_data.fetch_inactive_date_data()
+    acctloanlimithist = raw_data['acctloanlimithist'].copy()
 
-    # Controlling person section
-    # TODO
+    inactive_df = generate_inactive_df(acctloanlimithist)
+    accts = accts.merge(inactive_df, on='acctnbr', how='left')
+
+    # Calculate Construction Term (Months) as difference between origdate and inactivedate in months
+    accts['Construction Term (Months)'] = ((accts['inactivedate'] - accts['origdate']).dt.days / 30.44).round()
+
+
+
+
+
 
 
     # Append primary address
@@ -167,6 +375,72 @@ def transform(accts):
         'acctnbr':'str'
     }
     accts = cdutils.input_cleansing.cast_columns(accts, accts_schema)
+
+    # Controlling person section
+    # Fetch wh_orgpersrole
+    raw_data = src.built.fetch_data.fetch_orgpersrole()
+    wh_orgpersrole = raw_data['wh_orgpersrole'].copy()
+
+    ctrl_orgpers = wh_orgpersrole[wh_orgpersrole['persrolecd'] == 'CNOW'].copy()
+
+    # Orgify orgnbr
+    ctrl_orgpers = cdutils.customer_dim.orgify(ctrl_orgpers, 'orgnbr')
+    ctrl_orgpers['org_customer_id'] = ctrl_orgpers['customer_id']
+    ctrl_orgpers = cdutils.customer_dim.persify(ctrl_orgpers, 'persnbr')
+    ctrl_orgpers = ctrl_orgpers.rename(columns={
+        'customer_id':'ctrl_person_customer_id'
+    }).copy()
+
+    ctrl_orgpers = ctrl_orgpers.sort_values(by='datelastmaint', ascending=False)
+    ctrl_orgpers = ctrl_orgpers.drop_duplicates(subset=['org_customer_id']).copy()
+    # Assert uniqueness
+    assert ctrl_orgpers['org_customer_id'].is_unique, "Multiple ctrl persons per org"
+
+    # Identify orgs
+    accts['is_org'] = accts['customer_id'].str.startswith('O')
+
+    # Merge
+    accts = accts.merge(ctrl_orgpers[['org_customer_id', 'ctrl_person_customer_id']],
+                        left_on='customer_id', right_on='org_customer_id', how='left')
+
+    # Set final
+    accts['final_ctrl_person_customer_id'] = accts['customer_id']
+    accts.loc[accts['is_org'] & accts['ctrl_person_customer_id'].notna(),
+              'final_ctrl_person_customer_id'] = accts.loc[accts['is_org'] & accts['ctrl_person_customer_id'].notna(),
+                                                           'ctrl_person_customer_id']
+
+    # Drop temps
+    accts = accts.drop(columns=['is_org', 'org_customer_id', 'ctrl_person_customer_id'])
+
+    # Fetch pers_dim
+    pers_dim = DeltaTable(src.config.SILVER / "pers_dim").to_pandas()
+    pers_dim = pers_dim[['customer_id', 'firstname', 'lastname', 'busemail', 'workphonenbr']].copy()
+    pers_dim_schema = {
+        'customer_id': 'str'
+    }
+    pers_dim = cdutils.input_cleansing.cast_columns(pers_dim, pers_dim_schema)
+
+    # Rename
+    ctrl_person_details = pers_dim.rename(columns={
+        'firstname': 'CtrlPerson_FirstName',
+        'lastname': 'CtrlPerson_LastName',
+        'busemail': 'CtrlPerson_WorkEmail',
+        'workphonenbr': 'CtrlPerson_WorkPhone'
+    })
+
+    # Merge
+    accts = accts.merge(ctrl_person_details, left_on='final_ctrl_person_customer_id',
+                        right_on='customer_id', how='left')
+
+    # Clean up
+    accts = accts.drop(columns=['final_ctrl_person_customer_id', 'customer_id_y'])
+    if 'customer_id_x' in accts.columns:
+        accts = accts.rename(columns={'customer_id_x': 'customer_id'})
+
+    # Validate
+    missing_count = (accts['CtrlPerson_FirstName'].isna() & accts['CtrlPerson_LastName'].isna()).sum()
+    if missing_count > 0:
+        print(f"Warning: {missing_count} records missing CtrlPerson details")
 
     acct_prop_link = DeltaTable(src.config.SILVER / "account_property_link").to_pandas()
 
@@ -246,10 +520,29 @@ def transform(accts):
     accts = add_asset_class(accts, mapping_dict=PROPERTY_TYPE_GROUPS)
     accts = accts[~(accts['addrnbr'].isnull())].copy()
 
+    # Add Participation Type
+    accts['Participation Type'] = 'None'
+    accts.loc[(accts['totalpctsold'].notna()) & (accts['totalpctsold'] > 0), 'Participation Type'] = 'Sold'
+    accts.loc[accts['totalpctbought'].notna(), 'Participation Type'] = 'Bought'
+
+    # Reorganize columns for better flow
+    column_order = [
+        'effdate', 'acctnbr', 'MACRO TYPE', 'product', 'mjaccttypcd', 'currmiaccttypcd','holdback_flag','holdback_amt','loanlimityn',
+        'creditlimitamt', 'notebal', 'availbalamt', 'credlimitclatresamt', 'Net Balance', 'Net Available', 'Net Collateral Reserve',
+        'Full_creditlimitamt', 'Full_notebal', 'Full_availbalamt', 'Full_credlimitclatresamt',
+        'Participation Type', 'totalpctsold', 'totalpctbought', 'Lead_Participant', 'Total_Participants', 'lead_bank',
+        'origdate', 'datemat', 'Construction Term (Months)', 'inactivedate', 'orig_inactive_date', 'num_extensions', 'lastdisbursdate',
+        'noteintrate',
+        'customer_id', 'Primary Borrower Name', 'loanofficer', 'Portfolio Manager',
+        'Primary Borrower Address', 'Primary Borrower City', 'Primary Borrower State', 'Primary Borrower Zip',
+        'CtrlPerson_FirstName', 'CtrlPerson_LastName', 'CtrlPerson_WorkEmail', 'CtrlPerson_WorkPhone',
+        'propnbr', 'aprsvalueamt', 'aprsdate', 'proptypdesc', 'addrnbr', 'owneroccupiedcd', 'owneroccupieddesc', 'nbrofunits',
+        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class'
+    ]
+    accts = accts[column_order]
+
     return accts
 
-    # Participation data can be separate or in there
-    # INVR fields maybe, could just leave off for this cycle
 
 
 def generate_built_extract():
@@ -263,6 +556,7 @@ def generate_built_extract():
     resi = transform(resi)
 
     concat_df = pd.concat([cml, resi], ignore_index=True)
+    # print(concat_df.info(verbose=True))
     return concat_df
 
 

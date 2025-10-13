@@ -1,0 +1,64 @@
+# BUILT Extract Data Dictionary
+
+- **effdate**: The date this snapshot of loan data was pulled 
+- **acctnbr**: The unique loan number
+- **MACRO TYPE**: Commercial/Residential
+- **product**: The specific loan product type (e.g., construction line of credit).
+- **mjaccttypcd**: Broad loan category code 
+- **currmiaccttypcd**: Detailed loan subcategory code (Loan Minor)
+- **holdback_flag**: Y/N flag indicating if the account has holdback amounts (Y if holdback_amt > 0). Only applies to residential loans.
+- **holdback_amt**: The holdback balance amount for the account (only populated if holdback_flag = 'Y')
+- **loanlimityn**: Y/N flag for line of credit type account (should be all Y for construction loans). If they switch to perm loans, this would change to N.
+- **creditlimitamt**: Total credit limit amount
+- **notebal**: Total current balance
+- **availbalamt**: Total available amount
+- **credlimitclatresamt**: Total reserved amount from collateral
+- **Net Balance**: BCSB share after any sold portions
+- **Net Available**: Bank's net share still available to draw.
+- **Net Collateral Reserve**: Bank's net reserved from collateral.
+- **Full_creditlimitamt**: Total full loan limit (including any bought/sold shares). For bought loans, this would be the creditlimitamt divided by totalpctbought
+- **Full_notebal**: Total full funded amount (whole loan, not just bank's part).
+- **Full_availbalamt**: Total full amount still available (entire loan).
+- **Full_credlimitclatresamt**: Total full collateral reserve (whole loan).
+- **Participation Type**: How the loan is shared – "None" (all ours), "Sold" (we sold parts), or "Bought" (we bought into others').
+- **totalpctsold**: Percentage of loan sold to others (e.g., 0.25 for 25%).
+- **totalpctbought**: Percentage we bought from others (e.g., 0.10 for 10%).
+- **Lead_Participant**: Name of the largest pct sold partner bank if a participation sold.
+- **Total_Participants**: Number of banks this loan was sold to (only applies to participation sold). We don't track total # of participants on bought loans.
+- **lead_bank**: Lead bank's name or code for participations.
+- **origdate**: When the loan started/officially closed (origination date). Note we have contract date too, which is when contract was signed, but I have provided the origdate which is when the loan actually appears in our database.
+- **datemat**: Full loan end date (when everything matures, not just construction period).
+- **Construction Term (Months)**: Estimated build time in months (from start to inactive date).
+- **inactivedate**: When construction phase ends (loan converts or expires).
+- **orig_inactive_date**: First time it went inactive (earliest extension point).
+- **num_extensions**: How many times the inactive date was extended (count of unique inactive dates - 1, which would be the original).
+- **lastdisbursdate**: Last time money was advanced/disbursed.
+- **noteintrate**: Current interest rate on the loan.
+- **customer_id**: Unique ID for the main borrower. Store if you can because this will allow a clean join back to our internal reporting.
+- **Primary Borrower Name**: Name of the lead borrower (person or company).
+- **loanofficer**: Your assigned loan officer's name.
+- **Portfolio Manager**: Person overseeing the loan portfolio.
+- **Primary Borrower Address**: Borrower's main street address.
+- **Primary Borrower City**: Borrower's city.
+- **Primary Borrower State**: Borrower's state.
+- **Primary Borrower Zip**: Borrower's zip code.
+- **CtrlPerson_FirstName**: Controlling person's first name (key decision-maker for company borrowers).
+- **CtrlPerson_LastName**: Controlling person's last name.
+- **CtrlPerson_WorkEmail**: Controlling person's work email.
+- **CtrlPerson_WorkPhone**: Controlling person's work phone.
+- **propnbr**: Unique ID for the property tied to the loan.
+- **aprsvalueamt**: Appraised value of the property (expert estimate).
+- **aprsdate**: Date of the latest appraisal.
+- **proptypdesc**: Description of property type (e.g., "Apartment Building").
+- **addrnbr**: Internal ID for the property address.
+- **owneroccupiedcd**: Code for if owner lives/works there (Y/N/O for owner-occupied).
+- **owneroccupieddesc**: Full words for owner occupancy (e.g., "Owner Occupied").
+- **nbrofunits**: Number of units in the property (e.g., apartments or buildings).
+- **Property Address**: Full street address of the project site.
+- **Property City**: Project city's name.
+- **Property State**: Project state.
+- **Primary Zip**: Project zip code (main one).
+- **asset_class**: Grouped category for the property (e.g., "Retail" or "Industrial" based on type and value).
+
+---
+Please reach to chad.doorley@bcsbmail.com if you have any questions
