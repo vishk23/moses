@@ -696,3 +696,48 @@ Data columns (total 56 columns):
  55  Participation Type        39 non-null     object
 dtypes: datetime64[ns](1), datetime64[us](6), float64(17), int64(1), object(28), string(3)
 memory usage: 17.2+ KB
+
+
+---
+# 2025-10-12
+
+holdback
+
+acctbalhist
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 357 entries, 0 to 356
+Data columns (total 5 columns):
+ #   Column         Non-Null Count  Dtype         
+---  ------         --------------  -----         
+ 0   acctnbr        357 non-null    int64         
+ 1   subacctnbr     357 non-null    int64         
+ 2   effdate        357 non-null    datetime64[ns]
+ 3   balamt         357 non-null    object        
+ 4   datelastmaint  357 non-null    datetime64[ns]
+dtypes: datetime64[ns](2), int64(2), object(1)
+memory usage: 14.1+ KB
+
+acctsubacct
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 427 entries, 0 to 426
+Data columns (total 16 columns):
+ #   Column               Non-Null Count  Dtype         
+---  ------               --------------  -----         
+ 0   acctnbr              427 non-null    int64         
+ 1   subacctnbr           427 non-null    int64         
+ 2   balcatcd             427 non-null    object        
+ 3   baltypcd             427 non-null    object        
+ 4   nextrcvbnbr          427 non-null    int64         
+ 5   nextallotnbr         427 non-null    int64         
+ 6   datelastmaint        427 non-null    datetime64[ns]
+ 7   nextearningdate      0 non-null      object        
+ 8   origbal              17 non-null     object        
+ 9   nextratechangedate   0 non-null      object        
+ 10  earningscalperiodcd  0 non-null      object        
+ 11  oddfreqnextduedate   0 non-null      object        
+ 12  nextpayablenbr       0 non-null      object        
+ 13  partagreenbr         0 non-null      object        
+ 14  nextaccrualdate      0 non-null      object        
+ 15  accrualcalperiodcd   0 non-null      object        
+dtypes: datetime64[ns](1), int64(4), object(11)
+memory usage: 53.5+ KB
