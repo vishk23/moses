@@ -73,10 +73,20 @@ def fetch_resi():
     """
     accts = DeltaTable(src.config.SILVER / "account").to_pandas()
 
-    # Filter to Resi Construction loans
-    # TODO: Add in the holdback logic 
+    # Fetch and process holdbacks
+    raw_holdbacks = src.built.fetch_data.fetch_holdbacks()
+    holdbacks = raw_holdbacks['holdbacks'].copy()
+    holdbacks = holdbacks[holdbacks['balamt'] > 0][['acctnbr', 'balamt']].copy()
+    holdbacks['holdback_flag'] = 'Y'
+    holdbacks = holdbacks.rename(columns={'balamt': 'holdback_amt'})
+    holdback_schema = {'acctnbr': 'str'}
+    holdbacks = cdutils.input_cleansing.cast_columns(holdbacks, holdback_schema)
+    accts = accts.merge(holdbacks, on='acctnbr', how='left')
+
+    # Filter to Resi Construction loans with holdback logic
     resi_definite = ["MG01","MG64"]
-    accts = accts[accts['currmiaccttypcd'].isin(resi_definite)]
+    mask = accts['currmiaccttypcd'].isin(resi_definite) | ((accts['mjaccttypcd'] == 'MTG') & (accts['holdback_amt'] > 0))
+    accts = accts[mask].copy()
 
     accts['MACRO TYPE'] = 'Residential'
     return accts
