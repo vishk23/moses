@@ -1,6 +1,14 @@
 Objective:
 Create a PowerBI prototype of the Qlik account dashboard. Create PoC, integrate with the data model we are developing.
 
+
+Progress:
+- [x] Model the data for dashboard
+- [x] Build PowerBI dashboard with account level data
+- [x] Work in Portfolio metrics and set up so slicers/filters work
+- [ ] Fix data model with balance in dimension table
+
+
 # 2025-09-16 (CD)
 Build out first part of this today. Data model integrates nicely with this.
 
@@ -80,3 +88,90 @@ let
     #"Changed Type" = Table.TransformColumnTypes(#"Filtered Rows",{{"effdate", type datetime}})
 in
     #"Changed Type"
+
+# 2025-10-14
+Need to think about data model. Was thinking I could have the customer dimension table as the way to describe accounts, but I think I actually want to have a full account dimension table here (no balances) and those tie to fact balance tables.
+
+account_proto_deriv
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 89535 entries, 0 to 89534
+Data columns (total 56 columns):
+ #   Column                   Non-Null Count  Dtype              
+---  ------                   --------------  -----              
+ 0   effdate                  89535 non-null  datetime64[us]     
+ 1   acctnbr                  89535 non-null  object             
+ 2   ownersortname            89535 non-null  object             
+ 3   product                  89535 non-null  object             
+ 4   noteopenamt              89535 non-null  float64            
+ 5   ratetypcd                71422 non-null  object             
+ 6   mjaccttypcd              89535 non-null  object             
+ 7   currmiaccttypcd          89535 non-null  object             
+ 8   curracctstatcd           89535 non-null  object             
+ 9   noteintrate              89535 non-null  float64            
+ 10  bookbalance              89535 non-null  float64            
+ 11  notebal                  89535 non-null  float64            
+ 12  contractdate             89534 non-null  datetime64[us]     
+ 13  datemat                  32865 non-null  datetime64[us]     
+ 14  taxrptfororgnbr          12487 non-null  float64            
+ 15  taxrptforpersnbr         77048 non-null  float64            
+ 16  loanofficer              23363 non-null  object             
+ 17  acctofficer              62687 non-null  object             
+ 18  creditlimitamt           89535 non-null  float64            
+ 19  origintrate              22647 non-null  object             
+ 20  marginfixed              23363 non-null  object             
+ 21  fdiccatcd                22710 non-null  object             
+ 22  amortterm                23363 non-null  float64            
+ 23  totalpctsold             89535 non-null  float64            
+ 24  cobal                    89535 non-null  float64            
+ 25  credlimitclatresamt      89535 non-null  float64            
+ 26  riskratingcd             2756 non-null   object             
+ 27  origdate                 23185 non-null  datetime64[us]     
+ 28  currterm                 23363 non-null  float64            
+ 29  loanidx                  23353 non-null  object             
+ 30  rcf                      3133 non-null   object             
+ 31  availbalamt              89535 non-null  float64            
+ 32  fdiccatdesc              22710 non-null  object             
+ 33  origbal                  22533 non-null  float64            
+ 34  loanlimityn              23363 non-null  object             
+ 35  nextratechg              2795 non-null   datetime64[us]     
+ 36  Net Balance              89535 non-null  float64            
+ 37  Net Available            89535 non-null  float64            
+ 38  Net Collateral Reserve   89535 non-null  float64            
+ 39  Total Exposure           89535 non-null  float64            
+ 40  orig_ttl_loan_amt        89535 non-null  float64            
+ 41  portfolio_key            89535 non-null  int64              
+ 42  ownership_key            84958 non-null  float64            
+ 43  address_key              84958 non-null  float64            
+ 44  householdnbr             79972 non-null  float64            
+ 45  datelastmaint            79972 non-null  datetime64[us]     
+ 46  Category                 23363 non-null  object             
+ 47  inactivedate             2601 non-null   datetime64[us]     
+ 48  branchname               89535 non-null  object             
+ 49  primaryownercity         89512 non-null  object             
+ 50  primaryownerstate        89486 non-null  object             
+ 51  load_timestamp_utc       89535 non-null  datetime64[us, UTC]
+ 52  primaryownerzipcd        89486 non-null  object             
+ 53  Macro Account Type       86074 non-null  object             
+ 54  Net Balance_prior_year   89486 non-null  float64            
+ 55  Net Balance_prior_month  89486 non-null  float64            
+dtypes: datetime64[us, UTC](1), datetime64[us](7), float64(24), int64(1), object(23)
+memory usage: 38.3+ MB
+
+portfolio_deriv
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 38926 entries, 0 to 38925
+Data columns (total 8 columns):
+ #   Column                 Non-Null Count  Dtype              
+---  ------                 --------------  -----              
+ 0   portfolio_key          38926 non-null  int64              
+ 1   Muni_Present           38926 non-null  object             
+ 2   Category               38926 non-null  object             
+ 3   Total loan Balance     38926 non-null  float64            
+ 4   Total deposit Balance  38926 non-null  float64            
+ 5   Unique Loans           38926 non-null  int64              
+ 6   Unique Deposits        38926 non-null  int64              
+ 7   load_timestamp_utc     38926 non-null  datetime64[us, UTC]
+dtypes: datetime64[us, UTC](1), float64(2), int64(3), object(2)
+memory usage: 2.4+ MB
+
+portfolio key is the link
