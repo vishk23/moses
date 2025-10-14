@@ -336,7 +336,8 @@ def build_portfolio_dimension(df: pd.DataFrame, portfolio_col: str = "portfolio_
     uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True))
     uniq_loans.name = "Unique Loans"
 
-    uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
+uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
+
     uniq_deps.name = "Unique Deposits"
 
     # --- Assemble dimension ---
@@ -413,3 +414,38 @@ C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_D
   uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True))
 C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Data Analytics\Active_Customer_Dashboard_Proto\src\deposit_dash_prototype\core.py:71: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
   uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
+
+
+---
+
+
+### YTD Balance Change Measure (DAX)
+
+Assuming your fact table is named `Fact Balances` with columns `acctnbr`, `effdate` (date), and `net_bal` (numeric balance), and you have a related Date table (e.g., `Calendar`) marked as date table with relationship on `effdate` to `Calendar[Date]`. If no Date table, create one via `New Table` in Power BI with `Calendar = CALENDAR(MIN('Fact Balances'[effdate]), MAX('Fact Balances'[effdate]))` and relate it.
+
+1. **Current YTD Balance** (measure):
+   ```
+   Current YTD Balance = 
+   CALCULATE(
+       SUM('Fact Balances'[net_bal]),
+       DATESYTD('Calendar'[Date]),
+       'Fact Balances'[acctnbr] <> BLANK()  // Ensures per-account filtering
+   )
+   ```
+
+2. **Prior Year YTD Balance** (measure):
+   ```
+   Prior YTD Balance = 
+   CALCULATE(
+       [Current YTD Balance],
+       SAMEPERIODLASTYEAR('Calendar'[Date])
+   )
+   ```
+
+3. **YTD Balance Change** (measure for Y-axis):
+   ```
+   YTD Balance Change = [Current YTD Balance] - [Prior YTD Balance]
+   ```
+
+Use `[YTD Balance Change]` on your bar chart Y-axis. It computes per `acctnbr` (via filters) and aggregates (e.g., SUM) across dimensions like customer category or time. Test in a table visual first to verify per-account values match your old precomputed logic. If `effdate` isn't related to a Date table, adjust filters manually with `YEAR('Fact Balances'[effdate]) = YEAR(TODAY())` etc., but a Date table is recommended for accuracy.
+
