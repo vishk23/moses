@@ -58,17 +58,17 @@ def build_portfolio_dimension(df: pd.DataFrame, portfolio_col: str = "portfolio_
     category = pd.Series(category, index=org_all_null.index, name="Category")
 
     # --- Balances ---
-    loan_bal = g.apply(lambda x: x.loc[x["__is_loan__"], "__net_bal__"].sum(min_count=1)).fillna(0.0)
+    loan_bal = g.apply(lambda x: x.loc[x["__is_loan__"], "__net_bal__"].sum(min_count=1), include_groups=False).fillna(0.0)
     loan_bal.name = "Total loan Balance"
 
-    dep_bal = g.apply(lambda x: x.loc[x["__is_deposit__"], "__net_bal__"].sum(min_count=1)).fillna(0.0)
+    dep_bal = g.apply(lambda x: x.loc[x["__is_deposit__"], "__net_bal__"].sum(min_count=1), include_groups=False).fillna(0.0)
     dep_bal.name = "Total deposit Balance"
 
     # --- Unique counts ---
-    uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True))
+    uniq_loans = g.apply(lambda x: x.loc[x["__is_loan__"], "acctnbr"].nunique(dropna=True), include_groups=False)
     uniq_loans.name = "Unique Loans"
 
-    uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True))
+    uniq_deps = g.apply(lambda x: x.loc[x["__is_deposit__"], "acctnbr"].nunique(dropna=True), include_groups=False)
     uniq_deps.name = "Unique Deposits"
 
     # --- Assemble dimension ---
