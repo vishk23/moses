@@ -6,7 +6,7 @@ Progress:
 - [x] Model the data for dashboard
 - [x] Build PowerBI dashboard with account level data
 - [x] Work in Portfolio metrics and set up so slicers/filters work
-- [ ] Fix data model with balance in dimension table
+- [x] Fix data model with balance in dimension table
 
 
 # 2025-09-16 (CD)
