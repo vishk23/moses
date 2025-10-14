@@ -18,17 +18,22 @@ def main():
     print(f"Environment: {src.config.ENV}")
     print(f"Output directory: {src.config.OUTPUT_DIR}")
 
-    df, portfolio = src.deposit_dash_prototype.core.main_pipeline()
-    df = add_load_timestamp(df)
+    dim_account, fact_balances, portfolio = src.deposit_dash_prototype.core.main_pipeline()
+    dim_account = add_load_timestamp(dim_account)
+    fact_balances = add_load_timestamp(fact_balances)
     portfolio = add_load_timestamp(portfolio)
 
     # DeltaTable written and loaded into PowerBI
     # local C: Drive
     # PowerBI will point to this
 
-    ACCOUNT_PATH = src.config.OUTPUT_DIR / "account_proto_deriv"
-    ACCOUNT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    write_deltalake(ACCOUNT_PATH, df, mode='overwrite', schema_mode='merge')
+    DIM_ACCOUNT_PATH = src.config.OUTPUT_DIR / "dim_account"
+    DIM_ACCOUNT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    write_deltalake(DIM_ACCOUNT_PATH, dim_account, mode='overwrite', schema_mode='merge')
+
+    FACT_BALANCES_PATH = src.config.OUTPUT_DIR / "fact_balances"
+    FACT_BALANCES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    write_deltalake(FACT_BALANCES_PATH, fact_balances, mode='overwrite', schema_mode='merge')
 
     PORTFOLIO_PATH = src.config.OUTPUT_DIR / "portfolio_deriv"
     PORTFOLIO_PATH.parent.mkdir(parents=True, exist_ok=True)

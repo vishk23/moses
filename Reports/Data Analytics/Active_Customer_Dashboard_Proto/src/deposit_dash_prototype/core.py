@@ -86,9 +86,9 @@ def build_portfolio_dimension(df: pd.DataFrame, portfolio_col: str = "portfolio_
 
 
 def main_pipeline():
-# Main account table
-    df = DeltaTable(src.config.SILVER / "account").to_pandas()
-# Create loans/deposits distinction
+    # Main account table (current snapshot)
+    current_df = DeltaTable(src.config.SILVER / "account").to_pandas()
+    # Create loans/deposits distinction
     MACRO_TYPE_MAPPING = {
         'CML':'Loan',
         'MLN':'Loan',
@@ -99,36 +99,57 @@ def main_pipeline():
         'TD':'Deposit'
     }
 
+    current_df['Macro Account Type'] = current_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
 
-    df['Macro Account Type'] = df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
-    
+    # Year end data (full snapshot)
+    year_date = datetime(2024, 12, 31)
+    year_end_df = cdutils.acct_file_creation.core.query_df_on_date(year_date)
+    year_end_df['Macro Account Type'] = year_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+    # Ensure effdate is set to snapshot date (adjust if query_df_on_date doesn't)
+    year_end_df['effdate'] = year_date
 
-    # # Year end data
-    specified_date = datetime(2024, 12, 31)
-    year_end_df = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
+    # Prior month end data (full snapshot)
+    month_date = datetime(2025, 9, 30)
+    month_end_df = cdutils.acct_file_creation.core.query_df_on_date(month_date)
+    month_end_df['Macro Account Type'] = month_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+    # Ensure effdate is set to snapshot date
+    month_end_df['effdate'] = month_date
 
-    # # Prior month end data
-    specified_date = datetime(2025, 9, 30)
-    month_end_df = cdutils.acct_file_creation.core.query_df_on_date(specified_date)
+    # Union all snapshots (includes historical-only accounts)
+    all_df = pd.concat([current_df, year_end_df, month_end_df], ignore_index=True, sort=False)
 
-    year_end_df = year_end_df[[
-        'acctnbr',
-        'Net Balance'
-    ]].copy()
+    # Define columns (based on account_proto_deriv; adjust as needed)
+    dimension_columns = [
+        'effdate', 'acctnbr', 'ownersortname', 'product', 'ratetypcd', 'mjaccttypcd',
+        'currmiaccttypcd', 'curracctstatcd', 'contractdate', 'datemat', 'taxrptfororgnbr',
+        'taxrptforpersnbr', 'loanofficer', 'acctofficer', 'origintrate', 'marginfixed',
+        'fdiccatcd', 'loanidx', 'rcf', 'fdiccatdesc', 'loanlimityn', 'riskratingcd',
+        'origdate', 'nextratechg', 'Category', 'inactivedate', 'branchname',
+        'primaryownercity', 'primaryownerstate', 'primaryownerzipcd', 'portfolio_key',
+        'Macro Account Type', 'ownership_key', 'address_key', 'householdnbr',
+        'datelastmaint', 'noteintrate'  # Include rates if dimensional; move to fact if measures
+    ]
+    # Filter to existing columns only
+    dimension_columns = [col for col in dimension_columns if col in all_df.columns]
 
-    month_end_df = month_end_df[[
-        'acctnbr',
-        'Net Balance'
-    ]].copy()
+    fact_columns = [
+        'effdate', 'acctnbr', 'noteopenamt', 'bookbalance', 'notebal', 'creditlimitamt',
+        'availbalamt', 'cobal', 'credlimitclatresamt', 'totalpctsold', 'amortterm',
+        'currterm', 'origbal', 'Net Balance', 'Net Available', 'Net Collateral Reserve',
+        'Total Exposure', 'orig_ttl_loan_amt'
+    ]
+    # Filter to existing columns only
+    fact_columns = [col for col in fact_columns if col in all_df.columns]
 
-    merged_history_df = year_end_df.merge(month_end_df, how='outer', on='acctnbr', suffixes=('_prior_year','_prior_month'))
+    # Build dimension (no balances; dedup on key)
+    dim_account = all_df[dimension_columns].drop_duplicates(subset=['effdate', 'acctnbr'])
 
-    merged_history_df = merged_history_df.fillna(0)
+    # Build fact (balances only)
+    fact_balances = all_df[fact_columns]
 
-    df = df.merge(merged_history_df, how='left', on='acctnbr').copy()
+    # Build portfolio from current (as before)
+    portfolio = build_portfolio_dimension(current_df, portfolio_col="portfolio_key")
 
-    portfolio = build_portfolio_dimension(df, portfolio_col="portfolio_key")
-
-    return df, portfolio
+    return dim_account, fact_balances, portfolio
 
 
