@@ -16,7 +16,9 @@
   *Tests*: Pending; run after implementation.  
   *Notes*: Reference `docs/controlling_person_logic.md` for business rules.
 
-- [ ] Escrow Holdback for Resi Loans
+- [x] Escrow Holdback for Resi Loans
+
+- [ ] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
 
 Links:
 https://clientexperience.getbuilt.com/project-updates
