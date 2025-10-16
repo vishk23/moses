@@ -18,7 +18,7 @@
 
 - [x] Escrow Holdback for Resi Loans
 
-- [ ] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
+- [x] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
 
 - [ ] Update the config file (prod doesn't point to valid path)
 
