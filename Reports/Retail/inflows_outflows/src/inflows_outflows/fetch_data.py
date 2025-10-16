@@ -60,47 +60,47 @@ def rtxn_check():
     verification_query = text("""
     WITH starting_balance AS (
         SELECT
-            acctnbr,
-            bal AS start_bal,
-            rundate AS start_date
+            ACCTNBR,
+            NOTEBAL AS start_bal,
+            EFFDATE AS start_date
         FROM
             COCCDM.WH_ACCTCOMMON
         WHERE
-            acctnbr = '1234'
-            AND rundate = '2025-01-01'
+            ACCTNBR = '1234'
+            AND EFFDATE = '2025-01-01'
     ),
     ending_balance AS (
         SELECT
-            acctnbr,
-            bal AS end_bal,
-            rundate AS end_date
+            ACCTNBR,
+            NOTEBAL AS end_bal,
+            EFFDATE AS end_date
         FROM
             COCCDM.WH_ACCTCOMMON
         WHERE
-            acctnbr = '1234'
-            AND rundate = (
-                SELECT MAX(rundate)
+            ACCTNBR = '1234'
+            AND EFFDATE = (
+                SELECT MAX(EFFDATE)
                 FROM COCCDM.WH_ACCTCOMMON
-                WHERE acctnbr = '1234'
+                WHERE ACCTNBR = '1234'
             )
     ),
     transaction_sum AS (
         SELECT
-            acctnbr,
-            SUM(amt) AS total_txn_amt,
-            COUNT(DISTINCT rtxnnbr) AS txn_count,
-            MIN(rundate) AS first_txn_date,
-            MAX(rundate) AS last_txn_date
+            ACCTNBR,
+            SUM(TRANAMT) AS total_txn_amt,
+            COUNT(DISTINCT ACCTNBR || '-' || SUBACCTNBR || '-' || RTXNNBR) AS txn_count,
+            MIN(RUNDATE) AS first_txn_date,
+            MAX(RUNDATE) AS last_txn_date
         FROM
             COCCDM.WH_RTXN
         WHERE
-            acctnbr = '1234'
-            AND rundate >= '2025-01-01'
+            ACCTNBR = '1234'
+            AND RUNDATE >= '2025-01-01'
         GROUP BY
-            acctnbr
+            ACCTNBR
     )
     SELECT
-        s.acctnbr,
+        s.ACCTNBR,
         s.start_bal,
         s.start_date,
         e.end_bal,
@@ -119,9 +119,9 @@ def rtxn_check():
     FROM
         starting_balance s
     JOIN
-        ending_balance e ON s.acctnbr = e.acctnbr
+        ending_balance e ON s.ACCTNBR = e.ACCTNBR
     LEFT JOIN
-        transaction_sum t ON s.acctnbr = t.acctnbr
+        transaction_sum t ON s.ACCTNBR = t.ACCTNBR
     """)
 
     queries = [
