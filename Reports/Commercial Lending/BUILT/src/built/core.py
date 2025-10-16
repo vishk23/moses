@@ -538,7 +538,8 @@ def transform(accts):
         'Primary Borrower Address', 'Primary Borrower City', 'Primary Borrower State', 'Primary Borrower Zip',
         'CtrlPerson_FirstName', 'CtrlPerson_LastName', 'CtrlPerson_WorkEmail', 'CtrlPerson_WorkPhone',
         'propnbr', 'aprsvalueamt', 'aprsdate', 'proptypdesc', 'addrnbr', 'owneroccupiedcd', 'owneroccupieddesc', 'nbrofunits',
-        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class'
+        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class',
+        'riskratingcd'
     ]
     accts = accts[column_order]
 

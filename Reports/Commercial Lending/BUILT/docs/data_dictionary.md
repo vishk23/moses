@@ -59,6 +59,7 @@
 - **Property State**: Project state.
 - **Primary Zip**: Project zip code (main one).
 - **asset_class**: Grouped category for the property (e.g., "Retail" or "Industrial" based on type and value).
+- **riskratingcd**: Risk rating code for the account.
 
 ---
 Please reach to chad.doorley@bcsbmail.com if you have any questions
