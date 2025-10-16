@@ -20,6 +20,9 @@
 
 - [ ] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
 
+- [ ] Update the config file (prod doesn't point to valid path)
+
+
 Links:
 https://clientexperience.getbuilt.com/project-updates
 
@@ -743,3 +746,11 @@ Data columns (total 16 columns):
  15  accrualcalperiodcd   0 non-null      object        
 dtypes: datetime64[ns](1), int64(4), object(11)
 memory usage: 53.5+ KB
+
+---
+
+# 2025-10-16
+
+Warning: 3 records missing CtrlPerson details
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\built\core.py:558: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  concat_df = pd.concat([cml, resi], ignore_index=True)

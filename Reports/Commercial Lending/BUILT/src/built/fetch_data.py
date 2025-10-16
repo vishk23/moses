@@ -63,6 +63,8 @@ def fetch_inactive_date_data():
         a.INACTIVEDATE
     FROM
         OSIBANK.ACCTLOANLIMITHIST a
+    WHERE
+        a.CREDITLIMITAMT != 0
     """)
     # vieworgtaxid = text(f"""
     # SELECT
