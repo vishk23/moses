@@ -208,12 +208,12 @@ def transform(accts):
         # All prop date requested
         # Appraisal info
         # Owner occ
-    # Borrower info
-    'customer_id',
-    'ownersortname',
-    'loanofficer',
-    'riskratingcd'  # Risk rating code for the account
-]].copy()
+        # Borrower info
+        'customer_id',
+        'ownersortname',
+        'loanofficer',
+        'riskratingcd'  # Risk rating code for the account
+    ]].copy()
 
     # Convert date columns to datetime
     accts['datemat'] = pd.to_datetime(accts['datemat'], errors='coerce')
