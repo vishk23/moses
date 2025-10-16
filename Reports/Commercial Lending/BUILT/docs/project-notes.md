@@ -3,25 +3,19 @@
 - [x] **Participation Section**: Implement logic for participation data extraction and validation.  
   *Tests*: Passed all unit tests in `tests/test_core.py`.  
   *Notes*: Integrated with `fetch_data.py`; no issues.
-
 - [x] **Inactive Date Section**: Add handling for inactive dates in asset filtering.  
   *Tests*: Passed; verified with sample data in notebooks.  
   *Notes*: Updated config in `src/config.py`.
-
 - [x] **Add Portfolio Manager**: Include portfolio manager fields in output DataFrame.  
   *Tests*: Passed; bundle size unchanged.  
   *Notes*: Minor addition to existing pipeline.
-
 - [x] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
   *Tests*: Pending; run after implementation.  
   *Notes*: Reference `docs/controlling_person_logic.md` for business rules.
-
 - [x] Escrow Holdback for Resi Loans
-
 - [x] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
-
 - [ ] Update the config file (prod doesn't point to valid path)
-
+- [ ] Update acctnbrs
 
 Links:
 https://clientexperience.getbuilt.com/project-updates
