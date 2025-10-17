@@ -3,20 +3,19 @@
 - [x] **Participation Section**: Implement logic for participation data extraction and validation.  
   *Tests*: Passed all unit tests in `tests/test_core.py`.  
   *Notes*: Integrated with `fetch_data.py`; no issues.
-
 - [x] **Inactive Date Section**: Add handling for inactive dates in asset filtering.  
   *Tests*: Passed; verified with sample data in notebooks.  
   *Notes*: Updated config in `src/config.py`.
-
 - [x] **Add Portfolio Manager**: Include portfolio manager fields in output DataFrame.  
   *Tests*: Passed; bundle size unchanged.  
   *Notes*: Minor addition to existing pipeline.
-
 - [x] **Controlling Person Information Section**: Fetch and merge controlling person data from SQL queries.  
   *Tests*: Pending; run after implementation.  
   *Notes*: Reference `docs/controlling_person_logic.md` for business rules.
-
-- [ ] Escrow Holdback for Resi Loans
+- [x] Escrow Holdback for Resi Loans
+- [x] Fix inactive date # of Extensions to only count where creditlimitamt != 0.
+- [ ] Update the config file (prod doesn't point to valid path)
+- [ ] Update acctnbrs
 
 Links:
 https://clientexperience.getbuilt.com/project-updates
@@ -741,3 +740,11 @@ Data columns (total 16 columns):
  15  accrualcalperiodcd   0 non-null      object        
 dtypes: datetime64[ns](1), int64(4), object(11)
 memory usage: 53.5+ KB
+
+---
+
+# 2025-10-16
+
+Warning: 3 records missing CtrlPerson details
+C:\Users\w322800\Documents\gh\bcsb-prod\Reports\Commercial Lending\BUILT\src\built\core.py:558: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  concat_df = pd.concat([cml, resi], ignore_index=True)

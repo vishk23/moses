@@ -54,10 +54,11 @@ def fetch_cml():
         "151095041",
         "151068098",
         "151068684",
-        "151158766",
         "150443887",
         "150969031",
         "151173897",
+        "151226878",
+        "151227983"
     ].copy()
 
     accts = DeltaTable(src.config.SILVER / "account").to_pandas()
@@ -210,7 +211,8 @@ def transform(accts):
         # Borrower info
         'customer_id',
         'ownersortname',
-        'loanofficer'
+        'loanofficer',
+        'riskratingcd'  # Risk rating code for the account
     ]].copy()
 
     # Convert date columns to datetime
@@ -537,7 +539,8 @@ def transform(accts):
         'Primary Borrower Address', 'Primary Borrower City', 'Primary Borrower State', 'Primary Borrower Zip',
         'CtrlPerson_FirstName', 'CtrlPerson_LastName', 'CtrlPerson_WorkEmail', 'CtrlPerson_WorkPhone',
         'propnbr', 'aprsvalueamt', 'aprsdate', 'proptypdesc', 'addrnbr', 'owneroccupiedcd', 'owneroccupieddesc', 'nbrofunits',
-        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class'
+        'Property Address', 'Property City', 'Property State', 'Primary Zip', 'asset_class',
+        'riskratingcd'
     ]
     accts = accts[column_order]
 
