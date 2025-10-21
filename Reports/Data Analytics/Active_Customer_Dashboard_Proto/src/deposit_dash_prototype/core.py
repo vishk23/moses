@@ -9,6 +9,8 @@ import cdutils.acct_file_creation.core # type: ignore
 from src.utils.parquet_io import add_load_timestamp
 from datetime import datetime
 import numpy as np
+from src.utils.date_helpers import get_all_required_dates
+from typing import List, Dict
 
 
 def build_portfolio_dimension(df: pd.DataFrame, portfolio_col: str = "portfolio_key") -> pd.DataFrame:
@@ -84,11 +86,32 @@ def build_portfolio_dimension(df: pd.DataFrame, portfolio_col: str = "portfolio_
 # display(dim_table.head())
 
 
+def fetch_snapshot(date: datetime, macro_type_mapping: dict) -> pd.DataFrame:
+    """
+    Fetch account snapshot for a given date and apply macro type mapping.
+
+    Args:
+        date: Target date for snapshot
+        macro_type_mapping: Dict mapping mjaccttypcd to Macro Account Type
+
+    Returns:
+        DataFrame with snapshot data, effdate set, and Macro Account Type added
+    """
+    df = cdutils.acct_file_creation.core.query_df_on_date(date)
+    df['Macro Account Type'] = df['mjaccttypcd'].map(macro_type_mapping)
+    df['effdate'] = date  # Ensure effdate is set to requested date
+    return df
+
 
 def main_pipeline():
-    # Main account table (current snapshot)
-    current_df = DeltaTable(src.config.SILVER / "account").to_pandas()
-    # Create loans/deposits distinction
+    """
+    Main ETL pipeline - fetches multi-period account snapshots and builds dimensional model.
+
+    Returns:
+        Tuple of (dim_account, fact_balances, portfolio)
+    """
+
+    # Define macro type mapping
     MACRO_TYPE_MAPPING = {
         'CML':'Loan',
         'MLN':'Loan',
@@ -99,24 +122,65 @@ def main_pipeline():
         'TD':'Deposit'
     }
 
+    # Get all required dates dynamically
+    dates = get_all_required_dates()
+
+    print(f"Fetching data for multiple time periods...")
+    print(f"  Current date: {dates['current'].strftime('%Y-%m-%d')}")
+    print(f"  Prior day: {dates['prior_day'].strftime('%Y-%m-%d')}")
+    print(f"  Prior month-end: {dates['prior_month_end'].strftime('%Y-%m-%d')}")
+    print(f"  Prior quarter-end: {dates['prior_quarter_end'].strftime('%Y-%m-%d')}")
+    print(f"  Prior year-end: {dates['prior_year_end'].strftime('%Y-%m-%d')}")
+    print(f"  Trailing 16 months: {dates['trailing_16_months'][0].strftime('%Y-%m-%d')} to {dates['trailing_16_months'][-1].strftime('%Y-%m-%d')}")
+    print(f"  Prior 8 business days: {dates['prior_8_days'][0].strftime('%Y-%m-%d')} to {dates['prior_8_days'][-1].strftime('%Y-%m-%d')}")
+
+    # Fetch current snapshot from Silver lakehouse (already in memory)
+    print("Fetching current snapshot from SILVER/account...")
+    current_df = DeltaTable(src.config.SILVER / "account").to_pandas()
     current_df['Macro Account Type'] = current_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+    # Note: effdate should already be set in Silver table
 
-    # Year end data (full snapshot)
-    year_date = datetime(2024, 12, 31)
-    year_end_df = cdutils.acct_file_creation.core.query_df_on_date(year_date)
-    year_end_df['Macro Account Type'] = year_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
-    # Ensure effdate is set to snapshot date (adjust if query_df_on_date doesn't)
-    year_end_df['effdate'] = year_date
+    # Collect all snapshots to union
+    all_snapshots = [current_df]
 
-    # Prior month end data (full snapshot)
-    month_date = datetime(2025, 9, 30)
-    month_end_df = cdutils.acct_file_creation.core.query_df_on_date(month_date)
-    month_end_df['Macro Account Type'] = month_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
-    # Ensure effdate is set to snapshot date
-    month_end_df['effdate'] = month_date
+    # Fetch all unique dates (dedupe to avoid duplicate queries)
+    unique_dates = set()
 
-    # Union all snapshots (includes historical-only accounts)
-    all_df = pd.concat([current_df, year_end_df, month_end_df], ignore_index=True, sort=False)
+    # Add key period dates
+    unique_dates.add(dates['prior_day'])
+    unique_dates.add(dates['prior_month_end'])
+    unique_dates.add(dates['prior_quarter_end'])
+    unique_dates.add(dates['prior_year_end'])
+
+    # Add trailing 16 months
+    for month_end in dates['trailing_16_months']:
+        unique_dates.add(month_end)
+
+    # Add prior 8 business days
+    for day in dates['prior_8_days']:
+        unique_dates.add(day)
+
+    # Remove current date if already in Silver (avoid duplicate)
+    unique_dates.discard(dates['current'])
+
+    # Sort dates for cleaner logging
+    unique_dates_sorted = sorted(unique_dates, reverse=True)
+
+    print(f"Fetching {len(unique_dates_sorted)} historical snapshots...")
+
+    # Fetch all historical snapshots
+    for i, date in enumerate(unique_dates_sorted, 1):
+        print(f"  [{i}/{len(unique_dates_sorted)}] Fetching {date.strftime('%Y-%m-%d')}...")
+        snapshot = fetch_snapshot(date, MACRO_TYPE_MAPPING)
+        all_snapshots.append(snapshot)
+
+    # Union all snapshots
+    print("Unioning all snapshots...")
+    all_df = pd.concat(all_snapshots, ignore_index=True, sort=False)
+
+    print(f"Total records across all periods: {len(all_df):,}")
+    print(f"Unique accounts: {all_df['acctnbr'].nunique():,}")
+    print(f"Unique dates: {all_df['effdate'].nunique()}")
 
     # Define columns (based on account_proto_deriv; adjust as needed)
     dimension_columns = [

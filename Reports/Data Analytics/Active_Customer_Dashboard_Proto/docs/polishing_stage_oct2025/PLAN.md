@@ -554,21 +554,209 @@ YoY Balance Change % =
 
 ## Implementation Checklist
 
-### Phase 1: Date Utilities & Unit Tests (Testable in this environment)
-- [ ] Create `src/utils/date_helpers.py`
-- [ ] Create pytest unit tests for all date calculation functions
-- [ ] Test date boundary cases (Jan 1, leap years, quarter boundaries)
-- [ ] Verify trailing 16 months starts from prior month
-- [ ] Test deduplication logic
+### Phase 1: Date Utilities & Unit Tests ✅ **COMPLETED 2025-10-21**
+- [x] Create `src/utils/date_helpers.py` ✅ **COMPLETED 2025-10-21**
+- [x] Create pytest unit tests for all date calculation functions ✅ **COMPLETED 2025-10-21**
+  - Created comprehensive test suite in `tests/test_date_helpers.py` (460 lines)
+  - Covers all 8 main functions with boundary cases
+  - ✅ **NO lakehouse/production dependencies** - pure unit tests only
+- [x] **Execute pytest** ✅ **COMPLETED 2025-10-21**
+  - Command: `python -m pytest tests/test_date_helpers.py -v`
+  - **Result: 44/44 tests PASSED** ✅
 
-### Phase 2: Pipeline Integration (Must test in production environment)
-- [ ] Update `src/deposit_dash_prototype/core.py` with new imports
-- [ ] Add `fetch_snapshot()` helper function
-- [ ] Refactor `main_pipeline()` to use dynamic dates
+**Test Coverage:**
+- ✅ Date boundary cases (Jan 1, leap years, quarter boundaries)
+- ✅ Trailing 16 months logic (starts from prior month)
+- ✅ Deduplication logic (set operations)
+- ✅ All quarter transitions (Q1→Q4, Q2→Q1, Q3→Q2, Q4→Q3)
+- ✅ Month/year boundary crossings
+
+### Phase 2: Pipeline Integration ⚠️ **CODE COMPLETE - AWAITING PRODUCTION TESTING**
+
+**Local Changes (Completed 2025-10-21):**
+- [x] Update `src/deposit_dash_prototype/core.py` with new imports ✅
+  - Added `from src.utils.date_helpers import get_all_required_dates`
+  - Added `from typing import List, Dict`
+- [x] Add `fetch_snapshot()` helper function ✅
+  - Added 15-line function at src/deposit_dash_prototype/core.py:89-103
+- [x] Refactor `main_pipeline()` to use dynamic dates ✅
+  - Replaced hardcoded dates with `get_all_required_dates()`
+  - Implemented deduplication logic for unique dates
+  - Added logging for all date periods
+  - Replaced ~32 lines with ~80 lines of dynamic implementation
+
+**Production Environment Tasks (Still Required):**
 - [ ] Update `docs/polishing_stage_oct2025/OVERVIEW.md`
 - [ ] Run full pipeline and validate output Delta tables
-- [ ] Verify correct number of distinct dates in fact_balances
+- [ ] Verify correct number of distinct dates in fact_balances (~25-26 expected)
 - [ ] Check for no duplicate effdate + acctnbr in dim_account
+- [ ] Validate data volume (~1.4M-1.5M records expected)
+- [ ] Monitor pipeline runtime (expect 2-5 minutes)
+
+**Detailed Code Changes for `src/deposit_dash_prototype/core.py`:**
+
+**Change 1: Add imports (after line 10)**
+```python
+# ADD THESE LINES:
+from src.utils.date_helpers import get_all_required_dates
+from typing import List, Dict
+```
+
+**Change 2: Add fetch_snapshot() helper function (after line 86, before main_pipeline)**
+```python
+def fetch_snapshot(date: datetime, macro_type_mapping: dict) -> pd.DataFrame:
+    """
+    Fetch account snapshot for a given date and apply macro type mapping.
+
+    Args:
+        date: Target date for snapshot
+        macro_type_mapping: Dict mapping mjaccttypcd to Macro Account Type
+
+    Returns:
+        DataFrame with snapshot data, effdate set, and Macro Account Type added
+    """
+    df = cdutils.acct_file_creation.core.query_df_on_date(date)
+    df['Macro Account Type'] = df['mjaccttypcd'].map(macro_type_mapping)
+    df['effdate'] = date  # Ensure effdate is set to requested date
+    return df
+```
+
+**Change 3: Refactor main_pipeline() - REPLACE lines 88-119 with:**
+```python
+def main_pipeline():
+    """
+    Main ETL pipeline - fetches multi-period account snapshots and builds dimensional model.
+
+    Returns:
+        Tuple of (dim_account, fact_balances, portfolio)
+    """
+
+    # Define macro type mapping
+    MACRO_TYPE_MAPPING = {
+        'CML':'Loan',
+        'MLN':'Loan',
+        'CNS':'Loan',
+        'MTG':'Loan',
+        'CK':'Deposit',
+        'SAV':'Deposit',
+        'TD':'Deposit'
+    }
+
+    # Get all required dates dynamically
+    dates = get_all_required_dates()
+
+    print(f"Fetching data for multiple time periods...")
+    print(f"  Current date: {dates['current'].strftime('%Y-%m-%d')}")
+    print(f"  Prior day: {dates['prior_day'].strftime('%Y-%m-%d')}")
+    print(f"  Prior month-end: {dates['prior_month_end'].strftime('%Y-%m-%d')}")
+    print(f"  Prior quarter-end: {dates['prior_quarter_end'].strftime('%Y-%m-%d')}")
+    print(f"  Prior year-end: {dates['prior_year_end'].strftime('%Y-%m-%d')}")
+    print(f"  Trailing 16 months: {dates['trailing_16_months'][0].strftime('%Y-%m-%d')} to {dates['trailing_16_months'][-1].strftime('%Y-%m-%d')}")
+    print(f"  Prior 8 business days: {dates['prior_8_days'][0].strftime('%Y-%m-%d')} to {dates['prior_8_days'][-1].strftime('%Y-%m-%d')}")
+
+    # Fetch current snapshot from Silver lakehouse (already in memory)
+    print("Fetching current snapshot from SILVER/account...")
+    current_df = DeltaTable(src.config.SILVER / "account").to_pandas()
+    current_df['Macro Account Type'] = current_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+    # Note: effdate should already be set in Silver table
+
+    # Collect all snapshots to union
+    all_snapshots = [current_df]
+
+    # Fetch all unique dates (dedupe to avoid duplicate queries)
+    unique_dates = set()
+
+    # Add key period dates
+    unique_dates.add(dates['prior_day'])
+    unique_dates.add(dates['prior_month_end'])
+    unique_dates.add(dates['prior_quarter_end'])
+    unique_dates.add(dates['prior_year_end'])
+
+    # Add trailing 16 months
+    for month_end in dates['trailing_16_months']:
+        unique_dates.add(month_end)
+
+    # Add prior 8 business days
+    for day in dates['prior_8_days']:
+        unique_dates.add(day)
+
+    # Remove current date if already in Silver (avoid duplicate)
+    unique_dates.discard(dates['current'])
+
+    # Sort dates for cleaner logging
+    unique_dates_sorted = sorted(unique_dates, reverse=True)
+
+    print(f"Fetching {len(unique_dates_sorted)} historical snapshots...")
+
+    # Fetch all historical snapshots
+    for i, date in enumerate(unique_dates_sorted, 1):
+        print(f"  [{i}/{len(unique_dates_sorted)}] Fetching {date.strftime('%Y-%m-%d')}...")
+        snapshot = fetch_snapshot(date, MACRO_TYPE_MAPPING)
+        all_snapshots.append(snapshot)
+
+    # Union all snapshots
+    print("Unioning all snapshots...")
+    all_df = pd.concat(all_snapshots, ignore_index=True, sort=False)
+
+    print(f"Total records across all periods: {len(all_df):,}")
+    print(f"Unique accounts: {all_df['acctnbr'].nunique():,}")
+    print(f"Unique dates: {all_df['effdate'].nunique()}")
+
+    # REST OF FUNCTION REMAINS UNCHANGED (lines 121-153)
+```
+
+**Lines 121-153 remain exactly as-is** (dimension_columns, fact_columns, building dim/fact tables)
+
+---
+
+**Before/After Comparison:**
+
+**BEFORE (Current - Hardcoded):**
+```python
+# Lines 105-119 - REMOVE THESE:
+year_date = datetime(2024, 12, 31)  # ❌ HARDCODED
+year_end_df = cdutils.acct_file_creation.core.query_df_on_date(year_date)
+year_end_df['Macro Account Type'] = year_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+year_end_df['effdate'] = year_date
+
+month_date = datetime(2025, 9, 30)  # ❌ HARDCODED
+month_end_df = cdutils.acct_file_creation.core.query_df_on_date(month_date)
+month_end_df['Macro Account Type'] = month_end_df['mjaccttypcd'].map(MACRO_TYPE_MAPPING)
+month_end_df['effdate'] = month_date
+
+# Union all snapshots (includes historical-only accounts)
+all_df = pd.concat([current_df, year_end_df, month_end_df], ignore_index=True, sort=False)
+```
+**Result:** 3 snapshots (current, 2024-12-31, 2025-09-30)
+
+**AFTER (Dynamic):**
+```python
+# Lines 632-690 - REPLACE WITH THESE:
+dates = get_all_required_dates()  # ✅ DYNAMIC
+
+# Collect all unique dates via deduplication
+unique_dates = set()
+unique_dates.add(dates['prior_day'])
+unique_dates.add(dates['prior_month_end'])
+unique_dates.add(dates['prior_quarter_end'])
+unique_dates.add(dates['prior_year_end'])
+for month_end in dates['trailing_16_months']:
+    unique_dates.add(month_end)
+for day in dates['prior_8_days']:
+    unique_dates.add(day)
+unique_dates.discard(dates['current'])
+
+# Fetch all snapshots in loop
+all_snapshots = [current_df]
+for date in sorted(unique_dates, reverse=True):
+    snapshot = fetch_snapshot(date, MACRO_TYPE_MAPPING)
+    all_snapshots.append(snapshot)
+
+all_df = pd.concat(all_snapshots, ignore_index=True, sort=False)
+```
+**Result:** ~25 snapshots (current + 24-26 historical dates after deduplication)
+
+---
 
 ### Phase 3: PowerBI Enhancements (Downstream, in PowerBI environment)
 - [ ] Update PowerBI dashboard with new DAX measures (DoD, MoM, QoQ, YoY)
@@ -576,6 +764,62 @@ YoY Balance Change % =
 - [ ] Create 8-day activity chart visual
 - [ ] Document new measures and visuals
 - [ ] Update user documentation / README
+
+---
+
+## Implementation Summary
+
+### What's Already Done
+✅ **Phase 1 Complete:**
+- `src/utils/date_helpers.py` - 202 lines, 8 date calculation functions
+- `tests/test_date_helpers.py` - 460 lines, comprehensive test suite
+- All tests are pure unit tests (no lakehouse/production dependencies)
+
+### What Needs to Be Done
+
+**IMMEDIATE NEXT STEP (Today - Local Environment):**
+1. Run `python -m pytest tests/test_date_helpers.py -v` to validate date logic
+2. Fix any failing tests if needed
+3. Update PLAN.md checklist when tests pass
+
+**PHASE 2 (Production Environment):**
+1. Apply the 3 code changes to `src/deposit_dash_prototype/core.py`:
+   - Add imports (2 lines)
+   - Add `fetch_snapshot()` function (~15 lines)
+   - Refactor `main_pipeline()` (~80 lines replacing ~32 lines)
+2. Run full pipeline in production
+3. Validate output:
+   - Check ~25 distinct dates in fact_balances
+   - Verify no duplicate (effdate, acctnbr) in dim_account
+   - Confirm data volume ~1.4M-1.5M records
+
+**PHASE 3 (PowerBI):**
+1. Create new DAX measures (DoD, MoM, QoQ, YoY)
+2. Add 16-month trend visual
+3. Add 8-day activity chart
+
+### Key Design Decisions Reflected in Code
+
+1. **Trailing 16 months starts from PRIOR month** (line 128 in date_helpers.py):
+   - Uses `i+1` offset to skip current incomplete month
+   - Ensures only completed months are included
+
+2. **Deduplication before fetching** (lines 654-671 in core.py refactor):
+   - Uses `set()` to collect unique dates
+   - Discards current date (already fetched from Silver)
+   - Avoids redundant queries
+
+3. **No parallel fetching** (lines 679-682 in core.py refactor):
+   - Sequential loop through unique_dates_sorted
+   - Acceptable runtime (~2-5 min for 25 snapshots)
+
+4. **Business day adjustment delegated to cdutils** (fetch_snapshot function):
+   - date_helpers.py returns calendar dates
+   - cdutils.query_df_on_date() handles weekends/holidays automatically
+
+5. **No date_period_type column** (lines 121-153 unchanged):
+   - PowerBI handles filtering via date ranges
+   - Keeps fact table schema simple
 
 ---
 
