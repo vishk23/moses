@@ -1915,3 +1915,19 @@ def main(production_flag: bool=False):
         formatted_data.to_excel(writer, sheet_name='Relationship Detail', index=False)
         summary_data.to_excel(writer, sheet_name='Relationship Summary', index=False)
         merged_data.to_excel(writer, sheet_name='Unformatted', index=False)
+
+
+# 2025-10-20
+
+Going to backdate and create a report for each month end snapshot from Sep 2024-Aug 2025
+
+Talked to steve today.
+
+We may have a few issues with cls accounts in current month (where there are fees that don't make it on). Can look at that later on. I'm still doing validation report which will get me that sort of data on the ones that don't match.
+
+We discussed a larger integration with COCC and data hub solution. Also, seeing close accounts on there too could be an item.
+- I could drop the TTM information. We could just have all account statuses. If the fees show up there, they will get captured. So if an account is closed, it'll still be in there and stored in correct relationship.
+
+I guess this puts portfolio key on the map if this is getting shown to top of the house.
+
+
