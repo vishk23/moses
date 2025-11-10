@@ -3,15 +3,13 @@ env_admin/
 cdutils/*.csv
 cdutils/**/*.csv
 
-cdutils/*.xls
-cdutils/**/*.xls
 
-cdutils/*.xlsx
-cdutils/**/*.xlsx
-**/*.xls
-**/*.xlsm
+
+
+
+
 **/*.bak
-**/*.xlsx
+
 **/*.csv
 # Report outputs
 **/*.pptx
